@@ -134,7 +134,7 @@ img { max-width: 100%; display: block; }
 .main-content { max-width: 600px; margin: 0 auto; }
 
 /* ===== HERO SLIDER ===== */
-.hero-slider { position: relative; overflow: hidden; height: 220px; }
+.hero-slider { position: relative; overflow: hidden; height: 240px; }
 .hero-slides { display: flex; height: 100%; transition: transform .5s cubic-bezier(.4,0,.2,1); }
 .hero-slide {
   min-width: 100%; height: 100%;
@@ -143,22 +143,20 @@ img { max-width: 100%; display: block; }
 }
 [dir="rtl"] .hero-slide { flex-direction: row-reverse; }
 
-.slide-1 { background: #f7f7f7; }
-.slide-2 { background: #fdf6ee; }
-.slide-3 { background: #eef8f4; }
+.slide-1 { background: linear-gradient(120deg, #fdf3e7 0%, #f8e8d0 100%); }
+.slide-2 { background: linear-gradient(120deg, #fff8f0 0%, #fde8d0 100%); }
+.slide-3 { background: linear-gradient(120deg, #f0f8f4 0%, #d8f0e8 100%); }
 
-/* Left: text area ~45% */
+/* Left: text area ~48% */
 .hero-left {
-  width: 45%; flex-shrink: 0; display: flex; flex-direction: column;
-  justify-content: center; padding: 14px 8px 14px 14px; z-index: 2;
+  width: 48%; flex-shrink: 0; display: flex; flex-direction: column;
+  justify-content: center; padding: 12px 6px 12px 14px; z-index: 2;
   position: relative;
 }
-[dir="rtl"] .hero-left { padding: 14px 14px 14px 8px; align-items: flex-end; }
+[dir="rtl"] .hero-left { padding: 12px 14px 12px 6px; align-items: flex-end; }
 
-/* Right: model photo ~55% */
-.hero-right {
-  flex: 1; position: relative; overflow: hidden;
-}
+/* Right: model photo ~52% */
+.hero-right { flex: 1; position: relative; overflow: hidden; }
 
 /* Model photo fills right column */
 .hero-model-img {
@@ -167,78 +165,84 @@ img { max-width: 100%; display: block; }
   object-fit: cover; object-position: top center;
 }
 
-/* Brand badge (replaces hero-event-tag) */
+/* SHEIN-style dual-line badge */
 .hero-brand-badge {
-  display: inline-flex; align-items: center; gap: 3px;
-  background: #e91e8c; color: #fff;
-  font-size: 9px; font-weight: 700;
-  padding: 2px 8px; border-radius: 3px;
-  margin-bottom: 5px; align-self: flex-start;
-  letter-spacing: .4px; white-space: nowrap;
+  display: inline-flex; flex-direction: column; align-items: flex-start;
+  background: #111; color: #fff;
+  border-radius: 4px; overflow: hidden;
+  margin-bottom: 4px; align-self: flex-start;
 }
-.slide-2 .hero-brand-badge { background: #e65100; }
-.slide-3 .hero-brand-badge { background: #0d47a1; }
-[dir="rtl"] .hero-brand-badge { align-self: flex-end; }
+.badge-event {
+  font-size: 8px; font-weight: 700; padding: 2px 7px;
+  background: #e91e8c; letter-spacing: .3px; white-space: nowrap;
+}
+.slide-2 .badge-event { background: #e65100; }
+.slide-3 .badge-event { background: #0d6e3f; }
+.badge-brand {
+  font-size: 9px; font-weight: 900; padding: 2px 7px;
+  letter-spacing: 1px; color: #fff;
+}
+[dir="rtl"] .hero-brand-badge { align-self: flex-end; align-items: flex-end; }
 
-/* Discount row: [UP/TO] [90%] [OFF] in one flex row — like SHEIN */
+/* Sale title (AL-ADHA MEGA SALE equivalent) */
+.hero-sale-title {
+  font-size: 18px; font-weight: 900; line-height: 1.1;
+  color: #1a1a1a; margin-bottom: 3px; letter-spacing: -.3px;
+}
+.slide-2 .hero-sale-title { color: #b84000; }
+.slide-3 .hero-sale-title { color: #0a5c2e; }
+
+/* Discount row: [UP/TO] [90%] [OFF] */
 .hero-discount {
-  display: flex; align-items: flex-end; gap: 3px; margin: 2px 0 4px;
+  display: flex; align-items: flex-end; gap: 2px; margin: 0 0 3px;
 }
 .hero-upto-stack {
-  font-size: 10px; font-weight: 900; color: #222;
-  text-transform: uppercase; letter-spacing: .3px; line-height: 1.15;
-  padding-bottom: 10px; max-width: 24px; word-break: break-all;
+  font-size: 9px; font-weight: 900; color: #333;
+  text-transform: uppercase; letter-spacing: .2px; line-height: 1.2;
+  padding-bottom: 8px;
 }
-[dir="rtl"] .hero-upto-stack { padding-bottom: 10px; max-width: 30px; }
 
 /* ✨ GOLD SHIMMER on 90% */
 .hero-pct {
-  font-size: 90px; font-weight: 900; line-height: .82; font-style: italic;
-  background: linear-gradient(90deg, #5a3800, #b87d00, #ffd700, #fff0a0, #ffd700, #b87d00, #5a3800);
+  font-size: 78px; font-weight: 900; line-height: .85; font-style: italic;
+  background: linear-gradient(90deg, #3a2200, #a06600, #ffd700, #fff0a0, #ffd700, #a06600, #3a2200);
   background-size: 400% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
   animation: goldShimmer 2s linear infinite;
   display: flex; align-items: flex-start; position: relative;
 }
-.hero-pct em { font-size: 40px; font-style: normal; margin-top: 12px; margin-left: 1px; }
+.hero-pct em { font-size: 34px; font-style: normal; margin-top: 10px; margin-left: 1px; }
 @keyframes goldShimmer { to { background-position: 400% center; } }
 
 .hero-off {
-  font-size: 28px; font-weight: 900; font-style: italic;
-  padding-bottom: 6px;
-  background: linear-gradient(90deg, #5a3800, #b87d00, #ffd700, #b87d00, #5a3800);
+  font-size: 22px; font-weight: 900; font-style: italic;
+  padding-bottom: 5px; color: #111;
+  background: linear-gradient(90deg, #3a2200, #a06600, #ffd700, #a06600, #3a2200);
   background-size: 400% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text; animation: goldShimmer 2s linear infinite .4s;
 }
 
-/* Big title for slides 2 & 3 */
-.hero-title-lg {
-  font-size: 36px; font-weight: 900; line-height: 1.1; color: #1a1a1a; margin-bottom: 4px;
-}
-.slide-2 .hero-title-lg { color: #c05000; }
-.slide-3 .hero-title-lg { color: #0a3d7a; }
-
-/* "1M+ Hot Items" — number in pink, rest in gray, like SHEIN */
+/* "1M+ Hot Items" */
 .hero-items-count {
-  font-size: 12px; font-weight: 600; color: #555;
-  margin-top: 2px; margin-bottom: 8px;
+  font-size: 11px; font-weight: 600; color: #555;
+  margin-bottom: 8px; font-style: italic;
 }
 .hero-items-count .hot-num {
-  color: #e91e8c; font-weight: 900; font-style: normal; font-size: 13px;
+  color: #e91e8c; font-weight: 900; font-style: normal; font-size: 12px;
 }
 
 .btn-hero-dark {
   display: inline-block; background: #111; color: #fff;
-  font-weight: 700; padding: 8px 16px; border-radius: 3px;
-  font-size: 11px; letter-spacing: .5px; text-transform: uppercase;
+  font-weight: 700; padding: 7px 14px; border-radius: 3px;
+  font-size: 10px; letter-spacing: .8px; text-transform: uppercase;
   transition: transform .15s, background .2s;
   align-self: flex-start; cursor: pointer;
 }
 .btn-hero-dark:hover { background: #333; transform: scale(1.04); }
 .slide-2 .btn-hero-dark { background: #e65100; }
-.slide-3 .btn-hero-dark { background: #0d47a1; }
+.slide-3 .btn-hero-dark { background: #0a5c2e; }
 [dir="rtl"] .btn-hero-dark { align-self: flex-end; }
 
 /* ✨ Sparkle stars */
