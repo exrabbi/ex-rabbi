@@ -1208,9 +1208,65 @@ img { max-width: 100%; display: block; }
 /* Card logos strip */
 .pay-cards-strip {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 4px; margin-bottom: 4px;
+  padding: 10px 4px; margin-bottom: 4px; flex-wrap: wrap;
 }
 .pay-cards-strip img { height: 24px; width: auto; object-fit: contain; filter: grayscale(.3); }
+.pay-strip-crypto {
+  font-size: 11px; font-weight: 800; color: #F3BA2F;
+  background: #1a1a1a; border-radius: 6px; padding: 3px 7px;
+  letter-spacing: .5px;
+}
+/* Binance Pay form */
+.binance-box {
+  background: linear-gradient(160deg, #1e2026, #181a20);
+  border-radius: 16px; padding: 14px 14px 12px;
+  margin-top: 12px; border: 1px solid #2c2f36;
+}
+.binance-box-header {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.binance-bnc-icon {
+  width: 38px; height: 38px; flex-shrink: 0;
+  background: linear-gradient(135deg, #F3BA2F, #F0A500);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 10px rgba(243,186,47,.35);
+}
+.binance-box-title-wrap { flex: 1; }
+.binance-box-title { font-size: 14px; font-weight: 800; color: #F3BA2F; }
+.binance-box-net { font-size: 10.5px; color: #666; margin-top: 1px; }
+.binance-usdt-pill {
+  background: rgba(243,186,47,.12);
+  border: 1px solid rgba(243,186,47,.3);
+  border-radius: 10px; padding: 5px 10px;
+}
+.binance-usdt-val { font-size: 13px; font-weight: 800; color: #F3BA2F; }
+.binance-addr-wrap {
+  background: rgba(255,255,255,.05); border: 1px solid #2c2f36;
+  border-radius: 10px; padding: 10px 12px; margin-bottom: 10px;
+}
+.binance-addr-lbl { font-size: 10.5px; color: #666; margin-bottom: 6px; }
+.binance-addr-row { display: flex; align-items: center; gap: 8px; }
+.binance-addr-txt {
+  font-family: 'Courier New', monospace; font-size: 11.5px;
+  color: #d4d4d4; word-break: break-all; flex: 1; line-height: 1.45;
+}
+.binance-copy-btn {
+  background: rgba(243,186,47,.18); border: 1px solid rgba(243,186,47,.35);
+  border-radius: 8px; padding: 6px 9px; color: #F3BA2F;
+  font-size: 13px; flex-shrink: 0; transition: background .2s;
+}
+.binance-copy-btn:active { background: rgba(243,186,47,.4); transform: scale(.95); }
+.binance-amount-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 6px 0 8px; font-size: 12px; color: #888;
+}
+.binance-amount-val { font-weight: 700; color: #F3BA2F; font-size: 13px; }
+.binance-note {
+  display: flex; align-items: flex-start; gap: 7px;
+  background: rgba(243,186,47,.08); border-radius: 8px;
+  padding: 8px 10px; font-size: 12px; color: #aaa; line-height: 1.5;
+}
+.binance-note i { color: #F3BA2F; margin-top: 1px; flex-shrink: 0; font-size: 12px; }
 
 /* Card form */
 .card-form-wrap {

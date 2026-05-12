@@ -890,12 +890,29 @@
         <div class="pay-method-check" id="checkGpay"><i class="fas fa-check-circle"></i></div>
       </div>
 
+      <!-- Binance Pay -->
+      <div class="pay-method-card" id="pmBinance" onclick="selectPayMethod('binance')">
+        <div class="pay-method-left">
+          <div class="pay-method-icon" style="background:linear-gradient(135deg,#F3BA2F,#F0A500)">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="#1a1a1a">
+              <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
+            </svg>
+          </div>
+          <div class="pay-method-info">
+            <div class="pay-method-name">Binance Pay</div>
+            <div class="pay-method-sub" data-i18n="binanceSub">USDT · BNB · Crypto</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkBinance"><i class="fas fa-check-circle"></i></div>
+      </div>
+
       <!-- Card logos strip -->
       <div class="pay-cards-strip">
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/800px-Mastercard-logo.svg.png" alt="Mastercard" />
         <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" />
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/800px-Google_Pay_Logo.svg.png" alt="GPay" />
+        <span class="pay-strip-crypto">₮ USDT</span>
       </div>
 
       <!-- PayPal buttons container -->
@@ -924,6 +941,43 @@
           <div class="card-field">
             <label data-i18n="cardHolder">Cardholder Name</label>
             <input type="text" id="cardName" data-i18n-placeholder="cardHolderPh" placeholder="Name on card" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Binance form -->
+      <div id="binanceForm" style="display:none">
+        <div class="binance-box">
+          <div class="binance-box-header">
+            <div class="binance-bnc-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a">
+                <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
+              </svg>
+            </div>
+            <div class="binance-box-title-wrap">
+              <div class="binance-box-title">Binance Pay</div>
+              <div class="binance-box-net" data-i18n="binanceNetwork">TRC-20 (Tron)</div>
+            </div>
+            <div class="binance-usdt-pill">
+              <span class="binance-usdt-val" id="binanceUSDT">-- USDT</span>
+            </div>
+          </div>
+          <div class="binance-addr-wrap">
+            <div class="binance-addr-lbl" data-i18n="binanceSendTo">Send to wallet address:</div>
+            <div class="binance-addr-row">
+              <span class="binance-addr-txt" id="binanceAddrTxt">T...</span>
+              <button class="binance-copy-btn" onclick="copyBinanceAddr()">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+          <div class="binance-amount-row">
+            <span class="binance-amount-lbl" data-i18n="binanceAmount">Amount (USDT):</span>
+            <span class="binance-amount-val" id="binanceAmtSAR"></span>
+          </div>
+          <div class="binance-note">
+            <i class="fas fa-circle-info"></i>
+            <span data-i18n="binanceNote">After sending, confirm via WhatsApp</span>
           </div>
         </div>
       </div>

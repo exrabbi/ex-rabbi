@@ -821,6 +821,9 @@ function updateAuthUI() {
 }
 
 /* ===== PAYMENT SYSTEM ===== */
+const BINANCE_WALLET_ADDR = 'TNVHqXwqBBwD2CajQSxEzGkxqrLvKcFYHS';
+const SAR_TO_USDT = 0.267;
+
 let selectedPayMethod = 'whatsapp';
 let paypalLoaded = false;
 
@@ -882,25 +885,55 @@ function closePayment() {
 
 function selectPayMethod(method) {
   selectedPayMethod = method;
-  ['whatsapp','paypal','card','gpay'].forEach(m => {
-    document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1)).classList.remove('active');
-    document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1)).querySelector('i').style.color = '#ddd';
+  ['whatsapp','paypal','card','gpay','binance'].forEach(m => {
+    const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
+    const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
+    if (pm) pm.classList.remove('active');
+    if (ck) ck.querySelector('i').style.color = '#ddd';
   });
   const card = document.getElementById('pm' + method.charAt(0).toUpperCase() + method.slice(1));
-  if (card) { card.classList.add('active'); }
+  if (card) card.classList.add('active');
   const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
-  if (check) check.querySelector('i').style.color = '#e91e8c';
+  if (check) check.querySelector('i').style.color = method === 'binance' ? '#F3BA2F' : '#e91e8c';
   // Show/hide sub-forms
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
+  document.getElementById('binanceForm').style.display = (method === 'binance') ? 'block' : 'none';
+  // Populate Binance form
+  if (method === 'binance') {
+    const lang3 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const sub3 = cartSubtotalBase() * lang3.rate;
+    const del3 = sub3 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const totalSAR = sub3 + del3;
+    const usdt = (totalSAR * SAR_TO_USDT).toFixed(2);
+    const usdtEl = document.getElementById('binanceUSDT');
+    const sarEl = document.getElementById('binanceAmtSAR');
+    const addrEl = document.getElementById('binanceAddrTxt');
+    if (usdtEl) usdtEl.textContent = usdt + ' USDT';
+    if (sarEl) sarEl.textContent = lang3.currency + Math.round(totalSAR) + ' ≈ ' + usdt + ' USDT';
+    if (addrEl) addrEl.textContent = BINANCE_WALLET_ADDR;
+  }
   // Update button text
   const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const subtotalDisp2 = cartSubtotalBase() * lang2.rate;
   const delDisp2 = subtotalDisp2 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
   const grandDisp2 = subtotalDisp2 + delDisp2;
-  const methodLabel = { whatsapp: t('placeOrder'), paypal: 'PayPal', card: t('cardName'), gpay: 'Google Pay' };
+  const methodLabel = {
+    whatsapp: t('placeOrder'), paypal: 'PayPal',
+    card: t('cardName'), gpay: 'Google Pay',
+    binance: t('binanceConfirm')
+  };
   document.getElementById('payBtnText').textContent =
     (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
+}
+
+function copyBinanceAddr() {
+  const addr = BINANCE_WALLET_ADDR;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(addr).then(() => showToast(t('binanceCopied'))).catch(() => showToast(addr));
+  } else {
+    showToast(addr);
+  }
 }
 
 function processPayment() {
@@ -927,6 +960,16 @@ function processPayment() {
   } else if (selectedPayMethod === 'gpay') {
     showToast(t('gpayNotSetup'));
     setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+  } else if (selectedPayMethod === 'binance') {
+    const langB = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const subB = cartSubtotalBase() * langB.rate;
+    const delB = subB >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const totalSAR = subB + delB;
+    const usdt = (totalSAR * SAR_TO_USDT).toFixed(2);
+    const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
+    const msg = `🟡 *Binance Pay Order — EX GLOBAL*\n\n${lines}\n\n💵 Total: ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🔑 Wallet (TRC-20): \`${BINANCE_WALLET_ADDR}\`\n\nI have sent the USDT payment. Please confirm my order.`;
+    window.open('https://wa.me/966546224029?text=' + encodeURIComponent(msg), '_blank');
+    closePayment();
   }
 }
 

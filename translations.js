@@ -96,7 +96,10 @@ const TRANSLATIONS = {
     fillCardDetails: 'সব কার্ড তথ্য দিন', cardNotSetup: '⚠️ Card gateway সেটআপ হয়নি',
     gpayNotSetup: '⚠️ Google Pay সেটআপ হয়নি',
     paymentSuccess: '✓ পেমেন্ট সফল! ধন্যবাদ ', paymentFailed: 'পেমেন্ট ব্যর্থ হয়েছে, আবার চেষ্টা করুন',
-    waDeliveryAddress: 'ডেলিভারি ঠিকানা', waName: 'নাম', waPhone: 'ফোন', waCity: 'শহর', waAddress: 'ঠিকানা',
+    binanceSub: 'USDT · BNB · ক্রিপ্টো', binanceSendTo: 'এই ঠিকানায় পাঠান:',
+    binanceNetwork: 'নেটওয়ার্ক: TRC-20 (Tron)', binanceNote: 'পেমেন্ট করে WhatsApp-এ confirm করুন',
+    binanceCopied: '✓ ঠিকানা কপি হয়েছে!', binanceConfirm: 'WhatsApp-এ Confirm করুন',
+    binanceAmount: 'পরিমাণ (USDT):',
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -195,7 +198,10 @@ const TRANSLATIONS = {
     fillCardDetails: 'Fill in all card details', cardNotSetup: '⚠️ Card payment not set up',
     gpayNotSetup: '⚠️ Google Pay not set up',
     paymentSuccess: '✓ Payment successful! Thank you ', paymentFailed: 'Payment failed, please try again',
-    waDeliveryAddress: 'Delivery Address', waName: 'Name', waPhone: 'Phone', waCity: 'City', waAddress: 'Address',
+    binanceSub: 'USDT · BNB · Crypto', binanceSendTo: 'Send to wallet address:',
+    binanceNetwork: 'Network: TRC-20 (Tron)', binanceNote: 'After sending, confirm via WhatsApp',
+    binanceCopied: '✓ Address copied!', binanceConfirm: 'Confirm via WhatsApp',
+    binanceAmount: 'Amount (USDT):',
   },
   ar: {
     dir: 'rtl', currency: 'ر.س ', rate: 0.034,
@@ -294,6 +300,9 @@ const TRANSLATIONS = {
     fillCardDetails: 'أدخل جميع بيانات البطاقة', cardNotSetup: '⚠️ بوابة الدفع غير مفعّلة',
     gpayNotSetup: '⚠️ Google Pay غير مفعّل',
     paymentSuccess: '✓ تمت الدفعة بنجاح! شكراً ', paymentFailed: 'فشل الدفع، حاول مرة أخرى',
-    waDeliveryAddress: 'عنوان التوصيل', waName: 'الاسم', waPhone: 'الهاتف', waCity: 'المدينة', waAddress: 'العنوان',
+    binanceSub: 'USDT · BNB · كريبتو', binanceSendTo: 'أرسل إلى عنوان المحفظة:',
+    binanceNetwork: 'الشبكة: TRC-20 (Tron)', binanceNote: 'بعد الإرسال، تأكيد عبر واتساب',
+    binanceCopied: '✓ تم نسخ العنوان!', binanceConfirm: 'تأكيد عبر واتساب',
+    binanceAmount: 'المبلغ (USDT):',
   }
 };
