@@ -637,7 +637,7 @@ function saveLocation() {
   savedLocation = { name, phone, city, area, address, lat, lng };
   localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
   const badge = document.getElementById('meLocSaved');
-  if (badge) badge.textContent = '✓ সেভড';
+  if (badge) badge.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).savedBadge || '✓ Saved';
   showToast('✓ ঠিকানা সেভ হয়েছে');
   closeLocation();
 }
@@ -651,7 +651,7 @@ function getLocationText() {
 document.addEventListener('DOMContentLoaded', () => {
   if (savedLocation) {
     const badge = document.getElementById('meLocSaved');
-    if (badge) badge.textContent = '✓ সেভড';
+    if (badge) badge.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).savedBadge || '✓ Saved';
   }
   // Init auth UI
   updateAuthUI();
@@ -729,7 +729,7 @@ function signOut() {
     firebase.auth().signOut().catch(() => {});
   }
   updateAuthUI();
-  showToast('সাইন আউট হয়েছে');
+  showToast((TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).signedOut || 'Signed out');
 }
 
 function updateAuthUI() {
