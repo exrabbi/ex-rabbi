@@ -67,6 +67,7 @@
       <li><a href="#"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
       <li><a href="#"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
       <li><a href="#"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
+      <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
       <li><a href="#"><i class="fas fa-tag"></i> <span data-i18n="coupon">কুপন</span></a></li>
       <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
       <li><a href="#"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
@@ -320,7 +321,17 @@
     </section>
 
     <!-- CUSTOMER REVIEWS -->
-    <section class="reviews-section">
+    <!-- REVIEWS ENTRY STRIP -->
+    <div class="rev-entry-strip" onclick="openReviews()">
+      <div class="rev-entry-left">
+        <span class="rev-entry-stars">★★★★★</span>
+        <span class="rev-entry-score">4.8</span>
+        <span class="rev-entry-count" id="revEntryCount">1,253 reviews</span>
+      </div>
+      <i class="fas fa-chevron-right rev-entry-arrow"></i>
+    </div>
+
+    <section class="reviews-section" style="display:none">
       <div class="reviews-header">
         <div class="reviews-title-row">
           <h2 class="reviews-title">⭐ কাস্টমার রিভিউ</h2>
@@ -468,32 +479,32 @@
     <div class="wr-overlay" id="wrOverlay" onclick="closeWriteReview()"></div>
     <div class="wr-modal" id="wrModal">
       <div class="wr-head">
-        <button class="icon-btn" onclick="closeWriteReview()" style="color:#333"><i class="fas fa-times"></i></button>
-        <span>✍️ রিভিউ লিখুন</span>
+        <button class="icon-btn" onclick="closeWriteReview()" style="color:#333"><i class="fas fa-arrow-left"></i></button>
+        <span data-i18n="wrTitle">Write a Review</span>
         <div style="width:32px"></div>
       </div>
       <div class="wr-body">
-        <p class="wr-subtitle">আপনার অভিজ্ঞতা শেয়ার করুন</p>
+        <p class="wr-subtitle" data-i18n="wrSubtitle">Share your experience</p>
         <!-- Star picker -->
         <div class="wr-stars" id="wrStars">
-          <span class="wr-star" data-val="1" onclick="setReviewStar(1)">★</span>
-          <span class="wr-star" data-val="2" onclick="setReviewStar(2)">★</span>
-          <span class="wr-star" data-val="3" onclick="setReviewStar(3)">★</span>
-          <span class="wr-star" data-val="4" onclick="setReviewStar(4)">★</span>
-          <span class="wr-star" data-val="5" onclick="setReviewStar(5)">★</span>
+          <span class="wr-star" onclick="setReviewStar(1)">★</span>
+          <span class="wr-star" onclick="setReviewStar(2)">★</span>
+          <span class="wr-star" onclick="setReviewStar(3)">★</span>
+          <span class="wr-star" onclick="setReviewStar(4)">★</span>
+          <span class="wr-star" onclick="setReviewStar(5)">★</span>
         </div>
-        <div class="wr-star-label" id="wrStarLabel">রেটিং বেছে নিন</div>
+        <div class="wr-star-label" id="wrStarLabel" data-i18n="wrRatePh">Choose rating</div>
         <div class="auth-field" style="margin-bottom:10px">
           <i class="fas fa-user"></i>
-          <input type="text" id="wrName" placeholder="আপনার নাম" />
+          <input type="text" id="wrName" data-i18n-placeholder="wrNamePh" placeholder="Your name" />
         </div>
         <div class="auth-field" style="margin-bottom:10px">
           <i class="fas fa-box"></i>
-          <input type="text" id="wrProduct" placeholder="কোন পণ্যটি কিনেছেন?" />
+          <input type="text" id="wrProduct" data-i18n-placeholder="wrProductPh" placeholder="Which product?" />
         </div>
-        <textarea id="wrText" class="wr-textarea" placeholder="আপনার অভিজ্ঞতা লিখুন... (ডেলিভারি, মান, সাইজ ইত্যাদি সম্পর্কে)"></textarea>
+        <textarea id="wrText" class="wr-textarea" data-i18n-placeholder="wrTextPh" placeholder="Write your experience..."></textarea>
         <button class="btn-auth-submit" onclick="submitReview()">
-          <i class="fas fa-paper-plane"></i> রিভিউ জমা দিন
+          <i class="fas fa-paper-plane"></i> <span data-i18n="wrSubmit">Submit Review</span>
         </button>
       </div>
     </div>
@@ -968,6 +979,45 @@
   </div>
 
   <div class="toast" id="toast"></div>
+
+  <!-- REVIEWS MODAL (full-screen) -->
+  <div class="rev-overlay" id="revOverlay" onclick="closeReviews()"></div>
+  <div class="rev-modal" id="revModal">
+    <div class="rev-head">
+      <button class="icon-btn" onclick="closeReviews()"><i class="fas fa-arrow-left"></i></button>
+      <span data-i18n="reviewsTitle">Customer Reviews</span>
+      <button class="rev-head-write" onclick="openWriteReview()"><i class="fas fa-pen"></i></button>
+    </div>
+
+    <!-- Rating Summary -->
+    <div class="rev-summary-wrap">
+      <div class="rev-rating-col">
+        <div class="rev-big-num" id="revAvgScore">4.8</div>
+        <div class="rev-big-stars" id="revAvgStars">★★★★★</div>
+        <div class="rev-big-count"><span id="revTotalCount">1,253</span> <span data-i18n="reviewsLabel">reviews</span></div>
+      </div>
+      <div class="rev-bars-col" id="revBarsCol"></div>
+    </div>
+
+    <!-- Filters -->
+    <div class="rev-filter-row" id="revFilterRow">
+      <button class="rev-filter active" onclick="filterReviewsBy('all',this)" data-i18n="filterAll">All</button>
+      <button class="rev-filter" onclick="filterReviewsBy('5',this)">★★★★★</button>
+      <button class="rev-filter" onclick="filterReviewsBy('4',this)">★★★★</button>
+      <button class="rev-filter" onclick="filterReviewsBy('3',this)">★★★</button>
+      <button class="rev-filter" onclick="filterReviewsBy('photos',this)" data-i18n="filterPhotos">Photos</button>
+    </div>
+
+    <!-- Review cards list -->
+    <div class="rev-list" id="revList"></div>
+
+    <!-- Write button bar -->
+    <div class="rev-write-bar">
+      <button class="btn-write-review-full" onclick="openWriteReview()">
+        <i class="fas fa-pen"></i> <span data-i18n="writeReview">Write a Review</span>
+      </button>
+    </div>
+  </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>

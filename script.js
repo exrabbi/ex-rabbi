@@ -4,7 +4,7 @@ let wishlist = [];
 let currentFilter = 'all';
 let currentSort = 'default';
 let visibleCount = 8;
-let currentLang = 'bn';
+let currentLang = 'en';
 let selectedSize = '';
 let selectedColor = '';
 let heroIndex = 0;
@@ -883,50 +883,175 @@ function formatExpiry(el) {
 
 /* ===== REVIEWS ===== */
 let reviewStarVal = 0;
+let activeRevFilter = 'all';
+
+const SEED_REVIEWS = [
+  { id:1, name:'Rahul Ahmed', initial:'R', grad:'linear-gradient(135deg,#e91e8c,#ff6b6b)', rating:5, date:'2025-05-12', country:'Saudi Arabia',
+    product:"Women's Dress — Red M",
+    text:{ bn:'অসাধারণ প্রোডাক্ট! কোয়ালিটি দেখে মনে হচ্ছিল না এত কম দামে পাবো। ডেলিভারি ছিল মাত্র ২ দিনে। আবার অর্ডার করবো ইনশাআল্লাহ।', en:"Amazing product! Quality exceeded expectations for the price. Delivery in just 2 days. Will definitely order again!", ar:'منتج رائع! الجودة أفضل مما توقعت. التوصيل خلال يومين فقط. سأطلب مرة أخرى!' },
+    photos:['https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=120&h=120&fit=crop&q=80'], helpful:24 },
+  { id:2, name:'Fatima Al-Rashid', initial:'F', grad:'linear-gradient(135deg,#3b82f6,#a855f7)', rating:5, date:'2025-05-08', country:'Riyadh',
+    product:'Kids Shoes — Blue 32',
+    text:{ bn:'আমার বাচ্চারা খুব পছন্দ করেছে! কোয়ালিটি প্রিমিয়াম এবং দাম অবিশ্বাস্য। ৩ দিনের মধ্যে ডেলিভারি। সবাইকে রেকমেন্ড করি।', en:"My kids loved it! Premium quality at an unbelievable price. Fast delivery within 3 days. Highly recommended!", ar:'أحبها أطفالي! جودة ممتازة بسعر رائع. توصيل سريع خلال 3 أيام. أنصح الجميع بالشراء!' },
+    photos:['https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=120&fit=crop&q=80'], helpful:41 },
+  { id:3, name:'Mohammed Karim', initial:'M', grad:'linear-gradient(135deg,#10b981,#06b6d4)', rating:4, date:'2025-05-05', country:'Jeddah',
+    product:"Men's Jacket — Black XL",
+    text:{ bn:'কোয়ালিটি ভালো এবং দাম মানানসই। ডেলিভারি দ্রুত ছিল। সবাইকে এই দোকান থেকে কেনার পরামর্শ দিচ্ছি।', en:'Good quality and fair price. Fast delivery. I recommend everyone to shop from this store.', ar:'الجودة ممتازة والسعر مناسب جداً. التوصيل كان سريعاً. أنصح الجميع بالشراء من هذا المتجر.' },
+    photos:[], helpful:18 },
+  { id:4, name:'Sumaiya Begum', initial:'S', grad:'linear-gradient(135deg,#f59e0b,#ef4444)', rating:5, date:'2025-05-02', country:'Dammam',
+    product:'Beauty Kit — Premium',
+    text:{ bn:'EX GLOBAL এর সার্ভিস সত্যিই অনেক ভালো। প্যাকেজিং একদম নিখুঁত। প্রোডাক্টের মান প্রত্যাশার চেয়েও বেশি ভালো। ১০/১০ 🔥', en:'EX GLOBAL service is truly excellent. Packaging was perfect with no damage. Product quality was even better than expected. 10/10 🔥', ar:'خدمة EX GLOBAL ممتازة حقاً. التغليف كان مثالياً. جودة المنتج كانت أفضل مما توقعت. 10/10 🔥' },
+    photos:['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=120&h=120&fit=crop&q=80'], helpful:56 },
+  { id:5, name:'Abdullah Hassan', initial:'A', grad:'linear-gradient(135deg,#8b5cf6,#e91e8c)', rating:5, date:'2025-04-28', country:'Mecca',
+    product:'Sports Shoes — White 42',
+    text:{ bn:'সেরা অনলাইন শপিং অভিজ্ঞতা! ঠিক যা অর্ডার করেছিলাম তাই পেয়েছি। জুতা অত্যন্ত আরামদায়ক এবং মজবুত। দাম খুব প্রতিযোগিতামূলক। 💯', en:'Best online shopping experience! Got exactly what I ordered. Shoes are super comfortable and sturdy. Very competitive price. 💯', ar:'أفضل تجربة تسوق عبر الإنترنت! حصلت على ما طلبته بالضبط. الأحذية مريحة جداً. سعر تنافسي جداً. 💯' },
+    photos:[], helpful:33 }
+];
+
+function getAllReviews() {
+  const stored = JSON.parse(localStorage.getItem('exglobal_reviews') || '[]');
+  return [...stored.reverse(), ...SEED_REVIEWS];
+}
+
+function openReviews() {
+  document.getElementById('revOverlay').classList.add('open');
+  document.getElementById('revModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  renderRevSummary();
+  renderRevList(activeRevFilter);
+  applyTranslations();
+}
+
+function closeReviews() {
+  document.getElementById('revOverlay').classList.remove('open');
+  document.getElementById('revModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderRevSummary() {
+  const all = getAllReviews();
+  const total = all.length;
+  const avg = total ? (all.reduce((s,r)=>s+r.rating,0)/total) : 0;
+  document.getElementById('revAvgScore').textContent = avg.toFixed(1);
+  document.getElementById('revTotalCount').textContent = (total + 1248).toLocaleString();
+  const starsEl = document.getElementById('revAvgStars');
+  starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#ddd'}">★</span>`).join('');
+  const barsEl = document.getElementById('revBarsCol');
+  const colors = ['','#e64a19','#f57c00','#ff8f00','#ffa000','#ffd700'];
+  barsEl.innerHTML = [5,4,3,2,1].map(star => {
+    const cnt = all.filter(r=>r.rating===star).length;
+    const pct = total ? Math.round(cnt/total*100) : 0;
+    return `<div class="rev-bar-row"><span>${star}★</span><div class="rev-bar"><div class="rev-bar-fill" style="width:${pct}%;background:${colors[star]}"></div></div><span>${pct}%</span></div>`;
+  }).join('');
+  // Update entry strip count
+  const ec = document.getElementById('revEntryCount');
+  if (ec) ec.textContent = (total+1248).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+}
+
+function renderRevList(filter) {
+  activeRevFilter = filter;
+  const all = getAllReviews();
+  let filtered = all;
+  if (filter === '5') filtered = all.filter(r=>r.rating===5);
+  else if (filter === '4') filtered = all.filter(r=>r.rating===4);
+  else if (filter === '3') filtered = all.filter(r=>r.rating<=3);
+  else if (filter === 'photos') filtered = all.filter(r=>r.photos && r.photos.length>0);
+  const list = document.getElementById('revList');
+  if (!filtered.length) {
+    list.innerHTML = `<div class="rev-empty"><i class="fas fa-comment-slash"></i><p>${t('noReviews')}</p></div>`;
+    return;
+  }
+  list.innerHTML = filtered.map(r => {
+    const txt = (typeof r.text === 'object') ? (r.text[currentLang] || r.text.en) : r.text;
+    const stars = [1,2,3,4,5].map(i=>`<span style="color:${i<=r.rating?'#ffd700':'#ddd'}">★</span>`).join('');
+    const photos = (r.photos||[]).length ? `<div class="rev-card-photos">${r.photos.map(p=>`<img src="${p}" alt="" loading="lazy"/>`).join('')}</div>` : '';
+    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+    return `<div class="rev-card">
+      <div class="rev-card-top">
+        <div class="rev-avatar" style="background:${r.grad||'#e91e8c'}">${r.initial||r.name[0]}</div>
+        <div class="rev-card-info">
+          <div class="rev-card-name">${r.name} <span class="rev-verified"><i class="fas fa-check-circle"></i> ${t('verifiedPurchase')}</span></div>
+          <div class="rev-card-meta">${dateStr}${r.country?' · '+r.country:''}</div>
+        </div>
+        <div class="rev-card-stars">${stars}</div>
+      </div>
+      ${r.product?`<div class="rev-card-product"><i class="fas fa-box"></i> ${r.product}</div>`:''}
+      <p class="rev-card-text">${txt}</p>
+      ${photos}
+      <div class="rev-card-footer">
+        <button class="rev-helpful-btn" onclick="markHelpful(this)">
+          <i class="far fa-thumbs-up"></i> <span class="rev-helpful-label">${t('helpfulBtn')}</span> <span class="rev-helpful-num">${r.helpful||0}</span>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterReviewsBy(filter, el) {
+  document.querySelectorAll('.rev-filter').forEach(b=>b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderRevList(filter);
+}
 
 function openWriteReview() {
   document.getElementById('wrOverlay').classList.add('open');
   document.getElementById('wrModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  applyTranslations();
 }
 
 function closeWriteReview() {
   document.getElementById('wrOverlay').classList.remove('open');
   document.getElementById('wrModal').classList.remove('open');
-  document.body.style.overflow = '';
+  if (document.getElementById('revModal').classList.contains('open')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+  }
 }
 
 function setReviewStar(val) {
   reviewStarVal = val;
-  const labels = { bn: ['','খুবই খারাপ','খারাপ','ঠিক আছে','ভালো','অসাধারণ!'], en: ['','Terrible','Bad','Okay','Good','Excellent!'], ar: ['','سيء جداً','سيء','مقبول','جيد','ممتاز!'] };
-  const lang = labels[currentLang] || labels.en;
-  document.querySelectorAll('.wr-star').forEach((s,i) => s.classList.toggle('on', i < val));
+  const labels = { bn:['','খুবই খারাপ','খারাপ','ঠিক আছে','ভালো','অসাধারণ!'], en:['','Terrible','Bad','Okay','Good','Excellent!'], ar:['','سيء جداً','سيء','مقبول','جيد','ممتاز!'] };
+  const arr = labels[currentLang] || labels.en;
+  document.querySelectorAll('.wr-star').forEach((s,i)=>s.classList.toggle('on', i<val));
   const lbl = document.getElementById('wrStarLabel');
-  if (lbl) lbl.textContent = lang[val] || '';
+  if (lbl) lbl.textContent = arr[val] || '';
 }
 
 function submitReview() {
-  if (!reviewStarVal) { showToast(t('rateFirst') || 'রেটিং দিন'); return; }
-  const name = (document.getElementById('wrName').value || '').trim();
-  const text = (document.getElementById('wrText').value || '').trim();
-  if (!name || !text) { showToast(t('fillReview') || 'নাম ও রিভিউ লিখুন'); return; }
-  showToast('✓ ' + (t('reviewSubmitted') || 'রিভিউ জমা হয়েছে! ধন্যবাদ'));
+  if (!reviewStarVal) { showToast(t('rateFirst')); return; }
+  const name = (document.getElementById('wrName').value||'').trim();
+  const text = (document.getElementById('wrText').value||'').trim();
+  if (!name||!text) { showToast(t('fillReview')); return; }
+  const product = (document.getElementById('wrProduct').value||'').trim();
+  const gradients = ['linear-gradient(135deg,#e91e8c,#ff9800)','linear-gradient(135deg,#3b82f6,#a855f7)','linear-gradient(135deg,#10b981,#06b6d4)','linear-gradient(135deg,#f59e0b,#ef4444)','linear-gradient(135deg,#8b5cf6,#e91e8c)'];
+  const newRev = {
+    id: Date.now(), name, initial: name[0].toUpperCase(),
+    grad: gradients[Math.floor(Math.random()*gradients.length)],
+    rating: reviewStarVal, date: new Date().toISOString().split('T')[0],
+    country: '', product,
+    text: { bn: text, en: text, ar: text },
+    photos: [], helpful: 0
+  };
+  const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
+  stored.push(newRev);
+  localStorage.setItem('exglobal_reviews', JSON.stringify(stored));
+  showToast('✓ ' + t('reviewSubmitted'));
   document.getElementById('wrName').value = '';
+  document.getElementById('wrProduct').value = '';
   document.getElementById('wrText').value = '';
   reviewStarVal = 0;
-  document.querySelectorAll('.wr-star').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.wr-star').forEach(s=>s.classList.remove('on'));
   const lbl = document.getElementById('wrStarLabel');
-  if (lbl) lbl.textContent = '';
+  if (lbl) lbl.textContent = t('wrRatePh');
   closeWriteReview();
+  renderRevSummary();
+  renderRevList(activeRevFilter);
 }
 
 function markHelpful(btn) {
   btn.classList.toggle('liked');
-  const span = btn.querySelector('span');
-  if (span) span.textContent = parseInt(span.textContent) + (btn.classList.contains('liked') ? 1 : -1);
-}
-
-function filterReviews(tag, el) {
-  document.querySelectorAll('.review-tag').forEach(t => t.classList.remove('active'));
-  if (el) el.classList.add('active');
+  const num = btn.querySelector('.rev-helpful-num');
+  if (num) num.textContent = parseInt(num.textContent||'0') + (btn.classList.contains('liked') ? 1 : -1);
 }
