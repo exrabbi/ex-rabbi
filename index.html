@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EX GLOBAL</title>
-  <link rel="stylesheet" href="styles.css?v=10" />
+  <link rel="stylesheet" href="styles.css?v=11" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -627,6 +627,21 @@
     <i class="fab fa-whatsapp"></i>
   </a>
 
+  <!-- WISHLIST PANEL -->
+  <div class="wish-overlay" id="wishOverlay" onclick="closeWishlist()"></div>
+  <aside class="wish-panel" id="wishPanel">
+    <div class="wish-head">
+      <button class="wish-back-btn" onclick="closeWishlist()"><i class="fas fa-arrow-left"></i></button>
+      <div class="wish-head-title">
+        <i class="fas fa-heart" style="color:#e91e8c"></i>
+        <span data-i18n="wishlistMenu">Wishlist</span>
+        <span class="wish-head-count" id="wishCount"></span>
+      </div>
+      <div style="width:36px"></div>
+    </div>
+    <div class="wish-items" id="wishItems"></div>
+  </aside>
+
   <!-- ME OVERLAY -->
   <div class="me-overlay" id="meOverlay" onclick="closeMe()"></div>
 
@@ -698,7 +713,7 @@
 
     <!-- Account Menu -->
     <div class="me-card-block me-list-block">
-      <div class="me-list-item" onclick="closeMe()">
+      <div class="me-list-item" onclick="closeMe();setTimeout(openWishlist,200)">
         <div class="me-list-icon pink"><i class="fas fa-heart"></i></div>
         <span data-i18n="wishlistMenu">Wishlist</span>
         <span class="me-list-badge" id="meWishCount"></span>
@@ -1167,8 +1182,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=10"></script>
+  <script src="translations.js?v=11"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=10"></script>
+  <script src="script.js?v=11"></script>
 </body>
 </html>

@@ -66,6 +66,7 @@ const TRANSLATIONS = {
     profile: 'প্রোফাইল', myAddress: 'আমার ঠিকানা', addAddress: 'ঠিকানা যোগ করুন',
     noOrdersYet: 'এখনো কোনো অর্ডার নেই', edit: 'সম্পাদনা',
     tapToLogin: 'লগইন করতে ট্যাপ করুন', followUs: 'আমাদের ফলো করুন',
+    wishlistEmpty: 'কোনো ফেভারিট নেই', wishlistEmptySub: 'যেকোনো পণ্যে ❤️ চাপলে এখানে সেভ হবে',
     // Location modal
     deliveryAddress: 'ডেলিভারি ঠিকানা', gpsBtn: 'GPS থেকে লোকেশন নিন',
     mapHint: 'মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন',
@@ -173,6 +174,7 @@ const TRANSLATIONS = {
     profile: 'Profile', myAddress: 'My address', addAddress: 'Add address',
     noOrdersYet: 'No orders yet', edit: 'Edit',
     tapToLogin: 'Tap to sign in', followUs: 'Follow us',
+    wishlistEmpty: 'No favorites yet', wishlistEmptySub: 'Tap ❤️ on any product to save it here',
     // Location modal
     deliveryAddress: 'Delivery Address', gpsBtn: 'Use My GPS Location',
     mapHint: 'Tap on the map to select location',
@@ -280,6 +282,7 @@ const TRANSLATIONS = {
     profile: 'الملف الشخصي', myAddress: 'عنواني', addAddress: 'إضافة عنوان',
     noOrdersYet: 'لا طلبات بعد', edit: 'تعديل',
     tapToLogin: 'اضغط للدخول', followUs: 'تابعنا',
+    wishlistEmpty: 'لا مفضلات بعد', wishlistEmptySub: 'اضغط ❤️ على أي منتج لحفظه هنا',
     // Location modal
     deliveryAddress: 'عنوان التوصيل', gpsBtn: 'استخدم موقع GPS',
     mapHint: 'اضغط على الخريطة لتحديد الموقع',

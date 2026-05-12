@@ -1,6 +1,6 @@
 /* ===== STATE ===== */
 let cart = [];
-let wishlist = [];
+let wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
 let currentFilter = 'all';
 let currentSort = 'default';
 let visibleCount = 8;
@@ -66,6 +66,7 @@ function setLang(lang) {
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', () => {
   setLang('en');
+  updateWishBadge();
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
@@ -299,9 +300,7 @@ function setupEvents() {
   document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
   document.getElementById('cartBtn').addEventListener('click', openCart);
-  document.getElementById('wishlistBtn').addEventListener('click', () => {
-    showToast(t('wishlistCount') + ' ' + wishlist.length + ' ' + t('items'));
-  });
+  document.getElementById('wishlistBtn').addEventListener('click', openWishlist);
 }
 
 /* ===== DRAWER ===== */
@@ -443,20 +442,95 @@ function updateCartBadge() {
 }
 
 /* ===== WISHLIST ===== */
+function saveWishlist() {
+  localStorage.setItem('exglobal_wishlist', JSON.stringify(wishlist));
+}
+
+function updateWishBadge() {
+  const badge = document.getElementById('wishBadge');
+  if (badge) {
+    badge.textContent = wishlist.length;
+    badge.style.display = wishlist.length ? 'flex' : 'none';
+  }
+}
+
 function toggleWish(id, btn) {
   if (wishlist.includes(id)) {
     wishlist = wishlist.filter(w => w !== id);
-    btn.classList.remove('active');
-    btn.innerHTML = '<i class="far fa-heart"></i>';
+    if (btn) { btn.classList.remove('active'); btn.innerHTML = '<i class="far fa-heart"></i>'; }
     showToast(t('unwishlisted'));
   } else {
     wishlist.push(id);
-    btn.classList.add('active');
-    btn.innerHTML = '<i class="fas fa-heart"></i>';
+    if (btn) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-heart"></i>'; }
     showToast(t('wishlisted'));
   }
-  document.getElementById('wishBadge').textContent = wishlist.length;
-  document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
+  saveWishlist();
+  updateWishBadge();
+}
+
+function openWishlist() {
+  renderWishlistPanel();
+  document.getElementById('wishOverlay').classList.add('open');
+  document.getElementById('wishPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWishlist() {
+  document.getElementById('wishOverlay').classList.remove('open');
+  document.getElementById('wishPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function renderWishlistPanel() {
+  const container = document.getElementById('wishItems');
+  if (!container) return;
+  if (wishlist.length === 0) {
+    container.innerHTML = `
+      <div class="wish-empty">
+        <div class="wish-empty-icon">🤍</div>
+        <p class="wish-empty-title">${t('wishlistEmpty') || 'No favorites yet'}</p>
+        <p class="wish-empty-sub">${t('wishlistEmptySub') || 'Tap the heart on any product to save it here'}</p>
+      </div>`;
+    return;
+  }
+  container.innerHTML = wishlist.map(id => {
+    const p = PRODUCTS.find(p => p.id === id);
+    if (!p) return '';
+    return `
+      <div class="wish-item" id="wish-item-${id}">
+        <div class="wish-item-img" onclick="closeWishlist();openModal(${id})">
+          <img src="${p.image}" alt="" loading="lazy" />
+          <span class="wish-item-disc">-${p.discount}%</span>
+        </div>
+        <div class="wish-item-info">
+          <p class="wish-item-name" onclick="closeWishlist();openModal(${id})">${getName(p)}</p>
+          <div class="wish-item-prices">
+            <span class="wish-item-price">${fmt(p.price)}</span>
+            <span class="wish-item-orig">${fmt(p.originalPrice)}</span>
+          </div>
+          <div class="wish-item-actions">
+            <button class="wish-add-cart" onclick="addToCart(${id},null,null);showToast(t('addedToCart'))">
+              <i class="fas fa-bag-shopping"></i> ${t('addToCart') || 'Add to Cart'}
+            </button>
+            <button class="wish-remove-btn" onclick="removeFromWishlist(${id})">
+              <i class="fas fa-heart"></i>
+            </button>
+          </div>
+        </div>
+      </div>`;
+  }).filter(Boolean).join('');
+  const countEl = document.getElementById('wishCount');
+  if (countEl) countEl.textContent = wishlist.length;
+}
+
+function removeFromWishlist(id) {
+  wishlist = wishlist.filter(w => w !== id);
+  saveWishlist();
+  updateWishBadge();
+  renderWishlistPanel();
+  renderProducts(document.getElementById('searchInput')?.value || '');
+  const el = document.querySelector(`[data-id="${id}"] .wish-btn`);
+  if (el) { el.classList.remove('active'); el.innerHTML = '<i class="far fa-heart"></i>'; }
 }
 
 /* ===== PRODUCT MODAL ===== */
@@ -523,20 +597,8 @@ function selectColor(color, el) {
 }
 function modalToggleWish(id) {
   const btn = document.getElementById('modalWishBtn');
-  if (wishlist.includes(id)) {
-    wishlist = wishlist.filter(w => w !== id);
-    btn.classList.remove('active');
-    btn.innerHTML = '<i class="far fa-heart"></i>';
-    showToast(t('unwishlisted'));
-  } else {
-    wishlist.push(id);
-    btn.classList.add('active');
-    btn.innerHTML = '<i class="fas fa-heart"></i>';
-    showToast(t('wishlisted'));
-  }
-  document.getElementById('wishBadge').textContent = wishlist.length;
-  document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
-  renderProducts(document.getElementById('searchInput').value);
+  toggleWish(id, btn);
+  renderProducts(document.getElementById('searchInput')?.value || '');
 }
 function modalAddCart(id) {
   addToCart(id, selectedSize, selectedColor);
@@ -605,8 +667,7 @@ function openMe() {
   document.body.style.overflow = 'hidden';
   refreshMeAddress();
   const wc = document.getElementById('meWishCount');
-  if (wc) wc.textContent = wishlist.length > 0 ? wishlist.length : '';
-  if (wc) wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none';
+  if (wc) { wc.textContent = wishlist.length > 0 ? wishlist.length : ''; wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none'; }
 }
 
 function closeMe() {
