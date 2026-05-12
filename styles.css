@@ -764,6 +764,15 @@ img { max-width: 100%; display: block; }
   transition: transform .15s;
 }
 .soc-btn:active { transform: scale(.92); }
+.soc-tiktok { background: #010101 !important; color: #fff !important; }
+.soc-fb { background: #1877f2 !important; color: #fff !important; }
+.soc-ig { background: linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888) !important; color: #fff !important; }
+.soc-wa { background: #25d366 !important; color: #fff !important; }
+
+.me-social-row {
+  display: flex; justify-content: center; gap: 14px;
+  padding: 4px 10px 14px;
+}
 
 .settings-links {
   display: flex; flex-wrap: wrap; justify-content: center;
