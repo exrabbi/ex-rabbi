@@ -880,3 +880,53 @@ function formatExpiry(el) {
   if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
   el.value = v;
 }
+
+/* ===== REVIEWS ===== */
+let reviewStarVal = 0;
+
+function openWriteReview() {
+  document.getElementById('wrOverlay').classList.add('open');
+  document.getElementById('wrModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeWriteReview() {
+  document.getElementById('wrOverlay').classList.remove('open');
+  document.getElementById('wrModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function setReviewStar(val) {
+  reviewStarVal = val;
+  const labels = { bn: ['','খুবই খারাপ','খারাপ','ঠিক আছে','ভালো','অসাধারণ!'], en: ['','Terrible','Bad','Okay','Good','Excellent!'], ar: ['','سيء جداً','سيء','مقبول','جيد','ممتاز!'] };
+  const lang = labels[currentLang] || labels.en;
+  document.querySelectorAll('.wr-star').forEach((s,i) => s.classList.toggle('on', i < val));
+  const lbl = document.getElementById('wrStarLabel');
+  if (lbl) lbl.textContent = lang[val] || '';
+}
+
+function submitReview() {
+  if (!reviewStarVal) { showToast(t('rateFirst') || 'রেটিং দিন'); return; }
+  const name = (document.getElementById('wrName').value || '').trim();
+  const text = (document.getElementById('wrText').value || '').trim();
+  if (!name || !text) { showToast(t('fillReview') || 'নাম ও রিভিউ লিখুন'); return; }
+  showToast('✓ ' + (t('reviewSubmitted') || 'রিভিউ জমা হয়েছে! ধন্যবাদ'));
+  document.getElementById('wrName').value = '';
+  document.getElementById('wrText').value = '';
+  reviewStarVal = 0;
+  document.querySelectorAll('.wr-star').forEach(s => s.classList.remove('on'));
+  const lbl = document.getElementById('wrStarLabel');
+  if (lbl) lbl.textContent = '';
+  closeWriteReview();
+}
+
+function markHelpful(btn) {
+  btn.classList.toggle('liked');
+  const span = btn.querySelector('span');
+  if (span) span.textContent = parseInt(span.textContent) + (btn.classList.contains('liked') ? 1 : -1);
+}
+
+function filterReviews(tag, el) {
+  document.querySelectorAll('.review-tag').forEach(t => t.classList.remove('active'));
+  if (el) el.classList.add('active');
+}
