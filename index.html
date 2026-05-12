@@ -397,9 +397,10 @@
     <div class="me-section">
       <div class="me-section-title" data-i18n="myAccount">আমার অ্যাকাউন্ট</div>
       <div class="me-menu-list">
-        <div class="me-menu-item">
+        <div class="me-menu-item" onclick="openLocation()">
           <i class="fas fa-map-marker-alt"></i>
           <span data-i18n="addresses">ঠিকানা</span>
+          <span class="me-location-saved" id="meLocSaved"></span>
           <i class="fas fa-chevron-right me-arrow"></i>
         </div>
         <div class="me-menu-item">
@@ -425,11 +426,15 @@
       </div>
     </div>
 
-    <div class="me-social-row">
-      <a href="https://www.tiktok.com" class="soc-btn soc-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
-      <a href="https://www.facebook.com" class="soc-btn soc-fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
-      <a href="https://www.instagram.com" class="soc-btn soc-ig" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://wa.me/966546224029" class="soc-btn soc-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+    <!-- SOCIAL LINKS — visible below menu -->
+    <div class="me-social-section">
+      <div class="me-section-title">আমাদের ফলো করুন</div>
+      <div class="me-social-row">
+        <a href="https://www.tiktok.com" class="soc-btn soc-tiktok" target="_blank"><i class="fab fa-tiktok"></i></a>
+        <a href="https://www.facebook.com" class="soc-btn soc-fb" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        <a href="https://www.instagram.com" class="soc-btn soc-ig" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/966546224029" class="soc-btn soc-wa" target="_blank"><i class="fab fa-whatsapp"></i></a>
+      </div>
     </div>
 
     <button class="me-help-fab" onclick="window.open('https://wa.me/966546224029','_blank')">
@@ -503,6 +508,41 @@
       </div>
     </div>
   </aside>
+
+  <!-- LOCATION / ADDRESS MODAL -->
+  <div class="loc-overlay" id="locOverlay" onclick="closeLocation()"></div>
+  <div class="loc-modal" id="locModal">
+    <div class="loc-head">
+      <button class="icon-btn" onclick="closeLocation()" style="color:#333"><i class="fas fa-times"></i></button>
+      <span>📍 ডেলিভারি ঠিকানা</span>
+      <div style="width:32px"></div>
+    </div>
+    <div class="loc-body">
+      <div class="loc-field">
+        <label>পূর্ণ নাম</label>
+        <input type="text" id="locName" placeholder="আপনার নাম লিখুন" />
+      </div>
+      <div class="loc-field">
+        <label>ফোন নম্বর</label>
+        <input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" />
+      </div>
+      <div class="loc-field">
+        <label>শহর / City</label>
+        <input type="text" id="locCity" placeholder="যেমন: Riyadh, Jeddah..." />
+      </div>
+      <div class="loc-field">
+        <label>এলাকা / Area</label>
+        <input type="text" id="locArea" placeholder="এলাকার নাম লিখুন" />
+      </div>
+      <div class="loc-field">
+        <label>বিস্তারিত ঠিকানা</label>
+        <textarea id="locAddress" rows="3" placeholder="রাস্তার নাম, বাড়ি নম্বর, ফ্ল্যাট..."></textarea>
+      </div>
+      <button class="loc-save-btn" onclick="saveLocation()">
+        <i class="fas fa-check"></i> ঠিকানা সেভ করুন
+      </button>
+    </div>
+  </div>
 
   <div class="toast" id="toast"></div>
 

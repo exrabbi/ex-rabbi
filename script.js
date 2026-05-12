@@ -477,7 +477,8 @@ function whatsappCheckout() {
     const p = PRODUCTS.find(p => p.id === i.id);
     return s + p.price * i.qty;
   }, 0);
-  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}\n\n*${t('totalLabel')} ${fmt(total)}*`;
+  const locText = typeof getLocationText === 'function' ? getLocationText() : '';
+  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}\n\n*${t('totalLabel')} ${fmt(total)}*${locText}`;
   window.open(`https://wa.me/966546224029?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
@@ -523,3 +524,56 @@ function openSettings() {
 function closeSettings() {
   document.getElementById('settingsPanel').classList.remove('open');
 }
+
+/* ===== LOCATION / ADDRESS SYSTEM ===== */
+let savedLocation = JSON.parse(localStorage.getItem('shopbd_location') || 'null');
+
+function openLocation() {
+  document.getElementById('locOverlay').classList.add('open');
+  document.getElementById('locModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  if (savedLocation) {
+    document.getElementById('locName').value = savedLocation.name || '';
+    document.getElementById('locPhone').value = savedLocation.phone || '';
+    document.getElementById('locCity').value = savedLocation.city || '';
+    document.getElementById('locArea').value = savedLocation.area || '';
+    document.getElementById('locAddress').value = savedLocation.address || '';
+  }
+}
+
+function closeLocation() {
+  document.getElementById('locOverlay').classList.remove('open');
+  document.getElementById('locModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function saveLocation() {
+  const name = document.getElementById('locName').value.trim();
+  const phone = document.getElementById('locPhone').value.trim();
+  const city = document.getElementById('locCity').value.trim();
+  const area = document.getElementById('locArea').value.trim();
+  const address = document.getElementById('locAddress').value.trim();
+  if (!name || !phone || !city || !address) {
+    showToast('সব তথ্য পূরণ করুন');
+    return;
+  }
+  savedLocation = { name, phone, city, area, address };
+  localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
+  const badge = document.getElementById('meLocSaved');
+  if (badge) badge.textContent = '✓ সেভড';
+  showToast('✓ ঠিকানা সেভ হয়েছে');
+  closeLocation();
+}
+
+function getLocationText() {
+  if (!savedLocation) return '';
+  return `\n\n📍 *ডেলিভারি ঠিকানা*\nনাম: ${savedLocation.name}\nফোন: ${savedLocation.phone}\nশহর: ${savedLocation.city}${savedLocation.area ? ', ' + savedLocation.area : ''}\nঠিকানা: ${savedLocation.address}`;
+}
+
+// Load saved location badge on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (savedLocation) {
+    const badge = document.getElementById('meLocSaved');
+    if (badge) badge.textContent = '✓ সেভড';
+  }
+});

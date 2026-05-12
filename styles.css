@@ -780,3 +780,68 @@ img { max-width: 100%; display: block; }
 }
 .settings-links a { color: #666; }
 .settings-links span { color: #ccc; }
+
+/* ===== SOCIAL SECTION IN ME PANEL ===== */
+.me-social-section {
+  margin: 0 10px 10px; background: #fff;
+  border-radius: 14px; padding: 12px 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.me-social-section .me-section-title {
+  font-size: 12px; font-weight: 700; color: #888;
+  text-transform: uppercase; letter-spacing: .4px;
+  margin-bottom: 12px;
+}
+.me-social-row { display: flex; justify-content: center; gap: 14px; }
+.me-location-saved {
+  font-size: 11px; color: #4caf50; font-weight: 600;
+  margin-left: auto; margin-right: 6px;
+}
+
+/* ===== LOCATION MODAL ===== */
+.loc-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.5); z-index: 200;
+}
+.loc-overlay.open { display: block; }
+.loc-modal {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; z-index: 201;
+  border-radius: 20px 20px 0 0;
+  transform: translateY(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  max-width: 600px; margin: 0 auto;
+  max-height: 90vh; overflow-y: auto;
+}
+.loc-modal.open { transform: translateY(0); }
+.loc-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; border-bottom: 1px solid #eee;
+  font-size: 16px; font-weight: 700; color: #111;
+  position: sticky; top: 0; background: #fff; z-index: 2;
+}
+.loc-body { padding: 16px; }
+.loc-field { margin-bottom: 14px; }
+.loc-field label {
+  display: block; font-size: 13px; font-weight: 700;
+  color: #333; margin-bottom: 6px;
+}
+.loc-field input, .loc-field textarea {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid #e0e0e0; border-radius: 10px;
+  font-size: 14px; font-family: inherit; outline: none;
+  transition: border-color .2s;
+}
+.loc-field input:focus, .loc-field textarea:focus {
+  border-color: #e91e8c;
+}
+.loc-field textarea { resize: none; }
+.loc-save-btn {
+  width: 100%; background: #e91e8c; color: #fff;
+  padding: 14px; border-radius: 12px;
+  font-size: 15px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-top: 6px;
+  transition: background .2s;
+}
+.loc-save-btn:active { background: #c2185b; }
