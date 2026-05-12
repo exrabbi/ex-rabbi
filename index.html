@@ -545,11 +545,22 @@
       </div>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
+      <div class="cart-summary-rows">
+        <div class="cart-summary-row">
+          <span data-i18n="orderSubtotal">Subtotal</span>
+          <span id="cartSubtotalDisp"></span>
+        </div>
+        <div class="cart-summary-row">
+          <span data-i18n="deliveryCharge">Delivery</span>
+          <span id="cartDeliveryDisp"></span>
+        </div>
+      </div>
+      <div class="cart-free-nudge" id="cartFreeNudge"></div>
       <div class="cart-total">
-        <span data-i18n="totalLabel">মোট:</span>
+        <span data-i18n="totalLabel">Total:</span>
         <span id="cartTotal">0</span>
       </div>
-      <button class="btn-checkout" onclick="openPayment()" data-i18n="checkout">চেকআউট করুন</button>
+      <button class="btn-checkout" onclick="openPayment()" data-i18n="checkout">Checkout</button>
     </div>
   </aside>
 

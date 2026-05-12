@@ -343,11 +343,34 @@ function renderCart() {
       </div>
     `;
   }).join('');
-  const total = cart.reduce((sum, item) => {
+  const subtotalBase = cart.reduce((sum, item) => {
     const p = PRODUCTS.find(p => p.id === item.id);
     return sum + p.price * item.qty;
   }, 0);
-  document.getElementById('cartTotal').textContent = fmt(total);
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const subtotalDisp = subtotalBase * lang.rate;
+  const freeDelivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR;
+  const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
+  const fmtD = v => lang.currency + Math.round(v).toLocaleString();
+  document.getElementById('cartSubtotalDisp').textContent = fmtD(subtotalDisp);
+  const delivEl = document.getElementById('cartDeliveryDisp');
+  if (freeDelivery) {
+    delivEl.textContent = t('free');
+    delivEl.style.color = '#0a8f4a';
+  } else {
+    delivEl.textContent = fmtD(deliveryDisp);
+    delivEl.style.color = '#e91e8c';
+  }
+  const nudge = document.getElementById('cartFreeNudge');
+  if (freeDelivery) {
+    nudge.textContent = t('freeDeliveryActive');
+    nudge.className = 'cart-free-nudge nudge-free';
+  } else {
+    const remaining = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
+    nudge.textContent = t('addMoreFree') + ' ' + fmtD(remaining) + ' ' + t('moreForFree');
+    nudge.className = 'cart-free-nudge nudge-add';
+  }
+  document.getElementById('cartTotal').textContent = fmtD(subtotalDisp + deliveryDisp);
   footer.style.display = 'block';
 }
 function quickAddCart(id) { addToCart(id, '', ''); }
