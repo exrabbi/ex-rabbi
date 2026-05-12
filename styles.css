@@ -866,16 +866,60 @@ img { max-width: 100%; display: block; }
 .soc-bar.soc-wa     { background: #25d366; }
 
 /* ===== EX GLOBAL LOGO ===== */
+.logo-ring-wrap {
+  position: relative;
+  width: 52px; height: 52px;
+  margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-ring-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    #ffd700, #ff6b6b, #e91e8c, #a855f7, #3b82f6, #10b981, #ffd700
+  );
+  animation: logoSpin 3s linear infinite;
+  z-index: 0;
+}
 .header-logo-wrap {
-  width: 42px; height: 42px;
+  width: 44px; height: 44px;
   border-radius: 50%;
   overflow: hidden;
   background: #fff;
-  margin: 0 auto;
-  box-shadow: 0 0 0 2px rgba(255,255,255,.8), 0 3px 10px rgba(0,0,0,.3);
+  position: relative;
+  z-index: 1;
+  animation: logoPulse 2s ease-in-out infinite;
 }
 .header-logo-wrap img {
   width: 100%; height: 100%;
   object-fit: cover;
   display: block;
+}
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 0 2px #fff, 0 0 8px 2px rgba(255,215,0,.5); }
+  50%       { box-shadow: 0 0 0 2px #fff, 0 0 18px 6px rgba(255,180,0,.9); }
+}
+@keyframes logoSpin { to { transform: rotate(360deg); } }
+
+/* ===== MAP LOCATION PICKER ===== */
+.loc-gps-btn {
+  width: 100%; background: #1a73e8; color: #fff;
+  padding: 12px; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-bottom: 12px;
+  transition: background .2s;
+}
+.loc-gps-btn:active { background: #1558b0; }
+.loc-gps-btn.loading { background: #888; pointer-events: none; }
+.loc-map-wrap {
+  border-radius: 12px; overflow: hidden;
+  margin-bottom: 14px; border: 2px solid #e0e0e0;
+}
+#locMap { height: 200px; width: 100%; }
+.loc-map-hint {
+  background: #f8f8f8; text-align: center;
+  font-size: 12px; color: #888; padding: 6px;
 }

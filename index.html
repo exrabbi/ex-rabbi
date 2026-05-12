@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
 
@@ -21,8 +22,10 @@
         <button class="lang-btn" data-lang="ar" onclick="setLang('ar')">عر</button>
       </div>
       <div class="logo">
-        <div class="header-logo-wrap">
-          <img src="logo.png" alt="EX GLOBAL" />
+        <div class="logo-ring-wrap">
+          <div class="header-logo-wrap">
+            <img src="logo.png" alt="EX GLOBAL" />
+          </div>
         </div>
       </div>
       <button class="icon-btn" id="searchToggleBtn"><i class="fas fa-search"></i></button>
@@ -48,8 +51,10 @@
   <aside class="drawer" id="drawer">
     <div class="drawer-head">
       <div class="logo">
-        <div class="header-logo-wrap">
-          <img src="logo.png" alt="EX GLOBAL" />
+        <div class="logo-ring-wrap">
+          <div class="header-logo-wrap">
+            <img src="logo.png" alt="EX GLOBAL" />
+          </div>
         </div>
       </div>
       <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
@@ -542,6 +547,15 @@
       <div style="width:32px"></div>
     </div>
     <div class="loc-body">
+      <!-- Map GPS Button -->
+      <button class="loc-gps-btn" id="locGpsBtn" onclick="useMyLocation()">
+        <i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন
+      </button>
+      <!-- Interactive Map -->
+      <div class="loc-map-wrap">
+        <div id="locMap"></div>
+        <div class="loc-map-hint">মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন</div>
+      </div>
       <div class="loc-field">
         <label>পূর্ণ নাম</label>
         <input type="text" id="locName" placeholder="আপনার নাম লিখুন" />
@@ -570,6 +584,7 @@
 
   <div class="toast" id="toast"></div>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="translations.js"></script>
   <script src="products.js"></script>
   <script src="script.js"></script>

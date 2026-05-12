@@ -527,6 +527,7 @@ function closeSettings() {
 
 /* ===== LOCATION / ADDRESS SYSTEM ===== */
 let savedLocation = JSON.parse(localStorage.getItem('shopbd_location') || 'null');
+let locMap = null, locMarker = null;
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
@@ -539,6 +540,80 @@ function openLocation() {
     document.getElementById('locArea').value = savedLocation.area || '';
     document.getElementById('locAddress').value = savedLocation.address || '';
   }
+  // Init map after modal is visible
+  setTimeout(initLocMap, 300);
+}
+
+function initLocMap() {
+  if (!window.L) return;
+  if (locMap) { locMap.invalidateSize(); return; }
+  // Default center: Saudi Arabia
+  const defaultLat = 24.7136, defaultLng = 46.6753;
+  locMap = L.map('locMap', { zoomControl: true, attributionControl: false }).setView([defaultLat, defaultLng], 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19
+  }).addTo(locMap);
+  locMap.on('click', function(e) {
+    placeMapMarker(e.latlng.lat, e.latlng.lng);
+  });
+  // If saved coords, restore
+  if (savedLocation && savedLocation.lat) {
+    placeMapMarker(savedLocation.lat, savedLocation.lng, false);
+    locMap.setView([savedLocation.lat, savedLocation.lng], 15);
+  }
+}
+
+function placeMapMarker(lat, lng, doReverseGeocode) {
+  if (locMarker) locMarker.remove();
+  locMarker = L.marker([lat, lng], {
+    icon: L.divIcon({ className: '', html: '<div style="font-size:28px;line-height:1">📍</div>', iconAnchor: [14, 28] })
+  }).addTo(locMap);
+  if (doReverseGeocode !== false) reverseGeocode(lat, lng);
+}
+
+function reverseGeocode(lat, lng) {
+  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`;
+  fetch(url, { headers: { 'Accept-Language': 'en' } })
+    .then(r => r.json())
+    .then(data => {
+      const addr = data.address || {};
+      const city = addr.city || addr.town || addr.village || addr.county || '';
+      const area = addr.suburb || addr.neighbourhood || addr.district || addr.state_district || '';
+      const road = addr.road || '';
+      const house = addr.house_number || '';
+      const detail = [house, road].filter(Boolean).join(', ') || data.display_name.split(',').slice(0,3).join(',');
+      if (city) document.getElementById('locCity').value = city;
+      if (area) document.getElementById('locArea').value = area;
+      if (detail) document.getElementById('locAddress').value = detail;
+      showToast('📍 লোকেশন পাওয়া গেছে');
+    })
+    .catch(() => showToast('লোকেশন লোড হয়নি, আবার চেষ্টা করুন'));
+}
+
+function useMyLocation() {
+  if (!navigator.geolocation) { showToast('GPS সাপোর্ট নেই'); return; }
+  const btn = document.getElementById('locGpsBtn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লোকেশন নিচ্ছে...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন';
+      const { latitude: lat, longitude: lng } = pos.coords;
+      if (!locMap) initLocMap();
+      locMap.setView([lat, lng], 16);
+      placeMapMarker(lat, lng);
+      // save coords for restore
+      if (!savedLocation) savedLocation = {};
+      savedLocation.lat = lat; savedLocation.lng = lng;
+    },
+    err => {
+      btn.classList.remove('loading');
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন';
+      showToast('GPS চালু করুন এবং অনুমতি দিন');
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
 }
 
 function closeLocation() {
@@ -557,7 +632,9 @@ function saveLocation() {
     showToast('সব তথ্য পূরণ করুন');
     return;
   }
-  savedLocation = { name, phone, city, area, address };
+  const lat = savedLocation && savedLocation.lat ? savedLocation.lat : null;
+  const lng = savedLocation && savedLocation.lng ? savedLocation.lng : null;
+  savedLocation = { name, phone, city, area, address, lat, lng };
   localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
   const badge = document.getElementById('meLocSaved');
   if (badge) badge.textContent = '✓ সেভড';
