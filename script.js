@@ -288,7 +288,7 @@ function setupEvents() {
     document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
   });
 
-  document.getElementById('menuBtn').addEventListener('click', openDrawer);
+  document.getElementById('menuBtn').addEventListener('click', openMe);
   document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
   document.getElementById('cartBtn').addEventListener('click', openCart);
@@ -301,6 +301,8 @@ function setupEvents() {
 function openDrawer() {
   document.getElementById('drawer').classList.add('open');
   document.getElementById('drawerOverlay').classList.add('open');
+  const df = document.getElementById('drawerFooter');
+  if (df) df.style.display = currentUser ? 'none' : 'flex';
 }
 function closeDrawer() {
   document.getElementById('drawer').classList.remove('open');

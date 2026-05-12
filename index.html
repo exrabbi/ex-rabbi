@@ -64,17 +64,17 @@
       <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
     </div>
     <ul class="drawer-menu">
-      <li><a href="#"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
-      <li><a href="#"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
-      <li><a href="#"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
+      <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
+      <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
+      <li><a href="#" onclick="closeDrawer();return false;"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
       <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
       <li><a href="#"><i class="fas fa-tag"></i> <span data-i18n="coupon">কুপন</span></a></li>
       <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
-      <li><a href="#"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
+      <li><a href="#" onclick="closeDrawer();openSettings();return false;"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
     </ul>
-    <div class="drawer-footer">
-      <button class="btn-outline" data-i18n="login">লগইন করুন</button>
-      <button class="btn-primary" data-i18n="register">রেজিস্ট্রেশন</button>
+    <div class="drawer-footer" id="drawerFooter">
+      <button class="btn-outline" onclick="closeDrawer();openAuth();" data-i18n="login">লগইন করুন</button>
+      <button class="btn-primary" onclick="closeDrawer();openAuth();" data-i18n="register">রেজিস্ট্রেশন</button>
     </div>
   </aside>
 
