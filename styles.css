@@ -2546,3 +2546,43 @@ html, body { transition: background .35s, color .35s; }
 /* Location map area */
 [data-theme="dark"] .loc-modal { background: #111; }
 [data-theme="dark"] .loc-head { background: #1a1a1a; border-bottom-color: rgba(255,255,255,.07); }
+
+/* ===== PRODUCT SHARE / DEEP LINK ===== */
+.modal-top-row {
+  display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px;
+}
+.modal-top-row .modal-name { flex: 1; margin-bottom: 0; }
+.modal-share-btn {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: rgba(233,30,140,.1); color: #e91e8c;
+  border-radius: 10px; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, transform .15s;
+}
+.modal-share-btn:active { background: rgba(233,30,140,.2); transform: scale(.9); }
+
+.modal-link-bar {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 14px; padding: 10px 12px;
+  background: rgba(233,30,140,.05);
+  border: 1px solid rgba(233,30,140,.15);
+  border-radius: 12px; overflow: hidden;
+}
+.modal-link-icon { color: #e91e8c; font-size: 13px; flex-shrink: 0; }
+.modal-link-text {
+  flex: 1; font-size: 11px; color: #999;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.modal-link-copy {
+  display: flex; align-items: center; gap: 5px;
+  background: #e91e8c; color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 5px 10px; border-radius: 8px;
+  white-space: nowrap; transition: opacity .2s;
+  flex-shrink: 0;
+}
+.modal-link-copy:active { opacity: .8; }
+
+/* Dark mode */
+[data-theme="dark"] .modal-link-bar { background: rgba(233,30,140,.08); border-color: rgba(233,30,140,.2); }
+[data-theme="dark"] .modal-link-text { color: #666; }

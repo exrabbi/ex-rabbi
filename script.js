@@ -88,6 +88,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderTrending();
   renderProducts();
   startHeroSlider();
+  // Deep link: auto-open product from URL ?p=ID
+  const pid = new URLSearchParams(location.search).get('p');
+  if (pid) setTimeout(() => openModal(parseInt(pid)), 400);
   startCountdown();
   setupEvents();
   // Scroll-to-top visibility
@@ -556,11 +559,17 @@ function openModal(id) {
   selectedSize = p.sizes[0] || '';
   selectedColor = p.colors[0] || '';
   const inWish = wishlist.includes(id);
+  const shareUrl = location.origin + location.pathname + '?p=' + id;
 
   document.getElementById('modalBody').innerHTML = `
     <img class="modal-img" src="${p.image}" alt="" />
     <div class="modal-info">
-      <h2 class="modal-name">${getName(p)}</h2>
+      <div class="modal-top-row">
+        <h2 class="modal-name">${getName(p)}</h2>
+        <button class="modal-share-btn" onclick="shareProduct(${id})" title="Share">
+          <i class="fas fa-share-nodes"></i>
+        </button>
+      </div>
       <div class="modal-prices">
         <span class="modal-price-current">${fmt(p.price)}</span>
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
@@ -584,6 +593,14 @@ function openModal(id) {
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
         <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
       </div>
+      <!-- Share link bar -->
+      <div class="modal-link-bar">
+        <i class="fas fa-link modal-link-icon"></i>
+        <span class="modal-link-text">${shareUrl}</span>
+        <button class="modal-link-copy" onclick="shareProduct(${id})">
+          <i class="fas fa-copy"></i> <span data-i18n="copyCode">Copy</span>
+        </button>
+      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
@@ -592,6 +609,7 @@ function openModal(id) {
       <button class="btn-add-cart" onclick="modalAddCart(${p.id})">${t('addToCart')}</button>
     </div>
   `;
+  history.replaceState({}, '', '?p=' + id);
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -600,6 +618,18 @@ function closeModal() {
   document.getElementById('productModal').classList.remove('open');
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  history.replaceState({}, '', location.pathname);
+}
+
+function shareProduct(id) {
+  const url = location.origin + location.pathname + '?p=' + id;
+  if (navigator.share) {
+    const p = PRODUCTS.find(p => p.id === id);
+    navigator.share({ title: 'EX GLOBAL – ' + (p ? getName(p) : ''), url });
+  } else {
+    navigator.clipboard.writeText(url).catch(() => {});
+    showToast('🔗 ' + (t('linkCopied') || 'Link copied!'));
+  }
 }
 function selectSize(size, el) {
   selectedSize = size;
