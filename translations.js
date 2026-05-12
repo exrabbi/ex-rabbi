@@ -103,6 +103,7 @@ const TRANSLATIONS = {
     binanceNetwork: 'Binance Pay', binanceNote: 'পেমেন্ট করে WhatsApp-এ confirm করুন',
     binanceCopied: '✓ ID কপি হয়েছে!', binanceConfirm: 'WhatsApp-এ Confirm করুন',
     binanceAmount: 'পরিমাণ (USDT):',
+    waDeliveryAddress: 'ডেলিভারি ঠিকানা', waName: 'নাম', waPhone: 'ফোন', waCity: 'শহর', waAddress: 'ঠিকানা',
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -208,6 +209,7 @@ const TRANSLATIONS = {
     binanceNetwork: 'Binance Pay', binanceNote: 'After sending, confirm via WhatsApp',
     binanceCopied: '✓ ID copied!', binanceConfirm: 'Confirm via WhatsApp',
     binanceAmount: 'Amount (USDT):',
+    waDeliveryAddress: 'Delivery Address', waName: 'Name', waPhone: 'Phone', waCity: 'City', waAddress: 'Address',
   },
   ar: {
     dir: 'rtl', currency: 'ر.س ', rate: 0.034,
@@ -311,6 +313,7 @@ const TRANSLATIONS = {
     paymentSuccess: '✓ تمت الدفعة بنجاح! شكراً ', paymentFailed: 'فشل الدفع، حاول مرة أخرى',
     binanceSub: 'USDT · BNB · كريبتو', binanceSendTo: 'معرّف Binance Pay:',
     binanceNetwork: 'Binance Pay', binanceNote: 'بعد الإرسال، تأكيد عبر واتساب',
+    waDeliveryAddress: 'عنوان التوصيل', waName: 'الاسم', waPhone: 'الهاتف', waCity: 'المدينة', waAddress: 'العنوان',
     binanceCopied: '✓ تم نسخ المعرّف!', binanceConfirm: 'تأكيد عبر واتساب',
     binanceAmount: 'المبلغ (USDT):',
   }

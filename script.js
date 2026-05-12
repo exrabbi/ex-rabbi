@@ -736,8 +736,7 @@ function saveLocation() {
   const lng = savedLocation && savedLocation.lng ? savedLocation.lng : null;
   savedLocation = { name, phone, city, area, address, lat, lng };
   localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
-  const badge = document.getElementById('meLocSaved');
-  if (badge) badge.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).savedBadge || '✓ Saved';
+  refreshMeAddress();
   showToast(t('addressSaved'));
   closeLocation();
 }
@@ -747,13 +746,8 @@ function getLocationText() {
   return `\n\n📍 *${t('waDeliveryAddress')}*\n${t('waName')}: ${savedLocation.name}\n${t('waPhone')}: ${savedLocation.phone}\n${t('waCity')}: ${savedLocation.city}${savedLocation.area ? ', ' + savedLocation.area : ''}\n${t('waAddress')}: ${savedLocation.address}`;
 }
 
-// Load saved location badge on page load
+// Init auth and address on page load
 document.addEventListener('DOMContentLoaded', () => {
-  if (savedLocation) {
-    const badge = document.getElementById('meLocSaved');
-    if (badge) badge.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).savedBadge || '✓ Saved';
-  }
-  // Init auth UI
   updateAuthUI();
   // Firebase auth state listener (if Firebase is configured)
   if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
@@ -829,7 +823,7 @@ function signOut() {
     firebase.auth().signOut().catch(() => {});
   }
   updateAuthUI();
-  showToast((TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).signedOut || 'Signed out');
+  showToast(t('signedOut'));
 }
 
 function updateAuthUI() {
@@ -1435,6 +1429,12 @@ function addReaction(reviewId, emoji, clickedEl) {
 
 function markHelpful(btn) {
   btn.classList.toggle('liked');
-  const num = btn.querySelector('.rev-helpful-num');
-  if (num) num.textContent = parseInt(num.textContent||'0') + (btn.classList.contains('liked') ? 1 : -1);
+  const delta = btn.classList.contains('liked') ? 1 : -1;
+  const countEl = btn.querySelector('.helpful-count');
+  if (countEl) {
+    const newVal = parseInt(countEl.textContent || '0') + delta;
+    countEl.textContent = newVal;
+    const txt = btn.closest('.review-footer')?.querySelector('.helpful-count-txt');
+    if (txt) txt.textContent = newVal;
+  }
 }
