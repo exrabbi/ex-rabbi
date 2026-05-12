@@ -96,9 +96,9 @@ const TRANSLATIONS = {
     fillCardDetails: 'সব কার্ড তথ্য দিন', cardNotSetup: '⚠️ Card gateway সেটআপ হয়নি',
     gpayNotSetup: '⚠️ Google Pay সেটআপ হয়নি',
     paymentSuccess: '✓ পেমেন্ট সফল! ধন্যবাদ ', paymentFailed: 'পেমেন্ট ব্যর্থ হয়েছে, আবার চেষ্টা করুন',
-    binanceSub: 'USDT · BNB · ক্রিপ্টো', binanceSendTo: 'এই ঠিকানায় পাঠান:',
-    binanceNetwork: 'নেটওয়ার্ক: TRC-20 (Tron)', binanceNote: 'পেমেন্ট করে WhatsApp-এ confirm করুন',
-    binanceCopied: '✓ ঠিকানা কপি হয়েছে!', binanceConfirm: 'WhatsApp-এ Confirm করুন',
+    binanceSub: 'USDT · BNB · ক্রিপ্টো', binanceSendTo: 'Binance Pay ID-তে পাঠান:',
+    binanceNetwork: 'Binance Pay', binanceNote: 'পেমেন্ট করে WhatsApp-এ confirm করুন',
+    binanceCopied: '✓ ID কপি হয়েছে!', binanceConfirm: 'WhatsApp-এ Confirm করুন',
     binanceAmount: 'পরিমাণ (USDT):',
   },
   en: {
@@ -198,9 +198,9 @@ const TRANSLATIONS = {
     fillCardDetails: 'Fill in all card details', cardNotSetup: '⚠️ Card payment not set up',
     gpayNotSetup: '⚠️ Google Pay not set up',
     paymentSuccess: '✓ Payment successful! Thank you ', paymentFailed: 'Payment failed, please try again',
-    binanceSub: 'USDT · BNB · Crypto', binanceSendTo: 'Send to wallet address:',
-    binanceNetwork: 'Network: TRC-20 (Tron)', binanceNote: 'After sending, confirm via WhatsApp',
-    binanceCopied: '✓ Address copied!', binanceConfirm: 'Confirm via WhatsApp',
+    binanceSub: 'USDT · BNB · Crypto', binanceSendTo: 'Binance Pay ID:',
+    binanceNetwork: 'Binance Pay', binanceNote: 'After sending, confirm via WhatsApp',
+    binanceCopied: '✓ ID copied!', binanceConfirm: 'Confirm via WhatsApp',
     binanceAmount: 'Amount (USDT):',
   },
   ar: {
@@ -300,9 +300,9 @@ const TRANSLATIONS = {
     fillCardDetails: 'أدخل جميع بيانات البطاقة', cardNotSetup: '⚠️ بوابة الدفع غير مفعّلة',
     gpayNotSetup: '⚠️ Google Pay غير مفعّل',
     paymentSuccess: '✓ تمت الدفعة بنجاح! شكراً ', paymentFailed: 'فشل الدفع، حاول مرة أخرى',
-    binanceSub: 'USDT · BNB · كريبتو', binanceSendTo: 'أرسل إلى عنوان المحفظة:',
-    binanceNetwork: 'الشبكة: TRC-20 (Tron)', binanceNote: 'بعد الإرسال، تأكيد عبر واتساب',
-    binanceCopied: '✓ تم نسخ العنوان!', binanceConfirm: 'تأكيد عبر واتساب',
+    binanceSub: 'USDT · BNB · كريبتو', binanceSendTo: 'معرّف Binance Pay:',
+    binanceNetwork: 'Binance Pay', binanceNote: 'بعد الإرسال، تأكيد عبر واتساب',
+    binanceCopied: '✓ تم نسخ المعرّف!', binanceConfirm: 'تأكيد عبر واتساب',
     binanceAmount: 'المبلغ (USDT):',
   }
 };

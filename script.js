@@ -821,7 +821,7 @@ function updateAuthUI() {
 }
 
 /* ===== PAYMENT SYSTEM ===== */
-const BINANCE_WALLET_ADDR = 'TNVHqXwqBBwD2CajQSxEzGkxqrLvKcFYHS';
+const BINANCE_PAY_ID = '1167244565';
 const SAR_TO_USDT = 0.267;
 
 let selectedPayMethod = 'whatsapp';
@@ -911,7 +911,7 @@ function selectPayMethod(method) {
     const addrEl = document.getElementById('binanceAddrTxt');
     if (usdtEl) usdtEl.textContent = usdt + ' USDT';
     if (sarEl) sarEl.textContent = lang3.currency + Math.round(totalSAR) + ' ≈ ' + usdt + ' USDT';
-    if (addrEl) addrEl.textContent = BINANCE_WALLET_ADDR;
+    if (addrEl) addrEl.textContent = BINANCE_PAY_ID;
   }
   // Update button text
   const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
@@ -928,7 +928,7 @@ function selectPayMethod(method) {
 }
 
 function copyBinanceAddr() {
-  const addr = BINANCE_WALLET_ADDR;
+  const addr = BINANCE_PAY_ID;
   if (navigator.clipboard) {
     navigator.clipboard.writeText(addr).then(() => showToast(t('binanceCopied'))).catch(() => showToast(addr));
   } else {
@@ -967,7 +967,7 @@ function processPayment() {
     const totalSAR = subB + delB;
     const usdt = (totalSAR * SAR_TO_USDT).toFixed(2);
     const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
-    const msg = `🟡 *Binance Pay Order — EX GLOBAL*\n\n${lines}\n\n💵 Total: ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🔑 Wallet (TRC-20): \`${BINANCE_WALLET_ADDR}\`\n\nI have sent the USDT payment. Please confirm my order.`;
+    const msg = `🟡 *Binance Pay Order — EX GLOBAL*\n\n${lines}\n\n💵 Total: ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Binance Pay ID: *${BINANCE_PAY_ID}*\n\nI have sent the USDT payment via Binance Pay. Please confirm my order.`;
     window.open('https://wa.me/966546224029?text=' + encodeURIComponent(msg), '_blank');
     closePayment();
   }
