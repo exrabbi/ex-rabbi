@@ -180,44 +180,53 @@ img { max-width: 100%; display: block; }
 .slide-3 .hero-brand-badge { background: #0d47a1; }
 [dir="rtl"] .hero-brand-badge { align-self: flex-end; }
 
-.hero-discount { margin-bottom: 2px; }
-.hero-upto {
-  font-size: 10px; font-weight: 700; color: #555;
-  text-transform: uppercase; letter-spacing: .8px; display: block;
+/* Discount row: [UP/TO] [90%] [OFF] in one flex row — like SHEIN */
+.hero-discount {
+  display: flex; align-items: flex-end; gap: 3px; margin: 2px 0 4px;
 }
+.hero-upto-stack {
+  font-size: 10px; font-weight: 900; color: #222;
+  text-transform: uppercase; letter-spacing: .3px; line-height: 1.15;
+  padding-bottom: 10px; max-width: 24px; word-break: break-all;
+}
+[dir="rtl"] .hero-upto-stack { padding-bottom: 10px; max-width: 30px; }
 
 /* ✨ GOLD SHIMMER on 90% */
 .hero-pct {
-  font-size: 82px; font-weight: 900; line-height: .8; font-style: italic;
-  background: linear-gradient(90deg, #7a5000, #c8960c, #ffd700, #ffe57a, #ffd700, #c8960c, #7a5000);
+  font-size: 90px; font-weight: 900; line-height: .82; font-style: italic;
+  background: linear-gradient(90deg, #5a3800, #b87d00, #ffd700, #fff0a0, #ffd700, #b87d00, #5a3800);
   background-size: 400% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
-  animation: goldShimmer 2.5s linear infinite;
+  animation: goldShimmer 2s linear infinite;
   display: flex; align-items: flex-start; position: relative;
 }
-.hero-pct em { font-size: 36px; font-style: normal; margin-top: 10px; margin-left: 1px; }
+.hero-pct em { font-size: 40px; font-style: normal; margin-top: 12px; margin-left: 1px; }
 @keyframes goldShimmer { to { background-position: 400% center; } }
 
 .hero-off {
-  font-size: 26px; font-weight: 900; font-style: italic; display: block; margin-top: -6px;
-  background: linear-gradient(90deg, #7a5000, #c8960c, #ffd700, #c8960c, #7a5000);
+  font-size: 28px; font-weight: 900; font-style: italic;
+  padding-bottom: 6px;
+  background: linear-gradient(90deg, #5a3800, #b87d00, #ffd700, #b87d00, #5a3800);
   background-size: 400% auto;
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; animation: goldShimmer 2.5s linear infinite .5s;
+  background-clip: text; animation: goldShimmer 2s linear infinite .4s;
 }
 
 /* Big title for slides 2 & 3 */
 .hero-title-lg {
   font-size: 36px; font-weight: 900; line-height: 1.1; color: #1a1a1a; margin-bottom: 4px;
 }
-.slide-2 .hero-title-lg { color: #e65100; }
-.slide-3 .hero-title-lg { color: #0d47a1; }
+.slide-2 .hero-title-lg { color: #c05000; }
+.slide-3 .hero-title-lg { color: #0a3d7a; }
 
-/* Pink items count text (like SHEIN's "1M+ Hot Items Markdown") */
+/* "1M+ Hot Items" — number in pink, rest in gray, like SHEIN */
 .hero-items-count {
-  font-size: 11px; font-weight: 800; color: #e91e8c;
-  margin-top: 3px; margin-bottom: 9px;
+  font-size: 12px; font-weight: 600; color: #555;
+  margin-top: 2px; margin-bottom: 8px;
+}
+.hero-items-count .hot-num {
+  color: #e91e8c; font-weight: 900; font-style: normal; font-size: 13px;
 }
 
 .btn-hero-dark {
