@@ -845,3 +845,22 @@ img { max-width: 100%; display: block; }
   transition: background .2s;
 }
 .loc-save-btn:active { background: #c2185b; }
+
+/* ===== WIDE SOCIAL BARS ===== */
+.me-social-bars {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.soc-bar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 13px 16px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; color: #fff;
+  transition: opacity .15s, transform .15s;
+}
+.soc-bar:active { opacity: .85; transform: scale(.98); }
+.soc-bar i:first-child { font-size: 20px; width: 24px; text-align: center; }
+.soc-bar span { flex: 1; }
+.soc-arr { font-size: 12px; opacity: .7; }
+.soc-bar.soc-tiktok { background: #111; }
+.soc-bar.soc-fb     { background: #1877f2; }
+.soc-bar.soc-ig     { background: linear-gradient(90deg,#f09433,#dc2743,#bc1888); }
+.soc-bar.soc-wa     { background: #25d366; }
