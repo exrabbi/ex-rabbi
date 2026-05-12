@@ -391,7 +391,7 @@
         <div class="me-avatar-icon">👤</div>
         <div class="me-profile-info">
           <div class="me-name" data-i18n="guestUser">গেস্ট ইউজার</div>
-          <button class="me-login-btn" onclick="openAuth()">লগইন / রেজিস্টার</button>
+          <button class="me-login-btn" onclick="openAuth()" data-i18n="loginRegister">লগইন / রেজিস্টার</button>
         </div>
       </div>
       <!-- Logged-in state -->
@@ -582,74 +582,74 @@
       </div>
       <div class="auth-brand-name">EX GLOBAL</div>
     </div>
-    <h2 class="auth-title">স্বাগতম!</h2>
-    <p class="auth-subtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+    <h2 class="auth-title" data-i18n="authTitle">স্বাগতম!</h2>
+    <p class="auth-subtitle" data-i18n="authSubtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
 
     <!-- Google Sign-In -->
     <button class="btn-google-signin" onclick="signInWithGoogle()">
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-      <span>Google দিয়ে লগইন করুন</span>
+      <span data-i18n="googleLogin">Google দিয়ে লগইন করুন</span>
     </button>
 
-    <div class="auth-divider"><span>অথবা নাম ও ইমেইল দিন</span></div>
+    <div class="auth-divider"><span data-i18n="authOr">অথবা নাম ও ইমেইল দিন</span></div>
 
     <div class="auth-field">
       <i class="fas fa-user"></i>
-      <input type="text" id="authName" placeholder="আপনার পুরো নাম" autocomplete="name" />
+      <input type="text" id="authName" data-i18n-placeholder="authNamePh" placeholder="আপনার পুরো নাম" autocomplete="name" />
     </div>
     <div class="auth-field">
       <i class="fas fa-envelope"></i>
-      <input type="email" id="authEmail" placeholder="ইমেইল অ্যাড্রেস" autocomplete="email" />
+      <input type="email" id="authEmail" data-i18n-placeholder="authEmailPh" placeholder="ইমেইল অ্যাড্রেস" autocomplete="email" />
     </div>
     <div class="auth-field">
       <i class="fas fa-phone"></i>
-      <input type="tel" id="authPhone" placeholder="ফোন নম্বর (ঐচ্ছিক)" autocomplete="tel" />
+      <input type="tel" id="authPhone" data-i18n-placeholder="authPhonePh" placeholder="ফোন নম্বর (ঐচ্ছিক)" autocomplete="tel" />
     </div>
     <button class="btn-auth-submit" onclick="signInManual()">
-      <i class="fas fa-sign-in-alt"></i> প্রবেশ করুন
+      <i class="fas fa-sign-in-alt"></i> <span data-i18n="authSubmit">প্রবেশ করুন</span>
     </button>
-    <p class="auth-terms">লগইন করে আপনি আমাদের <a href="#">শর্তাবলী</a> মেনে নিচ্ছেন</p>
+    <p class="auth-terms"><span data-i18n="authTerms">লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন</span></p>
   </div>
 
   <div class="loc-overlay" id="locOverlay" onclick="closeLocation()"></div>
   <div class="loc-modal" id="locModal">
     <div class="loc-head">
       <button class="icon-btn" onclick="closeLocation()" style="color:#333"><i class="fas fa-times"></i></button>
-      <span>📍 ডেলিভারি ঠিকানা</span>
+      <span>📍 <span data-i18n="deliveryAddress">ডেলিভারি ঠিকানা</span></span>
       <div style="width:32px"></div>
     </div>
     <div class="loc-body">
       <!-- Map GPS Button -->
       <button class="loc-gps-btn" id="locGpsBtn" onclick="useMyLocation()">
-        <i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন
+        <i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">GPS থেকে লোকেশন নিন</span>
       </button>
       <!-- Interactive Map -->
       <div class="loc-map-wrap">
         <div id="locMap"></div>
-        <div class="loc-map-hint">মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন</div>
+        <div class="loc-map-hint" data-i18n="mapHint">মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন</div>
       </div>
       <div class="loc-field">
-        <label>পূর্ণ নাম</label>
-        <input type="text" id="locName" placeholder="আপনার নাম লিখুন" />
+        <label data-i18n="fullName">পূর্ণ নাম</label>
+        <input type="text" id="locName" data-i18n-placeholder="namePh" placeholder="আপনার নাম লিখুন" />
       </div>
       <div class="loc-field">
-        <label>ফোন নম্বর</label>
-        <input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" />
+        <label data-i18n="phoneLbl">ফোন নম্বর</label>
+        <input type="tel" id="locPhone" data-i18n-placeholder="phonePh" placeholder="+966 XXX XXX XXXX" />
       </div>
       <div class="loc-field">
-        <label>শহর / City</label>
-        <input type="text" id="locCity" placeholder="যেমন: Riyadh, Jeddah..." />
+        <label data-i18n="cityLbl">শহর / City</label>
+        <input type="text" id="locCity" data-i18n-placeholder="cityPh" placeholder="যেমন: Riyadh, Jeddah..." />
       </div>
       <div class="loc-field">
-        <label>এলাকা / Area</label>
-        <input type="text" id="locArea" placeholder="এলাকার নাম লিখুন" />
+        <label data-i18n="areaLbl">এলাকা / Area</label>
+        <input type="text" id="locArea" data-i18n-placeholder="areaPh" placeholder="এলাকার নাম লিখুন" />
       </div>
       <div class="loc-field">
-        <label>বিস্তারিত ঠিকানা</label>
-        <textarea id="locAddress" rows="3" placeholder="রাস্তার নাম, বাড়ি নম্বর, ফ্ল্যাট..."></textarea>
+        <label data-i18n="addressLbl">বিস্তারিত ঠিকানা</label>
+        <textarea id="locAddress" rows="3" data-i18n-placeholder="addressPh" placeholder="রাস্তার নাম, বাড়ি নম্বর, ফ্ল্যাট..."></textarea>
       </div>
       <button class="loc-save-btn" onclick="saveLocation()">
-        <i class="fas fa-check"></i> ঠিকানা সেভ করুন
+        <i class="fas fa-check"></i> <span data-i18n="saveAddress">ঠিকানা সেভ করুন</span>
       </button>
     </div>
   </div>

@@ -594,11 +594,11 @@ function useMyLocation() {
   if (!navigator.geolocation) { showToast('GPS সাপোর্ট নেই'); return; }
   const btn = document.getElementById('locGpsBtn');
   btn.classList.add('loading');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> লোকেশন নিচ্ছে...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
   navigator.geolocation.getCurrentPosition(
     pos => {
       btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন';
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">' + (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].gpsBtn || 'GPS Location') + '</span>';
       const { latitude: lat, longitude: lng } = pos.coords;
       if (!locMap) initLocMap();
       locMap.setView([lat, lng], 16);
@@ -609,7 +609,7 @@ function useMyLocation() {
     },
     err => {
       btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-arrow"></i> GPS থেকে লোকেশন নিন';
+      btn.innerHTML = '<i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">' + (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].gpsBtn || 'GPS Location') + '</span>';
       showToast('GPS চালু করুন এবং অনুমতি দিন');
     },
     { enableHighAccuracy: true, timeout: 10000 }

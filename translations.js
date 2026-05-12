@@ -55,6 +55,20 @@ const TRANSLATIONS = {
     privacyPolicy: 'প্রাইভেসি পলিসি',
     returnPolicy: 'রিটার্ন পলিসি',
     needHelp: 'সাহায্য দরকার?',
+    // Auth modal
+    authTitle: 'স্বাগতম!', authSubtitle: 'আপনার অ্যাকাউন্টে প্রবেশ করুন',
+    googleLogin: 'Google দিয়ে লগইন করুন', authOr: 'অথবা নাম ও ইমেইল দিন',
+    authNamePh: 'আপনার পুরো নাম', authEmailPh: 'ইমেইল অ্যাড্রেস', authPhonePh: 'ফোন নম্বর (ঐচ্ছিক)',
+    authSubmit: 'প্রবেশ করুন', authTerms: 'লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন',
+    loginRegister: 'লগইন / রেজিস্টার',
+    // Location modal
+    deliveryAddress: 'ডেলিভারি ঠিকানা', gpsBtn: 'GPS থেকে লোকেশন নিন',
+    mapHint: 'মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন',
+    fullName: 'পূর্ণ নাম', phoneLbl: 'ফোন নম্বর', cityLbl: 'শহর / City', areaLbl: 'এলাকা / Area',
+    addressLbl: 'বিস্তারিত ঠিকানা', saveAddress: 'ঠিকানা সেভ করুন',
+    namePh: 'আপনার নাম লিখুন', phonePh: '+966 XXX XXX XXXX',
+    cityPh: 'যেমন: Riyadh, Jeddah...', areaPh: 'এলাকার নাম লিখুন',
+    addressPh: 'রাস্তার নাম, বাড়ি নম্বর, ফ্ল্যাট...',
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -112,6 +126,20 @@ const TRANSLATIONS = {
     privacyPolicy: 'Privacy Policy',
     returnPolicy: 'Return Policy',
     needHelp: 'Need Help?',
+    // Auth modal
+    authTitle: 'Welcome!', authSubtitle: 'Sign in to your account',
+    googleLogin: 'Continue with Google', authOr: 'or enter your details',
+    authNamePh: 'Full name', authEmailPh: 'Email address', authPhonePh: 'Phone number (optional)',
+    authSubmit: 'Sign In', authTerms: 'By signing in you agree to our Terms of Use',
+    loginRegister: 'Login / Register',
+    // Location modal
+    deliveryAddress: 'Delivery Address', gpsBtn: 'Use My GPS Location',
+    mapHint: 'Tap on the map to select location',
+    fullName: 'Full Name', phoneLbl: 'Phone Number', cityLbl: 'City', areaLbl: 'Area',
+    addressLbl: 'Detailed Address', saveAddress: 'Save Address',
+    namePh: 'Enter your name', phonePh: '+966 XXX XXX XXXX',
+    cityPh: 'e.g. Riyadh, Jeddah...', areaPh: 'Area / District',
+    addressPh: 'Street, building, apartment...',
   },
   ar: {
     dir: 'rtl', currency: 'ر.س ', rate: 0.034,
@@ -169,5 +197,19 @@ const TRANSLATIONS = {
     privacyPolicy: 'سياسة الخصوصية',
     returnPolicy: 'سياسة الإرجاع',
     needHelp: 'تحتاج مساعدة؟',
+    // Auth modal
+    authTitle: 'أهلاً بك!', authSubtitle: 'سجّل الدخول إلى حسابك',
+    googleLogin: 'الدخول بـ Google', authOr: 'أو أدخل بياناتك',
+    authNamePh: 'الاسم الكامل', authEmailPh: 'البريد الإلكتروني', authPhonePh: 'رقم الهاتف (اختياري)',
+    authSubmit: 'دخول', authTerms: 'بالدخول توافق على شروط الاستخدام',
+    loginRegister: 'دخول / تسجيل',
+    // Location modal
+    deliveryAddress: 'عنوان التوصيل', gpsBtn: 'استخدم موقع GPS',
+    mapHint: 'اضغط على الخريطة لتحديد الموقع',
+    fullName: 'الاسم الكامل', phoneLbl: 'رقم الهاتف', cityLbl: 'المدينة', areaLbl: 'المنطقة',
+    addressLbl: 'العنوان التفصيلي', saveAddress: 'حفظ العنوان',
+    namePh: 'أدخل اسمك', phonePh: '+966 XXX XXX XXXX',
+    cityPh: 'مثال: الرياض، جدة...', areaPh: 'الحي / المنطقة',
+    addressPh: 'الشارع، المبنى، الشقة...',
   }
 };
