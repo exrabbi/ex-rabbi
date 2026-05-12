@@ -320,16 +320,25 @@ function closeCart() {
 function renderCart() {
   const container = document.getElementById('cartItems');
   const footer = document.getElementById('cartFooter');
+  const totalItems = cart.reduce((s, i) => s + i.qty, 0);
+  const hc = document.getElementById('cartHeadCount');
+  if (hc) hc.textContent = totalItems || '';
+
   if (cart.length === 0) {
-    container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>${t('cartEmpty')}</p></div>`;
-    footer.style.display = 'none';
+    container.innerHTML = `<div class="empty-cart">
+      <div class="empty-cart-icon">🛍️</div>
+      <p class="empty-cart-title">${t('myCart')}</p>
+      <p class="empty-cart-sub">${t('cartEmpty')}</p>
+    </div>`;
+    if (footer) footer.style.display = 'none';
     return;
   }
   container.innerHTML = cart.map(item => {
     const p = PRODUCTS.find(p => p.id === item.id);
+    if (!p) return '';
     return `
       <div class="cart-item">
-        <div class="cart-item-img"><img src="${p.image}" alt="" /></div>
+        <div class="cart-item-img"><img src="${p.image}" alt="" loading="lazy" /></div>
         <div class="cart-item-info">
           <p class="cart-item-name">${getName(p)}</p>
           <p class="cart-item-price">${fmt(p.price)}</p>
@@ -340,38 +349,50 @@ function renderCart() {
             <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
   }).join('');
-  const subtotalBase = cart.reduce((sum, item) => {
-    const p = PRODUCTS.find(p => p.id === item.id);
-    return sum + p.price * item.qty;
-  }, 0);
+
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const subtotalBase = cart.reduce((s, i) => {
+    const p = PRODUCTS.find(p => p.id === i.id);
+    return s + (p ? p.price * i.qty : 0);
+  }, 0);
   const subtotalDisp = subtotalBase * lang.rate;
   const freeDelivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR;
   const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
   const fmtD = v => lang.currency + Math.round(v).toLocaleString();
-  document.getElementById('cartSubtotalDisp').textContent = fmtD(subtotalDisp);
-  const delivEl = document.getElementById('cartDeliveryDisp');
-  if (freeDelivery) {
-    delivEl.textContent = t('free');
-    delivEl.style.color = '#0a8f4a';
-  } else {
-    delivEl.textContent = fmtD(deliveryDisp);
-    delivEl.style.color = '#e91e8c';
+
+  // Delivery progress bar
+  const pct = Math.min(100, (subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100);
+  const barFill = document.getElementById('cartDelBarFill');
+  const progText = document.getElementById('cartDelProgText');
+  const progBox = document.getElementById('cartDelProg');
+  if (barFill) { barFill.style.width = pct + '%'; barFill.classList.toggle('full', freeDelivery); }
+  if (progBox) progBox.classList.toggle('free-del', freeDelivery);
+  if (progText) {
+    if (freeDelivery) {
+      progText.textContent = t('freeDeliveryActive');
+    } else {
+      progText.textContent = t('addMoreFree') + ' ' + fmtD(FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp) + ' ' + t('moreForFree');
+    }
   }
-  const nudge = document.getElementById('cartFreeNudge');
-  if (freeDelivery) {
-    nudge.textContent = t('freeDeliveryActive');
-    nudge.className = 'cart-free-nudge nudge-free';
-  } else {
-    const remaining = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
-    nudge.textContent = t('addMoreFree') + ' ' + fmtD(remaining) + ' ' + t('moreForFree');
-    nudge.className = 'cart-free-nudge nudge-add';
+
+  // Summary values
+  const sd = document.getElementById('cartSubtotalDisp');
+  const dv = document.getElementById('cartDeliveryDisp');
+  const tot = document.getElementById('cartTotal');
+  if (sd) sd.textContent = fmtD(subtotalDisp);
+  if (dv) {
+    if (freeDelivery) {
+      dv.textContent = '✓ ' + t('free');
+      dv.className = 'cart-srow-val green';
+    } else {
+      dv.textContent = fmtD(deliveryDisp);
+      dv.className = 'cart-srow-val pink';
+    }
   }
-  document.getElementById('cartTotal').textContent = fmtD(subtotalDisp + deliveryDisp);
-  footer.style.display = 'block';
+  if (tot) tot.textContent = fmtD(subtotalDisp + deliveryDisp);
+  if (footer) footer.style.display = 'block';
 }
 function quickAddCart(id) { addToCart(id, '', ''); }
 function addToCart(id, size, color) {

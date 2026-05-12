@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EX GLOBAL</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="styles.css?v=6" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -539,36 +539,56 @@
     </button>
   </nav>
 
-  <!-- CART SIDEBAR -->
+  <!-- CART SHEET -->
   <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
   <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-drag-handle"></div>
     <div class="cart-head">
-      <h3 data-i18n="myCart">আমার কার্ট</h3>
-      <button class="icon-btn" onclick="closeCart()"><i class="fas fa-times"></i></button>
+      <div class="cart-head-left">
+        <i class="fas fa-bag-shopping"></i>
+        <h3 data-i18n="myCart">My Cart</h3>
+        <span class="cart-head-count" id="cartHeadCount"></span>
+      </div>
+      <button class="cart-close-btn" onclick="closeCart()"><i class="fas fa-xmark"></i></button>
     </div>
     <div class="cart-items" id="cartItems">
       <div class="empty-cart">
-        <i class="fas fa-shopping-cart"></i>
-        <p data-i18n="cartEmpty">কার্ট খালি আছে</p>
+        <div class="empty-cart-icon">🛍️</div>
+        <p class="empty-cart-title" data-i18n="myCart">My Cart</p>
+        <p class="empty-cart-sub" data-i18n="cartEmpty">Cart is empty</p>
       </div>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
-      <div class="cart-summary-rows">
-        <div class="cart-summary-row">
-          <span data-i18n="orderSubtotal">Subtotal</span>
-          <span id="cartSubtotalDisp"></span>
+      <!-- Delivery progress -->
+      <div class="cart-del-prog" id="cartDelProg">
+        <div class="cart-del-prog-top">
+          <span class="cart-del-truck">🚚</span>
+          <span class="cart-del-prog-text" id="cartDelProgText"></span>
         </div>
-        <div class="cart-summary-row">
-          <span data-i18n="deliveryCharge">Delivery</span>
-          <span id="cartDeliveryDisp"></span>
+        <div class="cart-del-bar-bg">
+          <div class="cart-del-bar-fill" id="cartDelBarFill"></div>
         </div>
       </div>
-      <div class="cart-free-nudge" id="cartFreeNudge"></div>
-      <div class="cart-total">
-        <span data-i18n="totalLabel">Total:</span>
-        <span id="cartTotal">0</span>
+      <!-- Summary -->
+      <div class="cart-summary">
+        <div class="cart-srow">
+          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="orderSubtotal">Subtotal</span></span>
+          <span class="cart-srow-val" id="cartSubtotalDisp"></span>
+        </div>
+        <div class="cart-srow">
+          <span class="cart-srow-label"><i class="fas fa-truck"></i> <span data-i18n="deliveryCharge">Delivery</span></span>
+          <span class="cart-srow-val" id="cartDeliveryDisp"></span>
+        </div>
+        <div class="cart-total-row">
+          <span class="cart-total-label" data-i18n="totalLabel">Total:</span>
+          <span class="cart-total-val" id="cartTotal">0</span>
+        </div>
       </div>
-      <button class="btn-checkout" onclick="openPayment()" data-i18n="checkout">Checkout</button>
+      <button class="btn-checkout" onclick="openPayment()">
+        <i class="fas fa-lock" style="font-size:13px;opacity:.85"></i>
+        <span data-i18n="checkout">Checkout</span>
+        <i class="fas fa-arrow-right" style="font-size:13px"></i>
+      </button>
     </div>
   </aside>
 
@@ -1044,8 +1064,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js"></script>
+  <script src="translations.js?v=6"></script>
   <script src="products.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=6"></script>
 </body>
 </html>
