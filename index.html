@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <!-- Firebase SDK (compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="firebase-config.js"></script>
 </head>
 <body>
 
@@ -381,11 +385,28 @@
       <div style="width:32px"></div>
     </div>
 
-    <div class="me-profile-card">
-      <div class="me-avatar">👤</div>
-      <div class="me-profile-info">
-        <div class="me-name" data-i18n="guestUser">গেস্ট ইউজার</div>
-        <button class="me-login-btn" data-i18n="login">লগইন করুন</button>
+    <div class="me-profile-card" id="meProfileCard">
+      <!-- Guest state -->
+      <div id="meGuestState" style="display:flex;align-items:center;gap:14px;width:100%">
+        <div class="me-avatar-icon">👤</div>
+        <div class="me-profile-info">
+          <div class="me-name" data-i18n="guestUser">গেস্ট ইউজার</div>
+          <button class="me-login-btn" onclick="openAuth()">লগইন / রেজিস্টার</button>
+        </div>
+      </div>
+      <!-- Logged-in state -->
+      <div id="meUserState" style="display:none;align-items:center;gap:14px;width:100%">
+        <div class="me-user-avatar-wrap" id="meAvatarWrap">
+          <img id="meUserAvatar" src="" alt="" style="display:none" />
+          <span id="meAvatarInitial" class="me-avatar-initial"></span>
+        </div>
+        <div class="me-profile-info" style="flex:1">
+          <div class="me-name" id="meUserName">User</div>
+          <div class="me-user-email" id="meUserEmail">email@example.com</div>
+          <button class="me-signout-btn" onclick="signOut()">
+            <i class="fas fa-sign-out-alt"></i> সাইন আউট
+          </button>
+        </div>
       </div>
     </div>
 
@@ -551,6 +572,45 @@
   </aside>
 
   <!-- LOCATION / ADDRESS MODAL -->
+  <!-- AUTH MODAL -->
+  <div class="auth-overlay" id="authOverlay" onclick="closeAuth()"></div>
+  <div class="auth-modal" id="authModal">
+    <button class="auth-close" onclick="closeAuth()"><i class="fas fa-times"></i></button>
+    <div class="auth-logo-wrap">
+      <div class="logo-ring-wrap" style="width:52px;height:52px">
+        <div class="header-logo-wrap"><img src="logo.png" alt="EX GLOBAL" /></div>
+      </div>
+      <div class="auth-brand-name">EX GLOBAL</div>
+    </div>
+    <h2 class="auth-title">স্বাগতম!</h2>
+    <p class="auth-subtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+
+    <!-- Google Sign-In -->
+    <button class="btn-google-signin" onclick="signInWithGoogle()">
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+      <span>Google দিয়ে লগইন করুন</span>
+    </button>
+
+    <div class="auth-divider"><span>অথবা নাম ও ইমেইল দিন</span></div>
+
+    <div class="auth-field">
+      <i class="fas fa-user"></i>
+      <input type="text" id="authName" placeholder="আপনার পুরো নাম" autocomplete="name" />
+    </div>
+    <div class="auth-field">
+      <i class="fas fa-envelope"></i>
+      <input type="email" id="authEmail" placeholder="ইমেইল অ্যাড্রেস" autocomplete="email" />
+    </div>
+    <div class="auth-field">
+      <i class="fas fa-phone"></i>
+      <input type="tel" id="authPhone" placeholder="ফোন নম্বর (ঐচ্ছিক)" autocomplete="tel" />
+    </div>
+    <button class="btn-auth-submit" onclick="signInManual()">
+      <i class="fas fa-sign-in-alt"></i> প্রবেশ করুন
+    </button>
+    <p class="auth-terms">লগইন করে আপনি আমাদের <a href="#">শর্তাবলী</a> মেনে নিচ্ছেন</p>
+  </div>
+
   <div class="loc-overlay" id="locOverlay" onclick="closeLocation()"></div>
   <div class="loc-modal" id="locModal">
     <div class="loc-head">

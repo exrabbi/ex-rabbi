@@ -653,4 +653,107 @@ document.addEventListener('DOMContentLoaded', () => {
     const badge = document.getElementById('meLocSaved');
     if (badge) badge.textContent = '✓ সেভড';
   }
+  // Init auth UI
+  updateAuthUI();
+  // Firebase auth state listener (if Firebase is configured)
+  if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user && !currentUser) {
+        setUser({ name: user.displayName, email: user.email, avatar: user.photoURL, uid: user.uid, provider: 'google' });
+      }
+    });
+  }
 });
+
+/* ===== AUTH SYSTEM ===== */
+let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+
+function openAuth() {
+  closeMe();
+  setTimeout(() => {
+    document.getElementById('authOverlay').classList.add('open');
+    document.getElementById('authModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }, 200);
+}
+
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('open');
+  document.getElementById('authModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function signInWithGoogle() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+    showToast('⚠️ Firebase এখনো সেটআপ হয়নি');
+    return;
+  }
+  try {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    const result = await firebase.auth().signInWithPopup(provider);
+    setUser({
+      name: result.user.displayName,
+      email: result.user.email,
+      avatar: result.user.photoURL,
+      uid: result.user.uid,
+      provider: 'google'
+    });
+    closeAuth();
+    showToast('✓ স্বাগতম, ' + result.user.displayName.split(' ')[0] + '!');
+  } catch (e) {
+    showToast('Google লগইন ব্যর্থ হয়েছে');
+  }
+}
+
+function signInManual() {
+  const name = document.getElementById('authName').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  const phone = document.getElementById('authPhone').value.trim();
+  if (!name) { showToast('নাম লিখুন'); return; }
+  if (!email || !email.includes('@')) { showToast('সঠিক ইমেইল দিন'); return; }
+  setUser({ name, email, phone, avatar: null, provider: 'manual' });
+  closeAuth();
+  showToast('✓ স্বাগতম, ' + name.split(' ')[0] + '!');
+}
+
+function setUser(user) {
+  currentUser = user;
+  localStorage.setItem('exglobal_user', JSON.stringify(user));
+  updateAuthUI();
+}
+
+function signOut() {
+  currentUser = null;
+  localStorage.removeItem('exglobal_user');
+  if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+    firebase.auth().signOut().catch(() => {});
+  }
+  updateAuthUI();
+  showToast('সাইন আউট হয়েছে');
+}
+
+function updateAuthUI() {
+  const guestEl = document.getElementById('meGuestState');
+  const userEl = document.getElementById('meUserState');
+  if (!guestEl || !userEl) return;
+  if (currentUser) {
+    guestEl.style.display = 'none';
+    userEl.style.display = 'flex';
+    document.getElementById('meUserName').textContent = currentUser.name;
+    document.getElementById('meUserEmail').textContent = currentUser.email;
+    const avatarImg = document.getElementById('meUserAvatar');
+    const initial = document.getElementById('meAvatarInitial');
+    if (currentUser.avatar) {
+      avatarImg.src = currentUser.avatar;
+      avatarImg.style.display = 'block';
+      initial.style.display = 'none';
+    } else {
+      avatarImg.style.display = 'none';
+      initial.style.display = 'block';
+      initial.textContent = currentUser.name.charAt(0).toUpperCase();
+    }
+  } else {
+    guestEl.style.display = 'flex';
+    userEl.style.display = 'none';
+  }
+}
