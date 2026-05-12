@@ -549,6 +549,20 @@ img { max-width: 100%; display: block; }
 .no-results { grid-column: 1/-1; text-align: center; padding: 40px; color: #aaa; }
 .no-results i { font-size: 40px; margin-bottom: 10px; }
 
+/* ===== WHATSAPP FLOAT ===== */
+.whatsapp-float {
+  position: fixed; right: 16px; bottom: 84px;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: #25d366; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px; z-index: 150;
+  box-shadow: 0 4px 14px rgba(37,211,102,.5);
+  transition: transform .2s, box-shadow .2s;
+  text-decoration: none;
+}
+.whatsapp-float:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(37,211,102,.6); }
+[dir="rtl"] .whatsapp-float { right: auto; left: 16px; }
+
 @media (min-width: 600px) {
   .main-content { border-left: 1px solid #eee; border-right: 1px solid #eee; }
 }

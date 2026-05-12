@@ -51,7 +51,7 @@
       <li><a href="#"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
       <li><a href="#"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
       <li><a href="#"><i class="fas fa-tag"></i> <span data-i18n="coupon">কুপন</span></a></li>
-      <li><a href="#"><i class="fas fa-headset"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
+      <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
       <li><a href="#"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
     </ul>
     <div class="drawer-footer">
@@ -295,7 +295,7 @@
         <span data-i18n="totalLabel">মোট:</span>
         <span id="cartTotal">0</span>
       </div>
-      <button class="btn-checkout" data-i18n="checkout">চেকআউট করুন</button>
+      <button class="btn-checkout" onclick="whatsappCheckout()" data-i18n="checkout">চেকআউট করুন</button>
     </div>
   </aside>
 
@@ -305,6 +305,11 @@
     <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
     <div class="modal-body" id="modalBody"></div>
   </div>
+
+  <!-- WHATSAPP FLOAT -->
+  <a class="whatsapp-float" href="https://wa.me/966546224029" target="_blank" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
 
   <div class="toast" id="toast"></div>
 

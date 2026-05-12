@@ -466,6 +466,21 @@ function modalAddCart(id) {
   closeModal();
 }
 
+/* ===== WHATSAPP CHECKOUT ===== */
+function whatsappCheckout() {
+  if (cart.length === 0) return;
+  const lines = cart.map(item => {
+    const p = PRODUCTS.find(p => p.id === item.id);
+    return `• ${getName(p)} x${item.qty} = ${fmt(p.price * item.qty)}`;
+  });
+  const total = cart.reduce((s, i) => {
+    const p = PRODUCTS.find(p => p.id === i.id);
+    return s + p.price * i.qty;
+  }, 0);
+  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}\n\n*${t('totalLabel')} ${fmt(total)}*`;
+  window.open(`https://wa.me/966546224029?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
 /* ===== BOTTOM NAV ===== */
 function setBottomActive(el) {
   document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
