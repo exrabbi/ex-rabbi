@@ -447,70 +447,151 @@ img { max-width: 100%; display: block; }
 }
 .load-more-btn:hover { background: #e91e8c; color: #fff; }
 
-/* ===== BOTTOM NAV ===== */
+/* ===== PREMIUM BOTTOM NAV ===== */
 .bottom-nav {
   position: fixed; bottom: 0; left: 0; right: 0;
-  background: rgba(10,10,10,.97);
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  background: rgba(7,7,10,.98);
+  backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px);
   display: flex; z-index: 100;
-  border-top: 1px solid rgba(255,255,255,.07);
-  padding: 0 4px calc(env(safe-area-inset-bottom, 0px));
-  height: 65px;
+  height: 70px;
+  padding: 0 2px calc(env(safe-area-inset-bottom, 0px));
+  overflow: visible;
+}
+/* Animated rainbow shimmer border on top */
+.bottom-nav::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    #ff006e, #ff4d9d, #8338ec, #3a86ff, #00d4ff, #06ffa5, #ffbe0b, #ff006e);
+  background-size: 300% 100%;
+  animation: rainbowBorder 3s linear infinite;
+  z-index: 2;
+}
+@keyframes rainbowBorder {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 300% 0%; }
 }
 .bot-btn {
   flex: 1; display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 3px; padding: 5px 2px 8px;
-  color: #555; font-size: 10px; font-weight: 700;
-  transition: color .22s; letter-spacing: .3px;
-  position: relative;
+  gap: 3px; padding: 4px 2px 9px;
+  color: #3d3d55; font-size: 9.5px; font-weight: 800;
+  letter-spacing: .4px; transition: color .22s;
+  position: relative; overflow: visible;
 }
 .bot-icon-wrap {
   position: relative;
-  width: 46px; height: 32px;
+  width: 50px; height: 34px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: 16px;
-  transition: background .22s, transform .2s cubic-bezier(.34,1.56,.64,1);
+  border-radius: 17px;
+  transition: all .32s cubic-bezier(.34,1.56,.64,1);
+  z-index: 1;
 }
 .bot-btn i {
-  font-size: 20px;
-  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+  font-size: 21px; position: relative; z-index: 1;
+  transition: all .32s cubic-bezier(.34,1.56,.64,1);
 }
-/* Active dot indicator on top */
-.bot-btn::before {
+/* Sparkle stars around active icon */
+.bot-icon-wrap::before {
+  content: '✦';
+  position: absolute; top: -6px; right: -1px;
+  font-size: 10px; color: #ff6ec7;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.bot-icon-wrap::after {
+  content: '✦';
+  position: absolute; bottom: -4px; left: -1px;
+  font-size: 7px; color: #a855f7;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s;
+}
+.bot-btn.active .bot-icon-wrap::before {
+  opacity: 1;
+  animation: sparkleA 1.3s ease-in-out infinite;
+}
+.bot-btn.active .bot-icon-wrap::after {
+  opacity: 1;
+  animation: sparkleB 1.7s ease-in-out infinite .35s;
+}
+@keyframes sparkleA {
+  0%,100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+  50%      { transform: scale(1.8) rotate(45deg); opacity: .3; }
+}
+@keyframes sparkleB {
+  0%,100% { transform: scale(1.4) rotate(20deg);  opacity: .6; }
+  50%      { transform: scale(.6)  rotate(-40deg); opacity: 1; }
+}
+/* Bottom glowing dot */
+.bot-btn::after {
   content: '';
-  position: absolute;
-  top: 0; left: 50%;
+  position: absolute; bottom: 3px; left: 50%;
+  width: 20px; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, #e91e8c, #8b2be2, #3a86ff);
+  background-size: 200% 100%;
+  box-shadow: 0 0 10px rgba(233,30,140,.8), 0 0 20px rgba(139,43,226,.5);
   transform: translateX(-50%) scaleX(0);
-  width: 28px; height: 3px;
-  border-radius: 0 0 3px 3px;
-  background: linear-gradient(90deg, #e91e8c, #8b2be2);
-  transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+  transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+  animation: dotShimmer 2s linear infinite;
 }
-.bot-btn.active::before { transform: translateX(-50%) scaleX(1); }
-.bot-btn.active {
-  color: #fff;
+.bot-btn.active::after { transform: translateX(-50%) scaleX(1); }
+@keyframes dotShimmer {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
 }
+/* Active state */
+.bot-btn.active { color: #e91e8c; }
 .bot-btn.active .bot-icon-wrap {
-  background: linear-gradient(135deg, rgba(233,30,140,.22), rgba(139,43,226,.18));
+  background: linear-gradient(135deg,
+    rgba(233,30,140,.32) 0%,
+    rgba(139,43,226,.26) 50%,
+    rgba(58,134,255,.2) 100%);
+  transform: translateY(-7px) scale(1.06);
+  animation: iconPulse 2.4s ease infinite;
 }
-.bot-btn.active .bot-icon-wrap i {
-  transform: scale(1.15) translateY(-1px);
-  filter: drop-shadow(0 0 6px rgba(233,30,140,.7));
+@keyframes iconPulse {
+  0%,100% {
+    box-shadow:
+      0 0 0 1.5px rgba(233,30,140,.45),
+      0 6px 20px rgba(233,30,140,.55),
+      0 0 40px rgba(139,43,226,.3);
+  }
+  50% {
+    box-shadow:
+      0 0 0 2px rgba(139,43,226,.55),
+      0 6px 26px rgba(139,43,226,.6),
+      0 0 50px rgba(233,30,140,.4);
+  }
 }
-.bot-btn.active span { color: #e91e8c; }
-.bot-btn:not(.active):active .bot-icon-wrap { background: rgba(255,255,255,.06); }
-/* Cart badge on bottom nav */
+.bot-btn.active i {
+  transform: scale(1.22);
+  color: #ff6ec7;
+  filter:
+    drop-shadow(0 0 5px rgba(255,110,199,.95))
+    drop-shadow(0 0 15px rgba(139,43,226,.75))
+    drop-shadow(0 0 28px rgba(233,30,140,.5));
+}
+.bot-btn.active span {
+  color: #ff6ec7;
+  text-shadow: 0 0 10px rgba(233,30,140,.7), 0 0 20px rgba(139,43,226,.4);
+}
+/* Tap feedback for inactive */
+.bot-btn:not(.active):active .bot-icon-wrap {
+  background: rgba(255,255,255,.07);
+  transform: scale(.92);
+}
+/* Cart badge */
 .bot-nav-badge {
   position: absolute;
-  top: -4px; right: -5px;
+  top: -5px; right: -6px;
   min-width: 17px; height: 17px;
-  background: linear-gradient(135deg, #e91e8c 0%, #ff5e7e 100%);
+  background: linear-gradient(135deg, #ff006e, #e91e8c);
   color: #fff; font-size: 9.5px; font-weight: 800;
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
-  padding: 0 4px; border: 2px solid #0a0a0a;
-  box-shadow: 0 2px 8px rgba(233,30,140,.45);
+  padding: 0 4px; border: 2px solid #07070a;
+  box-shadow: 0 2px 10px rgba(233,30,140,.6), 0 0 16px rgba(255,0,110,.4);
   line-height: 1;
   animation: badgePop .3s cubic-bezier(.34,1.56,.64,1);
 }
