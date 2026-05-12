@@ -798,8 +798,26 @@ img { max-width: 100%; display: block; }
 }
 .me-social-row { display: flex; justify-content: center; gap: 14px; }
 .me-location-saved {
-  font-size: 11px; color: #4caf50; font-weight: 600;
-  margin-left: auto; margin-right: 6px;
+  margin-left: auto; margin-right: 4px;
+  display: inline-flex; align-items: center; gap: 4px;
+  background: linear-gradient(135deg, #00b96b, #00d68f);
+  color: #fff; font-size: 10px; font-weight: 800;
+  padding: 4px 10px; border-radius: 20px;
+  letter-spacing: .4px; text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0,185,107,.45);
+  animation: savedPulse 2.5s ease-in-out infinite;
+}
+.me-location-saved::before {
+  content: '●'; font-size: 7px; opacity: .9;
+  animation: savedDot 2.5s ease-in-out infinite;
+}
+@keyframes savedPulse {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0,185,107,.4); }
+  50%       { box-shadow: 0 3px 14px rgba(0,185,107,.75); }
+}
+@keyframes savedDot {
+  0%, 100% { opacity: .6; }
+  50%       { opacity: 1; }
 }
 
 /* ===== LOCATION MODAL ===== */
