@@ -600,3 +600,174 @@ img { max-width: 100%; display: block; }
 @media (min-width: 600px) {
   .main-content { border-left: 1px solid #eee; border-right: 1px solid #eee; }
 }
+
+/* ===== ME / ACCOUNT PANEL ===== */
+.me-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.45); z-index: 120;
+}
+.me-overlay.open { display: block; }
+
+.me-panel {
+  position: fixed; top: 0; bottom: 70px; left: 0; right: 0;
+  background: #f2f2f2; z-index: 121;
+  overflow-y: auto; overflow-x: hidden;
+  transform: translateX(100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  max-width: 600px; margin: 0 auto;
+}
+.me-panel.open { transform: translateX(0); }
+[dir="rtl"] .me-panel { transform: translateX(-100%); }
+[dir="rtl"] .me-panel.open { transform: translateX(0); }
+
+.me-header {
+  background: #e91e8c; color: #fff;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px;
+  position: sticky; top: 0; z-index: 5;
+}
+.me-header-title { font-size: 16px; font-weight: 700; }
+.me-close-btn { color: #fff !important; }
+
+.me-profile-card {
+  background: #fff; margin: 10px; border-radius: 14px;
+  padding: 16px 18px; display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.me-avatar {
+  width: 54px; height: 54px; border-radius: 50%;
+  background: #ffe0f0; display: flex; align-items: center;
+  justify-content: center; font-size: 24px; flex-shrink: 0;
+}
+.me-profile-info { flex: 1; }
+.me-name { font-size: 16px; font-weight: 700; color: #111; margin-bottom: 5px; }
+.me-login-btn {
+  background: #e91e8c; color: #fff;
+  border-radius: 20px; padding: 5px 18px;
+  font-size: 13px; font-weight: 700;
+}
+
+.me-promo-strip {
+  background: #fff7ee; margin: 0 10px 10px; border-radius: 10px;
+  padding: 11px 16px; display: flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 600; color: #333;
+  border: 1px solid #ffe0b2;
+}
+.me-promo-strip i:first-child { color: #e91e8c; }
+.me-promo-strip small { flex: 1; color: #888; font-size: 11px; }
+.me-promo-arrow { color: #bbb; }
+
+.me-quick-tiles {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin: 0 10px 10px;
+}
+.me-tile {
+  background: #fff; border-radius: 14px;
+  padding: 16px; cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.me-tile:active { transform: scale(.97); }
+.me-tile-icon { font-size: 24px; color: #e91e8c; margin-bottom: 8px; }
+.me-tile-label { font-size: 14px; font-weight: 700; color: #111; }
+.me-tile-sub { font-size: 12px; color: #888; margin-top: 3px; }
+
+.me-section { margin: 0 10px 10px; }
+.me-section-title {
+  font-size: 13px; font-weight: 700; color: #777;
+  padding: 6px 4px 8px; text-transform: uppercase; letter-spacing: .4px;
+}
+.me-menu-list {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.me-menu-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 15px 18px; border-bottom: 1px solid #f5f5f5;
+  cursor: pointer; transition: background .15s;
+}
+.me-menu-item:last-child { border-bottom: none; }
+.me-menu-item:active { background: #fce4ec; }
+.me-menu-item > i:first-child { width: 20px; color: #e91e8c; font-size: 17px; flex-shrink: 0; }
+.me-menu-item > span { flex: 1; font-size: 14px; color: #222; font-weight: 500; }
+.me-arrow { color: #ccc; font-size: 12px; }
+
+.me-help-fab {
+  margin: 4px 10px 20px; background: #ffd700;
+  border-radius: 30px; padding: 14px 20px;
+  display: flex; align-items: center; gap: 10px;
+  font-weight: 800; font-size: 14px; cursor: pointer;
+  justify-content: center; color: #333; width: calc(100% - 20px);
+  box-shadow: 0 3px 12px rgba(255,215,0,.5);
+}
+.me-help-fab i { font-size: 22px; color: #25d366; }
+
+/* ===== SETTINGS PANEL ===== */
+.settings-panel {
+  position: fixed; top: 0; bottom: 70px; left: 0; right: 0;
+  background: #f2f2f2; z-index: 122;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform .32s cubic-bezier(.4,0,.2,1);
+  max-width: 600px; margin: 0 auto;
+}
+.settings-panel.open { transform: translateX(0); }
+[dir="rtl"] .settings-panel { transform: translateX(-100%); }
+[dir="rtl"] .settings-panel.open { transform: translateX(0); }
+
+.settings-head {
+  background: #fff; border-bottom: 1px solid #eee;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px; font-size: 16px; font-weight: 700; color: #111;
+  position: sticky; top: 0; z-index: 5;
+}
+
+.settings-body { padding: 12px 10px; }
+.settings-group {
+  background: #fff; border-radius: 14px; overflow: hidden;
+  margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.settings-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 18px; border-bottom: 1px solid #f5f5f5;
+  cursor: pointer; transition: background .15s;
+}
+.settings-item:last-child { border-bottom: none; }
+.settings-item:active { background: #f9f9f9; }
+.settings-item > i:first-child { width: 22px; color: #555; font-size: 17px; }
+.settings-item > span { flex: 1; font-size: 14px; color: #222; font-weight: 500; }
+.settings-item > i:last-child { color: #ccc; font-size: 12px; }
+.settings-val { font-size: 13px; color: #888; }
+
+.settings-signout-wrap, .settings-sell-wrap {
+  background: #fff; border-radius: 14px;
+  margin-bottom: 12px; overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+.settings-signout-btn {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 16px; font-size: 15px; font-weight: 700; color: #e91e8c;
+}
+.settings-sell-btn {
+  width: 100%; padding: 16px; text-align: center;
+  font-size: 14px; font-weight: 700; color: #0066cc;
+}
+
+.settings-social {
+  display: flex; justify-content: center; gap: 14px; padding: 12px 0 16px;
+}
+.soc-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; display: flex; align-items: center;
+  justify-content: center; font-size: 18px; color: #555;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  transition: transform .15s;
+}
+.soc-btn:active { transform: scale(.92); }
+
+.settings-links {
+  display: flex; flex-wrap: wrap; justify-content: center;
+  gap: 6px 10px; padding: 0 16px 24px; font-size: 12px;
+}
+.settings-links a { color: #666; }
+.settings-links span { color: #ccc; }

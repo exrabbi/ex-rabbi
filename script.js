@@ -494,3 +494,32 @@ function showToast(msg) {
   toast.className = 'toast show';
   setTimeout(() => toast.className = 'toast', 2600);
 }
+
+/* ===== ME / ACCOUNT PANEL ===== */
+function openMe() {
+  document.getElementById('meOverlay').classList.add('open');
+  document.getElementById('mePanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const sub = document.getElementById('meWishSub');
+  if (sub) sub.textContent = wishlist.length + ' ' + t('items');
+  const bal = document.getElementById('meWalletBal');
+  if (bal) bal.textContent = TRANSLATIONS[currentLang].currency + '0.00';
+}
+
+function closeMe() {
+  document.getElementById('meOverlay').classList.remove('open');
+  document.getElementById('mePanel').classList.remove('open');
+  document.body.style.overflow = '';
+  closeSettings();
+}
+
+function openSettings() {
+  const labels = { bn: 'বাংলা', en: 'English', ar: 'العربية' };
+  const el = document.getElementById('curLangLabel');
+  if (el) el.textContent = labels[currentLang] || 'বাংলা';
+  document.getElementById('settingsPanel').classList.add('open');
+}
+
+function closeSettings() {
+  document.getElementById('settingsPanel').classList.remove('open');
+}

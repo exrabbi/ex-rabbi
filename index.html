@@ -306,7 +306,7 @@
     <button class="bot-btn" onclick="setBottomActive(this);openCart()">
       <i class="fas fa-shopping-cart"></i><span data-i18n="navCart">কার্ট</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this)">
+    <button class="bot-btn" onclick="setBottomActive(this);openMe()">
       <i class="fas fa-user"></i><span data-i18n="navMe">আমি</span>
     </button>
   </nav>
@@ -344,6 +344,157 @@
   <a class="whatsapp-float" href="https://wa.me/966546224029" target="_blank" aria-label="WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
+
+  <!-- ME OVERLAY -->
+  <div class="me-overlay" id="meOverlay" onclick="closeMe()"></div>
+
+  <!-- ME / ACCOUNT PANEL -->
+  <aside class="me-panel" id="mePanel">
+    <div class="me-header">
+      <button class="icon-btn me-close-btn" onclick="closeMe()"><i class="fas fa-times"></i></button>
+      <span class="me-header-title" data-i18n="myAccount">আমার অ্যাকাউন্ট</span>
+      <div style="width:32px"></div>
+    </div>
+
+    <div class="me-profile-card">
+      <div class="me-avatar">👤</div>
+      <div class="me-profile-info">
+        <div class="me-name" data-i18n="guestUser">গেস্ট ইউজার</div>
+        <button class="me-login-btn" data-i18n="login">লগইন করুন</button>
+      </div>
+    </div>
+
+    <div class="me-promo-strip">
+      <i class="fas fa-truck"></i>
+      <span data-i18n="freeShipping">ফ্রি শিপিং</span>
+      <small data-i18n="freeShippingSub">৫০০ টাকার উপরে</small>
+      <i class="fas fa-chevron-right me-promo-arrow"></i>
+    </div>
+
+    <div class="me-quick-tiles">
+      <div class="me-tile">
+        <div class="me-tile-icon"><i class="fas fa-box"></i></div>
+        <div class="me-tile-label" data-i18n="myOrders">আমার অর্ডার</div>
+        <div class="me-tile-sub" data-i18n="trackOrder">ট্র্যাক করুন</div>
+      </div>
+      <div class="me-tile">
+        <div class="me-tile-icon"><i class="fas fa-undo-alt"></i></div>
+        <div class="me-tile-label" data-i18n="returns">রিটার্ন</div>
+        <div class="me-tile-sub" data-i18n="activeReturns">0 সক্রিয়</div>
+      </div>
+      <div class="me-tile">
+        <div class="me-tile-icon"><i class="fas fa-wallet"></i></div>
+        <div class="me-tile-label" data-i18n="wallet">ওয়ালেট</div>
+        <div class="me-tile-sub" id="meWalletBal">৳0.00</div>
+      </div>
+      <div class="me-tile" onclick="closeMe()">
+        <div class="me-tile-icon"><i class="fas fa-heart"></i></div>
+        <div class="me-tile-label" data-i18n="wishlistMenu">উইশলিস্ট</div>
+        <div class="me-tile-sub" id="meWishSub">0</div>
+      </div>
+    </div>
+
+    <div class="me-section">
+      <div class="me-section-title" data-i18n="myAccount">আমার অ্যাকাউন্ট</div>
+      <div class="me-menu-list">
+        <div class="me-menu-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span data-i18n="addresses">ঠিকানা</span>
+          <i class="fas fa-chevron-right me-arrow"></i>
+        </div>
+        <div class="me-menu-item">
+          <i class="fas fa-credit-card"></i>
+          <span data-i18n="savedCards">সেভড কার্ড</span>
+          <i class="fas fa-chevron-right me-arrow"></i>
+        </div>
+        <div class="me-menu-item" onclick="openSettings()">
+          <i class="fas fa-cog"></i>
+          <span data-i18n="settings">সেটিংস</span>
+          <i class="fas fa-chevron-right me-arrow"></i>
+        </div>
+        <div class="me-menu-item">
+          <i class="fas fa-tag"></i>
+          <span data-i18n="coupon">কুপন</span>
+          <i class="fas fa-chevron-right me-arrow"></i>
+        </div>
+        <div class="me-menu-item">
+          <i class="fas fa-info-circle"></i>
+          <span data-i18n="about">আমাদের সম্পর্কে</span>
+          <i class="fas fa-chevron-right me-arrow"></i>
+        </div>
+      </div>
+    </div>
+
+    <button class="me-help-fab" onclick="window.open('https://wa.me/966546224029','_blank')">
+      <i class="fab fa-whatsapp"></i>
+      <span data-i18n="needHelp">সাহায্য দরকার?</span>
+    </button>
+  </aside>
+
+  <!-- SETTINGS PANEL -->
+  <aside class="settings-panel" id="settingsPanel">
+    <div class="settings-head">
+      <button class="icon-btn" onclick="closeSettings()" style="color:#333"><i class="fas fa-arrow-left"></i></button>
+      <span data-i18n="settings">সেটিংস</span>
+      <div style="width:32px"></div>
+    </div>
+    <div class="settings-body">
+      <div class="settings-group">
+        <div class="settings-item">
+          <i class="fas fa-globe"></i>
+          <span data-i18n="country">দেশ</span>
+          <span class="settings-val">🇸🇦 KSA</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="settings-item" onclick="closeSettings();closeMe();">
+          <i class="fas fa-language"></i>
+          <span data-i18n="language">ভাষা</span>
+          <span class="settings-val" id="curLangLabel">বাংলা</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="settings-item">
+          <i class="fas fa-shield-alt"></i>
+          <span data-i18n="security">সিকিউরিটি</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="settings-item">
+          <i class="fas fa-bell"></i>
+          <span data-i18n="notifications">নোটিফিকেশন</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+        <div class="settings-item">
+          <i class="fas fa-sliders-h"></i>
+          <span data-i18n="preferences">পছন্দ</span>
+          <i class="fas fa-chevron-right"></i>
+        </div>
+      </div>
+
+      <div class="settings-signout-wrap">
+        <button class="settings-signout-btn">
+          <i class="fas fa-power-off"></i>
+          <span data-i18n="signOut">সাইন আউট</span>
+        </button>
+      </div>
+
+      <div class="settings-sell-wrap">
+        <button class="settings-sell-btn" data-i18n="sellWithUs">আমাদের সাথে বিক্রি করুন</button>
+      </div>
+
+      <div class="settings-social">
+        <a href="#" class="soc-btn"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="soc-btn"><i class="fab fa-instagram"></i></a>
+        <a href="https://wa.me/966546224029" class="soc-btn" target="_blank" style="color:#25d366"><i class="fab fa-whatsapp"></i></a>
+      </div>
+
+      <div class="settings-links">
+        <a href="#" data-i18n="termsOfUse">ব্যবহারের শর্ত</a>
+        <span>·</span>
+        <a href="#" data-i18n="privacyPolicy">প্রাইভেসি পলিসি</a>
+        <span>·</span>
+        <a href="#" data-i18n="returnPolicy">রিটার্ন পলিসি</a>
+      </div>
+    </div>
+  </aside>
 
   <div class="toast" id="toast"></div>
 
