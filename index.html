@@ -82,7 +82,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=17" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -721,6 +721,47 @@
     <div class="wish-items" id="wishItems"></div>
   </aside>
 
+  <!-- COUPON PANEL -->
+  <div class="wish-overlay" id="couponOverlay" onclick="closeCouponPanel()"></div>
+  <aside class="wish-panel" id="couponPanel">
+    <div class="wish-head">
+      <button class="wish-back-btn" onclick="closeCouponPanel()"><i class="fas fa-arrow-left"></i></button>
+      <div class="wish-head-title">
+        <i class="fas fa-tag" style="color:#7c3aed"></i>
+        <span data-i18n="coupon">Coupons</span>
+      </div>
+      <div style="width:36px"></div>
+    </div>
+    <div style="padding:16px">
+
+      <!-- Welcome Coupon Card -->
+      <div class="coupon-card" id="welcomeCouponCard">
+        <div class="coupon-left">
+          <div class="coupon-pct">10%</div>
+          <div class="coupon-off" data-i18n="couponOff">OFF</div>
+        </div>
+        <div class="coupon-mid">
+          <div class="coupon-title" data-i18n="welcomeCouponTitle">New User Welcome</div>
+          <div class="coupon-code" id="couponCodeDisplay">WELCOME10</div>
+          <div class="coupon-desc" data-i18n="welcomeCouponDesc">10% off your first order · One time use</div>
+        </div>
+        <button class="coupon-copy-btn" id="couponCopyBtn" onclick="copyCouponCode('WELCOME10')">
+          <i class="fas fa-copy"></i>
+          <span data-i18n="copyCode">Copy</span>
+        </button>
+      </div>
+
+      <!-- Used state -->
+      <div class="coupon-used-note" id="couponUsedNote" style="display:none">
+        <i class="fas fa-check-circle" style="color:#0a8f4a"></i>
+        <span data-i18n="couponAlreadyUsed">You already used this coupon</span>
+      </div>
+
+      <!-- How to use -->
+      <div class="coupon-howto" data-i18n="couponHowTo">Paste the code at checkout to get 10% off</div>
+    </div>
+  </aside>
+
   <!-- ME OVERLAY -->
   <div class="me-overlay" id="meOverlay" onclick="closeMe()"></div>
 
@@ -798,9 +839,10 @@
         <span class="me-list-badge" id="meWishCount"></span>
         <i class="fas fa-chevron-right me-chev-r"></i>
       </div>
-      <div class="me-list-item">
+      <div class="me-list-item" onclick="openCouponPanel()">
         <div class="me-list-icon purple"><i class="fas fa-tag"></i></div>
         <span data-i18n="coupon">Coupon</span>
+        <span class="me-list-badge" id="meCouponBadge" style="display:none;background:#0a8f4a">1</span>
         <i class="fas fa-chevron-right me-chev-r"></i>
       </div>
       <div class="me-list-item" onclick="openSettings()">
@@ -923,11 +965,27 @@
       <!-- Free delivery nudge -->
       <div class="pay-free-nudge" id="payFreeNudge"></div>
 
+      <!-- Coupon Input -->
+      <div class="pay-coupon-row">
+        <div class="pay-coupon-wrap">
+          <i class="fas fa-tag pay-coupon-icon"></i>
+          <input type="text" id="couponInput" class="pay-coupon-input" placeholder="Coupon code" data-i18n-placeholder="couponPlaceholder" maxlength="20" />
+          <button class="pay-coupon-btn" id="couponApplyBtn" onclick="applyCoupon()">
+            <span data-i18n="applyCoupon">Apply</span>
+          </button>
+        </div>
+        <div class="pay-coupon-msg" id="couponMsg"></div>
+      </div>
+
       <!-- Order Summary -->
       <div class="pay-summary">
         <div class="pay-summary-row">
           <span data-i18n="orderSubtotal">Order Subtotal</span>
           <span id="paySubtotal">0</span>
+        </div>
+        <div class="pay-summary-row pay-discount-row" id="payDiscountRow" style="display:none">
+          <span id="payDiscountLabel">Discount (10%)</span>
+          <span id="payDiscount" style="color:#0a8f4a">-0</span>
         </div>
         <div class="pay-summary-row">
           <span data-i18n="deliveryCharge">Delivery</span>
@@ -1261,8 +1319,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=16"></script>
+  <script src="translations.js?v=17"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=16"></script>
+  <script src="script.js?v=17"></script>
 </body>
 </html>

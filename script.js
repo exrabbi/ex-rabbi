@@ -621,19 +621,128 @@ function modalAddCart(id) {
   closeModal();
 }
 
+/* ===== COUPON SYSTEM ===== */
+const COUPONS = {
+  'WELCOME10': { pct: 10, oneTime: true }
+};
+let appliedCoupon = null;
+
+function getUsedCoupons() {
+  return JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
+}
+function markCouponUsed(code) {
+  const uid = currentUser ? (currentUser.uid || currentUser.email) : 'guest';
+  const used = getUsedCoupons();
+  used.push(uid + ':' + code.toUpperCase());
+  localStorage.setItem('exglobal_used_coupons', JSON.stringify(used));
+}
+function isCouponUsed(code) {
+  const uid = currentUser ? (currentUser.uid || currentUser.email) : 'guest';
+  return getUsedCoupons().includes(uid + ':' + code.toUpperCase());
+}
+
+function openCouponPanel() {
+  const used = isCouponUsed('WELCOME10');
+  const card = document.getElementById('welcomeCouponCard');
+  const note = document.getElementById('couponUsedNote');
+  const badge = document.getElementById('meCouponBadge');
+  if (card) card.style.opacity = used ? '.45' : '1';
+  if (note) note.style.display = used ? 'flex' : 'none';
+  if (badge) { badge.style.display = used ? 'none' : 'flex'; }
+  document.getElementById('couponOverlay').classList.add('open');
+  document.getElementById('couponPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCouponPanel() {
+  document.getElementById('couponOverlay').classList.remove('open');
+  document.getElementById('couponPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function copyCouponCode(code) {
+  navigator.clipboard.writeText(code).catch(() => {});
+  const btn = document.getElementById('couponCopyBtn');
+  if (btn) {
+    btn.innerHTML = '<i class="fas fa-check"></i><span>' + (t('copied') || 'Copied!') + '</span>';
+    btn.style.color = '#0a8f4a';
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-copy"></i><span>' + (t('copyCode') || 'Copy') + '</span>';
+      btn.style.color = '';
+    }, 2000);
+  }
+  showToast('✅ ' + code + ' ' + (t('copied') || 'Copied!'));
+}
+
+function applyCoupon() {
+  const input = document.getElementById('couponInput');
+  const msg = document.getElementById('couponMsg');
+  const code = (input.value || '').trim().toUpperCase();
+  if (!code) return;
+  const coupon = COUPONS[code];
+  if (!coupon) {
+    msg.textContent = t('couponInvalid') || '❌ Invalid coupon code';
+    msg.className = 'pay-coupon-msg error';
+    appliedCoupon = null;
+    refreshPaymentSummary();
+    return;
+  }
+  if (coupon.oneTime && isCouponUsed(code)) {
+    msg.textContent = t('couponUsed') || '❌ Already used';
+    msg.className = 'pay-coupon-msg error';
+    appliedCoupon = null;
+    refreshPaymentSummary();
+    return;
+  }
+  appliedCoupon = { code, pct: coupon.pct };
+  msg.textContent = '✅ ' + (t('couponApplied') || 'Coupon applied!') + ' -' + coupon.pct + '%';
+  msg.className = 'pay-coupon-msg success';
+  refreshPaymentSummary();
+}
+
+function refreshPaymentSummary() {
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
+  const subtotalBase = cartSubtotalBase();
+  const subtotalDisp = subtotalBase * lang.rate;
+  const fmtD = (v) => lang.currency + Math.round(v).toLocaleString();
+  const discountAmt = appliedCoupon ? subtotalDisp * (appliedCoupon.pct / 100) : 0;
+  const discountedSub = subtotalDisp - discountAmt;
+  const freeDelivery = discountedSub >= FREE_DELIVERY_THRESHOLD_SAR;
+  const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
+  const grandDisp = discountedSub + deliveryDisp;
+
+  document.getElementById('paySubtotal').textContent = fmtD(subtotalDisp);
+  const discRow = document.getElementById('payDiscountRow');
+  const discEl = document.getElementById('payDiscount');
+  const discLabel = document.getElementById('payDiscountLabel');
+  if (discRow) discRow.style.display = appliedCoupon ? 'flex' : 'none';
+  if (discEl) discEl.textContent = '-' + fmtD(discountAmt);
+  if (discLabel) discLabel.textContent = (t('discount') || 'Discount') + ' (' + (appliedCoupon ? appliedCoupon.pct : 0) + '%)';
+  const delivEl = document.getElementById('payDelivery');
+  if (freeDelivery) { delivEl.textContent = t('free') || 'Free'; delivEl.style.color = '#0a8f4a'; }
+  else { delivEl.textContent = fmtD(deliveryDisp); delivEl.style.color = '#e91e8c'; }
+  document.getElementById('payTotal').textContent = fmtD(grandDisp);
+  const btn = document.getElementById('payBtnText');
+  if (btn) btn.textContent = (t('placeOrder') || 'Order') + ' — ' + fmtD(grandDisp);
+}
+
 /* ===== WHATSAPP CHECKOUT ===== */
 function whatsappCheckout() {
   if (cart.length === 0) return;
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
   const lines = cart.map(item => {
     const p = PRODUCTS.find(p => p.id === item.id);
     return `• ${getName(p)} x${item.qty} = ${fmt(p.price * item.qty)}`;
   });
-  const total = cart.reduce((s, i) => {
-    const p = PRODUCTS.find(p => p.id === i.id);
-    return s + p.price * i.qty;
-  }, 0);
+  const subtotalBase = cartSubtotalBase();
+  const subtotalDisp = subtotalBase * lang.rate;
+  const discountAmt = appliedCoupon ? subtotalDisp * (appliedCoupon.pct / 100) : 0;
+  const freeDelivery = (subtotalDisp - discountAmt) >= FREE_DELIVERY_THRESHOLD_SAR;
+  const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
+  const grandDisp = subtotalDisp - discountAmt + deliveryDisp;
+  const fmtD = (v) => lang.currency + Math.round(v).toLocaleString();
+  let couponLine = appliedCoupon ? `\n🏷️ Coupon (${appliedCoupon.code}): -${fmtD(discountAmt)}` : '';
   const locText = typeof getLocationText === 'function' ? getLocationText() : '';
-  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}\n\n*${t('totalLabel')} ${fmt(total)}*${locText}`;
+  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}${couponLine}\n\n*${t('totalLabel')} ${fmtD(grandDisp)}*${locText}`;
+  if (appliedCoupon) markCouponUsed(appliedCoupon.code);
   window.open(`https://wa.me/966546224029?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
@@ -1001,6 +1110,14 @@ function openPayment() {
       nudge.innerHTML = `<span class="nudge-add">🚚 ${t('addMoreFree')||'Add'} <strong>${fmtD(needed)}</strong> ${t('moreForFree')||'more for free delivery'}</span>`;
     }
   }
+  // Reset coupon state
+  appliedCoupon = null;
+  const couponMsg = document.getElementById('couponMsg');
+  const couponInput = document.getElementById('couponInput');
+  if (couponMsg) { couponMsg.textContent = ''; couponMsg.className = 'pay-coupon-msg'; }
+  if (couponInput) couponInput.value = '';
+  const discRow = document.getElementById('payDiscountRow');
+  if (discRow) discRow.style.display = 'none';
   applyTranslations();
   // Open modal
   document.getElementById('payOverlay').classList.add('open');
