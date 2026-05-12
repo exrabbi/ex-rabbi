@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>EX GLOBAL — Admin Panel</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',Arial,sans-serif;background:#0d0d0d;color:#eee;min-height:100vh}
+    /* LOGIN */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    .login-box{background:#1a1a1a;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;text-align:center;border:1px solid rgba(255,255,255,.07)}
+    .login-logo{font-size:32px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px;margin-bottom:4px}
+    .login-sub{font-size:12px;color:#666;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
+    .login-input{width:100%;padding:14px 16px;background:#111;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:#eee;font-size:16px;margin-bottom:14px;outline:none;text-align:center;letter-spacing:4px}
+    .login-input:focus{border-color:#e91e8c}
+    .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer;transition:opacity .2s}
+    .login-btn:active{opacity:.85}
+    .login-err{color:#e53935;font-size:13px;margin-top:10px;display:none}
+    /* ADMIN */
+    .admin-wrap{display:none}
+    .top-bar{background:#111;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:10}
+    .top-logo{font-size:18px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .top-badge{font-size:11px;color:#666;margin-left:8px}
+    .logout-btn{background:rgba(255,255,255,.06);color:#aaa;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px}
+    .admin-body{padding:20px;max-width:900px;margin:0 auto}
+    /* CARDS */
+    .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:24px}
+    .stat-card{background:#1a1a1a;border-radius:14px;padding:16px;text-align:center;border:1px solid rgba(255,255,255,.06)}
+    .stat-val{font-size:28px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .stat-label{font-size:11px;color:#666;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+    /* SECTION */
+    .sec{background:#1a1a1a;border-radius:16px;padding:20px;margin-bottom:20px;border:1px solid rgba(255,255,255,.06)}
+    .sec-title{font-size:14px;font-weight:800;color:#eee;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+    .sec-title i{color:#e91e8c}
+    /* COUPON TABLE */
+    .coupon-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#111;border-radius:12px;margin-bottom:8px}
+    .coupon-code-tag{font-size:16px;font-weight:900;color:#a855f7;letter-spacing:2px;font-family:monospace}
+    .coupon-info{font-size:12px;color:#666;margin-top:2px}
+    .badge-green{background:rgba(5,150,105,.15);color:#34d399;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+    .badge-red{background:rgba(229,57,53,.12);color:#ef5350;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+    /* ADD COUPON */
+    .form-row{display:flex;gap:8px;flex-wrap:wrap}
+    .adm-input{flex:1;padding:11px 14px;background:#111;border:1.5px solid rgba(255,255,255,.1);border-radius:10px;color:#eee;font-size:14px;outline:none;min-width:100px}
+    .adm-input:focus{border-color:#e91e8c}
+    .adm-btn{padding:11px 18px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+    .adm-btn.gray{background:#2a2a2a;color:#aaa}
+    /* PRODUCTS */
+    .prod-item{display:flex;align-items:center;gap:12px;padding:12px;background:#111;border-radius:12px;margin-bottom:8px}
+    .prod-img{width:52px;height:52px;border-radius:10px;object-fit:cover;flex-shrink:0;background:#222}
+    .prod-name{font-size:13px;font-weight:600;color:#ddd;flex:1}
+    .prod-price{font-size:14px;font-weight:800;color:#e91e8c;white-space:nowrap}
+    .prod-id{font-size:10px;color:#555;margin-top:2px}
+    .share-link-btn{background:rgba(233,30,140,.12);color:#e91e8c;border:none;padding:6px 10px;border-radius:8px;font-size:11px;cursor:pointer;white-space:nowrap;transition:background .2s}
+    .share-link-btn:active{background:rgba(233,30,140,.25)}
+    /* GUIDE */
+    .guide-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    .guide-step:last-child{border-bottom:none}
+    .step-num{width:28px;height:28px;background:linear-gradient(135deg,#e91e8c,#8b2be2);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex-shrink:0}
+    .step-text{font-size:13px;color:#bbb;line-height:1.6}
+    .step-text strong{color:#eee}
+    .copy-url{background:#111;border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:8px 12px;font-size:12px;color:#e91e8c;font-family:monospace;word-break:break-all;margin-top:6px;cursor:pointer}
+    /* TOAST */
+    .adm-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#222;color:#eee;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;white-space:nowrap}
+    .adm-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    /* CHANGE PASSWORD */
+    .danger-zone{border-color:rgba(229,57,53,.2)}
+    @media(max-width:480px){.form-row{flex-direction:column}.adm-btn{width:100%}}
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">EX GLOBAL</div>
+    <div class="login-sub">Admin Panel</div>
+    <input type="password" id="passInput" class="login-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-lock"></i> Login</button>
+    <div class="login-err" id="loginErr">Wrong password</div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-wrap" id="adminWrap">
+
+  <div class="top-bar">
+    <div style="display:flex;align-items:center">
+      <span class="top-logo">EX GLOBAL</span>
+      <span class="top-badge">Admin Panel</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()"><i class="fas fa-right-from-bracket"></i> Logout</button>
+  </div>
+
+  <div class="admin-body">
+
+    <!-- STATS -->
+    <div class="stat-row" id="statRow"></div>
+
+    <!-- PRODUCT LINKS -->
+    <div class="sec">
+      <div class="sec-title"><i class="fas fa-box"></i> Products — Share Links</div>
+      <div id="prodList"></div>
+    </div>
+
+    <!-- COUPON MANAGER -->
+    <div class="sec">
+      <div class="sec-title"><i class="fas fa-tag"></i> Coupons</div>
+      <div id="couponList"></div>
+      <div style="margin-top:14px">
+        <div style="font-size:12px;color:#666;margin-bottom:8px">Add New Coupon</div>
+        <div class="form-row">
+          <input type="text" id="newCouponCode" class="adm-input" placeholder="Code (e.g. SALE20)" maxlength="20" style="text-transform:uppercase"/>
+          <input type="number" id="newCouponPct" class="adm-input" placeholder="%" min="1" max="90" style="max-width:80px"/>
+          <button class="adm-btn" onclick="addNewCoupon()"><i class="fas fa-plus"></i> Add</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK GUIDE -->
+    <div class="sec">
+      <div class="sec-title"><i class="fas fa-book-open"></i> How to Edit Your Site</div>
+      <div class="guide-step">
+        <div class="step-num">1</div>
+        <div class="step-text"><strong>Go to GitHub</strong><br/>Open this link on your browser:<div class="copy-url" onclick="copyText('https://github.com/exrabbi/ex-rabbi')">github.com/exrabbi/ex-rabbi</div></div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">2</div>
+        <div class="step-text"><strong>Switch to gh-pages branch</strong><br/>Click the branch dropdown (it says "main") → select <strong>gh-pages</strong></div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">3</div>
+        <div class="step-text"><strong>Edit products.js to add products</strong><br/>Click <strong>products.js</strong> → click pencil ✏️ icon → edit → click <strong>Commit changes</strong></div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">4</div>
+        <div class="step-text"><strong>Product format to copy:</strong>
+          <div class="copy-url" onclick="copyText(`{ id: 99, nameEn: 'Product Name', nameAr: 'اسم المنتج', nameBn: 'পণ্যের নাম', price: 79, originalPrice: 120, discount: 34, category: 'women', image: 'IMAGE_URL', sizes: ['S','M','L','XL'], colors: ['#000','#fff'], rating: 4.5, ratingCount: 120, sold: 45 }`)">Click to copy product template</div>
+        </div>
+      </div>
+      <div class="guide-step">
+        <div class="step-num">5</div>
+        <div class="step-text"><strong>WhatsApp Orders</strong><br/>All customer orders come directly to your WhatsApp: <strong style="color:#25d366">+966 546224029</strong></div>
+      </div>
+    </div>
+
+    <!-- CHANGE PASSWORD -->
+    <div class="sec danger-zone">
+      <div class="sec-title"><i class="fas fa-key" style="color:#ef5350"></i> Change Admin Password</div>
+      <div class="form-row">
+        <input type="password" id="newPass1" class="adm-input" placeholder="New password"/>
+        <input type="password" id="newPass2" class="adm-input" placeholder="Confirm password"/>
+        <button class="adm-btn" onclick="changePassword()">Save</button>
+      </div>
+      <div id="passMsg" style="font-size:12px;margin-top:8px"></div>
+    </div>
+
+  </div>
+</div>
+
+<div class="adm-toast" id="admToast"></div>
+
+<script src="products.js"></script>
+<script>
+  // ===== AUTH =====
+  const DEFAULT_HASH = 'exglobal2024admin'; // Change via Change Password section
+  function getPassHash() { return localStorage.getItem('exg_adm_pass') || DEFAULT_HASH; }
+
+  function doLogin() {
+    const val = document.getElementById('passInput').value;
+    if (val === getPassHash()) {
+      sessionStorage.setItem('exg_adm_ok', '1');
+      document.getElementById('loginWrap').style.display = 'none';
+      document.getElementById('adminWrap').style.display = 'block';
+      renderAdmin();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+      document.getElementById('passInput').value = '';
+    }
+  }
+  function doLogout() {
+    sessionStorage.removeItem('exg_adm_ok');
+    location.reload();
+  }
+  function changePassword() {
+    const p1 = document.getElementById('newPass1').value;
+    const p2 = document.getElementById('newPass2').value;
+    const msg = document.getElementById('passMsg');
+    if (!p1 || p1.length < 4) { msg.style.color='#ef5350'; msg.textContent='Minimum 4 characters'; return; }
+    if (p1 !== p2) { msg.style.color='#ef5350'; msg.textContent='Passwords do not match'; return; }
+    localStorage.setItem('exg_adm_pass', p1);
+    msg.style.color='#34d399'; msg.textContent='✅ Password changed!';
+    setTimeout(() => { msg.textContent=''; }, 3000);
+  }
+  // Check session
+  if (sessionStorage.getItem('exg_adm_ok') === '1') {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+    document.addEventListener('DOMContentLoaded', renderAdmin);
+  }
+
+  // ===== RENDER ADMIN =====
+  function renderAdmin() {
+    renderStats();
+    renderProducts();
+    renderCoupons();
+  }
+
+  function renderStats() {
+    const usedCoupons = JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
+    const wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
+    const stats = [
+      { val: PRODUCTS.length, label: 'Products' },
+      { val: usedCoupons.length, label: 'Coupons Used' },
+      { val: wishlist.length, label: 'Wishlisted' },
+      { val: getExtraCoupons().length + 1, label: 'Active Coupons' },
+    ];
+    document.getElementById('statRow').innerHTML = stats.map(s =>
+      `<div class="stat-card"><div class="stat-val">${s.val}</div><div class="stat-label">${s.label}</div></div>`
+    ).join('');
+  }
+
+  function renderProducts() {
+    const base = location.origin + location.pathname.replace('admin.html','');
+    document.getElementById('prodList').innerHTML = PRODUCTS.map(p =>
+      `<div class="prod-item">
+        <img class="prod-img" src="${p.image}" onerror="this.style.background='#333'"/>
+        <div style="flex:1;min-width:0">
+          <div class="prod-name">${p.nameEn || p.name}</div>
+          <div class="prod-id">ID: ${p.id} · SAR ${p.price}</div>
+        </div>
+        <button class="share-link-btn" onclick="copyText('${base}?p=${p.id}')">
+          <i class="fas fa-link"></i> Copy Link
+        </button>
+      </div>`
+    ).join('');
+  }
+
+  // ===== COUPONS =====
+  function getExtraCoupons() {
+    return JSON.parse(localStorage.getItem('exg_extra_coupons') || '[]');
+  }
+  function saveExtraCoupons(arr) {
+    localStorage.setItem('exg_extra_coupons', JSON.stringify(arr));
+  }
+
+  function renderCoupons() {
+    const used = JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
+    const extras = getExtraCoupons();
+    const all = [
+      { code: 'WELCOME10', pct: 10, oneTime: true, builtin: true },
+      ...extras
+    ];
+    document.getElementById('couponList').innerHTML = all.map((c,i) =>
+      `<div class="coupon-row">
+        <div>
+          <div class="coupon-code-tag">${c.code}</div>
+          <div class="coupon-info">${c.pct}% off · ${c.oneTime ? 'One-time' : 'Multi-use'} · Used: ${used.filter(u=>u.endsWith(':'+c.code)).length}x</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="badge-green">Active</span>
+          ${!c.builtin ? `<button class="adm-btn gray" style="padding:5px 10px;font-size:11px" onclick="deleteCoupon(${i-1})"><i class="fas fa-trash"></i></button>` : ''}
+        </div>
+      </div>`
+    ).join('');
+  }
+
+  function addNewCoupon() {
+    const code = (document.getElementById('newCouponCode').value || '').trim().toUpperCase();
+    const pct = parseInt(document.getElementById('newCouponPct').value || '0');
+    if (!code || code.length < 3) { toast('❌ Enter a valid code'); return; }
+    if (!pct || pct < 1 || pct > 90) { toast('❌ Enter discount % (1-90)'); return; }
+    const extras = getExtraCoupons();
+    if (extras.find(c => c.code === code)) { toast('❌ Code already exists'); return; }
+    extras.push({ code, pct, oneTime: false });
+    saveExtraCoupons(extras);
+    document.getElementById('newCouponCode').value = '';
+    document.getElementById('newCouponPct').value = '';
+    renderCoupons();
+    renderStats();
+    toast('✅ Coupon ' + code + ' added!');
+  }
+
+  function deleteCoupon(idx) {
+    const extras = getExtraCoupons();
+    extras.splice(idx, 1);
+    saveExtraCoupons(extras);
+    renderCoupons();
+    renderStats();
+    toast('🗑️ Coupon deleted');
+  }
+
+  // ===== UTILS =====
+  function copyText(text) {
+    navigator.clipboard.writeText(text).catch(() => {});
+    toast('📋 Copied!');
+  }
+
+  function toast(msg) {
+    const t = document.getElementById('admToast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
