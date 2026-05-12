@@ -1884,3 +1884,46 @@ body {
 .whatsapp-float {
   box-shadow: 0 4px 18px rgba(37,211,102,.45);
 }
+
+/* ===== SAUDI PRIDE BANNER ===== */
+.saudi-pride-wrap {
+  padding: 10px 16px 4px;
+  display: flex; justify-content: center;
+}
+.saudi-pride-pill {
+  display: flex; align-items: center; gap: 14px;
+  background: linear-gradient(135deg, rgba(220,230,240,.65), rgba(200,215,230,.55));
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 40px;
+  padding: 10px 24px;
+  box-shadow: 0 4px 18px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.6);
+}
+.saudi-pride-text {
+  font-size: 13px; font-weight: 800;
+  color: #1a2a3a; letter-spacing: 2px;
+  text-transform: uppercase; font-family: Georgia, 'Times New Roman', serif;
+  white-space: nowrap;
+}
+.saudi-flag-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 0;
+  flex-shrink: 0;
+}
+.saudi-flag-pole {
+  width: 2px; height: 8px;
+  background: #8B7355;
+  border-radius: 1px 1px 0 0;
+}
+.saudi-flag-svg {
+  width: 44px; height: 30px;
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  animation: flagWave 2.5s ease-in-out infinite;
+  transform-origin: left center;
+}
+@keyframes flagWave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  25%       { transform: skewY(1.5deg) scaleX(1.02); }
+  50%       { transform: skewY(-1deg) scaleX(.99); }
+  75%       { transform: skewY(1deg) scaleX(1.01); }
+}
