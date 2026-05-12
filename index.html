@@ -37,6 +37,48 @@
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
   <link rel="apple-touch-icon" href="favicon.svg" />
+
+  <!-- Google Structured Data (JSON-LD) — shows logo & name in search -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://exrabbi.github.io/ex-rabbi/#organization",
+        "name": "EX GLOBAL",
+        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://exrabbi.github.io/ex-rabbi/logo.svg",
+          "width": 512,
+          "height": 512
+        },
+        "description": "Saudi Arabia's fastest online store. Shop fashion, electronics, beauty & more.",
+        "areaServed": "SA",
+        "foundingDate": "2024"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://exrabbi.github.io/ex-rabbi/#website",
+        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "name": "EX GLOBAL",
+        "description": "Online Shopping Saudi Arabia – Fashion, Electronics & More",
+        "publisher": {
+          "@id": "https://exrabbi.github.io/ex-rabbi/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://exrabbi.github.io/ex-rabbi/?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ]
+  }
+  </script>
   <link rel="stylesheet" href="styles.css?v=12" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
