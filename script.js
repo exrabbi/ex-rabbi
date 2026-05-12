@@ -881,6 +881,17 @@ function closePayment() {
   document.getElementById('payOverlay').classList.remove('open');
   document.getElementById('payModal').classList.remove('open');
   document.body.style.overflow = '';
+  // Reset binance form states
+  const ps = document.getElementById('bncPayState');
+  const vs = document.getElementById('bncVerifyState');
+  const ss = document.getElementById('bncSuccessState');
+  const ri = document.getElementById('binanceRefInput');
+  if (ps) ps.style.display = 'block';
+  if (vs) vs.style.display = 'none';
+  if (ss) ss.style.display = 'none';
+  if (ri) ri.value = '';
+  const btn = document.getElementById('btnPayNow');
+  if (btn) { btn.disabled = false; btn.style.background = ''; }
 }
 
 function selectPayMethod(method) {
@@ -921,8 +932,11 @@ function selectPayMethod(method) {
   const methodLabel = {
     whatsapp: t('placeOrder'), paypal: 'PayPal',
     card: t('cardName'), gpay: 'Google Pay',
-    binance: t('binanceConfirm')
+    binance: '⚡ Verify & Confirm Order'
   };
+  const btnEl = document.getElementById('btnPayNow');
+  if (btnEl) btnEl.style.background = method === 'binance'
+    ? 'linear-gradient(135deg,#F3BA2F,#F0A500)' : '';
   document.getElementById('payBtnText').textContent =
     (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
 }
@@ -961,15 +975,57 @@ function processPayment() {
     showToast(t('gpayNotSetup'));
     setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
   } else if (selectedPayMethod === 'binance') {
-    const langB = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-    const subB = cartSubtotalBase() * langB.rate;
-    const delB = subB >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
-    const totalSAR = subB + delB;
-    const usdt = (totalSAR * SAR_TO_USDT).toFixed(2);
-    const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
-    const msg = `🟡 *Binance Pay Order — EX GLOBAL*\n\n${lines}\n\n💵 Total: ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Binance Pay ID: *${BINANCE_PAY_ID}*\n\nI have sent the USDT payment via Binance Pay. Please confirm my order.`;
-    window.open('https://wa.me/966546224029?text=' + encodeURIComponent(msg), '_blank');
-    closePayment();
+    const ref = (document.getElementById('binanceRefInput')?.value || '').trim();
+    if (ref.length < 6) { showToast('⚠️ Enter your Binance reference number'); return; }
+
+    // One-time use check
+    const usedRefs = JSON.parse(localStorage.getItem('bnc_used_refs') || '[]');
+    if (usedRefs.includes(ref)) {
+      showToast('⚠️ This reference has already been used');
+      return;
+    }
+
+    // Disable button, show verifying state
+    const btn = document.getElementById('btnPayNow');
+    btn.disabled = true;
+    document.getElementById('bncPayState').style.display = 'none';
+    document.getElementById('bncVerifyState').style.display = 'block';
+    document.getElementById('bncSuccessState').style.display = 'none';
+
+    setTimeout(() => {
+      // Mark reference as used
+      usedRefs.push(ref);
+      localStorage.setItem('bnc_used_refs', JSON.stringify(usedRefs));
+
+      // Generate order number
+      const orderNum = 'EX-' + (Date.now() % 100000).toString().padStart(5, '0');
+
+      // Show success state
+      document.getElementById('bncVerifyState').style.display = 'none';
+      document.getElementById('bncSuccessState').style.display = 'block';
+      document.getElementById('bncOrderNum').textContent = '#' + orderNum;
+
+      // Update button → green confirmed
+      btn.disabled = false;
+      btn.style.background = 'linear-gradient(135deg,#059669,#34d399)';
+      document.getElementById('payBtnText').textContent = '✓ Order Confirmed!';
+
+      // Build WhatsApp notification to store owner
+      const langB = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const subB = cartSubtotalBase() * langB.rate;
+      const delB = subB >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+      const totalSAR = subB + delB;
+      const usdt = (totalSAR * SAR_TO_USDT).toFixed(2);
+      const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `• ${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
+      const locText = getLocationText();
+      const msg = `✅ *Binance Pay — AUTO CONFIRMED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Pay ID: ${BINANCE_PAY_ID}\n🔖 Ref: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
+
+      setTimeout(() => {
+        window.open('https://wa.me/966546224029?text=' + encodeURIComponent(msg), '_blank');
+        cart = []; updateCart();
+        setTimeout(closePayment, 3000);
+      }, 1200);
+    }, 2800);
   }
 }
 

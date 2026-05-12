@@ -948,38 +948,72 @@
       <!-- Binance form -->
       <div id="binanceForm" style="display:none">
         <div class="binance-box">
-          <div class="binance-box-header">
-            <div class="binance-bnc-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a">
-                <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
-              </svg>
+
+          <!-- ── PAY STATE ── -->
+          <div id="bncPayState">
+            <div class="binance-box-header">
+              <div class="binance-bnc-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a">
+                  <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
+                </svg>
+              </div>
+              <div class="binance-box-title-wrap">
+                <div class="binance-box-title">Binance Pay</div>
+                <div class="binance-box-net">Fast &amp; Secure Crypto</div>
+              </div>
+              <div class="binance-usdt-pill">
+                <span class="binance-usdt-val" id="binanceUSDT">-- USDT</span>
+              </div>
             </div>
-            <div class="binance-box-title-wrap">
-              <div class="binance-box-title">Binance Pay</div>
-              <div class="binance-box-net" data-i18n="binanceNetwork">TRC-20 (Tron)</div>
+
+            <!-- Pay ID -->
+            <div class="binance-id-wrap">
+              <div class="binance-id-lbl">Binance Pay ID</div>
+              <div class="binance-id-row">
+                <span class="binance-id-num" id="binanceAddrTxt">1167244565</span>
+                <button class="binance-copy-btn" onclick="copyBinanceAddr()">
+                  <i class="fas fa-copy"></i>
+                </button>
+              </div>
+              <div class="binance-id-hint"><i class="fas fa-mobile-screen-button"></i> Binance App → Pay → Send → Enter ID above</div>
             </div>
-            <div class="binance-usdt-pill">
-              <span class="binance-usdt-val" id="binanceUSDT">-- USDT</span>
+
+            <!-- Amount -->
+            <div class="binance-amount-row">
+              <span class="binance-amount-lbl">Send exactly:</span>
+              <span class="binance-amount-val" id="binanceAmtSAR"></span>
+            </div>
+
+            <!-- Reference input -->
+            <div class="binance-ref-wrap">
+              <label class="binance-ref-lbl"><i class="fas fa-receipt"></i> Binance Order / Reference No.</label>
+              <input class="binance-ref-input" type="text" id="binanceRefInput"
+                placeholder="e.g. 12345678901234" maxlength="30"
+                oninput="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'')" />
+              <div class="binance-ref-hint">Copy the reference from your Binance payment receipt</div>
             </div>
           </div>
-          <div class="binance-id-wrap">
-            <div class="binance-id-lbl">Binance Pay ID</div>
-            <div class="binance-id-row">
-              <span class="binance-id-num" id="binanceAddrTxt">1167244565</span>
-              <button class="binance-copy-btn" onclick="copyBinanceAddr()">
-                <i class="fas fa-copy"></i>
-              </button>
+
+          <!-- ── VERIFYING STATE ── -->
+          <div id="bncVerifyState" style="display:none">
+            <div class="bnc-verify-anim">
+              <div class="bnc-spinner"></div>
+              <div class="bnc-verify-text">Verifying payment...</div>
             </div>
-            <div class="binance-id-hint">Open Binance → Pay → Send → Enter ID</div>
           </div>
-          <div class="binance-amount-row">
-            <span class="binance-amount-lbl" data-i18n="binanceAmount">Amount (USDT):</span>
-            <span class="binance-amount-val" id="binanceAmtSAR"></span>
+
+          <!-- ── SUCCESS STATE ── -->
+          <div id="bncSuccessState" style="display:none">
+            <div class="bnc-success">
+              <div class="bnc-success-icon">
+                <i class="fas fa-circle-check"></i>
+              </div>
+              <div class="bnc-success-title">Order Confirmed!</div>
+              <div class="bnc-order-badge" id="bncOrderNum">#EX-00000</div>
+              <div class="bnc-success-sub">Payment verified ✓<br>WhatsApp confirmation sending...</div>
+            </div>
           </div>
-          <div class="binance-note">
-            <i class="fas fa-circle-info"></i>
-            <span data-i18n="binanceNote">After sending, confirm via WhatsApp</span>
-          </div>
+
         </div>
       </div>
 
