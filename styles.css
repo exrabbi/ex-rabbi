@@ -2407,3 +2407,142 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .coupon-title { color: #eee; }
 [data-theme="dark"] .pay-coupon-wrap { background: #1a1a1a; border-color: rgba(124,58,237,.3); }
 [data-theme="dark"] .pay-coupon-input { color: #eee; }
+
+/* ===== DARK MODE COMPREHENSIVE FIX ===== */
+/* Cart sidebar */
+[data-theme="dark"] .cart-sidebar { background: #111; }
+[data-theme="dark"] .cart-drag-handle { background: #333; }
+[data-theme="dark"] .cart-item { border-bottom-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .cart-item-img { background: #2a2a2a; }
+[data-theme="dark"] .cart-item-name { color: #ddd; }
+[data-theme="dark"] .cart-item-top { color: #ddd; }
+[data-theme="dark"] .cart-item-variant { color: #666; }
+[data-theme="dark"] .cart-item-line-total { color: #e91e8c; }
+[data-theme="dark"] .qty-btn { border-color: #333; color: #e91e8c; }
+[data-theme="dark"] .qty-num { color: #eee; }
+[data-theme="dark"] .remove-item { color: #444; }
+[data-theme="dark"] .empty-cart-title { color: #ccc; }
+[data-theme="dark"] .cart-footer { background: #111; border-top-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .cart-del-prog { background: #1a1a1a; border-color: rgba(233,30,140,.2); }
+[data-theme="dark"] .cart-del-prog-top { color: #aaa; }
+[data-theme="dark"] .cart-del-bar-bg { background: #2a2a2a; }
+[data-theme="dark"] .cart-del-prog.free-del { background: rgba(5,150,105,.1); border-color: rgba(5,150,105,.3); }
+[data-theme="dark"] .cart-summary { background: transparent; }
+[data-theme="dark"] .cart-srow-label { color: #666; }
+[data-theme="dark"] .cart-srow-val { color: #ccc; }
+[data-theme="dark"] .cart-total-label { color: #ccc; }
+[data-theme="dark"] .cart-total-row { border-top-color: rgba(255,255,255,.08); }
+
+/* Product modal */
+[data-theme="dark"] .product-modal { background: #111; }
+[data-theme="dark"] .modal-close { background: rgba(255,255,255,.08); color: #ccc; }
+[data-theme="dark"] .modal-name { color: #eee; }
+[data-theme="dark"] .modal-desc { color: #888; }
+[data-theme="dark"] .modal-price { color: #e91e8c; }
+[data-theme="dark"] .modal-orig { color: #555; }
+[data-theme="dark"] .size-label, [data-theme="dark"] .color-label { color: #aaa; }
+[data-theme="dark"] .size-btn { background: #222; color: #ccc; border-color: #333; }
+[data-theme="dark"] .size-btn.active { background: #e91e8c; color: #fff; border-color: #e91e8c; }
+[data-theme="dark"] .modal-section-title { color: #aaa; }
+[data-theme="dark"] .modal-sheet { background: #111; }
+
+/* Payment modal */
+[data-theme="dark"] .pay-modal { background: #111; }
+[data-theme="dark"] .pay-head { background: #1a1a1a; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .pay-head span { color: #eee; }
+[data-theme="dark"] .pay-body { background: #111; }
+[data-theme="dark"] .pay-summary { background: #1a1a1a; border-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .pay-summary-row { color: #aaa; border-bottom-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .pay-summary-row span:first-child { color: #888; }
+[data-theme="dark"] .pay-grand { color: #eee; }
+[data-theme="dark"] .pay-methods-title { color: #888; }
+[data-theme="dark"] .pay-method-card { background: #1a1a1a; border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .pay-method-card.active { border-color: #e91e8c; background: rgba(233,30,140,.08); }
+[data-theme="dark"] .pay-method-name { color: #ddd; }
+[data-theme="dark"] .pay-method-sub { color: #777; }
+[data-theme="dark"] .pay-method-check { color: #555; }
+[data-theme="dark"] .pay-method-card.active .pay-method-check { color: #e91e8c; }
+[data-theme="dark"] .pay-free-nudge { background: #1a1a1a; }
+[data-theme="dark"] .nudge-add { color: #aaa; }
+
+/* Body & page background */
+[data-theme="dark"] .products-grid { background: transparent; }
+[data-theme="dark"] .section { background: transparent; }
+[data-theme="dark"] .section-header { background: transparent; }
+[data-theme="dark"] .section-title { color: #eee; }
+
+/* Product cards */
+[data-theme="dark"] .product-card { background: #1a1a1a; border-color: rgba(255,255,255,.05); }
+[data-theme="dark"] .product-card-body { background: #1a1a1a; }
+[data-theme="dark"] .product-name { color: #ddd; }
+[data-theme="dark"] .product-price { color: #e91e8c; }
+[data-theme="dark"] .product-orig { color: #555; }
+[data-theme="dark"] .product-rating span { color: #888; }
+[data-theme="dark"] .btn-wishlist { color: #555; }
+[data-theme="dark"] .btn-wishlist.active { color: #e91e8c; }
+
+/* Flash deals */
+[data-theme="dark"] .flash-banner { background: linear-gradient(135deg,#1a0a12,#110a1a); }
+[data-theme="dark"] .flash-card { background: #1e1e1e; }
+[data-theme="dark"] .flash-name { color: #ddd; }
+[data-theme="dark"] .flash-price { color: #e91e8c; }
+[data-theme="dark"] .flash-orig { color: #555; }
+[data-theme="dark"] .flash-timer-box { background: #2a2a2a; color: #eee; }
+
+/* Category circles */
+[data-theme="dark"] .cat-circle { background: #1a1a1a; }
+[data-theme="dark"] .cat-circle span { color: #aaa; }
+
+/* Info bar */
+[data-theme="dark"] .info-bar { background: #111; }
+[data-theme="dark"] .info-item { color: #666; }
+[data-theme="dark"] .info-item i { color: #555; }
+
+/* Hero slides */
+[data-theme="dark"] .slide-1 { background: linear-gradient(120deg,#1a1208,#120d04); }
+[data-theme="dark"] .slide-2 { background: linear-gradient(120deg,#1a1208,#150f06); }
+[data-theme="dark"] .slide-3 { background: linear-gradient(120deg,#0a1a10,#061208); }
+[data-theme="dark"] .hero-sale-title { color: #eee; }
+[data-theme="dark"] .hero-sub { color: #aaa; }
+
+/* Review section */
+[data-theme="dark"] .reviewer-name { color: #ddd; }
+[data-theme="dark"] .reviewer-date { color: #666; }
+[data-theme="dark"] .review-text { color: #aaa; }
+[data-theme="dark"] .review-helpful { background: #222; border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .review-helpful:active { background: #2a2a2a; }
+[data-theme="dark"] .helpful-count-txt { color: #666; }
+
+/* Me panel full */
+[data-theme="dark"] .me-big-initial { background: linear-gradient(135deg,#1a1a1a,#222); color: #e91e8c; }
+[data-theme="dark"] .me-hero-name { color: #eee; }
+[data-theme="dark"] .me-hero-email { color: #888; }
+[data-theme="dark"] .me-hero-row { background: #1a1a1a; border-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .me-stat-val { color: #eee; }
+[data-theme="dark"] .me-stat-label { color: #777; }
+[data-theme="dark"] .me-block-title { color: #888; }
+[data-theme="dark"] .me-list-item { color: #ddd; border-bottom-color: rgba(255,255,255,.05); }
+[data-theme="dark"] .me-chev-r { color: #444; }
+[data-theme="dark"] .me-edit-pill { background: #2a2a2a; color: #ddd; border-color: rgba(255,255,255,.1); }
+[data-theme="dark"] .me-no-login { background: #1a1a1a; color: #aaa; }
+
+/* Settings panel */
+[data-theme="dark"] .settings-panel { background: #0d0d0d; }
+[data-theme="dark"] .settings-head { background: #111; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .settings-section-title { color: #777; }
+[data-theme="dark"] .settings-item { color: #ccc; border-bottom-color: rgba(255,255,255,.05); }
+[data-theme="dark"] .settings-item i { color: #666; }
+[data-theme="dark"] .settings-about { background: #1a1a1a; color: #888; }
+
+/* WhatsApp float button ok as is */
+/* Saudi flag section */
+[data-theme="dark"] .saudi-pride-bar { background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.06); }
+
+/* Binance pay section */
+[data-theme="dark"] .bnc-box { background: #1a1a1a; border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .bnc-input { background: #222; color: #eee; border-color: rgba(255,255,255,.1); }
+[data-theme="dark"] .bnc-label { color: #aaa; }
+
+/* Location map area */
+[data-theme="dark"] .loc-modal { background: #111; }
+[data-theme="dark"] .loc-head { background: #1a1a1a; border-bottom-color: rgba(255,255,255,.07); }
