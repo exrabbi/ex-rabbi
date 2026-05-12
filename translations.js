@@ -1,7 +1,7 @@
 const TRANSLATIONS = {
   bn: {
     dir: 'ltr', currency: '৳', rate: 1,
-    logo: 'ShopBD',
+    logo: 'EX GLOBAL',
     searchPlaceholder: 'পণ্য খুঁজুন...',
     tabAll: 'সব', tabWomen: 'মহিলা', tabKids: 'শিশু', tabMen: 'পুরুষ', tabBeauty: 'বিউটি', tabHome: 'হোম',
     freeShipping: 'ফ্রি শিপিং', freeShippingSub: '৫০০ টাকার উপরে',
@@ -58,7 +58,7 @@ const TRANSLATIONS = {
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
-    logo: 'ShopBD',
+    logo: 'EX GLOBAL',
     searchPlaceholder: 'Search products...',
     tabAll: 'All', tabWomen: 'Women', tabKids: 'Kids', tabMen: 'Men', tabBeauty: 'Beauty', tabHome: 'Home',
     freeShipping: 'Free Shipping', freeShippingSub: 'On orders over 40 SAR',

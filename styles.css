@@ -864,3 +864,21 @@ img { max-width: 100%; display: block; }
 .soc-bar.soc-fb     { background: #1877f2; }
 .soc-bar.soc-ig     { background: linear-gradient(90deg,#f09433,#dc2743,#bc1888); }
 .soc-bar.soc-wa     { background: #25d366; }
+
+/* ===== EX GLOBAL LOGO ===== */
+.header-logo-img {
+  height: 36px; width: auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 3px 10px;
+  display: block;
+  object-fit: contain;
+}
+.drawer-logo-img {
+  height: 34px; width: auto;
+  background: #fff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: block;
+  object-fit: contain;
+}
