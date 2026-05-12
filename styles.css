@@ -1507,3 +1507,21 @@ img { max-width: 100%; display: block; }
 }
 .ep-emoji:hover, .ep-emoji:active { background: #f5f5f5; transform: scale(1.2); }
 .ep-emoji.ep-active { background: #fce4ec; outline: 2px solid #e91e8c; }
+
+/* Free delivery nudge in payment modal */
+.pay-free-nudge {
+  margin: 0 0 10px; min-height: 0;
+}
+.nudge-add, .nudge-free {
+  display: flex; align-items: center; gap: 6px;
+  padding: 10px 14px; border-radius: 12px;
+  font-size: 13px; font-weight: 600; line-height: 1.4;
+}
+.nudge-add {
+  background: #fff8e1; color: #b45309;
+  border: 1.5px solid #fde68a;
+}
+.nudge-free {
+  background: #ecfdf5; color: #065f46;
+  border: 1.5px solid #6ee7b7;
+}

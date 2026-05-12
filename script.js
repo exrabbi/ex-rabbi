@@ -775,18 +775,36 @@ let selectedPayMethod = 'whatsapp';
 let paypalLoaded = false;
 
 const DELIVERY_SAR = 17;
+const FREE_DELIVERY_THRESHOLD_SAR = 100;
 
 function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
-  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const subtotalSAR = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
-  const fmtV = (v) => lang.currency + Math.round(v * lang.rate).toLocaleString();
-  const deliveryLocal = DELIVERY_SAR * lang.rate;
-  const grandTotal = subtotal * lang.rate + deliveryLocal;
-  document.getElementById('paySubtotal').textContent = fmtV(subtotal);
-  document.getElementById('payDelivery').textContent = lang.currency + Math.round(deliveryLocal).toLocaleString();
-  document.getElementById('payTotal').textContent = lang.currency + Math.round(grandTotal).toLocaleString();
-  document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + lang.currency + Math.round(grandTotal).toLocaleString();
+  const freeDelivery = subtotalSAR >= FREE_DELIVERY_THRESHOLD_SAR;
+  const deliverySAR = freeDelivery ? 0 : DELIVERY_SAR;
+  const grandTotalSAR = subtotalSAR + deliverySAR;
+  const fmtL = (sar) => lang.currency + Math.round(sar * lang.rate).toLocaleString();
+  document.getElementById('paySubtotal').textContent = fmtL(subtotalSAR);
+  const delivEl = document.getElementById('payDelivery');
+  if (freeDelivery) {
+    delivEl.textContent = t('free') || 'Free';
+    delivEl.style.color = '#0a8f4a';
+  } else {
+    delivEl.textContent = fmtL(deliverySAR);
+    delivEl.style.color = '#e91e8c';
+  }
+  document.getElementById('payTotal').textContent = fmtL(grandTotalSAR);
+  document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtL(grandTotalSAR);
+  const nudge = document.getElementById('payFreeNudge');
+  if (nudge) {
+    if (freeDelivery) {
+      nudge.innerHTML = `<span class="nudge-free">🎉 ${t('freeDeliveryActive')||'Free delivery applied!'}</span>`;
+    } else {
+      const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalSAR;
+      nudge.innerHTML = `<span class="nudge-add">🚚 ${t('addMoreFree')||'Add'} <strong>${fmtL(needed)}</strong> ${t('moreForFree')||'more for free delivery'}</span>`;
+    }
+  }
   // Open modal
   document.getElementById('payOverlay').classList.add('open');
   document.getElementById('payModal').classList.add('open');
@@ -867,7 +885,8 @@ function renderPayPalButtons() {
   const container = document.getElementById('paypalBtnContainer');
   container.innerHTML = '';
   const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const amount = (total * 0.034 + DELIVERY_SAR).toFixed(2);
+  const delivery = total >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+  const amount = (total * 0.034 + delivery * 0.034).toFixed(2);
   paypal.Buttons({
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
