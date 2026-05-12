@@ -396,8 +396,14 @@ function removeFromCart(id) {
 }
 function updateCartBadge() {
   const count = cart.reduce((s, i) => s + i.qty, 0);
-  document.getElementById('cartBadge').textContent = count;
-  document.getElementById('cartBadge').style.display = count ? 'flex' : 'none';
+  const hb = document.getElementById('cartBadge');
+  const nb = document.getElementById('botCartBadge');
+  [hb, nb].forEach(b => {
+    if (!b) return;
+    b.textContent = count > 99 ? '99+' : count;
+    b.style.display = count ? 'flex' : 'none';
+    if (count) { b.style.animation = 'none'; requestAnimationFrame(() => { b.style.animation = ''; }); }
+  });
 }
 
 /* ===== WISHLIST ===== */

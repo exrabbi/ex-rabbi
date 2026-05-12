@@ -515,19 +515,27 @@
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="bot-btn active" onclick="setBottomActive(this)">
-      <i class="fas fa-home"></i><span data-i18n="navShop">শপ</span>
+      <div class="bot-icon-wrap"><i class="fas fa-house"></i></div>
+      <span data-i18n="navShop">Shop</span>
     </button>
     <button class="bot-btn" onclick="setBottomActive(this);filterCategory('all')">
-      <i class="fas fa-th-large"></i><span data-i18n="navCategory">ক্যাটাগরি</span>
+      <div class="bot-icon-wrap"><i class="fas fa-grid-2"></i></div>
+      <span data-i18n="navCategory">Category</span>
     </button>
     <button class="bot-btn" onclick="setBottomActive(this)">
-      <i class="fas fa-fire"></i><span data-i18n="navTrend">ট্রেন্ড</span>
+      <div class="bot-icon-wrap"><i class="fas fa-fire-flame-curved"></i></div>
+      <span data-i18n="navTrend">Trend</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this);openCart()">
-      <i class="fas fa-shopping-cart"></i><span data-i18n="navCart">কার্ট</span>
+    <button class="bot-btn" id="botCartBtn" onclick="setBottomActive(this);openCart()">
+      <div class="bot-icon-wrap">
+        <i class="fas fa-bag-shopping"></i>
+        <span class="bot-nav-badge" id="botCartBadge" style="display:none">0</span>
+      </div>
+      <span data-i18n="navCart">Cart</span>
     </button>
     <button class="bot-btn" onclick="setBottomActive(this);openMe()">
-      <i class="fas fa-user"></i><span data-i18n="navMe">আমি</span>
+      <div class="bot-icon-wrap"><i class="fas fa-circle-user"></i></div>
+      <span data-i18n="navMe">Me</span>
     </button>
   </nav>
 
