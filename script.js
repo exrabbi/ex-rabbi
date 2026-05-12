@@ -54,12 +54,18 @@ function setLang(lang) {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
-  renderProducts(document.getElementById('searchInput').value);
+  const si = document.getElementById('searchInput');
+  renderProducts(si ? si.value : '');
   renderCart();
+  // refresh reviews entry strip count
+  const ec = document.getElementById('revEntryCount');
+  const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
+  if (ec) ec.textContent = (stored.length + 1253).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
 }
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', () => {
+  setLang('en');
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
