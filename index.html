@@ -358,7 +358,7 @@
         <span data-i18n="totalLabel">মোট:</span>
         <span id="cartTotal">0</span>
       </div>
-      <button class="btn-checkout" onclick="whatsappCheckout()" data-i18n="checkout">চেকআউট করুন</button>
+      <button class="btn-checkout" onclick="openPayment()" data-i18n="checkout">চেকআউট করুন</button>
     </div>
   </aside>
 
@@ -572,6 +572,140 @@
   </aside>
 
   <!-- LOCATION / ADDRESS MODAL -->
+  <!-- PAYMENT MODAL -->
+  <div class="pay-overlay" id="payOverlay" onclick="closePayment()"></div>
+  <div class="pay-modal" id="payModal">
+    <div class="pay-head">
+      <button class="icon-btn" onclick="closePayment()" style="color:#333"><i class="fas fa-times"></i></button>
+      <span>💳 পেমেন্ট করুন</span>
+      <div style="width:32px"></div>
+    </div>
+    <div class="pay-body">
+
+      <!-- Order Summary -->
+      <div class="pay-summary">
+        <div class="pay-summary-row">
+          <span>অর্ডার মোট</span>
+          <span id="paySubtotal">0</span>
+        </div>
+        <div class="pay-summary-row">
+          <span>ডেলিভারি</span>
+          <span class="pay-free">ফ্রি</span>
+        </div>
+        <div class="pay-summary-row pay-grand">
+          <span>পরিশোধযোগ্য</span>
+          <strong id="payTotal">0</strong>
+        </div>
+      </div>
+
+      <!-- Payment Methods -->
+      <div class="pay-methods-title">পেমেন্ট পদ্ধতি বেছে নিন</div>
+
+      <!-- WhatsApp (Cash on Delivery) -->
+      <div class="pay-method-card active" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+        <div class="pay-method-left">
+          <div class="pay-method-icon" style="background:#25d366">
+            <i class="fab fa-whatsapp"></i>
+          </div>
+          <div class="pay-method-info">
+            <div class="pay-method-name">WhatsApp অর্ডার</div>
+            <div class="pay-method-sub">ক্যাশ অন ডেলিভারি</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkWhatsapp"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- PayPal / Card -->
+      <div class="pay-method-card" id="pmPaypal" onclick="selectPayMethod('paypal')">
+        <div class="pay-method-left">
+          <div class="pay-method-icon" style="background:#003087">
+            <i class="fab fa-paypal"></i>
+          </div>
+          <div class="pay-method-info">
+            <div class="pay-method-name">PayPal</div>
+            <div class="pay-method-sub">Visa, Mastercard, PayPal</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkPaypal"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- Card Direct -->
+      <div class="pay-method-card" id="pmCard" onclick="selectPayMethod('card')">
+        <div class="pay-method-left">
+          <div class="pay-method-icon pay-icon-cards">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
+          </div>
+          <div class="pay-method-info">
+            <div class="pay-method-name">ক্রেডিট / ডেবিট কার্ড</div>
+            <div class="pay-method-sub">Visa · Mastercard · Mada</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkCard"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- Google Pay -->
+      <div class="pay-method-card" id="pmGpay" onclick="selectPayMethod('gpay')">
+        <div class="pay-method-left">
+          <div class="pay-method-icon" style="background:#fff;border:1.5px solid #e8e8e8">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/800px-Google_Pay_Logo.svg.png" alt="Google Pay" style="height:20px;width:auto" />
+          </div>
+          <div class="pay-method-info">
+            <div class="pay-method-name">Google Pay</div>
+            <div class="pay-method-sub">দ্রুত ও নিরাপদ</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkGpay"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- Card logos strip -->
+      <div class="pay-cards-strip">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/800px-Mastercard-logo.svg.png" alt="Mastercard" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/800px-Google_Pay_Logo.svg.png" alt="GPay" />
+      </div>
+
+      <!-- PayPal buttons container -->
+      <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
+
+      <!-- Card form -->
+      <div id="cardForm" style="display:none">
+        <div class="card-form-wrap">
+          <div class="card-field">
+            <label>কার্ড নম্বর</label>
+            <div class="card-input-wrap">
+              <input type="tel" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)" />
+              <div class="card-type-icon" id="cardTypeIcon"></div>
+            </div>
+          </div>
+          <div class="card-row2">
+            <div class="card-field">
+              <label>মেয়াদ</label>
+              <input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+            </div>
+            <div class="card-field">
+              <label>CVV</label>
+              <input type="tel" id="cardCvv" placeholder="•••" maxlength="4" />
+            </div>
+          </div>
+          <div class="card-field">
+            <label>কার্ডধারীর নাম</label>
+            <input type="text" id="cardName" placeholder="Name on card" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Pay Now button -->
+      <button class="btn-pay-now" id="btnPayNow" onclick="processPayment()">
+        <i class="fas fa-lock"></i> <span id="payBtnText">অর্ডার দিন</span>
+      </button>
+
+      <div class="pay-secure-badge">
+        <i class="fas fa-shield-alt"></i> SSL সুরক্ষিত পেমেন্ট
+      </div>
+    </div>
+  </div>
+
   <!-- AUTH MODAL -->
   <div class="auth-overlay" id="authOverlay" onclick="closeAuth()"></div>
   <div class="auth-modal" id="authModal">
@@ -657,6 +791,7 @@
   <div class="toast" id="toast"></div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="paypal-config.js"></script>
   <script src="translations.js"></script>
   <script src="products.js"></script>
   <script src="script.js"></script>

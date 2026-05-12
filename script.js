@@ -757,3 +757,126 @@ function updateAuthUI() {
     userEl.style.display = 'none';
   }
 }
+
+/* ===== PAYMENT SYSTEM ===== */
+let selectedPayMethod = 'whatsapp';
+let paypalLoaded = false;
+
+function openPayment() {
+  if (cart.length === 0) { showToast('কার্ট খালি আছে'); return; }
+  // Update totals
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+  const fmt = (v) => lang.currency + (v * lang.rate).toFixed(2);
+  document.getElementById('paySubtotal').textContent = fmt(total);
+  document.getElementById('payTotal').textContent = fmt(total);
+  document.getElementById('payBtnText').textContent = 'অর্ডার দিন — ' + fmt(total);
+  // Open modal
+  document.getElementById('payOverlay').classList.add('open');
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Load PayPal if configured
+  if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY && !paypalLoaded) {
+    loadPayPalSDK();
+  }
+}
+
+function closePayment() {
+  document.getElementById('payOverlay').classList.remove('open');
+  document.getElementById('payModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectPayMethod(method) {
+  selectedPayMethod = method;
+  ['whatsapp','paypal','card','gpay'].forEach(m => {
+    document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1)).classList.remove('active');
+    document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1)).querySelector('i').style.color = '#ddd';
+  });
+  const card = document.getElementById('pm' + method.charAt(0).toUpperCase() + method.slice(1));
+  if (card) { card.classList.add('active'); }
+  const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
+  if (check) check.querySelector('i').style.color = '#e91e8c';
+  // Show/hide sub-forms
+  document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
+  document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
+  // Update button text
+  const labels = { whatsapp: 'WhatsApp-এ অর্ডার দিন', paypal: 'PayPal দিয়ে পেমেন্ট', card: 'কার্ড দিয়ে পেমেন্ট', gpay: 'Google Pay' };
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+  const fmt = (v) => lang.currency + (v * lang.rate).toFixed(2);
+  document.getElementById('payBtnText').textContent = (labels[method] || 'পেমেন্ট করুন') + ' — ' + fmt(total);
+}
+
+function processPayment() {
+  if (selectedPayMethod === 'whatsapp') {
+    closePayment();
+    whatsappCheckout();
+  } else if (selectedPayMethod === 'paypal') {
+    if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY) {
+      showToast('PayPal উইন্ডো খুলছে...');
+    } else {
+      showToast('⚠️ PayPal এখনো সেটআপ হয়নি — WhatsApp অর্ডার দিন');
+      setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+    }
+  } else if (selectedPayMethod === 'card') {
+    const num = (document.getElementById('cardNumber').value || '').replace(/\s/g,'');
+    const exp = document.getElementById('cardExpiry').value || '';
+    const cvv = document.getElementById('cardCvv').value || '';
+    const name = document.getElementById('cardName').value || '';
+    if (num.length < 16 || !exp || cvv.length < 3 || !name) {
+      showToast('সব কার্ড তথ্য দিন'); return;
+    }
+    showToast('⚠️ Card gateway এখনো সেটআপ হয়নি');
+    setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+  } else if (selectedPayMethod === 'gpay') {
+    showToast('⚠️ Google Pay এখনো সেটআপ হয়নি');
+    setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+  }
+}
+
+function loadPayPalSDK() {
+  if (!PAYPAL_READY) return;
+  const s = document.createElement('script');
+  s.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CONFIG.clientId}&currency=${PAYPAL_CONFIG.currency}`;
+  s.onload = () => {
+    paypalLoaded = true;
+    renderPayPalButtons();
+  };
+  document.head.appendChild(s);
+}
+
+function renderPayPalButtons() {
+  if (typeof paypal === 'undefined') return;
+  const container = document.getElementById('paypalBtnContainer');
+  container.innerHTML = '';
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+  const amount = (total * lang.rate).toFixed(2);
+  paypal.Buttons({
+    createOrder: (data, actions) => actions.order.create({
+      purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
+    }),
+    onApprove: (data, actions) => actions.order.capture().then(details => {
+      showToast('✓ পেমেন্ট সফল! ধন্যবাদ ' + (details.payer.name.given_name || '') + '!');
+      cart = []; updateCart(); closePayment();
+    }),
+    onError: () => showToast('পেমেন্ট ব্যর্থ হয়েছে, আবার চেষ্টা করুন')
+  }).render('#paypalBtnContainer');
+}
+
+// Card number formatting
+function formatCard(el) {
+  let v = el.value.replace(/\D/g, '').substring(0, 16);
+  el.value = v.replace(/(.{4})/g, '$1 ').trim();
+  const icon = document.getElementById('cardTypeIcon');
+  if (v.startsWith('4')) icon.textContent = '💳';
+  else if (v.startsWith('5')) icon.textContent = '🟠';
+  else if (v.startsWith('37')) icon.textContent = '💚';
+  else icon.textContent = '';
+}
+function formatExpiry(el) {
+  let v = el.value.replace(/\D/g, '').substring(0, 4);
+  if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
+  el.value = v;
+}
