@@ -79,7 +79,10 @@
     ]
   }
   </script>
-  <link rel="stylesheet" href="styles.css?v=15" />
+  <script>
+    (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <link rel="stylesheet" href="styles.css?v=16" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -108,6 +111,7 @@
         </div>
       </div>
       <button class="icon-btn" id="searchToggleBtn"><i class="fas fa-search"></i></button>
+      <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
       <button class="icon-btn" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishBadge" style="display:none">0</span></button>
       <button class="icon-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge" style="display:none">0</span></button>
     </div>
@@ -1257,8 +1261,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=13"></script>
+  <script src="translations.js?v=16"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=13"></script>
+  <script src="script.js?v=16"></script>
 </body>
 </html>

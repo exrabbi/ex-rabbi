@@ -9,6 +9,21 @@ let selectedSize = '';
 let selectedColor = '';
 let heroIndex = 0;
 let heroTimer;
+let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
+
+/* ===== THEME ===== */
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('exglobal_theme', theme);
+  const icon = document.getElementById('themeIcon');
+  if (icon) {
+    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  }
+}
+function toggleTheme() {
+  applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+}
 
 /* ===== i18n ===== */
 function t(key) {
@@ -65,6 +80,7 @@ function setLang(lang) {
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', () => {
+  applyTheme(currentTheme);
   setLang('en');
   updateWishBadge();
   renderFlashDeals();

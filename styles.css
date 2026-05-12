@@ -2153,3 +2153,141 @@ body {
 .wish-empty-icon { font-size: 64px; margin-bottom: 16px; }
 .wish-empty-title { font-size: 18px; font-weight: 800; color: #222; margin-bottom: 8px; }
 .wish-empty-sub { font-size: 14px; color: #999; line-height: 1.5; }
+
+/* ===== DARK / LIGHT MODE ===== */
+html, body { transition: background .35s, color .35s; }
+
+/* Theme toggle button animation */
+.theme-toggle-btn i { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
+.theme-toggle-btn:active i { transform: rotate(30deg) scale(.85); }
+
+/* ========== DARK MODE ========== */
+[data-theme="dark"] body {
+  background: #0d0d0d; color: #e0e0e0;
+}
+/* Sections & backgrounds */
+[data-theme="dark"] .section-card,
+[data-theme="dark"] .product-card,
+[data-theme="dark"] .flash-card,
+[data-theme="dark"] .review-card,
+[data-theme="dark"] .me-card-block,
+[data-theme="dark"] .me-addr-card,
+[data-theme="dark"] .me-orders-empty,
+[data-theme="dark"] .addr-form-card {
+  background: #1a1a1a;
+  box-shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+[data-theme="dark"] .product-name,
+[data-theme="dark"] .product-title { color: #ddd; }
+[data-theme="dark"] .product-orig,
+[data-theme="dark"] .product-rating-val { color: #555; }
+
+/* Header stays pink */
+[data-theme="dark"] .header { background: #e91e8c; }
+
+/* Category tabs */
+[data-theme="dark"] .cat-tabs { background: #111; border-bottom-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .cat-tab { color: #666; }
+[data-theme="dark"] .cat-tab.active { color: #e91e8c; border-bottom-color: #e91e8c; }
+
+/* Category circles */
+[data-theme="dark"] .cat-circle span { color: #bbb; }
+
+/* Flash deals banner */
+[data-theme="dark"] .flash-banner {
+  background: linear-gradient(135deg, #1a0a0f 0%, #0d0d1a 100%);
+}
+[data-theme="dark"] .flash-card { background: #1e1e1e; }
+[data-theme="dark"] .flash-name { color: #ddd; }
+
+/* Info bar */
+[data-theme="dark"] .info-bar { background: #111; border-bottom-color: rgba(255,255,255,.05); }
+[data-theme="dark"] .info-item { color: #888; }
+
+/* Saudi Pride banner */
+[data-theme="dark"] .saudi-pride-bar { background: rgba(255,255,255,.04); }
+
+/* Bottom nav */
+[data-theme="dark"] .bottom-nav {
+  background: #111;
+  box-shadow: 0 -1px 0 rgba(255,255,255,.06), 0 -6px 24px rgba(0,0,0,.5);
+}
+[data-theme="dark"] .bot-btn { color: #444; }
+[data-theme="dark"] .bot-btn.active { color: #e91e8c; }
+[data-theme="dark"] .bot-btn.active span { color: #e91e8c; }
+[data-theme="dark"] .bot-nav-badge { border-color: #111; }
+
+/* Drawer */
+[data-theme="dark"] .drawer { background: #111; }
+[data-theme="dark"] .drawer-menu li a { color: #ccc; }
+[data-theme="dark"] .drawer-menu li a:hover { background: rgba(233,30,140,.1); }
+
+/* Cart sidebar */
+[data-theme="dark"] .cart-sidebar { background: #111; }
+[data-theme="dark"] .cart-item { background: #1a1a1a; border-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .cart-item-name { color: #ddd; }
+[data-theme="dark"] .cart-item-variant { color: #777; }
+[data-theme="dark"] .cart-empty-title { color: #ddd; }
+[data-theme="dark"] .cart-head { border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .cart-summary { background: #1a1a1a; border-top-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .cart-total-label,
+[data-theme="dark"] .cart-total-val { color: #ccc; }
+
+/* Me panel */
+[data-theme="dark"] .me-panel { background: #0d0d0d; }
+[data-theme="dark"] .me-page-head { background: #111; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .me-page-head-title { color: #eee; }
+[data-theme="dark"] .me-profile-hero { background: #111; }
+[data-theme="dark"] .me-block-header { color: #888; }
+[data-theme="dark"] .me-list-item { border-bottom-color: rgba(255,255,255,.05); }
+[data-theme="dark"] .me-list-item span { color: #ccc; }
+[data-theme="dark"] .me-addr-name-row, [data-theme="dark"] .me-addr-line { color: #bbb; }
+
+/* Wishlist panel */
+[data-theme="dark"] .wish-panel { background: #0d0d0d; }
+[data-theme="dark"] .wish-head { background: #111; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .wish-head-title { color: #eee; }
+[data-theme="dark"] .wish-item { background: #1a1a1a; }
+[data-theme="dark"] .wish-item-name { color: #ddd; }
+[data-theme="dark"] .wish-empty-title { color: #ddd; }
+
+/* Auth modal */
+[data-theme="dark"] .auth-modal { background: #111; }
+[data-theme="dark"] .auth-title { color: #eee; }
+[data-theme="dark"] .auth-input { background: #222; border-color: rgba(255,255,255,.1); color: #eee; }
+[data-theme="dark"] .auth-input::placeholder { color: #555; }
+
+/* Reviews panel */
+[data-theme="dark"] .reviews-panel { background: #0d0d0d; }
+[data-theme="dark"] .reviews-head { background: #111; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .review-card { background: #1a1a1a; border-color: rgba(255,255,255,.06); }
+[data-theme="dark"] .reviewer-name { color: #ddd; }
+[data-theme="dark"] .review-text { color: #aaa; }
+[data-theme="dark"] .review-product-tag { background: #222; color: #aaa; }
+
+/* Product modal */
+[data-theme="dark"] .modal-sheet { background: #111; }
+[data-theme="dark"] .modal-name { color: #eee; }
+[data-theme="dark"] .modal-desc { color: #aaa; }
+[data-theme="dark"] .size-btn { background: #222; color: #ccc; border-color: rgba(255,255,255,.1); }
+[data-theme="dark"] .size-btn.active { background: #e91e8c; color: #fff; border-color: #e91e8c; }
+
+/* Search bar */
+[data-theme="dark"] .search-bar { background: #111; }
+[data-theme="dark"] #searchInput { background: #222; color: #eee; border-color: rgba(255,255,255,.1); }
+[data-theme="dark"] #searchInput::placeholder { color: #555; }
+
+/* Settings panel */
+[data-theme="dark"] .settings-panel { background: #0d0d0d; }
+[data-theme="dark"] .settings-head { background: #111; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .settings-item { border-bottom-color: rgba(255,255,255,.05); color: #ccc; }
+
+/* Toast */
+[data-theme="dark"] .toast { background: #222; color: #eee; }
+
+/* Scroll top btn */
+[data-theme="dark"] .scroll-top-btn { background: #1a1a1a; color: #e91e8c; box-shadow: 0 4px 16px rgba(0,0,0,.5); }
+
+/* Section titles */
+[data-theme="dark"] .section-title { color: #eee; }
+[data-theme="dark"] .see-all-btn { color: #e91e8c; }
