@@ -14,12 +14,13 @@
  */
 
 const firebaseConfig = {
-  apiKey:            "PASTE_YOUR_API_KEY_HERE",
-  authDomain:        "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
-  projectId:         "PASTE_YOUR_PROJECT_ID",
-  storageBucket:     "PASTE_YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId:             "PASTE_YOUR_APP_ID"
+  apiKey:            "AIzaSyCPSsxifbE92WqEa2VsGdSqaJIRTPkZiLQ",
+  authDomain:        "exglobal21.firebaseapp.com",
+  projectId:         "exglobal21",
+  storageBucket:     "exglobal21.firebasestorage.app",
+  messagingSenderId: "461652919348",
+  appId:             "1:461652919348:web:08b88b4ebc0bd893d73661",
+  measurementId:     "G-1LLGFN395P"
 };
 
 // Only initialize if config looks real
