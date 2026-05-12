@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="bn" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ShopBD - বাংলাদেশের সেরা অনলাইন শপ</title>
+  <title>ShopBD</title>
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
 </head>
 <body>
 
@@ -13,79 +14,80 @@
   <header class="header">
     <div class="header-top">
       <button class="icon-btn" id="menuBtn"><i class="fas fa-bars"></i></button>
-      <button class="icon-btn"><i class="fas fa-envelope"></i></button>
-      <div class="logo">ShopBD</div>
+      <!-- Language Switcher -->
+      <div class="lang-switcher">
+        <button class="lang-btn active" data-lang="bn" onclick="setLang('bn')">বাং</button>
+        <button class="lang-btn" data-lang="en" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" data-lang="ar" onclick="setLang('ar')">عر</button>
+      </div>
+      <div class="logo" data-i18n="logo">ShopBD</div>
       <button class="icon-btn" id="searchToggleBtn"><i class="fas fa-search"></i></button>
-      <button class="icon-btn" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishBadge">0</span></button>
-      <button class="icon-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge">0</span></button>
+      <button class="icon-btn" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishBadge" style="display:none">0</span></button>
+      <button class="icon-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge" style="display:none">0</span></button>
     </div>
-
-    <!-- Search Bar -->
     <div class="search-bar" id="searchBar">
-      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." />
+      <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="পণ্য খুঁজুন..." />
       <button id="searchSubmit"><i class="fas fa-search"></i></button>
     </div>
-
-    <!-- Category Tabs -->
     <nav class="cat-tabs">
-      <button class="cat-tab active" data-cat="all">সব</button>
-      <button class="cat-tab" data-cat="women">মহিলা</button>
-      <button class="cat-tab" data-cat="kids">শিশু</button>
-      <button class="cat-tab" data-cat="men">পুরুষ</button>
-      <button class="cat-tab" data-cat="beauty">বিউটি</button>
-      <button class="cat-tab" data-cat="home">হোম</button>
+      <button class="cat-tab active" data-cat="all" data-i18n="tabAll">সব</button>
+      <button class="cat-tab" data-cat="women" data-i18n="tabWomen">মহিলা</button>
+      <button class="cat-tab" data-cat="kids" data-i18n="tabKids">শিশু</button>
+      <button class="cat-tab" data-cat="men" data-i18n="tabMen">পুরুষ</button>
+      <button class="cat-tab" data-cat="beauty" data-i18n="tabBeauty">বিউটি</button>
+      <button class="cat-tab" data-cat="home" data-i18n="tabHome">হোম</button>
     </nav>
   </header>
 
-  <!-- SIDE MENU DRAWER -->
+  <!-- DRAWER -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer">
     <div class="drawer-head">
-      <span class="logo">ShopBD</span>
+      <span class="logo" data-i18n="logo">ShopBD</span>
       <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
     </div>
     <ul class="drawer-menu">
-      <li><a href="#"><i class="fas fa-user"></i> আমার অ্যাকাউন্ট</a></li>
-      <li><a href="#"><i class="fas fa-box"></i> আমার অর্ডার</a></li>
-      <li><a href="#"><i class="fas fa-heart"></i> উইশলিস্ট</a></li>
-      <li><a href="#"><i class="fas fa-tag"></i> কুপন</a></li>
-      <li><a href="#"><i class="fas fa-headset"></i> সাপোর্ট</a></li>
-      <li><a href="#"><i class="fas fa-info-circle"></i> আমাদের সম্পর্কে</a></li>
+      <li><a href="#"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
+      <li><a href="#"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
+      <li><a href="#"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
+      <li><a href="#"><i class="fas fa-tag"></i> <span data-i18n="coupon">কুপন</span></a></li>
+      <li><a href="#"><i class="fas fa-headset"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
+      <li><a href="#"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
     </ul>
     <div class="drawer-footer">
-      <button class="btn-outline">লগইন করুন</button>
-      <button class="btn-primary">রেজিস্ট্রেশন</button>
+      <button class="btn-outline" data-i18n="login">লগইন করুন</button>
+      <button class="btn-primary" data-i18n="register">রেজিস্ট্রেশন</button>
     </div>
   </aside>
 
-  <!-- MAIN CONTENT -->
+  <!-- MAIN -->
   <main class="main-content">
 
-    <!-- HERO BANNER -->
+    <!-- HERO -->
     <section class="hero-slider">
       <div class="hero-slides" id="heroSlides">
         <div class="hero-slide slide-1">
           <div class="hero-text">
-            <p class="hero-tag">🎉 মেগা সেল</p>
-            <h1>৯০%<br/>পর্যন্ত ছাড়</h1>
-            <p class="hero-sub">১০ লক্ষ+ পণ্যে অফার</p>
-            <button class="btn-hero" onclick="scrollToProducts()">এখনই কিনুন</button>
+            <p class="hero-tag" data-i18n="hero1Tag">🎉 মেগা সেল</p>
+            <h1 data-i18n-html="hero1Title">৯০%<br/>পর্যন্ত ছাড়</h1>
+            <p class="hero-sub" data-i18n="hero1Sub">১০ লক্ষ+ পণ্যে অফার</p>
+            <button class="btn-hero" onclick="scrollToProducts()" data-i18n="shopNow">এখনই কিনুন</button>
           </div>
         </div>
         <div class="hero-slide slide-2">
           <div class="hero-text">
-            <p class="hero-tag">🛍️ নতুন কালেকশন</p>
-            <h1>ঈদ<br/>স্পেশাল</h1>
-            <p class="hero-sub">সেরা ডিজাইন, সেরা দাম</p>
-            <button class="btn-hero" onclick="scrollToProducts()">এখনই কিনুন</button>
+            <p class="hero-tag" data-i18n="hero2Tag">🛍️ নতুন কালেকশন</p>
+            <h1 data-i18n-html="hero2Title">ঈদ<br/>স্পেশাল</h1>
+            <p class="hero-sub" data-i18n="hero2Sub">সেরা ডিজাইন, সেরা দাম</p>
+            <button class="btn-hero" onclick="scrollToProducts()" data-i18n="shopNow">এখনই কিনুন</button>
           </div>
         </div>
         <div class="hero-slide slide-3">
           <div class="hero-text">
-            <p class="hero-tag">🚚 ফ্রি ডেলিভারি</p>
-            <h1>৫০০+<br/>টাকার অর্ডারে</h1>
-            <p class="hero-sub">সারা বাংলাদেশে ডেলিভারি</p>
-            <button class="btn-hero" onclick="scrollToProducts()">এখনই কিনুন</button>
+            <p class="hero-tag" data-i18n="hero3Tag">🚚 ফ্রি ডেলিভারি</p>
+            <h1 data-i18n-html="hero3Title">৫০০+<br/>টাকার অর্ডারে</h1>
+            <p class="hero-sub" data-i18n="hero3Sub">সারা বাংলাদেশে ডেলিভারি</p>
+            <button class="btn-hero" onclick="scrollToProducts()" data-i18n="shopNow">এখনই কিনুন</button>
           </div>
         </div>
       </div>
@@ -101,121 +103,119 @@
       <div class="info-item">
         <i class="fas fa-truck"></i>
         <div>
-          <strong>ফ্রি শিপিং</strong>
-          <small>৫০০ টাকার উপরে</small>
+          <strong data-i18n="freeShipping">ফ্রি শিপিং</strong>
+          <small data-i18n="freeShippingSub">৫০০ টাকার উপরে</small>
         </div>
       </div>
       <div class="info-divider"></div>
       <div class="info-item">
         <i class="fas fa-tags"></i>
         <div>
-          <strong>কম দাম</strong>
-          <small>মাত্র ৯৯ টাকা থেকে</small>
+          <strong data-i18n="lowPrice">কম দাম</strong>
+          <small data-i18n="lowPriceSub">মাত্র ৯৯ টাকা থেকে</small>
         </div>
       </div>
       <div class="info-divider"></div>
       <div class="info-item">
         <i class="fas fa-undo"></i>
         <div>
-          <strong>সহজ রিটার্ন</strong>
-          <small>৭ দিনের মধ্যে</small>
+          <strong data-i18n="easyReturn">সহজ রিটার্ন</strong>
+          <small data-i18n="easyReturnSub">৭ দিনের মধ্যে</small>
         </div>
       </div>
     </div>
 
     <!-- CATEGORY CIRCLES -->
     <section class="section">
-      <h2 class="section-title">ক্যাটাগরি</h2>
+      <h2 class="section-title" data-i18n="categories">ক্যাটাগরি</h2>
       <div class="cat-circles">
         <div class="cat-circle" onclick="filterCategory('women')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#f8c8d4,#e91e8c22)">👗</div>
-          <span>মহিলা</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#f8c8d4,#e91e8c22)">👗</div>
+          <span data-i18n="catWomen">মহিলা</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('men')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#c8d8f8,#1e4de922)">👔</div>
-          <span>পুরুষ</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#c8d8f8,#1e4de922)">👔</div>
+          <span data-i18n="catMen">পুরুষ</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('kids')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#f8f0c8,#e9b81e22)">🧒</div>
-          <span>শিশু</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#f8f0c8,#e9b81e22)">🧒</div>
+          <span data-i18n="catKids">শিশু</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('beauty')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#f8c8f0,#e91eb822)">💄</div>
-          <span>বিউটি</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#f8c8f0,#e91eb822)">💄</div>
+          <span data-i18n="catBeauty">বিউটি</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('shoes')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#d8c8f8,#7c1ee922)">👟</div>
-          <span>জুতা</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#d8c8f8,#7c1ee922)">👟</div>
+          <span data-i18n="catShoes">জুতা</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('bags')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#f8dcc8,#e9621e22)">👜</div>
-          <span>ব্যাগ</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#f8dcc8,#e9621e22)">👜</div>
+          <span data-i18n="catBags">ব্যাগ</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('jewelry')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#fff8c8,#e9d81e22)">💍</div>
-          <span>গহনা</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#fff8c8,#e9d81e22)">💍</div>
+          <span data-i18n="catJewelry">গহনা</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('home')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#c8f8e0,#1ee96022)">🏠</div>
-          <span>হোম</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#c8f8e0,#1ee96022)">🏠</div>
+          <span data-i18n="catHome">হোম</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('electronics')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#c8e8f8,#1e99e922)">📱</div>
-          <span>ইলেক্ট্রনিক্স</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#c8e8f8,#1e99e922)">📱</div>
+          <span data-i18n="catElectronics">ইলেক্ট্রনিক্স</span>
         </div>
         <div class="cat-circle" onclick="filterCategory('sports')">
-          <div class="circle-img" style="background: linear-gradient(135deg,#d8f8c8,#3de91e22)">⚽</div>
-          <span>স্পোর্টস</span>
+          <div class="circle-img" style="background:linear-gradient(135deg,#d8f8c8,#3de91e22)">⚽</div>
+          <span data-i18n="catSports">স্পোর্টস</span>
         </div>
       </div>
     </section>
 
-    <!-- FLASH DEALS BANNER -->
+    <!-- FLASH DEALS -->
     <div class="flash-deals-banner">
       <div class="flash-left">
         <i class="fas fa-bolt"></i>
-        <span>ফ্ল্যাশ ডিল</span>
-        <div class="countdown" id="countdown">
+        <span data-i18n="flashDeal">ফ্ল্যাশ ডিল</span>
+        <div class="countdown">
           <span id="hours">05</span>:<span id="minutes">30</span>:<span id="seconds">00</span>
         </div>
       </div>
-      <a href="#" class="flash-more">সব দেখুন <i class="fas fa-chevron-right"></i></a>
+      <a href="#" class="flash-more"><span data-i18n="seeAll">সব দেখুন</span> <i class="fas fa-chevron-right"></i></a>
     </div>
-
-    <!-- FLASH DEAL PRODUCTS -->
     <div class="flash-products" id="flashProducts"></div>
 
     <!-- SUPER DEALS + TRENDS -->
     <div class="two-col-banner">
       <div class="two-col-card">
         <div class="two-col-head">
-          <span class="two-col-title">⚡ সুপার ডিল</span>
-          <a href="#" class="two-col-more">আরও <i class="fas fa-chevron-right"></i></a>
+          <span class="two-col-title" data-i18n="superDeals">⚡ সুপার ডিল</span>
+          <a href="#" class="two-col-more"><span data-i18n="more">আরও</span> <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="superDeals"></div>
       </div>
       <div class="two-col-card">
         <div class="two-col-head">
-          <span class="two-col-title">🔥 ট্রেন্ডিং</span>
-          <a href="#" class="two-col-more">আরও <i class="fas fa-chevron-right"></i></a>
+          <span class="two-col-title" data-i18n="trending">🔥 ট্রেন্ডিং</span>
+          <a href="#" class="two-col-more"><span data-i18n="more">আরও</span> <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="trendingProducts"></div>
       </div>
     </div>
 
-    <!-- ALL PRODUCTS GRID -->
+    <!-- PRODUCTS GRID -->
     <section class="section" id="productsSection">
       <div class="products-header">
-        <h2 class="section-title">সব পণ্য</h2>
+        <h2 class="section-title" data-i18n="allProducts">সব পণ্য</h2>
         <div class="sort-row">
-          <button class="sort-btn active" data-sort="default">ডিফল্ট</button>
-          <button class="sort-btn" data-sort="low">কম দাম</button>
-          <button class="sort-btn" data-sort="high">বেশি দাম</button>
-          <button class="sort-btn" data-sort="popular">জনপ্রিয়</button>
+          <button class="sort-btn active" data-sort="default" data-i18n="sortDefault">ডিফল্ট</button>
+          <button class="sort-btn" data-sort="low" data-i18n="sortLow">কম দাম</button>
+          <button class="sort-btn" data-sort="high" data-i18n="sortHigh">বেশি দাম</button>
+          <button class="sort-btn" data-sort="popular" data-i18n="sortPopular">জনপ্রিয়</button>
         </div>
       </div>
       <div class="products-grid" id="productsGrid"></div>
-      <button class="load-more-btn" id="loadMoreBtn">আরও দেখুন</button>
+      <button class="load-more-btn" id="loadMoreBtn" data-i18n="loadMore">আরও দেখুন</button>
     </section>
 
   </main>
@@ -223,19 +223,19 @@
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="bot-btn active" onclick="setBottomActive(this)">
-      <i class="fas fa-home"></i><span>শপ</span>
+      <i class="fas fa-home"></i><span data-i18n="navShop">শপ</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this); filterCategory('all')">
-      <i class="fas fa-th-large"></i><span>ক্যাটাগরি</span>
-    </button>
-    <button class="bot-btn" onclick="setBottomActive(this)">
-      <i class="fas fa-fire"></i><span>ট্রেন্ড</span>
-    </button>
-    <button class="bot-btn" id="cartBotBtn" onclick="setBottomActive(this); openCart()">
-      <i class="fas fa-shopping-cart"></i><span>কার্ট</span>
+    <button class="bot-btn" onclick="setBottomActive(this);filterCategory('all')">
+      <i class="fas fa-th-large"></i><span data-i18n="navCategory">ক্যাটাগরি</span>
     </button>
     <button class="bot-btn" onclick="setBottomActive(this)">
-      <i class="fas fa-user"></i><span>আমি</span>
+      <i class="fas fa-fire"></i><span data-i18n="navTrend">ট্রেন্ড</span>
+    </button>
+    <button class="bot-btn" onclick="setBottomActive(this);openCart()">
+      <i class="fas fa-shopping-cart"></i><span data-i18n="navCart">কার্ট</span>
+    </button>
+    <button class="bot-btn" onclick="setBottomActive(this)">
+      <i class="fas fa-user"></i><span data-i18n="navMe">আমি</span>
     </button>
   </nav>
 
@@ -243,21 +243,21 @@
   <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
   <aside class="cart-sidebar" id="cartSidebar">
     <div class="cart-head">
-      <h3>আমার কার্ট</h3>
+      <h3 data-i18n="myCart">আমার কার্ট</h3>
       <button class="icon-btn" onclick="closeCart()"><i class="fas fa-times"></i></button>
     </div>
     <div class="cart-items" id="cartItems">
       <div class="empty-cart">
         <i class="fas fa-shopping-cart"></i>
-        <p>কার্ট খালি আছে</p>
+        <p data-i18n="cartEmpty">কার্ট খালি আছে</p>
       </div>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <div class="cart-total">
-        <span>মোট:</span>
-        <span id="cartTotal">৳০</span>
+        <span data-i18n="totalLabel">মোট:</span>
+        <span id="cartTotal">0</span>
       </div>
-      <button class="btn-checkout">চেকআউট করুন</button>
+      <button class="btn-checkout" data-i18n="checkout">চেকআউট করুন</button>
     </div>
   </aside>
 
@@ -268,9 +268,9 @@
     <div class="modal-body" id="modalBody"></div>
   </div>
 
-  <!-- WISHLIST TOAST -->
   <div class="toast" id="toast"></div>
 
+  <script src="translations.js"></script>
   <script src="products.js"></script>
   <script src="script.js"></script>
 </body>

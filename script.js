@@ -4,11 +4,59 @@ let wishlist = [];
 let currentFilter = 'all';
 let currentSort = 'default';
 let visibleCount = 8;
-let currentProduct = null;
+let currentLang = 'bn';
 let selectedSize = '';
 let selectedColor = '';
 let heroIndex = 0;
 let heroTimer;
+
+/* ===== i18n ===== */
+function t(key) {
+  return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key]) ||
+         (TRANSLATIONS.en[key]) || key;
+}
+
+function fmt(price) {
+  const T = TRANSLATIONS[currentLang];
+  const val = Math.round(price * T.rate);
+  return T.currency + val.toLocaleString();
+}
+
+function getName(p) {
+  return (p.names && p.names[currentLang]) || p.names.en || '';
+}
+
+function applyTranslations() {
+  const T = TRANSLATIONS[currentLang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (T[key] !== undefined) el.textContent = T[key];
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(el => {
+    const key = el.dataset.i18nHtml;
+    if (T[key] !== undefined) el.innerHTML = T[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (T[key] !== undefined) el.placeholder = T[key];
+  });
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  const T = TRANSLATIONS[lang];
+  document.documentElement.dir = T.dir;
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.lang === lang);
+  });
+  applyTranslations();
+  renderFlashDeals();
+  renderSuperDeals();
+  renderTrending();
+  renderProducts(document.getElementById('searchInput').value);
+  renderCart();
+}
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', () => {
@@ -29,8 +77,7 @@ function startHeroSlider() {
   });
 }
 function nextSlide() {
-  const slides = document.querySelectorAll('.hero-slide');
-  heroIndex = (heroIndex + 1) % slides.length;
+  heroIndex = (heroIndex + 1) % 3;
   updateSlider();
 }
 function goSlide(i) {
@@ -41,9 +88,7 @@ function goSlide(i) {
 }
 function updateSlider() {
   document.getElementById('heroSlides').style.transform = `translateX(-${heroIndex * 100}%)`;
-  document.querySelectorAll('.hero-dot').forEach((d, i) => {
-    d.classList.toggle('active', i === heroIndex);
-  });
+  document.querySelectorAll('.hero-dot').forEach((d, i) => d.classList.toggle('active', i === heroIndex));
 }
 
 /* ===== COUNTDOWN ===== */
@@ -62,21 +107,16 @@ function startCountdown() {
 
 /* ===== RENDER FLASH DEALS ===== */
 function renderFlashDeals() {
-  const flashProds = PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
-  const container = document.getElementById('flashProducts');
-  container.innerHTML = flashProds.map(p => `
+  const items = PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
+  document.getElementById('flashProducts').innerHTML = items.map(p => `
     <div class="flash-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <img src="${p.image}" loading="lazy" alt="" />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
-        <div class="product-prices">
-          <span class="price-current">৳${p.price}</span>
-        </div>
-        <div class="product-meta">
-          <span class="product-rating">★ ${p.rating}</span>
-        </div>
+        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
+        <div class="product-meta"><span class="product-rating">★ ${p.rating}</span></div>
       </div>
     </div>
   `).join('');
@@ -84,18 +124,16 @@ function renderFlashDeals() {
 
 /* ===== RENDER SUPER DEALS ===== */
 function renderSuperDeals() {
-  const deals = PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
-  document.getElementById('superDeals').innerHTML = deals.map(p => `
+  const items = PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
+  document.getElementById('superDeals').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <img src="${p.image}" loading="lazy" alt="" />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
-        <p class="product-name">${p.name}</p>
-        <div class="product-prices">
-          <span class="price-current">৳${p.price}</span>
-        </div>
+        <p class="product-name">${getName(p)}</p>
+        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
       </div>
     </div>
   `).join('');
@@ -103,18 +141,16 @@ function renderSuperDeals() {
 
 /* ===== RENDER TRENDING ===== */
 function renderTrending() {
-  const trending = PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
-  document.getElementById('trendingProducts').innerHTML = trending.map(p => `
+  const items = PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
+  document.getElementById('trendingProducts').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <img src="${p.image}" loading="lazy" alt="" />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
-        <p class="product-name">${p.name}</p>
-        <div class="product-prices">
-          <span class="price-current">৳${p.price}</span>
-        </div>
+        <p class="product-name">${getName(p)}</p>
+        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
       </div>
     </div>
   `).join('');
@@ -127,9 +163,9 @@ function renderProducts(searchTerm = '') {
     : PRODUCTS.filter(p => p.category === currentFilter);
 
   if (searchTerm) {
+    const s = searchTerm.toLowerCase();
     filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      p.category.toLowerCase().includes(searchTerm.toLowerCase())
+      getName(p).toLowerCase().includes(s) || p.category.includes(s)
     );
   }
 
@@ -141,7 +177,7 @@ function renderProducts(searchTerm = '') {
   const visible = filtered.slice(0, visibleCount);
 
   if (visible.length === 0) {
-    grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><p>কোনো পণ্য পাওয়া যায়নি</p></div>`;
+    grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><p>${t('noResults')}</p></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
     return;
   }
@@ -156,59 +192,48 @@ function productCardHTML(p) {
   return `
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" alt="${p.name}" loading="lazy" />
+        <img src="${p.image}" loading="lazy" alt="" />
         <span class="discount-badge">-${p.discount}%</span>
         <button class="wish-btn ${inWish ? 'active' : ''}"
-          onclick="event.stopPropagation(); toggleWish(${p.id}, this)">
+          onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
         </button>
       </div>
       <div class="product-info">
-        <p class="product-name">${p.name}</p>
+        <p class="product-name">${getName(p)}</p>
         <div class="product-prices">
-          <span class="price-current">৳${p.price}</span>
-          <span class="price-original">৳${p.originalPrice}</span>
+          <span class="price-current">${fmt(p.price)}</span>
+          <span class="price-original">${fmt(p.originalPrice)}</span>
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
-          <span class="product-sold">${p.sold} বিক্রয়</span>
+          <span class="product-sold">${p.sold} ${t('soldText')}</span>
         </div>
       </div>
-      <button class="add-cart-btn" onclick="event.stopPropagation(); quickAddCart(${p.id})">
-        🛒 কার্টে যোগ করুন
+      <button class="add-cart-btn" onclick="event.stopPropagation();quickAddCart(${p.id})">
+        ${t('addToCart')}
       </button>
     </div>
   `;
 }
 
-/* ===== FILTER BY CATEGORY ===== */
+/* ===== FILTER ===== */
 function filterCategory(cat) {
   currentFilter = cat;
   visibleCount = 8;
   currentSort = 'default';
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('[data-sort="default"]').classList.add('active');
-  document.querySelectorAll('.cat-tab').forEach(t => {
-    t.classList.toggle('active', t.dataset.cat === cat || (cat !== 'all' && t.dataset.cat === 'all' && cat === 'all'));
-  });
   renderProducts();
   document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-/* ===== SCROLL TO PRODUCTS ===== */
 function scrollToProducts() {
   document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
 }
 
-/* ===== LOAD MORE ===== */
-document.getElementById('loadMoreBtn').addEventListener('click', () => {
-  visibleCount += 8;
-  renderProducts(document.getElementById('searchInput').value);
-});
-
 /* ===== SETUP EVENTS ===== */
 function setupEvents() {
-  // Category tabs
   document.querySelectorAll('.cat-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
@@ -217,7 +242,6 @@ function setupEvents() {
     });
   });
 
-  // Sort buttons
   document.querySelectorAll('.sort-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
@@ -228,7 +252,11 @@ function setupEvents() {
     });
   });
 
-  // Search
+  document.getElementById('loadMoreBtn').addEventListener('click', () => {
+    visibleCount += 8;
+    renderProducts(document.getElementById('searchInput').value);
+  });
+
   document.getElementById('searchToggleBtn').addEventListener('click', () => {
     document.getElementById('searchBar').classList.toggle('open');
     if (document.getElementById('searchBar').classList.contains('open')) {
@@ -243,21 +271,17 @@ function setupEvents() {
     }
   });
   document.getElementById('searchSubmit').addEventListener('click', () => {
-    const term = document.getElementById('searchInput').value.trim();
     visibleCount = 8;
-    renderProducts(term);
+    renderProducts(document.getElementById('searchInput').value.trim());
     document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
   });
 
-  // Drawer
   document.getElementById('menuBtn').addEventListener('click', openDrawer);
   document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
-
-  // Cart button
   document.getElementById('cartBtn').addEventListener('click', openCart);
   document.getElementById('wishlistBtn').addEventListener('click', () => {
-    showToast('উইশলিস্ট: ' + wishlist.length + ' টি পণ্য');
+    showToast(t('wishlistCount') + ' ' + wishlist.length + ' ' + t('items'));
   });
 }
 
@@ -285,7 +309,7 @@ function renderCart() {
   const container = document.getElementById('cartItems');
   const footer = document.getElementById('cartFooter');
   if (cart.length === 0) {
-    container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>কার্ট খালি আছে</p></div>`;
+    container.innerHTML = `<div class="empty-cart"><i class="fas fa-shopping-cart"></i><p>${t('cartEmpty')}</p></div>`;
     footer.style.display = 'none';
     return;
   }
@@ -293,16 +317,14 @@ function renderCart() {
     const p = PRODUCTS.find(p => p.id === item.id);
     return `
       <div class="cart-item">
-        <div class="cart-item-img">
-          <img src="${p.image}" alt="${p.name}" />
-        </div>
+        <div class="cart-item-img"><img src="${p.image}" alt="" /></div>
         <div class="cart-item-info">
-          <p class="cart-item-name">${p.name}</p>
-          <p class="cart-item-price">৳${p.price}</p>
+          <p class="cart-item-name">${getName(p)}</p>
+          <p class="cart-item-price">${fmt(p.price)}</p>
           <div class="cart-qty">
-            <button class="qty-btn" onclick="updateQty(${item.id}, -1)">−</button>
+            <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
             <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn" onclick="updateQty(${item.id}, 1)">+</button>
+            <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
             <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button>
           </div>
         </div>
@@ -313,21 +335,16 @@ function renderCart() {
     const p = PRODUCTS.find(p => p.id === item.id);
     return sum + p.price * item.qty;
   }, 0);
-  document.getElementById('cartTotal').textContent = '৳' + total.toLocaleString();
+  document.getElementById('cartTotal').textContent = fmt(total);
   footer.style.display = 'block';
 }
-function quickAddCart(id) {
-  addToCart(id, '', '');
-}
+function quickAddCart(id) { addToCart(id, '', ''); }
 function addToCart(id, size, color) {
   const existing = cart.find(i => i.id === id);
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ id, qty: 1, size, color });
-  }
+  if (existing) existing.qty++;
+  else cart.push({ id, qty: 1, size, color });
   updateCartBadge();
-  showToast('✓ কার্টে যোগ হয়েছে');
+  showToast(t('addedToCart'));
 }
 function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
@@ -354,12 +371,12 @@ function toggleWish(id, btn) {
     wishlist = wishlist.filter(w => w !== id);
     btn.classList.remove('active');
     btn.innerHTML = '<i class="far fa-heart"></i>';
-    showToast('উইশলিস্ট থেকে সরানো হয়েছে');
+    showToast(t('unwishlisted'));
   } else {
     wishlist.push(id);
     btn.classList.add('active');
     btn.innerHTML = '<i class="fas fa-heart"></i>';
-    showToast('❤️ উইশলিস্টে যোগ হয়েছে');
+    showToast(t('wishlisted'));
   }
   document.getElementById('wishBadge').textContent = wishlist.length;
   document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
@@ -369,101 +386,81 @@ function toggleWish(id, btn) {
 function openModal(id) {
   const p = PRODUCTS.find(p => p.id === id);
   if (!p) return;
-  currentProduct = p;
   selectedSize = p.sizes[0] || '';
   selectedColor = p.colors[0] || '';
   const inWish = wishlist.includes(id);
 
   document.getElementById('modalBody').innerHTML = `
-    <img class="modal-img" src="${p.image}" alt="${p.name}" />
+    <img class="modal-img" src="${p.image}" alt="" />
     <div class="modal-info">
-      <h2 class="modal-name">${p.name}</h2>
+      <h2 class="modal-name">${getName(p)}</h2>
       <div class="modal-prices">
-        <span class="modal-price-current">৳${p.price}</span>
-        <span class="modal-price-orig">৳${p.originalPrice}</span>
+        <span class="modal-price-current">${fmt(p.price)}</span>
+        <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
       </div>
       <div class="modal-rating">
-        <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5 - Math.round(p.rating))}</span>
-        <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} রিভিউ) · ${p.sold} বিক্রয়</span>
+        <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
+        <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · ${p.sold} ${t('soldText')}</span>
       </div>
       <div class="modal-divider"></div>
-      ${p.sizes.length > 0 ? `
-        <p class="modal-section-title">সাইজ বেছে নিন</p>
-        <div class="size-options" id="sizeOptions">
-          ${p.sizes.map(s => `
-            <div class="size-opt ${s === selectedSize ? 'active' : ''}" onclick="selectSize('${s}', this)">${s}</div>
-          `).join('')}
-        </div>
-      ` : ''}
-      ${p.colors.length > 0 ? `
-        <p class="modal-section-title">রঙ বেছে নিন</p>
-        <div class="color-options" id="colorOptions">
-          ${p.colors.map((c, i) => `
-            <div class="color-opt ${i === 0 ? 'active' : ''}"
-              style="background:${c}"
-              onclick="selectColor('${c}', this)"></div>
-          `).join('')}
-        </div>
-      ` : ''}
+      <p class="modal-section-title">${t('sizeSelect')}</p>
+      <div class="size-options">
+        ${p.sizes.map(s => `<div class="size-opt ${s===selectedSize?'active':''}" onclick="selectSize('${s}',this)">${s}</div>`).join('')}
+      </div>
+      <p class="modal-section-title">${t('colorSelect')}</p>
+      <div class="color-options">
+        ${p.colors.map((c,i) => `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('')}
+      </div>
       <div class="modal-divider"></div>
-      <div style="display:flex;gap:10px;font-size:13px;color:#666;padding:0 0 4px">
-        <span><i class="fas fa-truck" style="color:#e91e8c"></i> ৫০০+ টাকায় ফ্রি ডেলিভারি</span>
-        <span><i class="fas fa-undo" style="color:#e91e8c"></i> ৭ দিন রিটার্ন</span>
+      <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
+        <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
+        <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
       </div>
     </div>
     <div class="modal-actions">
-      <button class="btn-wishlist ${inWish ? 'active' : ''}" id="modalWishBtn"
-        onclick="modalToggleWish(${p.id})">
-        <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
+      <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
+        <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart" onclick="modalAddCart(${p.id})">
-        🛒 কার্টে যোগ করুন
-      </button>
+      <button class="btn-add-cart" onclick="modalAddCart(${p.id})">${t('addToCart')}</button>
     </div>
   `;
-
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
-
 function closeModal() {
   document.getElementById('productModal').classList.remove('open');
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
 function selectSize(size, el) {
   selectedSize = size;
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
 }
-
 function selectColor(color, el) {
   selectedColor = color;
   document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
 }
-
 function modalToggleWish(id) {
   const btn = document.getElementById('modalWishBtn');
   if (wishlist.includes(id)) {
     wishlist = wishlist.filter(w => w !== id);
     btn.classList.remove('active');
     btn.innerHTML = '<i class="far fa-heart"></i>';
-    showToast('উইশলিস্ট থেকে সরানো হয়েছে');
+    showToast(t('unwishlisted'));
   } else {
     wishlist.push(id);
     btn.classList.add('active');
     btn.innerHTML = '<i class="fas fa-heart"></i>';
-    showToast('❤️ উইশলিস্টে যোগ হয়েছে');
+    showToast(t('wishlisted'));
   }
   document.getElementById('wishBadge').textContent = wishlist.length;
   document.getElementById('wishBadge').style.display = wishlist.length ? 'flex' : 'none';
   renderProducts(document.getElementById('searchInput').value);
 }
-
 function modalAddCart(id) {
   addToCart(id, selectedSize, selectedColor);
   closeModal();
