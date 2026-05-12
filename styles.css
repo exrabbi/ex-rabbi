@@ -1048,6 +1048,7 @@ img { max-width: 100%; display: block; }
 }
 .pay-summary-row:last-child { border-bottom: none; }
 .pay-free { color: #0a8f4a; font-weight: 700; font-size: 13px; }
+.pay-delivery-fee { color: #e91e8c; font-weight: 700; font-size: 13px; }
 .pay-grand { font-size: 15px; color: #111; font-weight: 700; padding-top: 10px; }
 
 /* Payment method selection */
