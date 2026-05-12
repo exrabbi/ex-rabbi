@@ -529,7 +529,7 @@ function closeMe() {
 function openSettings() {
   const labels = { bn: 'বাংলা', en: 'English', ar: 'العربية' };
   const el = document.getElementById('curLangLabel');
-  if (el) el.textContent = labels[currentLang] || 'বাংলা';
+  if (el) el.textContent = labels[currentLang] || labels.en;
   document.getElementById('settingsPanel').classList.add('open');
 }
 
@@ -597,13 +597,13 @@ function reverseGeocode(lat, lng) {
       if (city) document.getElementById('locCity').value = city;
       if (area) document.getElementById('locArea').value = area;
       if (detail) document.getElementById('locAddress').value = detail;
-      showToast('📍 লোকেশন পাওয়া গেছে');
+      showToast(t('locationFound'));
     })
-    .catch(() => showToast('লোকেশন লোড হয়নি, আবার চেষ্টা করুন'));
+    .catch(() => showToast(t('locationError')));
 }
 
 function useMyLocation() {
-  if (!navigator.geolocation) { showToast('GPS সাপোর্ট নেই'); return; }
+  if (!navigator.geolocation) { showToast(t('noGps')); return; }
   const btn = document.getElementById('locGpsBtn');
   btn.classList.add('loading');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
@@ -622,7 +622,7 @@ function useMyLocation() {
     err => {
       btn.classList.remove('loading');
       btn.innerHTML = '<i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">' + (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].gpsBtn || 'GPS Location') + '</span>';
-      showToast('GPS চালু করুন এবং অনুমতি দিন');
+      showToast(t('enableGps'));
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
@@ -641,7 +641,7 @@ function saveLocation() {
   const area = document.getElementById('locArea').value.trim();
   const address = document.getElementById('locAddress').value.trim();
   if (!name || !phone || !city || !address) {
-    showToast('সব তথ্য পূরণ করুন');
+    showToast(t('fillAllFields'));
     return;
   }
   const lat = savedLocation && savedLocation.lat ? savedLocation.lat : null;
@@ -650,13 +650,13 @@ function saveLocation() {
   localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
   const badge = document.getElementById('meLocSaved');
   if (badge) badge.textContent = (TRANSLATIONS[currentLang] || TRANSLATIONS['bn']).savedBadge || '✓ Saved';
-  showToast('✓ ঠিকানা সেভ হয়েছে');
+  showToast(t('addressSaved'));
   closeLocation();
 }
 
 function getLocationText() {
   if (!savedLocation) return '';
-  return `\n\n📍 *ডেলিভারি ঠিকানা*\nনাম: ${savedLocation.name}\nফোন: ${savedLocation.phone}\nশহর: ${savedLocation.city}${savedLocation.area ? ', ' + savedLocation.area : ''}\nঠিকানা: ${savedLocation.address}`;
+  return `\n\n📍 *${t('waDeliveryAddress')}*\n${t('waName')}: ${savedLocation.name}\n${t('waPhone')}: ${savedLocation.phone}\n${t('waCity')}: ${savedLocation.city}${savedLocation.area ? ', ' + savedLocation.area : ''}\n${t('waAddress')}: ${savedLocation.address}`;
 }
 
 // Load saved location badge on page load
@@ -697,7 +697,7 @@ function closeAuth() {
 
 async function signInWithGoogle() {
   if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
-    showToast('⚠️ Firebase এখনো সেটআপ হয়নি');
+    showToast(t('firebaseNotSetup'));
     return;
   }
   try {
@@ -711,9 +711,9 @@ async function signInWithGoogle() {
       provider: 'google'
     });
     closeAuth();
-    showToast('✓ স্বাগতম, ' + result.user.displayName.split(' ')[0] + '!');
+    showToast(t('welcome') + result.user.displayName.split(' ')[0] + '!');
   } catch (e) {
-    showToast('Google লগইন ব্যর্থ হয়েছে');
+    showToast(t('googleLoginFailed'));
   }
 }
 
@@ -721,11 +721,11 @@ function signInManual() {
   const name = document.getElementById('authName').value.trim();
   const email = document.getElementById('authEmail').value.trim();
   const phone = document.getElementById('authPhone').value.trim();
-  if (!name) { showToast('নাম লিখুন'); return; }
-  if (!email || !email.includes('@')) { showToast('সঠিক ইমেইল দিন'); return; }
+  if (!name) { showToast(t('enterName')); return; }
+  if (!email || !email.includes('@')) { showToast(t('enterValidEmail')); return; }
   setUser({ name, email, phone, avatar: null, provider: 'manual' });
   closeAuth();
-  showToast('✓ স্বাগতম, ' + name.split(' ')[0] + '!');
+  showToast(t('welcome') + name.split(' ')[0] + '!');
 }
 
 function setUser(user) {
@@ -844,11 +844,13 @@ function selectPayMethod(method) {
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
   // Update button text
-  const labels = { whatsapp: 'WhatsApp-এ অর্ডার দিন', paypal: 'PayPal দিয়ে পেমেন্ট', card: 'কার্ড দিয়ে পেমেন্ট', gpay: 'Google Pay' };
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
-  const fmt = (v) => lang.currency + (v * lang.rate).toFixed(2);
-  document.getElementById('payBtnText').textContent = (labels[method] || 'পেমেন্ট করুন') + ' — ' + fmt(total);
+  const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const subtotalDisp2 = cartSubtotalBase() * lang2.rate;
+  const delDisp2 = subtotalDisp2 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+  const grandDisp2 = subtotalDisp2 + delDisp2;
+  const methodLabel = { whatsapp: t('placeOrder'), paypal: 'PayPal', card: t('cardName'), gpay: 'Google Pay' };
+  document.getElementById('payBtnText').textContent =
+    (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
 }
 
 function processPayment() {
@@ -857,9 +859,9 @@ function processPayment() {
     whatsappCheckout();
   } else if (selectedPayMethod === 'paypal') {
     if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY) {
-      showToast('PayPal উইন্ডো খুলছে...');
+      showToast(t('paypalOpening'));
     } else {
-      showToast('⚠️ PayPal এখনো সেটআপ হয়নি — WhatsApp অর্ডার দিন');
+      showToast(t('paypalNotSetup'));
       setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
     }
   } else if (selectedPayMethod === 'card') {
@@ -868,12 +870,12 @@ function processPayment() {
     const cvv = document.getElementById('cardCvv').value || '';
     const name = document.getElementById('cardName').value || '';
     if (num.length < 16 || !exp || cvv.length < 3 || !name) {
-      showToast('সব কার্ড তথ্য দিন'); return;
+      showToast(t('fillCardDetails')); return;
     }
-    showToast('⚠️ Card gateway এখনো সেটআপ হয়নি');
+    showToast(t('cardNotSetup'));
     setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
   } else if (selectedPayMethod === 'gpay') {
-    showToast('⚠️ Google Pay এখনো সেটআপ হয়নি');
+    showToast(t('gpayNotSetup'));
     setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
   }
 }
@@ -901,10 +903,10 @@ function renderPayPalButtons() {
       purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
-      showToast('✓ পেমেন্ট সফল! ধন্যবাদ ' + (details.payer.name.given_name || '') + '!');
+      showToast(t('paymentSuccess') + (details.payer.name.given_name || '') + '!');
       cart = []; updateCart(); closePayment();
     }),
-    onError: () => showToast('পেমেন্ট ব্যর্থ হয়েছে, আবার চেষ্টা করুন')
+    onError: () => showToast(t('paymentFailed'))
   }).render('#paypalBtnContainer');
 }
 
