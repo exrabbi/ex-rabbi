@@ -1453,3 +1453,55 @@ img { max-width: 100%; display: block; }
   transition: opacity .2s;
 }
 .btn-write-review-full:active { opacity: .85; }
+
+/* ===== EMOJI REACTIONS ===== */
+.rev-reactions {
+  display: flex; align-items: center; gap: 6px;
+  flex-wrap: wrap; position: relative; padding-top: 2px;
+}
+.react-bubbles { display: flex; gap: 6px; flex-wrap: wrap; }
+.react-bubble {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: #f5f5f5; border: 1.5px solid #e8e8e8;
+  border-radius: 20px; padding: 5px 10px;
+  font-size: 16px; cursor: pointer; transition: all .18s;
+  user-select: none;
+}
+.react-bubble:active { transform: scale(.93); }
+.react-bubble.my-react {
+  background: #fce4ec; border-color: #f48fb1;
+}
+.react-cnt { font-size: 12px; font-weight: 700; color: #555; }
+.react-add-btn {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: #f5f5f5; border: 1.5px dashed #d0d0d0;
+  border-radius: 20px; padding: 5px 10px;
+  font-size: 15px; color: #888; cursor: pointer; transition: all .18s;
+}
+.react-add-btn:active { background: #ffe0ee; border-color: #e91e8c; color: #e91e8c; }
+.react-plus-icon { font-size: 10px; }
+.react-total { font-size: 11px; color: #aaa; font-weight: 500; margin-left: 2px; }
+
+/* Emoji Picker popup */
+.emoji-picker {
+  position: absolute; bottom: calc(100% + 8px); left: 0;
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  border: 1px solid #f0f0f0;
+  padding: 10px 12px;
+  display: none; grid-template-columns: repeat(4,1fr); gap: 4px;
+  z-index: 100; width: 180px;
+}
+.emoji-picker.open { display: grid; animation: epPop .15s ease; }
+@keyframes epPop {
+  from { opacity:0; transform: scale(.85) translateY(8px); }
+  to   { opacity:1; transform: scale(1) translateY(0); }
+}
+.ep-emoji {
+  font-size: 24px; text-align: center; padding: 6px 4px;
+  border-radius: 10px; cursor: pointer; transition: background .15s, transform .15s;
+}
+.ep-emoji:hover { background: #f5f5f5; transform: scale(1.2); }
+.ep-emoji.ep-active {
+  background: #fce4ec; outline: 2px solid #e91e8c;
+}

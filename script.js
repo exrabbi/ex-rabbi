@@ -240,6 +240,12 @@ function scrollToProducts() {
 
 /* ===== SETUP EVENTS ===== */
 function setupEvents() {
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.rev-reactions')) {
+      document.querySelectorAll('.emoji-picker.open').forEach(p => p.classList.remove('open'));
+    }
+  });
+
   document.querySelectorAll('.cat-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
@@ -985,9 +991,7 @@ function renderRevList(filter) {
       <p class="rev-card-text">${txt}</p>
       ${photos}
       <div class="rev-card-footer">
-        <button class="rev-helpful-btn" onclick="markHelpful(this)">
-          <i class="far fa-thumbs-up"></i> <span class="rev-helpful-label">${t('helpfulBtn')}</span> <span class="rev-helpful-num">${r.helpful||0}</span>
-        </button>
+        ${buildReactions(r.id, r.helpful||0)}
       </div>
     </div>`;
   }).join('');
@@ -1054,6 +1058,73 @@ function submitReview() {
   closeWriteReview();
   renderRevSummary();
   renderRevList(activeRevFilter);
+}
+
+/* ===== EMOJI REACTIONS ===== */
+const REACTION_EMOJIS = ['❤️','🔥','😍','👌','😮','😂','💯','🙏'];
+
+function buildReactions(reviewId, helpfulCount) {
+  const key = 'rev_reactions_' + reviewId;
+  const saved = JSON.parse(localStorage.getItem(key) || '{}');
+  // preset 👍 helpful count + spread among emojis for seed reviews
+  const counts = {};
+  REACTION_EMOJIS.forEach(e => { counts[e] = saved[e] || 0; });
+  if (reviewId <= 5 && !localStorage.getItem(key)) {
+    const spread = [helpfulCount, Math.floor(helpfulCount*.6), Math.floor(helpfulCount*.4), Math.floor(helpfulCount*.3), Math.floor(helpfulCount*.2), Math.floor(helpfulCount*.15), Math.floor(helpfulCount*.1), Math.floor(helpfulCount*.1)];
+    REACTION_EMOJIS.forEach((e,i) => { counts[e] = spread[i] || 0; });
+  }
+  const myReaction = saved._mine || null;
+  const total = Object.values(counts).reduce((a,b)=>a+b,0);
+  const topEmojis = REACTION_EMOJIS.filter(e=>counts[e]>0).sort((a,b)=>counts[b]-counts[a]).slice(0,4);
+  const bubbles = topEmojis.map(e =>
+    `<span class="react-bubble${myReaction===e?' my-react':''}" onclick="addReaction(${reviewId},'${e}',this)">${e} <span class="react-cnt">${counts[e]}</span></span>`
+  ).join('');
+  return `<div class="rev-reactions" data-rev="${reviewId}">
+    <div class="react-bubbles">${bubbles}</div>
+    <button class="react-add-btn" onclick="toggleEmojiPicker(${reviewId},this)" title="React">
+      <i class="far fa-smile-beam"></i><i class="fas fa-plus react-plus-icon"></i>
+    </button>
+    <span class="react-total">${total>0?total+' reactions':''}</span>
+    <div class="emoji-picker" id="picker_${reviewId}">
+      ${REACTION_EMOJIS.map(e=>`<span class="ep-emoji${myReaction===e?' ep-active':''}" onclick="addReaction(${reviewId},'${e}',null)">${e}</span>`).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleEmojiPicker(reviewId, btn) {
+  const picker = document.getElementById('picker_' + reviewId);
+  if (!picker) return;
+  const isOpen = picker.classList.contains('open');
+  document.querySelectorAll('.emoji-picker.open').forEach(p => p.classList.remove('open'));
+  if (!isOpen) picker.classList.add('open');
+}
+
+function addReaction(reviewId, emoji, clickedEl) {
+  const key = 'rev_reactions_' + reviewId;
+  let saved = JSON.parse(localStorage.getItem(key) || '{}');
+  const prev = saved._mine;
+  if (reviewId <= 5 && !saved._seeded) {
+    const spread = { '❤️':0,'🔥':0,'😍':0,'👌':0,'😮':0,'😂':0,'💯':0,'🙏':0 };
+    const seedReview = SEED_REVIEWS.find(r=>r.id===reviewId);
+    const h = seedReview ? seedReview.helpful : 0;
+    const s = [h,Math.floor(h*.6),Math.floor(h*.4),Math.floor(h*.3),Math.floor(h*.2),Math.floor(h*.15),Math.floor(h*.1),Math.floor(h*.1)];
+    REACTION_EMOJIS.forEach((e,i)=>{ spread[e]=s[i]||0; });
+    saved = { ...spread, _seeded: true };
+  }
+  if (prev === emoji) {
+    saved[emoji] = Math.max(0, (saved[emoji]||1) - 1);
+    delete saved._mine;
+  } else {
+    if (prev) saved[prev] = Math.max(0, (saved[prev]||1) - 1);
+    saved[emoji] = (saved[emoji]||0) + 1;
+    saved._mine = emoji;
+  }
+  localStorage.setItem(key, JSON.stringify(saved));
+  // close picker and re-render this card's reactions
+  document.querySelectorAll('.emoji-picker.open').forEach(p=>p.classList.remove('open'));
+  const wrap = document.querySelector(`.rev-reactions[data-rev="${reviewId}"]`);
+  const seedReview = SEED_REVIEWS.find(r=>r.id===reviewId);
+  if (wrap) wrap.outerHTML = buildReactions(reviewId, seedReview ? seedReview.helpful : 0);
 }
 
 function markHelpful(btn) {
