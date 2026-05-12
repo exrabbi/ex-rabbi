@@ -878,6 +878,12 @@ function cartSubtotalBase() {
 
 function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
+  if (!currentUser) {
+    closeCart();
+    showToast(t('loginToOrder'));
+    setTimeout(openAuth, 400);
+    return;
+  }
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
   const subtotalBase = cartSubtotalBase();
   const subtotalDisp = subtotalBase * lang.rate;          // in display currency (SAR)
