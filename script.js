@@ -73,6 +73,13 @@ document.addEventListener('DOMContentLoaded', () => {
   startHeroSlider();
   startCountdown();
   setupEvents();
+  // Scroll-to-top visibility
+  const scrollBtn = document.getElementById('scrollTopBtn');
+  if (scrollBtn) {
+    window.addEventListener('scroll', () => {
+      scrollBtn.classList.toggle('visible', window.scrollY > 320);
+    }, { passive: true });
+  }
 });
 
 /* ===== HERO SLIDER ===== */
@@ -338,17 +345,23 @@ function renderCart() {
   container.innerHTML = cart.map(item => {
     const p = PRODUCTS.find(p => p.id === item.id);
     if (!p) return '';
+    const variant = [item.size, item.color].filter(Boolean).join(' · ');
     return `
       <div class="cart-item">
         <div class="cart-item-img"><img src="${p.image}" alt="" loading="lazy" /></div>
         <div class="cart-item-info">
-          <p class="cart-item-name">${getName(p)}</p>
-          <p class="cart-item-price">${fmt(p.price)}</p>
-          <div class="cart-qty">
-            <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
-            <span class="qty-num">${item.qty}</span>
-            <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
-            <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-trash-alt"></i></button>
+          <div class="cart-item-top">
+            <p class="cart-item-name">${getName(p)}</p>
+            <button class="remove-item" onclick="removeFromCart(${item.id})"><i class="fas fa-xmark"></i></button>
+          </div>
+          ${variant ? `<p class="cart-item-variant">${variant}</p>` : ''}
+          <div class="cart-item-bottom">
+            <div class="cart-qty">
+              <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
+            </div>
+            <span class="cart-item-line-total">${fmt(p.price * item.qty)}</span>
           </div>
         </div>
       </div>`;

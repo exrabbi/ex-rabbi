@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EX GLOBAL</title>
-  <link rel="stylesheet" href="styles.css?v=9" />
+  <link rel="stylesheet" href="styles.css?v=10" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -213,11 +213,13 @@
         <span class="saudi-pride-text">OUR PRIDE.</span>
         <div class="saudi-flag-wrap">
           <div class="saudi-flag-pole"></div>
-          <svg class="saudi-flag-svg" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
-            <rect width="30" height="20" fill="#006C35"/>
-            <text x="15" y="11.5" text-anchor="middle" font-size="7" fill="#fff" font-family="serif" font-weight="bold">الله</text>
-            <rect x="4" y="13.5" width="22" height="1.8" fill="#fff"/>
-          </svg>
+          <div class="saudi-flag-img-wrap">
+            <img class="saudi-flag-img"
+              src="https://flagcdn.com/w80/sa.png"
+              alt="Saudi Arabia"
+              loading="eager" />
+            <div class="saudi-flag-shimmer"></div>
+          </div>
         </div>
         <span class="saudi-pride-text">OUR SAUDI.</span>
       </div>
@@ -614,6 +616,11 @@
     <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
     <div class="modal-body" id="modalBody"></div>
   </div>
+
+  <!-- SCROLL TO TOP -->
+  <button class="scroll-top-btn" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+    <i class="fas fa-chevron-up"></i>
+  </button>
 
   <!-- WHATSAPP FLOAT -->
   <a class="whatsapp-float" href="https://wa.me/966546224029" target="_blank" aria-label="WhatsApp">
@@ -1160,8 +1167,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=9"></script>
+  <script src="translations.js?v=10"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=9"></script>
+  <script src="script.js?v=10"></script>
 </body>
 </html>

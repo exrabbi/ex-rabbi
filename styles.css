@@ -1910,20 +1910,75 @@ body {
   flex-shrink: 0;
 }
 .saudi-flag-pole {
-  width: 2px; height: 8px;
-  background: #8B7355;
+  width: 2.5px; height: 10px;
+  background: linear-gradient(180deg, #c8a96e, #8B7355);
   border-radius: 1px 1px 0 0;
 }
-.saudi-flag-svg {
-  width: 44px; height: 30px;
-  border-radius: 2px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.25);
-  animation: flagWave 2.5s ease-in-out infinite;
+.saudi-flag-img-wrap {
+  position: relative; overflow: hidden;
+  border-radius: 3px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.3);
+  animation: flagWave 3s ease-in-out infinite;
   transform-origin: left center;
 }
-@keyframes flagWave {
-  0%, 100% { transform: skewY(0deg) scaleX(1); }
-  25%       { transform: skewY(1.5deg) scaleX(1.02); }
-  50%       { transform: skewY(-1deg) scaleX(.99); }
-  75%       { transform: skewY(1deg) scaleX(1.01); }
+.saudi-flag-img {
+  width: 54px; height: 36px;
+  object-fit: cover; display: block;
 }
+.saudi-flag-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(105deg,
+    transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
+  background-size: 250% 100%;
+  animation: flagShimmer 2.8s ease-in-out infinite;
+}
+@keyframes flagWave {
+  0%, 100% { transform: perspective(140px) rotateY(0deg) skewY(0deg); }
+  30%       { transform: perspective(140px) rotateY(5deg) skewY(1deg); }
+  65%       { transform: perspective(140px) rotateY(-3deg) skewY(-.5deg); }
+}
+@keyframes flagShimmer {
+  0%   { background-position: -150% 0; opacity: 0; }
+  25%  { opacity: 1; }
+  70%  { background-position: 250% 0; opacity: .8; }
+  100% { background-position: 250% 0; opacity: 0; }
+}
+
+/* ===== CART ITEM REDESIGN ===== */
+.cart-item-top {
+  display: flex; align-items: flex-start; gap: 6px; margin-bottom: 3px;
+}
+.cart-item-name { font-size: 13px; font-weight: 600; color: #1a1a1a; flex: 1; line-height: 1.35; }
+.remove-item {
+  color: #ccc; font-size: 14px; padding: 2px 4px;
+  margin-inline-start: 0; flex-shrink: 0;
+  transition: color .2s;
+}
+.remove-item:active { color: #e91e8c; }
+.cart-item-variant {
+  font-size: 11.5px; color: #999; font-weight: 500;
+  margin-bottom: 8px; letter-spacing: .2px;
+}
+.cart-item-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cart-item-line-total {
+  font-size: 15px; font-weight: 800; color: #e91e8c;
+}
+
+/* ===== SCROLL TO TOP ===== */
+.scroll-top-btn {
+  position: fixed; bottom: 88px; right: 16px;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #e91e8c; color: #fff;
+  font-size: 16px; z-index: 99;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 16px rgba(233,30,140,.4);
+  opacity: 0; transform: translateY(12px) scale(.85);
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+}
+.scroll-top-btn.visible {
+  opacity: 1; transform: translateY(0) scale(1); pointer-events: auto;
+}
+.scroll-top-btn:active { transform: scale(.92); }
