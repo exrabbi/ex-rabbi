@@ -768,7 +768,7 @@
   <div class="pay-modal" id="payModal">
     <div class="pay-head">
       <button class="icon-btn" onclick="closePayment()" style="color:#333"><i class="fas fa-times"></i></button>
-      <span>💳 পেমেন্ট করুন</span>
+      <span>💳 <span data-i18n="payModalTitle">Payment</span></span>
       <div style="width:32px"></div>
     </div>
     <div class="pay-body">
@@ -793,7 +793,7 @@
       </div>
 
       <!-- Payment Methods -->
-      <div class="pay-methods-title">পেমেন্ট পদ্ধতি বেছে নিন</div>
+      <div class="pay-methods-title" data-i18n="choosePayMethod">Choose Payment Method</div>
 
       <!-- WhatsApp (Cash on Delivery) -->
       <div class="pay-method-card active" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
@@ -802,8 +802,8 @@
             <i class="fab fa-whatsapp"></i>
           </div>
           <div class="pay-method-info">
-            <div class="pay-method-name">WhatsApp অর্ডার</div>
-            <div class="pay-method-sub">ক্যাশ অন ডেলিভারি</div>
+            <div class="pay-method-name" data-i18n="waOrderName">WhatsApp Order</div>
+            <div class="pay-method-sub" data-i18n="waOrderSub">Cash on Delivery</div>
           </div>
         </div>
         <div class="pay-method-check" id="checkWhatsapp"><i class="fas fa-check-circle"></i></div>
@@ -830,7 +830,7 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
           </div>
           <div class="pay-method-info">
-            <div class="pay-method-name">ক্রেডিট / ডেবিট কার্ড</div>
+            <div class="pay-method-name" data-i18n="cardName">Credit / Debit Card</div>
             <div class="pay-method-sub">Visa · Mastercard · Mada</div>
           </div>
         </div>
@@ -845,7 +845,7 @@
           </div>
           <div class="pay-method-info">
             <div class="pay-method-name">Google Pay</div>
-            <div class="pay-method-sub">দ্রুত ও নিরাপদ</div>
+            <div class="pay-method-sub" data-i18n="gpaySub">Fast & Secure</div>
           </div>
         </div>
         <div class="pay-method-check" id="checkGpay"><i class="fas fa-check-circle"></i></div>
@@ -866,7 +866,7 @@
       <div id="cardForm" style="display:none">
         <div class="card-form-wrap">
           <div class="card-field">
-            <label>কার্ড নম্বর</label>
+            <label data-i18n="cardNumber">Card Number</label>
             <div class="card-input-wrap">
               <input type="tel" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)" />
               <div class="card-type-icon" id="cardTypeIcon"></div>
@@ -874,7 +874,7 @@
           </div>
           <div class="card-row2">
             <div class="card-field">
-              <label>মেয়াদ</label>
+              <label data-i18n="cardExpiry">Expiry</label>
               <input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
             </div>
             <div class="card-field">
@@ -883,19 +883,19 @@
             </div>
           </div>
           <div class="card-field">
-            <label>কার্ডধারীর নাম</label>
-            <input type="text" id="cardName" placeholder="Name on card" />
+            <label data-i18n="cardHolder">Cardholder Name</label>
+            <input type="text" id="cardName" data-i18n-placeholder="cardHolderPh" placeholder="Name on card" />
           </div>
         </div>
       </div>
 
       <!-- Pay Now button -->
       <button class="btn-pay-now" id="btnPayNow" onclick="processPayment()">
-        <i class="fas fa-lock"></i> <span id="payBtnText">অর্ডার দিন</span>
+        <i class="fas fa-lock"></i> <span id="payBtnText" data-i18n="placeOrder">Place Order</span>
       </button>
 
       <div class="pay-secure-badge">
-        <i class="fas fa-shield-alt"></i> SSL সুরক্ষিত পেমেন্ট
+        <i class="fas fa-shield-alt"></i> <span data-i18n="sslSecure">SSL Secured Payment</span>
       </div>
     </div>
   </div>

@@ -777,34 +777,43 @@ let paypalLoaded = false;
 const DELIVERY_SAR = 17;
 const FREE_DELIVERY_THRESHOLD_SAR = 100;
 
+function cartSubtotalBase() {
+  return cart.reduce((s, i) => {
+    const p = PRODUCTS.find(x => x.id === i.id);
+    return s + (p ? p.price * i.qty : 0);
+  }, 0);
+}
+
 function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
-  const subtotalSAR = cart.reduce((s, i) => s + i.price * i.qty, 0);
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
-  const freeDelivery = subtotalSAR >= FREE_DELIVERY_THRESHOLD_SAR;
-  const deliverySAR = freeDelivery ? 0 : DELIVERY_SAR;
-  const grandTotalSAR = subtotalSAR + deliverySAR;
-  const fmtL = (sar) => lang.currency + Math.round(sar * lang.rate).toLocaleString();
-  document.getElementById('paySubtotal').textContent = fmtL(subtotalSAR);
+  const subtotalBase = cartSubtotalBase();
+  const subtotalDisp = subtotalBase * lang.rate;          // in display currency (SAR)
+  const freeDelivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR;
+  const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
+  const grandDisp = subtotalDisp + deliveryDisp;
+  const fmtD = (v) => lang.currency + Math.round(v).toLocaleString();
+  document.getElementById('paySubtotal').textContent = fmtD(subtotalDisp);
   const delivEl = document.getElementById('payDelivery');
   if (freeDelivery) {
     delivEl.textContent = t('free') || 'Free';
     delivEl.style.color = '#0a8f4a';
   } else {
-    delivEl.textContent = fmtL(deliverySAR);
+    delivEl.textContent = fmtD(deliveryDisp);
     delivEl.style.color = '#e91e8c';
   }
-  document.getElementById('payTotal').textContent = fmtL(grandTotalSAR);
-  document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtL(grandTotalSAR);
+  document.getElementById('payTotal').textContent = fmtD(grandDisp);
+  document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtD(grandDisp);
   const nudge = document.getElementById('payFreeNudge');
   if (nudge) {
     if (freeDelivery) {
       nudge.innerHTML = `<span class="nudge-free">🎉 ${t('freeDeliveryActive')||'Free delivery applied!'}</span>`;
     } else {
-      const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalSAR;
-      nudge.innerHTML = `<span class="nudge-add">🚚 ${t('addMoreFree')||'Add'} <strong>${fmtL(needed)}</strong> ${t('moreForFree')||'more for free delivery'}</span>`;
+      const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
+      nudge.innerHTML = `<span class="nudge-add">🚚 ${t('addMoreFree')||'Add'} <strong>${fmtD(needed)}</strong> ${t('moreForFree')||'more for free delivery'}</span>`;
     }
   }
+  applyTranslations();
   // Open modal
   document.getElementById('payOverlay').classList.add('open');
   document.getElementById('payModal').classList.add('open');
@@ -884,9 +893,9 @@ function renderPayPalButtons() {
   if (typeof paypal === 'undefined') return;
   const container = document.getElementById('paypalBtnContainer');
   container.innerHTML = '';
-  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const delivery = total >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
-  const amount = (total * 0.034 + delivery * 0.034).toFixed(2);
+  const subtotalDisp = cartSubtotalBase() * (TRANSLATIONS[currentLang]||TRANSLATIONS.en).rate;
+  const delivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+  const amount = (subtotalDisp + delivery).toFixed(2);
   paypal.Buttons({
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
