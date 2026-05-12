@@ -558,15 +558,40 @@ function showToast(msg) {
   setTimeout(() => toast.className = 'toast', 2600);
 }
 
-/* ===== ME / ACCOUNT PANEL ===== */
+/* ===== ME / PROFILE PAGE ===== */
+function maskEmail(email) {
+  if (!email || !email.includes('@')) return email || '';
+  const [local, domain] = email.split('@');
+  return local.charAt(0) + '***@' + domain;
+}
+
+function refreshMeAddress() {
+  const addrCard = document.getElementById('meAddrCard');
+  const addRow   = document.getElementById('meAddAddrRow');
+  if (!addrCard || !addRow) return;
+  if (savedLocation && (savedLocation.name || savedLocation.city)) {
+    addrCard.style.display = 'block';
+    addRow.style.display = 'none';
+    const nr = document.getElementById('meAddrNameRow');
+    const l1 = document.getElementById('meAddrLine1');
+    const l2 = document.getElementById('meAddrLine2');
+    if (nr) nr.textContent = [savedLocation.name, savedLocation.phone].filter(Boolean).join(', ');
+    if (l1) l1.textContent = [savedLocation.city, savedLocation.area, 'Saudi Arabia'].filter(Boolean).join(', ');
+    if (l2) l2.textContent = savedLocation.address || '';
+  } else {
+    addrCard.style.display = 'none';
+    addRow.style.display = 'flex';
+  }
+}
+
 function openMe() {
   document.getElementById('meOverlay').classList.add('open');
   document.getElementById('mePanel').classList.add('open');
   document.body.style.overflow = 'hidden';
-  const sub = document.getElementById('meWishSub');
-  if (sub) sub.textContent = wishlist.length + ' ' + t('items');
-  const bal = document.getElementById('meWalletBal');
-  if (bal) bal.textContent = TRANSLATIONS[currentLang].currency + '0.00';
+  refreshMeAddress();
+  const wc = document.getElementById('meWishCount');
+  if (wc) wc.textContent = wishlist.length > 0 ? wishlist.length : '';
+  if (wc) wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none';
 }
 
 function closeMe() {
@@ -574,6 +599,17 @@ function closeMe() {
   document.getElementById('mePanel').classList.remove('open');
   document.body.style.overflow = '';
   closeSettings();
+}
+
+function openEditProfile() {
+  if (!currentUser) return;
+  const nameEl  = document.getElementById('authName');
+  const emailEl = document.getElementById('authEmail');
+  const phoneEl = document.getElementById('authPhone');
+  if (nameEl)  nameEl.value  = currentUser.name  || '';
+  if (emailEl) emailEl.value = currentUser.email || '';
+  if (phoneEl) phoneEl.value = currentUser.phone || '';
+  openAuth();
 }
 
 function openSettings() {
@@ -796,27 +832,34 @@ function signOut() {
 
 function updateAuthUI() {
   const guestEl = document.getElementById('meGuestState');
-  const userEl = document.getElementById('meUserState');
+  const userEl  = document.getElementById('meUserState');
+  const signOutItem = document.getElementById('meSignOutItem');
   if (!guestEl || !userEl) return;
   if (currentUser) {
     guestEl.style.display = 'none';
-    userEl.style.display = 'flex';
-    document.getElementById('meUserName').textContent = currentUser.name;
-    document.getElementById('meUserEmail').textContent = currentUser.email;
+    userEl.style.display  = 'flex';
+    if (signOutItem) signOutItem.style.display = 'flex';
+    const nameEl  = document.getElementById('meUserName');
+    const emailEl = document.getElementById('meUserEmail');
+    if (nameEl)  nameEl.textContent  = currentUser.name  || '';
+    if (emailEl) emailEl.textContent = maskEmail(currentUser.email || '');
     const avatarImg = document.getElementById('meUserAvatar');
-    const initial = document.getElementById('meAvatarInitial');
-    if (currentUser.avatar) {
-      avatarImg.src = currentUser.avatar;
-      avatarImg.style.display = 'block';
-      initial.style.display = 'none';
-    } else {
-      avatarImg.style.display = 'none';
-      initial.style.display = 'block';
-      initial.textContent = currentUser.name.charAt(0).toUpperCase();
+    const initial   = document.getElementById('meAvatarInitial');
+    if (avatarImg && initial) {
+      if (currentUser.avatar) {
+        avatarImg.src = currentUser.avatar;
+        avatarImg.style.display = 'block';
+        initial.style.display = 'none';
+      } else {
+        avatarImg.style.display = 'none';
+        initial.style.display   = 'block';
+        initial.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
+      }
     }
   } else {
     guestEl.style.display = 'flex';
-    userEl.style.display = 'none';
+    userEl.style.display  = 'none';
+    if (signOutItem) signOutItem.style.display = 'none';
   }
 }
 

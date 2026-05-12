@@ -62,6 +62,9 @@ const TRANSLATIONS = {
     authNamePh: 'আপনার পুরো নাম', authEmailPh: 'ইমেইল অ্যাড্রেস', authPhonePh: 'ফোন নম্বর (ঐচ্ছিক)',
     authSubmit: 'প্রবেশ করুন', authTerms: 'লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন',
     loginRegister: 'লগইন / রেজিস্টার', savedBadge: 'সেভড', signedOut: 'সাইন আউট হয়েছে',
+    profile: 'প্রোফাইল', myAddress: 'আমার ঠিকানা', addAddress: 'ঠিকানা যোগ করুন',
+    noOrdersYet: 'এখনো কোনো অর্ডার নেই', edit: 'সম্পাদনা',
+    tapToLogin: 'লগইন করতে ট্যাপ করুন', followUs: 'আমাদের ফলো করুন',
     // Location modal
     deliveryAddress: 'ডেলিভারি ঠিকানা', gpsBtn: 'GPS থেকে লোকেশন নিন',
     mapHint: 'মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন',
@@ -164,6 +167,9 @@ const TRANSLATIONS = {
     authNamePh: 'Full name', authEmailPh: 'Email address', authPhonePh: 'Phone number (optional)',
     authSubmit: 'Sign In', authTerms: 'By signing in you agree to our Terms of Use',
     loginRegister: 'Login / Register', savedBadge: 'SAVED', signedOut: 'Signed out',
+    profile: 'Profile', myAddress: 'My address', addAddress: 'Add address',
+    noOrdersYet: 'No orders yet', edit: 'Edit',
+    tapToLogin: 'Tap to sign in', followUs: 'Follow us',
     // Location modal
     deliveryAddress: 'Delivery Address', gpsBtn: 'Use My GPS Location',
     mapHint: 'Tap on the map to select location',
@@ -266,6 +272,9 @@ const TRANSLATIONS = {
     authNamePh: 'الاسم الكامل', authEmailPh: 'البريد الإلكتروني', authPhonePh: 'رقم الهاتف (اختياري)',
     authSubmit: 'دخول', authTerms: 'بالدخول توافق على شروط الاستخدام',
     loginRegister: 'دخول / تسجيل', savedBadge: 'محفوظ', signedOut: 'تم تسجيل الخروج',
+    profile: 'الملف الشخصي', myAddress: 'عنواني', addAddress: 'إضافة عنوان',
+    noOrdersYet: 'لا طلبات بعد', edit: 'تعديل',
+    tapToLogin: 'اضغط للدخول', followUs: 'تابعنا',
     // Location modal
     deliveryAddress: 'عنوان التوصيل', gpsBtn: 'استخدم موقع GPS',
     mapHint: 'اضغط على الخريطة لتحديد الموقع',

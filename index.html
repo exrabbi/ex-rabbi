@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EX GLOBAL</title>
-  <link rel="stylesheet" href="styles.css?v=6" />
+  <link rel="stylesheet" href="styles.css?v=7" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -607,132 +607,123 @@
   <!-- ME OVERLAY -->
   <div class="me-overlay" id="meOverlay" onclick="closeMe()"></div>
 
-  <!-- ME / ACCOUNT PANEL -->
+  <!-- ME / PROFILE PAGE -->
   <aside class="me-panel" id="mePanel">
-    <div class="me-header">
-      <button class="icon-btn me-close-btn" onclick="closeMe()"><i class="fas fa-times"></i></button>
-      <span class="me-header-title" data-i18n="myAccount">আমার অ্যাকাউন্ট</span>
-      <div style="width:32px"></div>
+
+    <!-- Page Header -->
+    <div class="me-page-head">
+      <button class="me-back-btn" onclick="closeMe()"><i class="fas fa-arrow-left"></i></button>
+      <span class="me-page-title" data-i18n="profile">Profile</span>
+      <div style="width:40px"></div>
     </div>
 
-    <div class="me-profile-card" id="meProfileCard">
-      <!-- Guest state -->
-      <div id="meGuestState" style="display:flex;align-items:center;gap:14px;width:100%">
-        <div class="me-avatar-icon">👤</div>
-        <div class="me-profile-info">
-          <div class="me-name" data-i18n="guestUser">গেস্ট ইউজার</div>
-          <button class="me-login-btn" onclick="openAuth()" data-i18n="loginRegister">লগইন / রেজিস্টার</button>
+    <!-- Profile Hero -->
+    <div class="me-profile-hero">
+      <!-- Guest -->
+      <div id="meGuestState" class="me-hero-row">
+        <div class="me-big-avatar me-big-avatar-guest">
+          <i class="fas fa-circle-user"></i>
         </div>
-      </div>
-      <!-- Logged-in state -->
-      <div id="meUserState" style="display:none;align-items:center;gap:14px;width:100%">
-        <div class="me-user-avatar-wrap" id="meAvatarWrap">
-          <img id="meUserAvatar" src="" alt="" style="display:none" />
-          <span id="meAvatarInitial" class="me-avatar-initial"></span>
+        <div class="me-hero-info">
+          <div class="me-hero-name" data-i18n="guestUser">Guest User</div>
+          <div class="me-hero-email" style="opacity:.55" data-i18n="tapToLogin">Tap to sign in</div>
         </div>
-        <div class="me-profile-info" style="flex:1">
-          <div class="me-name" id="meUserName">User</div>
-          <div class="me-user-email" id="meUserEmail">email@example.com</div>
-          <button class="me-signout-btn" onclick="signOut()">
-            <i class="fas fa-sign-out-alt"></i> <span data-i18n="signOut">সাইন আউট</span>
-          </button>
+        <button class="me-edit-pill" onclick="openAuth()" data-i18n="loginRegister">Login</button>
+      </div>
+      <!-- Logged-in -->
+      <div id="meUserState" class="me-hero-row" style="display:none">
+        <div class="me-big-avatar-wrap" id="meAvatarWrap">
+          <img id="meUserAvatar" src="" alt="" />
+          <span id="meAvatarInitial" class="me-big-initial"></span>
         </div>
-      </div>
-    </div>
-
-    <div class="me-promo-strip">
-      <i class="fas fa-truck"></i>
-      <span data-i18n="freeShipping">ফ্রি শিপিং</span>
-      <small data-i18n="freeShippingSub">৫০০ টাকার উপরে</small>
-      <i class="fas fa-chevron-right me-promo-arrow"></i>
-    </div>
-
-    <div class="me-quick-tiles">
-      <div class="me-tile">
-        <div class="me-tile-icon"><i class="fas fa-box"></i></div>
-        <div class="me-tile-label" data-i18n="myOrders">আমার অর্ডার</div>
-        <div class="me-tile-sub" data-i18n="trackOrder">ট্র্যাক করুন</div>
-      </div>
-      <div class="me-tile">
-        <div class="me-tile-icon"><i class="fas fa-undo-alt"></i></div>
-        <div class="me-tile-label" data-i18n="returns">রিটার্ন</div>
-        <div class="me-tile-sub" data-i18n="activeReturns">0 সক্রিয়</div>
-      </div>
-      <div class="me-tile">
-        <div class="me-tile-icon"><i class="fas fa-wallet"></i></div>
-        <div class="me-tile-label" data-i18n="wallet">ওয়ালেট</div>
-        <div class="me-tile-sub" id="meWalletBal">৳0.00</div>
-      </div>
-      <div class="me-tile" onclick="closeMe()">
-        <div class="me-tile-icon"><i class="fas fa-heart"></i></div>
-        <div class="me-tile-label" data-i18n="wishlistMenu">উইশলিস্ট</div>
-        <div class="me-tile-sub" id="meWishSub">0</div>
+        <div class="me-hero-info">
+          <div class="me-hero-name" id="meUserName"></div>
+          <div class="me-hero-email" id="meUserEmail"></div>
+        </div>
+        <button class="me-edit-pill" onclick="openEditProfile()" data-i18n="edit">Edit</button>
       </div>
     </div>
 
-    <div class="me-section">
-      <div class="me-section-title" data-i18n="myAccount">আমার অ্যাকাউন্ট</div>
-      <div class="me-menu-list">
-        <div class="me-menu-item" onclick="openLocation()">
-          <i class="fas fa-map-marker-alt"></i>
-          <span data-i18n="addresses">ঠিকানা</span>
-          <span class="me-location-saved" id="meLocSaved"></span>
-          <i class="fas fa-chevron-right me-arrow"></i>
-        </div>
-        <div class="me-menu-item">
-          <i class="fas fa-credit-card"></i>
-          <span data-i18n="savedCards">সেভড কার্ড</span>
-          <i class="fas fa-chevron-right me-arrow"></i>
-        </div>
-        <div class="me-menu-item" onclick="openSettings()">
-          <i class="fas fa-cog"></i>
-          <span data-i18n="settings">সেটিংস</span>
-          <i class="fas fa-chevron-right me-arrow"></i>
-        </div>
-        <div class="me-menu-item">
-          <i class="fas fa-tag"></i>
-          <span data-i18n="coupon">কুপন</span>
-          <i class="fas fa-chevron-right me-arrow"></i>
-        </div>
-        <div class="me-menu-item">
-          <i class="fas fa-info-circle"></i>
-          <span data-i18n="about">আমাদের সম্পর্কে</span>
-          <i class="fas fa-chevron-right me-arrow"></i>
-        </div>
+    <!-- My Address -->
+    <div class="me-card-block">
+      <div class="me-block-header" onclick="openLocation()">
+        <span class="me-block-title" data-i18n="myAddress">My address</span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+      <div class="me-addr-card" id="meAddrCard" style="display:none">
+        <div class="me-addr-name-row" id="meAddrNameRow"></div>
+        <div class="me-addr-line" id="meAddrLine1"></div>
+        <div class="me-addr-line" id="meAddrLine2"></div>
+      </div>
+      <div class="me-add-addr-row" id="meAddAddrRow" onclick="openLocation()">
+        <i class="fas fa-circle-plus"></i>
+        <span data-i18n="addAddress">Add address</span>
       </div>
     </div>
 
-    <!-- SOCIAL LINKS — wide bars -->
-    <div class="me-social-section">
-      <div class="me-section-title">আমাদের ফলো করুন</div>
-      <div class="me-social-bars">
+    <!-- My Orders -->
+    <div class="me-card-block">
+      <div class="me-block-header">
+        <span class="me-block-title" data-i18n="myOrders">My orders</span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+      <div class="me-orders-empty" id="meOrdersEmpty">
+        <i class="fas fa-bag-shopping"></i>
+        <span data-i18n="noOrdersYet">No orders yet</span>
+      </div>
+    </div>
+
+    <!-- Account Menu -->
+    <div class="me-card-block me-list-block">
+      <div class="me-list-item" onclick="closeMe()">
+        <div class="me-list-icon pink"><i class="fas fa-heart"></i></div>
+        <span data-i18n="wishlistMenu">Wishlist</span>
+        <span class="me-list-badge" id="meWishCount"></span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+      <div class="me-list-item">
+        <div class="me-list-icon purple"><i class="fas fa-tag"></i></div>
+        <span data-i18n="coupon">Coupon</span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+      <div class="me-list-item" onclick="openSettings()">
+        <div class="me-list-icon gray"><i class="fas fa-gear"></i></div>
+        <span data-i18n="settings">Settings</span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+      <div class="me-list-item" id="meSignOutItem" style="display:none" onclick="signOut()">
+        <div class="me-list-icon red"><i class="fas fa-right-from-bracket"></i></div>
+        <span data-i18n="signOut">Sign Out</span>
+        <i class="fas fa-chevron-right me-chev-r"></i>
+      </div>
+    </div>
+
+    <!-- Follow Us -->
+    <div class="me-card-block">
+      <div class="me-block-header" style="pointer-events:none">
+        <span class="me-block-title" data-i18n="followUs">Follow us</span>
+      </div>
+      <div class="me-social-bars" style="padding:0 16px 16px">
         <a href="https://www.tiktok.com/@exglobal_21" class="soc-bar soc-tiktok" target="_blank">
-          <i class="fab fa-tiktok"></i>
-          <span>TikTok</span>
-          <i class="fas fa-chevron-right soc-arr"></i>
+          <i class="fab fa-tiktok"></i><span>TikTok</span><i class="fas fa-chevron-right soc-arr"></i>
         </a>
         <a href="https://www.facebook.com/offline2121" class="soc-bar soc-fb" target="_blank">
-          <i class="fab fa-facebook-f"></i>
-          <span>Facebook</span>
-          <i class="fas fa-chevron-right soc-arr"></i>
+          <i class="fab fa-facebook-f"></i><span>Facebook</span><i class="fas fa-chevron-right soc-arr"></i>
         </a>
         <a href="https://www.instagram.com/ex_global_21?igsh=MW51dzJyY2V1NGxneg==" class="soc-bar soc-ig" target="_blank">
-          <i class="fab fa-instagram"></i>
-          <span>Instagram</span>
-          <i class="fas fa-chevron-right soc-arr"></i>
+          <i class="fab fa-instagram"></i><span>Instagram</span><i class="fas fa-chevron-right soc-arr"></i>
         </a>
         <a href="https://wa.me/966546224029" class="soc-bar soc-wa" target="_blank">
-          <i class="fab fa-whatsapp"></i>
-          <span>WhatsApp</span>
-          <i class="fas fa-chevron-right soc-arr"></i>
+          <i class="fab fa-whatsapp"></i><span>WhatsApp</span><i class="fas fa-chevron-right soc-arr"></i>
         </a>
       </div>
     </div>
 
     <button class="me-help-fab" onclick="window.open('https://wa.me/966546224029','_blank')">
       <i class="fab fa-whatsapp"></i>
-      <span data-i18n="needHelp">সাহায্য দরকার?</span>
+      <span data-i18n="needHelp">Need Help?</span>
     </button>
+
   </aside>
 
   <!-- SETTINGS PANEL -->
@@ -1153,8 +1144,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=6"></script>
+  <script src="translations.js?v=7"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>
