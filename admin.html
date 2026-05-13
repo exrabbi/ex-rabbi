@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v28</title>
+  <title>EX GLOBAL — Admin Panel v29</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -316,14 +316,27 @@
 
           <!-- VIDEO -->
           <div class="field-wrap" style="border:1px solid #2a1a2a;border-radius:10px;padding:10px;background:#110a11">
-            <div class="field-label" style="color:#ff6b9d"><i class="fab fa-youtube" style="color:#ff0000"></i>&nbsp;<i class="fab fa-tiktok" style="color:#69c9d0"></i>&nbsp; Slide Video (YouTube / TikTok)</div>
-            <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok video URL" oninput="previewHsVideo(this.value)" style="margin-top:6px"/>
-            <div style="font-size:11px;color:#888;margin-top:5px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> Video plays muted + auto-loop on hero slide right side. Image still shows as fallback if no video.</div>
+            <div class="field-label" style="color:#ff6b9d;margin-bottom:8px"><i class="fas fa-video" style="color:#7c3aed"></i> Slide Video</div>
+
+            <!-- Upload from phone -->
+            <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:8px">
+              <i class="fas fa-video"></i> Upload Video from Phone
+            </button>
+
+            <!-- OR YouTube/TikTok -->
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="flex:1;height:1px;background:#2a2a3a"></div>
+              <span style="font-size:10px;color:#555">OR paste YouTube / TikTok link</span>
+              <div style="flex:1;height:1px;background:#2a2a3a"></div>
+            </div>
+            <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok video URL" oninput="previewHsVideo(this.value)"/>
+            <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> Video plays muted + auto-loop on hero slide right side.</div>
           </div>
           <div id="hsVideoPreview" style="display:none;width:100%;border-radius:10px;overflow:hidden;background:#000;border:1px solid #2a2a2a">
-            <img id="hsVideoThumb" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block"/>
+            <video id="hsVideoEl" controls playsinline style="width:100%;max-height:160px;display:none"></video>
+            <img id="hsVideoThumb" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:none"/>
             <div style="padding:8px 10px;background:#111;display:flex;align-items:center;gap:8px">
-              <i class="fab fa-youtube" style="color:#ff0000;font-size:18px"></i>
+              <i id="hsVideoIcon" class="fab fa-youtube" style="color:#ff0000;font-size:18px"></i>
               <span id="hsVideoLabel" style="font-size:11px;color:#aaa;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
               <button class="adm-btn sm gray" onclick="document.getElementById('hsVideo').value='';previewHsVideo('')" style="padding:4px 8px;font-size:10px"><i class="fas fa-times"></i> Remove</button>
             </div>
@@ -1433,25 +1446,63 @@ function previewHsImg(url) {
 function previewHsVideo(url) {
   const box = document.getElementById('hsVideoPreview');
   const thumb = document.getElementById('hsVideoThumb');
+  const videoEl = document.getElementById('hsVideoEl');
   const label = document.getElementById('hsVideoLabel');
-  if (!url) { box.style.display = 'none'; return; }
+  const icon = document.getElementById('hsVideoIcon');
+  if (!url) { box.style.display = 'none'; if(videoEl) videoEl.src=''; return; }
+
   const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   if (ytMatch) {
+    if(videoEl){videoEl.style.display='none';videoEl.src='';}
     thumb.src = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    thumb.style.display = 'block';
+    if(icon){icon.className='fab fa-youtube';icon.style.color='#ff0000';}
     label.textContent = 'YouTube: ' + ytMatch[1];
-    box.style.display = 'block';
-    return;
+    box.style.display = 'block'; return;
   }
   const ttMatch = url.match(/tiktok\.com\/@([^/]+)\/video\/(\d+)/);
   if (ttMatch) {
-    thumb.src = '';
-    label.textContent = 'TikTok @' + ttMatch[1] + ' — video ' + ttMatch[2];
-    box.style.display = 'block';
-    box.querySelector('i.fab').className = 'fab fa-tiktok';
-    box.querySelector('i.fab').style.color = '#69c9d0';
-    return;
+    if(videoEl){videoEl.style.display='none';videoEl.src='';}
+    thumb.style.display = 'none';
+    if(icon){icon.className='fab fa-tiktok';icon.style.color='#69c9d0';}
+    label.textContent = 'TikTok @' + ttMatch[1];
+    box.style.display = 'block'; return;
+  }
+  // Direct video (Cloudinary / mp4)
+  if (url.includes('cloudinary.com') || url.match(/\.(mp4|webm|mov)(\?|$)/i)) {
+    thumb.style.display = 'none';
+    if(videoEl){videoEl.src=url;videoEl.style.display='block';}
+    if(icon){icon.className='fas fa-video';icon.style.color='#7c3aed';}
+    label.textContent = url.split('/').pop().split('?')[0];
+    box.style.display = 'block'; return;
   }
   box.style.display = 'none';
+}
+
+function pickHsVideo() {
+  const cloudName = localStorage.getItem('exg_cloud_name') || '';
+  const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
+  if (!cloudName || !cloudPreset) {
+    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    showTab('settings'); return;
+  }
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'video/*';
+  inp.onchange = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { toast('❌ Video too large (max 100MB)'); return; }
+    const btn = document.getElementById('hsVideoUploadBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    btn.disabled = true;
+    try {
+      const url = await uploadVideoToCloud(file, cloudName, cloudPreset);
+      document.getElementById('hsVideo').value = url;
+      previewHsVideo(url);
+      toast('✅ Video uploaded!');
+    } catch(err) { toast('❌ ' + (err.message || 'Upload failed')); }
+    finally { btn.innerHTML = '<i class="fas fa-video"></i> Upload Video from Phone'; btn.disabled = false; }
+  };
+  inp.click();
 }
 
 function saveHeroSlide() {
