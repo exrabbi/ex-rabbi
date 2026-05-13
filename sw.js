@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v1';
+const CACHE = 'exglobal-v3';
 const ASSETS = [
   '/ex-rabbi/',
   '/ex-rabbi/index.html',
