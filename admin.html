@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v27</title>
+  <title>EX GLOBAL — Admin Panel v28</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -531,11 +531,11 @@
       <!-- EXTRA IMAGES (multi-upload gallery) -->
       <div class="field-wrap" style="background:#111;border-radius:12px;padding:11px;border:1px solid #2a2a2a">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <div class="field-label" style="margin-bottom:0"><i class="fas fa-images" style="color:#7c3aed"></i> Extra Photos (Swipe Gallery)</div>
+          <div class="field-label" style="margin-bottom:0"><i class="fas fa-images" style="color:#7c3aed"></i> Extra Photos <span id="extraImgCount" style="font-size:11px;color:#888;font-weight:400">(0/14)</span></div>
           <button class="adm-btn sm" onclick="addExtraImg()" id="addExtraImgBtn" style="padding:5px 10px;font-size:11px;background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-plus"></i> Add Photo</button>
         </div>
-        <div id="extraImgsContainer" style="display:flex;flex-direction:column;gap:7px"></div>
-        <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-hand-pointer"></i> Up to 3 extra photos — customers swipe through all in the product popup</div>
+        <div id="extraImgsContainer" style="display:flex;flex-direction:column;gap:7px;max-height:420px;overflow-y:auto;padding-right:2px"></div>
+        <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-images" style="color:#7c3aed"></i> Up to 14 extra photos (15 total) — customers swipe through all in the product popup</div>
       </div>
 
       <!-- VIDEO -->
@@ -870,8 +870,8 @@ let _extraImgSeq = 0;
 function addExtraImg(url) {
   const container = document.getElementById('extraImgsContainer');
   if (!container) return;
-  if (container.querySelectorAll('.extra-img-slot').length >= 3) {
-    toast('Maximum 3 extra photos allowed (4 total with cover)'); return;
+  if (container.querySelectorAll('.extra-img-slot').length >= 14) {
+    toast('Maximum 14 extra photos allowed (15 total with cover)'); return;
   }
   const sid = ++_extraImgSeq;
   const slot = document.createElement('div');
@@ -927,8 +927,11 @@ async function xPickImg(btn) {
 function updateAddExtraBtn() {
   const container = document.getElementById('extraImgsContainer');
   const btn = document.getElementById('addExtraImgBtn');
-  if (!container || !btn) return;
-  btn.style.display = container.querySelectorAll('.extra-img-slot').length >= 3 ? 'none' : '';
+  const countEl = document.getElementById('extraImgCount');
+  if (!container) return;
+  const n = container.querySelectorAll('.extra-img-slot').length;
+  if (btn) btn.style.display = n >= 14 ? 'none' : '';
+  if (countEl) countEl.textContent = '(' + n + '/14)';
 }
 
 function getExtraImages() {
