@@ -1059,6 +1059,7 @@ function saveProduct() {
     localStorage.setItem('exg_products_added', JSON.stringify(added));
     toast('✅ Product added! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
   }
+  _markAdminEdit();
   closeProdModal();
   renderProductList();
 }
@@ -1075,6 +1076,7 @@ function deleteProduct(id) {
   // Remove from added list too
   const added = JSON.parse(localStorage.getItem('exg_products_added') || '[]');
   localStorage.setItem('exg_products_added', JSON.stringify(added.filter(x => x.id !== id)));
+  _markAdminEdit();
   renderProductList();
   toast('🗑️ Deleted: ' + name);
 }
@@ -1199,7 +1201,8 @@ function custRowHTML(c) {
 
 /* ===== COUPONS ===== */
 function getExtraCoupons() { return JSON.parse(localStorage.getItem('exg_extra_coupons') || '[]'); }
-function saveExtraCoupons(arr) { localStorage.setItem('exg_extra_coupons', JSON.stringify(arr)); }
+function saveExtraCoupons(arr) { localStorage.setItem('exg_extra_coupons', JSON.stringify(arr)); _markAdminEdit(); }
+function _markAdminEdit() { localStorage.setItem('exg_last_admin_edit', new Date().toISOString()); }
 
 function renderCoupons() {
   const used = JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
@@ -1285,6 +1288,7 @@ function saveSettings() {
   if (ghToken) localStorage.setItem('exg_github_token', ghToken); else localStorage.removeItem('exg_github_token');
   const cityVideo = document.getElementById('setCityVideo') ? document.getElementById('setCityVideo').value.trim() : '';
   if (cityVideo) localStorage.setItem('exg_city_video', cityVideo); else localStorage.removeItem('exg_city_video');
+  _markAdminEdit();
   updatePublishStatus();
   toast('✅ Settings saved!');
 }
@@ -1605,6 +1609,7 @@ function saveHeroSlide() {
     sub: document.getElementById('hsSub').value.trim(),
   };
   localStorage.setItem('exg_hero_slides', JSON.stringify(slides));
+  _markAdminEdit();
   toast('✅ Slide ' + (idx + 1) + ' saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1661,6 +1666,7 @@ function saveFeaturedPins() {
   else localStorage.removeItem('exg_super_pins');
   if (trend) localStorage.setItem('exg_trend_pins', JSON.stringify(trend));
   else localStorage.removeItem('exg_trend_pins');
+  _markAdminEdit();
   toast('✅ Featured sections saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1730,6 +1736,7 @@ function saveSocialLinks() {
     youtube: document.getElementById('socYoutube').value.trim(),
   };
   localStorage.setItem('exg_social_links', JSON.stringify(soc));
+  _markAdminEdit();
   toast('✅ Social links saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1761,6 +1768,7 @@ function collectStoreData() {
     super_pins:       JSON.parse(localStorage.getItem('exg_super_pins')       || 'null'),
     trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
     coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
+    city_video:       localStorage.getItem('exg_city_video') || '',
     published_at: new Date().toISOString()
   };
 }

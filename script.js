@@ -21,6 +21,10 @@ async function loadPublishedData() {
     if (!r.ok) return;
     const d = await r.json();
     if (!d || !d.published_at) return;
+    // If admin made local edits AFTER the last publish, keep local data
+    const publishedAt = new Date(d.published_at).getTime();
+    const lastEdit = new Date(localStorage.getItem('exg_last_admin_edit') || 0).getTime();
+    if (lastEdit > publishedAt) return;
     const map = {
       'exg_products_custom': d.products_custom,
       'exg_products_added':  d.products_added,
@@ -32,6 +36,7 @@ async function loadPublishedData() {
       'exg_super_pins':      d.super_pins,
       'exg_trend_pins':      d.trend_pins,
       'exg_extra_coupons':   d.coupons,
+      'exg_city_video':      d.city_video,
     };
     Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
   } catch(e) {}
