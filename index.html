@@ -676,7 +676,7 @@
   <!-- Floating button -->
   <button class="hc-fab" id="hcFab" onclick="toggleHelpCenter()" aria-label="Help Center">
     <i class="fas fa-headset" id="hcFabIcon"></i>
-    <span class="hc-fab-label">সাহায্য</span>
+    <span class="hc-fab-label" data-i18n="hcFabLabel">সাহায্য</span>
     <span class="hc-fab-dot"></span>
   </button>
 
@@ -690,8 +690,8 @@
       <div class="hc-header-left">
         <div class="hc-online-dot"></div>
         <div>
-          <div class="hc-title">EX GLOBAL সাহায্য কেন্দ্র</div>
-          <div class="hc-subtitle">সাধারণত ৫ মিনিটে উত্তর দিই ⚡</div>
+          <div class="hc-title" data-i18n="hcTitle">EX GLOBAL সাহায্য কেন্দ্র</div>
+          <div class="hc-subtitle" data-i18n="hcSubtitle">সাধারণত ৫ মিনিটে উত্তর দিই ⚡</div>
         </div>
       </div>
       <button class="hc-close" onclick="closeHelpCenter()"><i class="fas fa-times"></i></button>
@@ -702,8 +702,8 @@
       <a class="hc-wa-btn soc-wa" href="https://wa.me/966546224029?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%B0%20%E0%A6%8F%E0%A6%95%E0%A6%9F%E0%A6%BF%20%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%B6%E0%A7%8D%E0%A6%A8%20%E0%A6%86%E0%A6%9B%E0%A7%87%E0%A5%A4" target="_blank" id="hcWaBtn">
         <i class="fab fa-whatsapp"></i>
         <div>
-          <div style="font-weight:700;font-size:14px">WhatsApp-এ চ্যাট করুন</div>
-          <div style="font-size:11px;opacity:.85">সরাসরি কথা বলুন</div>
+          <div style="font-weight:700;font-size:14px" data-i18n="hcWaBtn">WhatsApp-এ চ্যাট করুন</div>
+          <div style="font-size:11px;opacity:.85" data-i18n="hcWaSub">সরাসরি কথা বলুন</div>
         </div>
         <i class="fas fa-arrow-right" style="margin-left:auto;opacity:.7"></i>
       </a>
@@ -711,24 +711,24 @@
 
     <!-- Quick options -->
     <div class="hc-options">
-      <button class="hc-opt" onclick="hcAsk('আমার অর্ডার কোথায়? ট্র্যাক করতে চাই।')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgTrack')">
         <i class="fas fa-box-open" style="color:#e91e8c"></i>
-        <span>অর্ডার ট্র্যাক করুন</span>
+        <span data-i18n="hcOptTrack">অর্ডার ট্র্যাক করুন</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
-      <button class="hc-opt" onclick="hcAsk('রিটার্ন করতে চাই, কীভাবে করবো?')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgReturn')">
         <i class="fas fa-rotate-left" style="color:#f59e0b"></i>
-        <span>রিটার্ন / এক্সচেঞ্জ</span>
+        <span data-i18n="hcOptReturn">রিটার্ন / এক্সচেঞ্জ</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
-      <button class="hc-opt" onclick="hcAsk('পেমেন্ট সম্পর্কে জানতে চাই।')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgPayment')">
         <i class="fas fa-credit-card" style="color:#8b5cf6"></i>
-        <span>পেমেন্ট পদ্ধতি</span>
+        <span data-i18n="hcOptPayment">পেমেন্ট পদ্ধতি</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
       <button class="hc-opt" onclick="toggleFaq()">
         <i class="fas fa-circle-question" style="color:#06b6d4"></i>
-        <span>সাধারণ প্রশ্ন (FAQ)</span>
+        <span data-i18n="hcOptFaq">সাধারণ প্রশ্ন (FAQ)</span>
         <i class="fas fa-chevron-down hc-arr" id="faqChevron"></i>
       </button>
     </div>

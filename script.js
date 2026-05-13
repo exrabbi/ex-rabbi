@@ -106,6 +106,7 @@ function setLang(lang) {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
   applyTranslations();
+  _applySocialLinks();
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
@@ -200,7 +201,8 @@ function _applySocialLinks() {
     if (soc.youtube) document.querySelectorAll('.soc-yt').forEach(a => { a.href = soc.youtube; a.style.display = ''; });
     if (settings.whatsapp) {
       const waNum = settings.whatsapp;
-      const waMsg = encodeURIComponent('হ্যালো, আমার একটি প্রশ্ন আছে।');
+      const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const waMsg = encodeURIComponent(T.waMsg || 'Hello, I have a question.');
       document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + waNum + '?text=' + waMsg);
     }
   } catch(e) {}
@@ -1233,7 +1235,8 @@ function openHelpCenter() {
   document.getElementById('hcBackdrop').classList.add('open');
   document.getElementById('hcFabIcon').className = 'fas fa-times';
   const wa = document.getElementById('hcWaBtn');
-  if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent('হ্যালো, আমার একটি প্রশ্ন আছে।');
+  const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
 }
 function closeHelpCenter() {
   _hcOpen = false;
@@ -1244,6 +1247,10 @@ function closeHelpCenter() {
 function hcAsk(msg) {
   closeHelpCenter();
   window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+}
+function hcAskKey(key) {
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  hcAsk(T[key] || T.waMsg || 'Hello, I have a question.');
 }
 let _faqOpen = false;
 function toggleFaq() {
