@@ -11,6 +11,20 @@ let heroIndex = 0;
 let heroTimer;
 let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 
+/* ===== ADMIN PRODUCT OVERRIDES ===== */
+(function(){
+  try{
+    const c=JSON.parse(localStorage.getItem('exg_products_custom')||'{}');
+    const a=JSON.parse(localStorage.getItem('exg_products_added')||'[]');
+    const d=JSON.parse(localStorage.getItem('exg_products_deleted')||'[]');
+    for(let i=PRODUCTS.length-1;i>=0;i--){
+      if(d.includes(PRODUCTS[i].id))PRODUCTS.splice(i,1);
+      else if(c[PRODUCTS[i].id])Object.assign(PRODUCTS[i],c[PRODUCTS[i].id]);
+    }
+    PRODUCTS.push(...a);
+  }catch(e){}
+})();
+
 /* ===== THEME ===== */
 function applyTheme(theme) {
   currentTheme = theme;
@@ -80,6 +94,8 @@ function setLang(lang) {
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', () => {
+  // Apply admin settings (delivery charge, free delivery threshold)
+  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;}catch(e){}
   applyTheme(currentTheme);
   setLang('en');
   updateWishBadge();
@@ -773,7 +789,8 @@ function whatsappCheckout() {
   const locText = typeof getLocationText === 'function' ? getLocationText() : '';
   const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}${couponLine}\n\n*${t('totalLabel')} ${fmtD(grandDisp)}*${locText}`;
   if (appliedCoupon) markCouponUsed(appliedCoupon.code);
-  window.open(`https://wa.me/966546224029?text=${encodeURIComponent(msg)}`, '_blank');
+  _saveOrderRecord(cart, grandDisp, 'whatsapp');
+  window.open(`https://wa.me/${getWANumber()}?text=${encodeURIComponent(msg)}`, '_blank');
 }
 
 /* ===== BOTTOM NAV ===== */
@@ -1039,9 +1056,42 @@ function signInManual() {
   showToast(t('welcome') + name.split(' ')[0] + '!');
 }
 
+function getWANumber(){try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');return s.whatsapp||'966546224029';}catch(e){return'966546224029';}}
+
+function _saveCustomerRecord(user){
+  if(!user||!user.email)return;
+  try{
+    const list=JSON.parse(localStorage.getItem('exg_customers')||'[]');
+    if(!list.find(c=>c.email===user.email)){
+      list.unshift({name:user.name,email:user.email,phone:user.phone||'',avatar:user.avatar||'',uid:user.uid||'',provider:user.provider||'manual',joinedAt:new Date().toISOString()});
+      if(list.length>1000)list.splice(1000);
+      localStorage.setItem('exg_customers',JSON.stringify(list));
+    }
+  }catch(e){}
+}
+
+function _saveOrderRecord(items,totalSAR,method){
+  try{
+    const orders=JSON.parse(localStorage.getItem('exg_orders')||'[]');
+    orders.unshift({
+      id:'ORD'+Date.now(),
+      date:new Date().toISOString(),
+      items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,image:p?p.image:''};}).slice(0,20),
+      totalSAR:Math.round(totalSAR),
+      method,
+      customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},
+      address:typeof savedLocation!=='undefined'?savedLocation:null,
+      status:'pending'
+    });
+    if(orders.length>500)orders.splice(500);
+    localStorage.setItem('exg_orders',JSON.stringify(orders));
+  }catch(e){}
+}
+
 function setUser(user) {
   currentUser = user;
   localStorage.setItem('exglobal_user', JSON.stringify(user));
+  _saveCustomerRecord(user);
   updateAuthUI();
 }
 
@@ -1095,8 +1145,8 @@ const SAR_TO_USDT = 0.267;
 let selectedPayMethod = 'whatsapp';
 let paypalLoaded = false;
 
-const DELIVERY_SAR = 17;
-const FREE_DELIVERY_THRESHOLD_SAR = 100;
+let DELIVERY_SAR = 17;
+let FREE_DELIVERY_THRESHOLD_SAR = 100;
 
 function cartSubtotalBase() {
   return cart.reduce((s, i) => {
@@ -1303,7 +1353,8 @@ function processPayment() {
       const msg = `✅ *Binance Pay — AUTO CONFIRMED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Pay ID: ${BINANCE_PAY_ID}\n🔖 Ref: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
 
       setTimeout(() => {
-        window.open('https://wa.me/966546224029?text=' + encodeURIComponent(msg), '_blank');
+        _saveOrderRecord(cart, totalSAR, 'binance');
+        window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
         cart = []; updateCart();
         setTimeout(closePayment, 3000);
       }, 1200);
