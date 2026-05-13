@@ -116,7 +116,51 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollBtn.classList.toggle('visible', window.scrollY > 320);
     }, { passive: true });
   }
+  _applyHeroOverrides();
+  _applySocialLinks();
+  _applyAnnouncement();
 });
+
+/* ===== ADMIN SITE OVERRIDES ===== */
+function _applyHeroOverrides() {
+  try {
+    const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[]');
+    slides.forEach((s, i) => {
+      if (!s) return;
+      const slide = document.querySelector('.hero-slide.slide-' + (i + 1));
+      if (!slide) return;
+      if (s.tag) { const el = slide.querySelector('.badge-event'); if (el) el.textContent = s.tag; }
+      if (s.heading) { const el = slide.querySelector('.hero-sale-title'); if (el) el.innerHTML = s.heading.replace('\n', '<br/>'); }
+      if (s.pct) { const el = slide.querySelector('.hero-pct'); if (el) { const star = el.querySelector('.sp-inline'); el.innerHTML = s.pct + '<em>%</em>' + (star ? star.outerHTML : ''); } }
+      if (s.sub) { const el = slide.querySelector('.hero-items-count'); if (el) el.innerHTML = s.sub; }
+      if (s.image) { const el = slide.querySelector('.hero-model-img'); if (el) el.src = s.image; }
+    });
+  } catch(e) {}
+}
+
+function _applySocialLinks() {
+  try {
+    const soc = JSON.parse(localStorage.getItem('exg_social_links') || '{}');
+    const settings = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    if (soc.tiktok) document.querySelectorAll('.soc-tiktok').forEach(a => a.href = soc.tiktok);
+    if (soc.facebook) document.querySelectorAll('.soc-fb').forEach(a => a.href = soc.facebook);
+    if (soc.instagram) document.querySelectorAll('.soc-ig').forEach(a => a.href = soc.instagram);
+    if (soc.youtube) document.querySelectorAll('.soc-yt').forEach(a => { a.href = soc.youtube; a.style.display = ''; });
+    if (settings.whatsapp) document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + settings.whatsapp);
+  } catch(e) {}
+}
+
+function _applyAnnouncement() {
+  try {
+    const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    if (!s.announcement) return;
+    const banner = document.getElementById('announceBanner');
+    if (banner) {
+      document.getElementById('announceTxt').textContent = s.announcement;
+      if (!sessionStorage.getItem('announce_dismissed')) banner.style.display = 'flex';
+    }
+  } catch(e) {}
+}
 
 /* ===== HERO SLIDER ===== */
 function startHeroSlider() {
@@ -156,7 +200,10 @@ function startCountdown() {
 
 /* ===== RENDER FLASH DEALS ===== */
 function renderFlashDeals() {
-  const items = PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
+  const pins = JSON.parse(localStorage.getItem('exg_flash_pins') || 'null');
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
+    : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
   document.getElementById('flashProducts').innerHTML = items.map(p => `
     <div class="flash-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
@@ -173,7 +220,10 @@ function renderFlashDeals() {
 
 /* ===== RENDER SUPER DEALS ===== */
 function renderSuperDeals() {
-  const items = PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
+  const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
+    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
   document.getElementById('superDeals').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
@@ -190,7 +240,10 @@ function renderSuperDeals() {
 
 /* ===== RENDER TRENDING ===== */
 function renderTrending() {
-  const items = PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
+  const pins = JSON.parse(localStorage.getItem('exg_trend_pins') || 'null');
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
+    : PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
   document.getElementById('trendingProducts').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">

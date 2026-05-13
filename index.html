@@ -82,7 +82,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=21" />
+  <link rel="stylesheet" href="styles.css?v=22" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -92,6 +92,11 @@
   <script src="firebase-config.js"></script>
 </head>
 <body>
+<!-- Announcement Banner (controlled from Admin Panel) -->
+<div id="announceBanner" style="display:none;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;text-align:center;padding:9px 44px 9px 16px;font-size:13px;font-weight:600;position:relative;z-index:200;align-items:center;justify-content:center;gap:8px">
+  <span id="announceTxt"></span>
+  <button onclick="this.parentElement.style.display='none';sessionStorage.setItem('announce_dismissed','1')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.2);border:none;color:#fff;cursor:pointer;font-size:16px;width:26px;height:26px;border-radius:50%;line-height:1;display:flex;align-items:center;justify-content:center">×</button>
+</div>
 
   <!-- HEADER -->
   <header class="header">
@@ -1337,8 +1342,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=21"></script>
+  <script src="translations.js?v=22"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=21"></script>
+  <script src="script.js?v=22"></script>
 </body>
 </html>
