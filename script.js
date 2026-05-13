@@ -668,8 +668,20 @@ function openModal(id) {
     if (!embedUrl) return '';
     return `<div class="modal-video-wrap"><iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
   })();
+
+  // Build image gallery (main + extraImages)
+  const allImgs = [p.image, ...(p.extraImages || [])].filter(Boolean);
+  const galleryHtml = allImgs.length > 1
+    ? `<div class="modal-gallery" id="mgal" data-idx="0" data-images='${JSON.stringify(allImgs)}'>
+        <img class="modal-img" id="mgalMain" src="${allImgs[0]}" alt="" />
+        <div class="modal-thumbs">
+          ${allImgs.map((u, i) => `<img class="modal-thumb${i===0?' active':''}" src="${u}" onclick="switchGalleryImg(${i})" loading="lazy"/>`).join('')}
+        </div>
+       </div>`
+    : `<img class="modal-img" src="${p.image}" alt="" />`;
+
   document.getElementById('modalBody').innerHTML = `
-    <img class="modal-img" src="${p.image}" alt="" />
+    ${galleryHtml}
     ${videoEmbed}
     <div class="modal-info">
       <div class="modal-top-row">
@@ -728,6 +740,35 @@ function closeModal() {
   document.body.style.overflow = '';
   history.replaceState({}, '', location.pathname);
 }
+
+function switchGalleryImg(idx) {
+  const gal = document.getElementById('mgal');
+  const main = document.getElementById('mgalMain');
+  if (!gal || !main) return;
+  const imgs = JSON.parse(gal.dataset.images || '[]');
+  if (!imgs[idx]) return;
+  main.src = imgs[idx];
+  gal.dataset.idx = idx;
+  document.querySelectorAll('.modal-thumb').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+
+// Touch swipe through gallery
+let _galTouchX = 0;
+document.addEventListener('touchstart', e => {
+  const gal = document.getElementById('mgal');
+  if (gal && e.target.closest('#mgal')) _galTouchX = e.touches[0].clientX;
+}, { passive: true });
+document.addEventListener('touchend', e => {
+  const gal = document.getElementById('mgal');
+  if (!gal || !e.target.closest('#mgal')) return;
+  const dx = e.changedTouches[0].clientX - _galTouchX;
+  if (Math.abs(dx) < 35) return;
+  const imgs = JSON.parse(gal.dataset.images || '[]');
+  let idx = parseInt(gal.dataset.idx || 0);
+  if (dx < 0 && idx < imgs.length - 1) idx++;
+  else if (dx > 0 && idx > 0) idx--;
+  switchGalleryImg(idx);
+}, { passive: true });
 
 function shareProduct(id) {
   const url = location.origin + location.pathname + '?p=' + id;

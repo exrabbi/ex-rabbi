@@ -503,12 +503,24 @@
     <div class="img-preview-box" id="imgPreviewBox"><img id="imgPreviewEl" src="" alt="preview"/></div>
 
     <div style="display:flex;flex-direction:column;gap:11px">
+      <!-- MAIN IMAGE -->
       <div class="field-wrap">
-        <div class="field-label">Product Image *</div>
+        <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> Cover Photo *</div>
         <input type="url" id="pImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewImg(this.value)"/>
         <button class="adm-btn" onclick="pickImage('pImage','imgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px" id="pImgUploadBtn"><i class="fas fa-camera"></i> Upload HD Photo from Phone</button>
       </div>
 
+      <!-- EXTRA IMAGES (multi-upload gallery) -->
+      <div class="field-wrap" style="background:#111;border-radius:12px;padding:11px;border:1px solid #2a2a2a">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+          <div class="field-label" style="margin-bottom:0"><i class="fas fa-images" style="color:#7c3aed"></i> Extra Photos (Swipe Gallery)</div>
+          <button class="adm-btn sm" onclick="addExtraImg()" id="addExtraImgBtn" style="padding:5px 10px;font-size:11px;background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-plus"></i> Add Photo</button>
+        </div>
+        <div id="extraImgsContainer" style="display:flex;flex-direction:column;gap:7px"></div>
+        <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-hand-pointer"></i> Up to 3 extra photos — customers swipe through all in the product popup</div>
+      </div>
+
+      <!-- VIDEO -->
       <div class="field-wrap">
         <div class="field-label"><i class="fab fa-youtube" style="color:#ff0000"></i> Product Video URL (YouTube/TikTok — optional)</div>
         <input type="url" id="pVideo" class="adm-input" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."/>
@@ -766,6 +778,8 @@ function openProductForm(id) {
     document.getElementById('pEditId').value = id;
     document.getElementById('pImage').value = p.image || '';
     document.getElementById('pVideo').value = p.video || '';
+    clearExtraImgs();
+    (p.extraImages || []).forEach(url => addExtraImg(url));
     document.getElementById('pNameEn').value = p.names?.en || p.nameEn || '';
     document.getElementById('pNameAr').value = p.names?.ar || p.nameAr || '';
     document.getElementById('pNameBn').value = p.names?.bn || p.nameBn || '';
@@ -788,6 +802,7 @@ function openProductForm(id) {
     });
     document.getElementById('pCategory').value = 'women';
     document.getElementById('pTag').value = '';
+    clearExtraImgs();
   }
   document.getElementById('prodModalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -806,6 +821,84 @@ function previewImg(url) {
     box.classList.remove('show');
   }
 }
+/* ===== EXTRA IMAGES (GALLERY) ===== */
+let _extraImgSeq = 0;
+
+function addExtraImg(url) {
+  const container = document.getElementById('extraImgsContainer');
+  if (!container) return;
+  if (container.querySelectorAll('.extra-img-slot').length >= 3) {
+    toast('Maximum 3 extra photos allowed (4 total with cover)'); return;
+  }
+  const sid = ++_extraImgSeq;
+  const slot = document.createElement('div');
+  slot.className = 'extra-img-slot';
+  slot.style.cssText = 'display:flex;align-items:center;gap:7px;background:#1a1a1a;border-radius:9px;padding:8px;border:1px solid #333';
+  slot.innerHTML = `
+    <div style="width:48px;height:48px;border-radius:8px;overflow:hidden;background:#222;flex-shrink:0;cursor:pointer" onclick="this.nextElementSibling.nextElementSibling.click()">
+      <img class="xthumb" src="${url||''}" style="width:100%;height:100%;object-fit:cover;display:${url?'block':'none'}"/>
+      <i class="fas fa-image" style="display:${url?'none':'flex'};width:100%;height:100%;align-items:center;justify-content:center;color:#444;font-size:18px"></i>
+    </div>
+    <input type="url" class="adm-input xurl" placeholder="Paste URL here" value="${url||''}" style="flex:1;height:36px;font-size:12px" oninput="xUpdateThumb(this)"/>
+    <button class="adm-btn" onclick="xPickImg(this)" style="padding:6px 9px;font-size:11px;white-space:nowrap"><i class="fas fa-camera"></i></button>
+    <button onclick="this.closest('.extra-img-slot').remove();updateAddExtraBtn()" style="background:#2a1a1a;border:1px solid #3a2a2a;color:#e91e8c;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-times"></i></button>
+  `;
+  container.appendChild(slot);
+  updateAddExtraBtn();
+}
+
+function xUpdateThumb(input) {
+  const slot = input.closest('.extra-img-slot');
+  const thumb = slot.querySelector('.xthumb');
+  const icon = slot.querySelector('i.fa-image');
+  const url = input.value.trim();
+  if (url.startsWith('http')) {
+    thumb.src = url; thumb.style.display = 'block';
+    if (icon) icon.style.display = 'none';
+  } else {
+    thumb.style.display = 'none';
+    if (icon) icon.style.display = 'flex';
+  }
+}
+
+async function xPickImg(btn) {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'image/*';
+  inp.onchange = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const orig = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    try {
+      const url = await uploadImage(file);
+      const slot = btn.closest('.extra-img-slot');
+      const urlInput = slot.querySelector('.xurl');
+      urlInput.value = url;
+      xUpdateThumb(urlInput);
+      toast('✅ Photo uploaded!');
+    } catch(err) { toast('❌ ' + (err.message || 'Upload failed')); }
+    finally { btn.innerHTML = orig; }
+  };
+  inp.click();
+}
+
+function updateAddExtraBtn() {
+  const container = document.getElementById('extraImgsContainer');
+  const btn = document.getElementById('addExtraImgBtn');
+  if (!container || !btn) return;
+  btn.style.display = container.querySelectorAll('.extra-img-slot').length >= 3 ? 'none' : '';
+}
+
+function getExtraImages() {
+  return Array.from(document.querySelectorAll('.extra-img-slot .xurl'))
+    .map(i => i.value.trim()).filter(Boolean);
+}
+
+function clearExtraImgs() {
+  const c = document.getElementById('extraImgsContainer');
+  if (c) c.innerHTML = '';
+  updateAddExtraBtn();
+}
+
 function autoCalcSalePrice() {
   const disc = parseFloat(document.getElementById('pDiscount').value);
   const orig = parseFloat(document.getElementById('pOrigPrice').value);
@@ -829,6 +922,7 @@ function saveProduct() {
   const data = {
     image: document.getElementById('pImage').value.trim(),
     video: document.getElementById('pVideo').value.trim() || undefined,
+    extraImages: getExtraImages().length ? getExtraImages() : undefined,
     names: {
       en: nameEn,
       ar: document.getElementById('pNameAr').value.trim() || nameEn,
