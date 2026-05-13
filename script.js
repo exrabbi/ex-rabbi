@@ -148,6 +148,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyHeroOverrides();
   _applySocialLinks();
   _applyAnnouncement();
+  _loadCityVideo();
 });
 
 /* ===== ADMIN SITE OVERRIDES ===== */
@@ -218,6 +219,20 @@ function _applyAnnouncement() {
       if (!sessionStorage.getItem('announce_dismissed')) banner.style.display = 'flex';
     }
   } catch(e) {}
+}
+
+function _loadCityVideo() {
+  const url = (localStorage.getItem('exg_city_video') || '').trim();
+  const section = document.getElementById('cityVideoSection');
+  const content = document.getElementById('cityVideoContent');
+  if (!section || !content) return;
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    content.innerHTML = `<div class="city-video-wrap"><iframe src="https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1" frameborder="0" allow="encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe></div>`;
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
 }
 
 /* ===== HERO SLIDER ===== */
