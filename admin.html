@@ -1909,7 +1909,10 @@ async function publishToWebsite() {
 
 async function testGithubToken() {
   const input = document.getElementById('setGithubToken');
-  const token = (input ? input.value.trim() : '') || localStorage.getItem('exg_github_token') || '';
+  // Always save first if input has a value, then test from localStorage
+  const inputVal = input ? input.value.trim() : '';
+  if (inputVal) { localStorage.setItem('exg_github_token', inputVal); }
+  const token = localStorage.getItem('exg_github_token') || '';
   if (!token) { toast('⚠️ আগে Token ইনপুট করুন'); return; }
   const btn = document.getElementById('testTokenBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পরীক্ষা হচ্ছে...'; }
