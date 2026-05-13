@@ -157,43 +157,34 @@ function _applyHeroOverrides() {
       if (!s) return;
       const slide = document.querySelector('.hero-slide.slide-' + (i + 1));
       if (!slide) return;
-      if (s.tag) { const el = slide.querySelector('.badge-event'); if (el) el.textContent = s.tag; }
-      if (s.heading) { const el = slide.querySelector('.hero-sale-title'); if (el) el.innerHTML = s.heading.replace('\n', '<br/>'); }
-      if (s.pct) { const el = slide.querySelector('.hero-pct'); if (el) { const star = el.querySelector('.sp-inline'); el.innerHTML = s.pct + '<em>%</em>' + (star ? star.outerHTML : ''); } }
-      if (s.sub) { const el = slide.querySelector('.hero-items-count'); if (el) el.innerHTML = s.sub; }
-      if (s.image) { const el = slide.querySelector('.hero-model-img'); if (el) el.src = s.image; }
 
-      // Video override — injects iframe into hero-right, hides the model image
-      const rightEl = slide.querySelector('.hero-right');
-      if (rightEl) {
-        let existingVideo = rightEl.querySelector('.hero-slide-video');
-        if (s.video) {
-          let embedUrl = '';
-          const ytMatch = s.video.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-          if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}`;
-          const ttMatch = s.video.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
-          if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
-          // Direct mp4/webm/Cloudinary video
-          const isDirectVideo = !embedUrl && (s.video.includes('cloudinary.com') || s.video.match(/\.(mp4|webm|mov)(\?|$)/i));
-          if (embedUrl || isDirectVideo) {
-            const imgEl = rightEl.querySelector('.hero-model-img');
-            if (imgEl) imgEl.style.display = 'none';
-            if (!existingVideo) {
-              existingVideo = document.createElement('div');
-              existingVideo.className = 'hero-slide-video';
-              rightEl.insertBefore(existingVideo, rightEl.firstChild);
-            }
-            if (isDirectVideo) {
-              existingVideo.innerHTML = `<video src="${s.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
-            } else {
-              existingVideo.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
-            }
+      // Update image
+      const imgEl = slide.querySelector('.hero-slide-img');
+      if (s.image && imgEl) imgEl.src = s.image;
+
+      // Video — replace image with video/iframe
+      let existingVideo = slide.querySelector('.hero-slide-video');
+      if (s.video) {
+        let embedUrl = '';
+        const ytMatch = s.video.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}`;
+        const ttMatch = s.video.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+        if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
+        const isDirectVideo = !embedUrl && (s.video.includes('cloudinary.com') || s.video.match(/\.(mp4|webm|mov)(\?|$)/i));
+        if (embedUrl || isDirectVideo) {
+          if (imgEl) imgEl.style.display = 'none';
+          if (!existingVideo) {
+            existingVideo = document.createElement('div');
+            existingVideo.className = 'hero-slide-video';
+            slide.appendChild(existingVideo);
           }
-        } else if (existingVideo) {
-          existingVideo.remove();
-          const imgEl = rightEl.querySelector('.hero-model-img');
-          if (imgEl) imgEl.style.display = '';
+          existingVideo.innerHTML = isDirectVideo
+            ? `<video src="${s.video}" autoplay muted loop playsinline></video>`
+            : `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
         }
+      } else if (existingVideo) {
+        existingVideo.remove();
+        if (imgEl) imgEl.style.display = '';
       }
     });
   } catch(e) {}

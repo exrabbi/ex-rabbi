@@ -82,7 +82,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=29" />
+  <link rel="stylesheet" href="styles.css?v=30" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -171,149 +171,24 @@
     <section class="hero-slider">
       <div class="hero-slides" id="heroSlides">
 
-        <!-- Slide 1: Mega Sale -->
         <div class="hero-slide slide-1">
-          <div class="hero-left">
-            <div class="hero-brand-badge">
-              <span class="badge-event" data-i18n="hero1Tag">🎉 মেগা সেল</span>
-              <span class="badge-brand">EX GLOBAL</span>
-            </div>
-            <div class="hero-sale-title" data-i18n-html="hero1Heading">Mega<br/>Sale</div>
-            <div class="hero-discount">
-              <div class="hero-upto-stack">UP<br/>TO</div>
-              <div class="hero-pct">90<em>%</em>
-                <span class="sp sp-inline" style="top:-4px;right:-14px;--d:1.4s;--delay:0s">✦</span>
-              </div>
-              <span class="hero-off">OFF</span>
-            </div>
-            <p class="hero-items-count" data-i18n-html="hero1Sub"><em class="hot-num">১০ লক্ষ+</em> পণ্যে হট অফার</p>
-            <button class="btn-hero-dark" onclick="scrollToProducts()" data-i18n="shopNow">SHOP NOW</button>
-            <span class="sp" style="top:8%;left:55%;--d:2s;--delay:.5s">✧</span>
-            <span class="sp" style="top:80%;left:60%;--d:1.7s;--delay:.9s">★</span>
-          </div>
-          <div class="hero-right">
-            <img class="hero-model-img"
-              src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&h=520&fit=crop&q=90"
-              alt="" loading="eager" />
-            <span class="sp" style="top:12%;left:10%;--d:1.6s;--delay:.6s">✦</span>
-            <span class="sp" style="top:75%;left:75%;--d:1.3s;--delay:.2s">✧</span>
-          </div>
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&h=380&fit=crop&q=90" alt="" loading="eager" />
         </div>
 
-        <!-- Slide 2: Eid Special -->
         <div class="hero-slide slide-2">
-          <div class="hero-left">
-            <div class="hero-brand-badge">
-              <span class="badge-event" data-i18n="hero2Tag">🛍️ নতুন কালেকশন</span>
-              <span class="badge-brand">EX GLOBAL</span>
-            </div>
-            <div class="hero-sale-title" data-i18n-html="hero2Heading">Eid<br/>Special</div>
-            <div class="hero-discount">
-              <div class="hero-upto-stack">UP<br/>TO</div>
-              <div class="hero-pct">70<em>%</em>
-                <span class="sp sp-inline" style="top:-4px;right:-14px;--d:1.6s;--delay:.2s">✦</span>
-              </div>
-              <span class="hero-off">OFF</span>
-            </div>
-            <p class="hero-items-count" data-i18n-html="hero2Sub"><em class="hot-num">ঈদ</em> স্পেশাল কালেকশন</p>
-            <button class="btn-hero-dark" onclick="scrollToProducts()" data-i18n="shopNow">SHOP NOW</button>
-            <span class="sp" style="top:8%;left:55%;--d:2.1s;--delay:.4s">✧</span>
-            <span class="sp" style="top:80%;left:58%;--d:1.8s;--delay:.8s">★</span>
-          </div>
-          <div class="hero-right">
-            <img class="hero-model-img"
-              src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=520&fit=crop&q=90"
-              alt="" loading="lazy" />
-            <span class="sp" style="top:12%;left:10%;--d:1.7s;--delay:.3s">✦</span>
-            <span class="sp" style="top:74%;left:74%;--d:1.9s;--delay:.7s">✧</span>
-          </div>
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" />
         </div>
 
-        <!-- Slide 3: Free Delivery -->
         <div class="hero-slide slide-3">
-          <div class="hero-left">
-            <div class="hero-brand-badge">
-              <span class="badge-event" data-i18n="hero3Tag">🚚 ফ্রি ডেলিভারি</span>
-              <span class="badge-brand">EX GLOBAL</span>
-            </div>
-            <div class="hero-sale-title" data-i18n-html="hero3Heading">Free<br/>Delivery</div>
-            <div class="hero-discount">
-              <div class="hero-upto-stack">UP<br/>TO</div>
-              <div class="hero-pct">50<em>%</em>
-                <span class="sp sp-inline" style="top:-4px;right:-14px;--d:1.7s;--delay:.1s">✦</span>
-              </div>
-              <span class="hero-off">OFF</span>
-            </div>
-            <p class="hero-items-count" data-i18n-html="hero3Sub"><em class="hot-num">ফ্রি</em> ডেলিভারি সারা দেশে</p>
-            <button class="btn-hero-dark" onclick="scrollToProducts()" data-i18n="shopNow">SHOP NOW</button>
-            <span class="sp" style="top:8%;left:55%;--d:1.9s;--delay:.6s">✧</span>
-            <span class="sp" style="top:80%;left:59%;--d:1.6s;--delay:.3s">★</span>
-          </div>
-          <div class="hero-right">
-            <img class="hero-model-img"
-              src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=520&fit=crop&q=90"
-              alt="" loading="lazy" />
-            <span class="sp" style="top:14%;left:9%;--d:1.5s;--delay:.5s">✦</span>
-            <span class="sp" style="top:72%;left:77%;--d:2s;--delay:.2s">✧</span>
-          </div>
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" />
         </div>
 
-        <!-- Slide 4: Top Brands -->
         <div class="hero-slide slide-4">
-          <div class="hero-left">
-            <div class="hero-brand-badge">
-              <span class="badge-event" data-i18n="hero4Tag">🌟 টপ ব্র্যান্ড</span>
-              <span class="badge-brand">EX GLOBAL</span>
-            </div>
-            <div class="hero-sale-title" data-i18n-html="hero4Heading">Top<br/>Brands</div>
-            <div class="hero-discount">
-              <div class="hero-upto-stack">UP<br/>TO</div>
-              <div class="hero-pct">60<em>%</em>
-                <span class="sp sp-inline" style="top:-4px;right:-14px;--d:1.8s;--delay:.2s">✦</span>
-              </div>
-              <span class="hero-off">OFF</span>
-            </div>
-            <p class="hero-items-count" data-i18n-html="hero4Sub"><em class="hot-num">প্রিমিয়াম</em> ব্র্যান্ড সেরা দামে</p>
-            <button class="btn-hero-dark" onclick="scrollToProducts()" data-i18n="shopNow">SHOP NOW</button>
-            <span class="sp" style="top:10%;left:52%;--d:2s;--delay:.5s">✧</span>
-            <span class="sp" style="top:78%;left:60%;--d:1.7s;--delay:.9s">★</span>
-          </div>
-          <div class="hero-right">
-            <img class="hero-model-img"
-              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&h=520&fit=crop&q=90"
-              alt="" loading="lazy" />
-            <span class="sp" style="top:13%;left:11%;--d:1.6s;--delay:.4s">✦</span>
-            <span class="sp" style="top:76%;left:75%;--d:1.9s;--delay:.6s">✧</span>
-          </div>
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" />
         </div>
 
-        <!-- Slide 5: Flash Sale -->
         <div class="hero-slide slide-5">
-          <div class="hero-left">
-            <div class="hero-brand-badge">
-              <span class="badge-event" data-i18n="hero5Tag">🔥 ফ্ল্যাশ সেল</span>
-              <span class="badge-brand">EX GLOBAL</span>
-            </div>
-            <div class="hero-sale-title" data-i18n-html="hero5Heading">Flash<br/>Sale</div>
-            <div class="hero-discount">
-              <div class="hero-upto-stack">UP<br/>TO</div>
-              <div class="hero-pct">80<em>%</em>
-                <span class="sp sp-inline" style="top:-4px;right:-14px;--d:1.6s;--delay:.3s">✦</span>
-              </div>
-              <span class="hero-off">OFF</span>
-            </div>
-            <p class="hero-items-count" data-i18n-html="hero5Sub"><em class="hot-num">সীমিত</em> সময়ের অফার আজই</p>
-            <button class="btn-hero-dark" onclick="scrollToProducts()" data-i18n="shopNow">SHOP NOW</button>
-            <span class="sp" style="top:9%;left:54%;--d:1.8s;--delay:.7s">✧</span>
-            <span class="sp" style="top:82%;left:57%;--d:2.1s;--delay:.1s">★</span>
-          </div>
-          <div class="hero-right">
-            <img class="hero-model-img"
-              src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=520&fit=crop&q=90"
-              alt="" loading="lazy" />
-            <span class="sp" style="top:11%;left:8%;--d:2s;--delay:.5s">✦</span>
-            <span class="sp" style="top:73%;left:78%;--d:1.7s;--delay:.3s">✧</span>
-          </div>
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" />
         </div>
 
       </div>
@@ -1404,8 +1279,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=29"></script>
+  <script src="translations.js?v=30"></script>
   <script src="products.js"></script>
-  <script src="script.js?v=29"></script>
+  <script src="script.js?v=30"></script>
 </body>
 </html>
