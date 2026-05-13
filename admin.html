@@ -342,7 +342,7 @@
             <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:10px">
               <i class="fas fa-video"></i> Upload Video from Phone
             </button>
-            <div style="font-size:10px;color:#555;text-align:center;margin-bottom:8px">⚠️ ফোন আপলোডের জন্য Settings-এ Cloudinary সেট করতে হবে</div>
+            <div style="font-size:10px;color:#888;text-align:center;margin-bottom:8px">📲 ফোন থেকে সরাসরি আপলোড করতে Settings-এ Cloudinary সেট করুন (ফ্রি)</div>
 
             <!-- YouTube/TikTok URL -->
             <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok URL" oninput="previewHsVideo(this.value)"/>
@@ -471,15 +471,15 @@
         </div>
 
         <div class="setting-row" style="border:1px solid #2a1a3a;border-radius:10px;padding:12px;background:#0d0a1a;margin-top:6px">
-          <div class="setting-label" style="color:#a78bfa"><i class="fas fa-video" style="color:#7c3aed"></i> Video Upload (Cloudinary — FREE)</div>
+          <div class="setting-label" style="color:#a78bfa"><i class="fas fa-camera" style="color:#7c3aed"></i> Photo &amp; Video Upload (Cloudinary — FREE)</div>
           <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px">
-            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px">📲 ফোন থেকে ভিডিও আপলোডের জন্য Cloudinary লাগবে (সম্পূর্ণ ফ্রি):</div>
+            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px">📲 ফোন থেকে ছবি ও ভিডিও আপলোডের জন্য Cloudinary লাগবে (সম্পূর্ণ ফ্রি):</div>
             1️⃣ <strong>cloudinary.com</strong> এ যান → <strong>Sign Up Free</strong> করুন (Google দিয়েও হয়)<br/>
             2️⃣ Dashboard-এ গিয়ে উপরে <strong>Cloud Name</strong> দেখুন — সেটা কপি করুন<br/>
             3️⃣ Settings → Upload → <strong>"Upload presets"</strong> → <strong>Add upload preset</strong><br/>
             4️⃣ <strong>Signing mode = Unsigned</strong> সেট করুন → Save<br/>
-            5️⃣ Preset-এর নাম কপি করুন → নিচে পেস্ট করুন ✅<br/>
-            <div style="color:#666;margin-top:4px">💡 YouTube লিংক দিলে Cloudinary লাগে না</div>
+            5️⃣ Preset-এর নাম কপি করুন → নিচে পেস্ট করুন → Save Settings ✅<br/>
+            <div style="color:#666;margin-top:4px">💡 Cloudinary সেট করলে ফোন থেকে সরাসরি ছবি ও ভিডিও আপলোড হবে। YouTube লিংক দিলে লাগে না।</div>
           </div>
           <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (যেমন: my-store-abc123)" style="margin-bottom:7px"/>
           <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (যেমন: unsigned_videos)"/>
@@ -615,7 +615,7 @@
           </div>
         </div>
 
-        <div style="font-size:11px;color:#666;margin-top:7px"><i class="fas fa-circle-info" style="color:#7c3aed"></i> Phone upload needs Cloudinary key (free) — set it in Settings. YouTube/TikTok links work without any key.</div>
+        <div style="font-size:11px;color:#888;margin-top:7px"><i class="fas fa-circle-info" style="color:#7c3aed"></i> ফোন থেকে সরাসরি আপলোড করতে Settings-এ Cloudinary সেট করুন (ফ্রি)। YouTube/TikTok লিংক সরাসরি দেওয়া যাবে।</div>
       </div>
 
       <div class="form-grid">
@@ -1332,6 +1332,17 @@ function pickImage(inputId, previewImgId) {
 }
 
 async function uploadImage(file) {
+  const cloudName = localStorage.getItem('exg_cloud_name') || '';
+  const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
+  if (cloudName && cloudPreset) {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', cloudPreset);
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.secure_url) return data.secure_url;
+    throw new Error(data.error?.message || 'Cloudinary upload failed');
+  }
   const apiKey = localStorage.getItem('exg_imgbb_key') || '';
   if (apiKey) {
     const fd = new FormData();
@@ -1385,10 +1396,12 @@ function pickVideo() {
     if (!file) return;
     if (file.size > 100 * 1024 * 1024) { toast('❌ Video too large (max 100MB)'); return; }
     const btn = document.getElementById('pVideoUploadBtn');
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading... (may take a moment)';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... 0%';
     btn.disabled = true;
     try {
-      const url = await uploadVideoToCloud(file, cloudName, cloudPreset);
+      const url = await uploadVideoToCloud(file, cloudName, cloudPreset, pct => {
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... ${pct}%`;
+      });
       document.getElementById('pVideo').value = url;
       previewProdVideo(url);
       toast('✅ Video uploaded successfully!');
@@ -1402,16 +1415,28 @@ function pickVideo() {
   inp.click();
 }
 
-async function uploadVideoToCloud(file, cloudName, preset) {
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', preset);
-  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
-    method: 'POST', body: fd
+async function uploadVideoToCloud(file, cloudName, preset, onProgress) {
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', preset);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
+    if (onProgress) {
+      xhr.upload.onprogress = e => { if (e.lengthComputable) onProgress(Math.round(e.loaded * 100 / e.total)); };
+    }
+    xhr.onload = () => {
+      try {
+        const data = JSON.parse(xhr.responseText);
+        if (data.secure_url) resolve(data.secure_url);
+        else reject(new Error(data.error?.message || 'Cloudinary upload failed'));
+      } catch(e) { reject(new Error('Invalid response from Cloudinary')); }
+    };
+    xhr.onerror = () => reject(new Error('Network error — check your connection'));
+    xhr.ontimeout = () => reject(new Error('Upload timed out — try a smaller video'));
+    xhr.timeout = 10 * 60 * 1000; // 10 minutes
+    xhr.send(fd);
   });
-  const data = await res.json();
-  if (data.secure_url) return data.secure_url;
-  throw new Error(data.error?.message || 'Cloudinary upload failed');
 }
 
 function previewProdVideo(url) {
@@ -1538,10 +1563,12 @@ function pickHsVideo() {
     const file = e.target.files[0]; if (!file) return;
     if (file.size > 100 * 1024 * 1024) { toast('❌ Video too large (max 100MB)'); return; }
     const btn = document.getElementById('hsVideoUploadBtn');
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... 0%';
     btn.disabled = true;
     try {
-      const url = await uploadVideoToCloud(file, cloudName, cloudPreset);
+      const url = await uploadVideoToCloud(file, cloudName, cloudPreset, pct => {
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... ${pct}%`;
+      });
       document.getElementById('hsVideo').value = url;
       previewHsVideo(url);
       toast('✅ Video uploaded!');
