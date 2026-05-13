@@ -296,11 +296,13 @@
 
       <!-- HERO SLIDES EDITOR -->
       <div class="sec">
-        <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-images"></i> Hero Slides (3 slides)</div>
-        <div style="display:flex;gap:8px;margin-bottom:14px">
+        <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-images"></i> Hero Slides (5 slides)</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
           <button class="adm-btn sm" id="hsTab-0" onclick="showHeroSlide(0)">Slide 1</button>
           <button class="adm-btn sm gray" id="hsTab-1" onclick="showHeroSlide(1)">Slide 2</button>
           <button class="adm-btn sm gray" id="hsTab-2" onclick="showHeroSlide(2)">Slide 3</button>
+          <button class="adm-btn sm gray" id="hsTab-3" onclick="showHeroSlide(3)">Slide 4</button>
+          <button class="adm-btn sm gray" id="hsTab-4" onclick="showHeroSlide(4)">Slide 5</button>
         </div>
         <div id="heroSlideForm" style="display:flex;flex-direction:column;gap:10px">
           <input type="hidden" id="hsIdx" value="0"/>
@@ -1413,6 +1415,8 @@ const DEFAULT_SLIDES = [
   { tag: '🎉 Mega Sale', heading: 'Mega\nSale', pct: '90', sub: '1M+ Hot Items Markdown', image: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=500&h=520&fit=crop&q=90' },
   { tag: '🛍️ New Collection', heading: 'Eid\nSpecial', pct: '70', sub: 'Eid Special Collection', image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=520&fit=crop&q=90' },
   { tag: '🚚 Free Delivery', heading: 'Free\nDelivery', pct: '50', sub: 'Free Delivery Nationwide', image: 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=520&fit=crop&q=90' },
+  { tag: '🌟 Top Brands', heading: 'Top\nBrands', pct: '60', sub: 'Premium Brands at Best Price', image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=500&h=520&fit=crop&q=90' },
+  { tag: '🔥 Flash Sale', heading: 'Flash\nSale', pct: '80', sub: 'Limited Time Offers Today', image: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&h=520&fit=crop&q=90' },
 ];
 let _hsIdx = 0;
 
@@ -1507,8 +1511,8 @@ function pickHsVideo() {
 
 function saveHeroSlide() {
   const idx = parseInt(document.getElementById('hsIdx').value || '0');
-  const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null]');
-  while (slides.length < 3) slides.push(null);
+  const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null,null,null]');
+  while (slides.length < 5) slides.push(null);
   slides[idx] = {
     image: document.getElementById('hsImage').value.trim(),
     video: document.getElementById('hsVideo').value.trim() || undefined,
@@ -1523,8 +1527,8 @@ function saveHeroSlide() {
 
 function resetHeroSlide() {
   if (!confirm('Reset this slide to default?')) return;
-  const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null]');
-  while (slides.length < 3) slides.push(null);
+  const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null,null,null]');
+  while (slides.length < 5) slides.push(null);
   slides[_hsIdx] = null;
   localStorage.setItem('exg_hero_slides', JSON.stringify(slides));
   showHeroSlide(_hsIdx);

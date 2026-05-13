@@ -197,7 +197,7 @@ function startHeroSlider() {
   });
 }
 function nextSlide() {
-  heroIndex = (heroIndex + 1) % 3;
+  heroIndex = (heroIndex + 1) % 5;
   updateSlider();
 }
 function goSlide(i) {
