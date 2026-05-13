@@ -434,6 +434,21 @@
           <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:#e91e8c">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
           <input type="text" id="setImgBBKey" class="adm-input" placeholder="Paste imgBB API key here (e.g. a1b2c3d4e5f6...)"/>
         </div>
+
+        <div class="setting-row" style="border:1px solid #2a1a3a;border-radius:10px;padding:12px;background:#0d0a1a;margin-top:6px">
+          <div class="setting-label" style="color:#a78bfa"><i class="fas fa-video" style="color:#7c3aed"></i> Video Upload (Cloudinary — FREE)</div>
+          <div class="setting-desc" style="line-height:1.7;margin-bottom:8px">
+            <strong style="color:#7c3aed">How to get FREE Cloudinary key:</strong><br/>
+            1️⃣ Go to <strong>cloudinary.com</strong> → Sign up (free)<br/>
+            2️⃣ Dashboard → Settings → Upload<br/>
+            3️⃣ Scroll to <strong>"Upload presets"</strong> → Add upload preset<br/>
+            4️⃣ Set <strong>Signing mode = Unsigned</strong> → Save<br/>
+            5️⃣ Copy your <strong>Cloud name</strong> and <strong>Upload preset name</strong>
+          </div>
+          <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (e.g. my-store-123)" style="margin-bottom:7px"/>
+          <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (e.g. unsigned_videos)"/>
+        </div>
+
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
       </div>
 
@@ -521,10 +536,34 @@
       </div>
 
       <!-- VIDEO -->
-      <div class="field-wrap">
-        <div class="field-label"><i class="fab fa-youtube" style="color:#ff0000"></i> Product Video URL (YouTube/TikTok — optional)</div>
-        <input type="url" id="pVideo" class="adm-input" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."/>
-        <div style="font-size:11px;color:#888;margin-top:4px">Paste a YouTube or TikTok link — video will appear in the product popup</div>
+      <div class="field-wrap" style="background:#0d0d1a;border:1px solid #2a2a3a;border-radius:12px;padding:12px">
+        <div class="field-label" style="color:#a78bfa;margin-bottom:8px"><i class="fas fa-video" style="color:#7c3aed"></i> Product Video</div>
+
+        <!-- Upload from phone -->
+        <button class="adm-btn" onclick="pickVideo()" id="pVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:8px">
+          <i class="fas fa-video"></i> Upload Video from Phone
+        </button>
+
+        <!-- OR paste YouTube/TikTok URL -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="flex:1;height:1px;background:#2a2a3a"></div>
+          <span style="font-size:11px;color:#555">OR paste YouTube / TikTok link</span>
+          <div style="flex:1;height:1px;background:#2a2a3a"></div>
+        </div>
+        <input type="url" id="pVideo" class="adm-input" placeholder="https://youtu.be/... or https://youtube.com/watch?v=..." oninput="previewProdVideo(this.value)"/>
+
+        <!-- Video preview -->
+        <div id="pVideoPreview" style="display:none;margin-top:8px;border-radius:10px;overflow:hidden;background:#000;position:relative">
+          <video id="pVideoEl" controls playsinline style="width:100%;max-height:180px;display:none"></video>
+          <img id="pVideoThumb" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:none"/>
+          <div id="pVideoInfo" style="display:none;padding:8px 10px;background:#111;display:flex;align-items:center;gap:8px">
+            <i id="pVideoIcon" class="fab fa-youtube" style="color:#ff0000;font-size:18px"></i>
+            <span id="pVideoLabel" style="font-size:11px;color:#aaa;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
+            <button onclick="document.getElementById('pVideo').value='';previewProdVideo('')" style="background:#2a1a1a;border:1px solid #3a2a2a;color:#e91e8c;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer"><i class="fas fa-times"></i> Remove</button>
+          </div>
+        </div>
+
+        <div style="font-size:11px;color:#666;margin-top:7px"><i class="fas fa-circle-info" style="color:#7c3aed"></i> Phone upload needs Cloudinary key (free) — set it in Settings. YouTube/TikTok links work without any key.</div>
       </div>
 
       <div class="form-grid">
@@ -778,6 +817,7 @@ function openProductForm(id) {
     document.getElementById('pEditId').value = id;
     document.getElementById('pImage').value = p.image || '';
     document.getElementById('pVideo').value = p.video || '';
+    previewProdVideo(p.video || '');
     clearExtraImgs();
     (p.extraImages || []).forEach(url => addExtraImg(url));
     document.getElementById('pNameEn').value = p.names?.en || p.nameEn || '';
@@ -1156,6 +1196,8 @@ function loadSettings() {
     el('setDelivery').value = s.delivery !== undefined ? s.delivery : 15;
     el('setFreeDelivery').value = s.freeDelivery || 100;
     el('setImgBBKey').value = localStorage.getItem('exg_imgbb_key') || '';
+    el('setCloudName').value = localStorage.getItem('exg_cloud_name') || '';
+    el('setCloudPreset').value = localStorage.getItem('exg_cloud_preset') || '';
   }
 }
 function saveSettings() {
@@ -1169,6 +1211,10 @@ function saveSettings() {
   const imgbbKey = document.getElementById('setImgBBKey').value.trim();
   if (imgbbKey) localStorage.setItem('exg_imgbb_key', imgbbKey);
   else localStorage.removeItem('exg_imgbb_key');
+  const cloudName = document.getElementById('setCloudName').value.trim();
+  const cloudPreset = document.getElementById('setCloudPreset').value.trim();
+  if (cloudName) localStorage.setItem('exg_cloud_name', cloudName); else localStorage.removeItem('exg_cloud_name');
+  if (cloudPreset) localStorage.setItem('exg_cloud_preset', cloudPreset); else localStorage.removeItem('exg_cloud_preset');
   toast('✅ Settings saved!');
 }
 
@@ -1257,6 +1303,90 @@ function compressToBase64(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+/* ===== VIDEO UPLOAD (Cloudinary) ===== */
+function pickVideo() {
+  const cloudName = localStorage.getItem('exg_cloud_name') || '';
+  const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
+  if (!cloudName || !cloudPreset) {
+    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    showTab('settings');
+    return;
+  }
+  const inp = document.createElement('input');
+  inp.type = 'file';
+  inp.accept = 'video/*';
+  inp.onchange = async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { toast('❌ Video too large (max 100MB)'); return; }
+    const btn = document.getElementById('pVideoUploadBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading... (may take a moment)';
+    btn.disabled = true;
+    try {
+      const url = await uploadVideoToCloud(file, cloudName, cloudPreset);
+      document.getElementById('pVideo').value = url;
+      previewProdVideo(url);
+      toast('✅ Video uploaded successfully!');
+    } catch(err) {
+      toast('❌ ' + (err.message || 'Upload failed'));
+    } finally {
+      btn.innerHTML = '<i class="fas fa-video"></i> Upload Video from Phone';
+      btn.disabled = false;
+    }
+  };
+  inp.click();
+}
+
+async function uploadVideoToCloud(file, cloudName, preset) {
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', preset);
+  const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/video/upload`, {
+    method: 'POST', body: fd
+  });
+  const data = await res.json();
+  if (data.secure_url) return data.secure_url;
+  throw new Error(data.error?.message || 'Cloudinary upload failed');
+}
+
+function previewProdVideo(url) {
+  const box = document.getElementById('pVideoPreview');
+  const videoEl = document.getElementById('pVideoEl');
+  const thumbEl = document.getElementById('pVideoThumb');
+  const infoEl = document.getElementById('pVideoInfo');
+  const labelEl = document.getElementById('pVideoLabel');
+  const iconEl = document.getElementById('pVideoIcon');
+  if (!url) { box.style.display = 'none'; return; }
+
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    videoEl.style.display = 'none'; videoEl.src = '';
+    thumbEl.src = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`; thumbEl.style.display = 'block';
+    iconEl.className = 'fab fa-youtube'; iconEl.style.color = '#ff0000';
+    labelEl.textContent = 'YouTube ID: ' + ytMatch[1];
+    infoEl.style.display = 'flex'; box.style.display = 'block'; return;
+  }
+  // TikTok
+  const ttMatch = url.match(/tiktok\.com\/@([^/]+)\/video\/(\d+)/);
+  if (ttMatch) {
+    videoEl.style.display = 'none'; videoEl.src = '';
+    thumbEl.style.display = 'none';
+    iconEl.className = 'fab fa-tiktok'; iconEl.style.color = '#69c9d0';
+    labelEl.textContent = 'TikTok @' + ttMatch[1];
+    infoEl.style.display = 'flex'; box.style.display = 'block'; return;
+  }
+  // Direct video (Cloudinary / mp4)
+  if (url.includes('cloudinary.com') || url.match(/\.(mp4|webm|mov)(\?|$)/i)) {
+    thumbEl.style.display = 'none';
+    videoEl.src = url; videoEl.style.display = 'block';
+    iconEl.className = 'fas fa-video'; iconEl.style.color = '#7c3aed';
+    labelEl.textContent = url.split('/').pop().split('?')[0];
+    infoEl.style.display = 'flex'; box.style.display = 'block'; return;
+  }
+  box.style.display = 'none';
 }
 
 /* ===== PROMOS — HERO SLIDES ===== */
