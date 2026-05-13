@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v31</title>
+  <title>EX GLOBAL — Admin Panel v32</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -909,7 +909,7 @@ function closeProdModal() {
 function previewImg(url) {
   const box = document.getElementById('imgPreviewBox');
   const img = document.getElementById('imgPreviewEl');
-  if (url && url.startsWith('http')) {
+  if (url && (url.startsWith('http') || url.startsWith('data:'))) {
     img.src = url;
     box.classList.add('show');
   } else {
@@ -1315,17 +1315,18 @@ function pickImage(inputId, previewImgId) {
     if (!file) return;
     const btnId = inputId === 'pImage' ? 'pImgUploadBtn' : 'hsUploadBtn';
     const btn = document.getElementById(btnId);
-    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    const origBtnText = btn ? btn.innerHTML : '';
+    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
     try {
       const url = await uploadImage(file);
       const inputEl = document.getElementById(inputId);
       inputEl.value = url;
       inputEl.dispatchEvent(new Event('input'));
-      toast('✅ Photo uploaded!');
+      toast('✅ ছবি আপলোড হয়েছে!');
     } catch(err) {
-      toast('❌ ' + (err.message || 'Upload failed'));
+      toast('❌ ' + (err.message || 'আপলোড ব্যর্থ হয়েছে'));
     } finally {
-      if (btn) btn.innerHTML = '<i class="fas fa-camera"></i> Upload HD Photo from Phone';
+      if (btn) btn.innerHTML = origBtnText;
     }
   };
   input.click();
@@ -1355,6 +1356,8 @@ async function uploadImage(file) {
       if (data.success) return data.data.display_url || data.data.url;
     } catch(e) { /* fall through */ }
   }
+  const isHEIC = /^image\/(heic|heif)$/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+  if (isHEIC) throw new Error('iPhone HEIC ছবি — Settings-এ Cloudinary সেট করুন (ফ্রি)');
   return await compressToBase64(file);
 }
 
@@ -1371,12 +1374,13 @@ function compressToBase64(file) {
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.84));
+        try { resolve(canvas.toDataURL('image/jpeg', 0.84)); }
+        catch(e) { reject(new Error('ছবি কম্প্রেস করা যায়নি')); }
       };
-      img.onerror = reject;
+      img.onerror = () => reject(new Error('ছবি লোড হয়নি — JPG বা PNG ব্যবহার করুন'));
       img.src = e.target.result;
     };
-    reader.onerror = reject;
+    reader.onerror = () => reject(new Error('ফাইল পড়া যায়নি'));
     reader.readAsDataURL(file);
   });
 }
@@ -1386,7 +1390,7 @@ function pickVideo() {
   const cloudName = localStorage.getItem('exg_cloud_name') || '';
   const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
   if (!cloudName || !cloudPreset) {
-    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    toast('⚠️ ভিডিও আপলোড করতে Settings-এ Cloudinary সেট করুন — অথবা YouTube লিংক পেস্ট করুন');
     showTab('settings');
     return;
   }
@@ -1512,7 +1516,7 @@ function showHeroSlide(idx) {
 function previewHsImg(url) {
   const box = document.getElementById('hsImgPreview');
   const img = document.getElementById('hsImgEl');
-  if (url && url.startsWith('http')) { img.src = url; box.style.display = 'block'; }
+  if (url && (url.startsWith('http') || url.startsWith('data:'))) { img.src = url; box.style.display = 'block'; }
   else box.style.display = 'none';
 }
 
@@ -1556,7 +1560,7 @@ function pickHsVideo() {
   const cloudName = localStorage.getItem('exg_cloud_name') || '';
   const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
   if (!cloudName || !cloudPreset) {
-    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    toast('⚠️ ভিডিও আপলোড করতে Settings-এ Cloudinary সেট করুন — অথবা YouTube লিংক পেস্ট করুন');
     showTab('settings'); return;
   }
   const inp = document.createElement('input');
