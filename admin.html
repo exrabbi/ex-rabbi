@@ -1332,26 +1332,28 @@ function pickImage(inputId, previewImgId) {
 }
 
 async function uploadImage(file) {
-  const cloudName = localStorage.getItem('exg_cloud_name') || '';
-  const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
+  const cloudName = (localStorage.getItem('exg_cloud_name') || '').trim();
+  const cloudPreset = (localStorage.getItem('exg_cloud_preset') || '').trim();
   if (cloudName && cloudPreset) {
-    const fd = new FormData();
-    fd.append('file', file);
-    fd.append('upload_preset', cloudPreset);
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.secure_url) return data.secure_url;
-    throw new Error(data.error?.message || 'Cloudinary upload failed');
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', cloudPreset);
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.secure_url) return data.secure_url;
+    } catch(e) { /* fall through */ }
   }
-  const apiKey = localStorage.getItem('exg_imgbb_key') || '';
+  const apiKey = (localStorage.getItem('exg_imgbb_key') || '').trim();
   if (apiKey) {
-    const fd = new FormData();
-    fd.append('image', file);
-    fd.append('key', apiKey);
-    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.success) return data.data.display_url || data.data.url;
-    throw new Error(data.error?.message || 'imgBB upload failed');
+    try {
+      const fd = new FormData();
+      fd.append('image', file);
+      fd.append('key', apiKey);
+      const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.success) return data.data.display_url || data.data.url;
+    } catch(e) { /* fall through */ }
   }
   return await compressToBase64(file);
 }
@@ -1793,10 +1795,25 @@ async function publishToWebsite() {
 
   try {
     const storeData = collectStoreData();
-    const content = toBase64UTF8(JSON.stringify(storeData, null, 2));
+    // Strip base64 data URLs — they make the file too large for GitHub API
+    function stripBase64(obj) {
+      if (!obj || typeof obj !== 'object') return obj;
+      if (Array.isArray(obj)) return obj.map(stripBase64);
+      const out = {};
+      for (const [k, v] of Object.entries(obj)) {
+        if (typeof v === 'string' && v.startsWith('data:')) out[k] = '';
+        else out[k] = stripBase64(v);
+      }
+      return out;
+    }
+    const cleanData = stripBase64(storeData);
+    const jsonStr = JSON.stringify(cleanData, null, 2);
+    if (jsonStr.length > 800000) {
+      toast('⚠️ ডেটা অনেক বড় — ছবির URL ব্যবহার করুন, base64 নয়'); return;
+    }
+    const content = toBase64UTF8(jsonStr);
     const apiBase = 'https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json';
 
-    // Get current file SHA (required to update existing file)
     let sha = null;
     try {
       const getRes = await fetch(apiBase + '?ref=gh-pages', {
@@ -1823,15 +1840,24 @@ async function publishToWebsite() {
       updatePublishStatus();
       toast('✅ সফলভাবে পাবলিশ হয়েছে! ওয়েবসাইট ১-২ মিনিটে আপডেট হবে।');
     } else {
-      const err = await putRes.json();
-      if (err.message && err.message.includes('Bad credentials')) {
-        toast('❌ Token ভুল — Settings-এ সঠিক token দিন');
+      const errData = await putRes.json().catch(() => ({}));
+      const msg = errData.message || '';
+      if (msg.includes('Bad credentials') || putRes.status === 401) {
+        toast('❌ Token ভুল বা মেয়াদ শেষ — Settings-এ নতুন token দিন');
+      } else if (putRes.status === 404) {
+        toast('❌ Token-এ repo access নেই — Contents: Read & Write দিন');
+      } else if (putRes.status === 422) {
+        toast('❌ পাবলিশ ব্যর্থ — token permission চেক করুন');
       } else {
-        toast('❌ পাবলিশ ব্যর্থ: ' + (err.message || 'Unknown error'));
+        toast('❌ পাবলিশ ব্যর্থ (' + putRes.status + '): ' + (msg || 'Unknown error'));
       }
     }
   } catch(e) {
-    toast('❌ Error: ' + e.message);
+    if (e.message === 'Failed to fetch') {
+      toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন এবং আবার চেষ্টা করুন');
+    } else {
+      toast('❌ Error: ' + e.message);
+    }
   } finally {
     btn.disabled = false;
     icon.className = 'fas fa-rocket';
