@@ -1220,6 +1220,40 @@ function signInManual() {
 
 function getWANumber(){try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');return s.whatsapp||'966546224029';}catch(e){return'966546224029';}}
 
+/* ===== HELP CENTER ===== */
+let _hcOpen = false;
+function toggleHelpCenter() { _hcOpen ? closeHelpCenter() : openHelpCenter(); }
+function openHelpCenter() {
+  _hcOpen = true;
+  document.getElementById('hcPanel').classList.add('open');
+  document.getElementById('hcBackdrop').classList.add('open');
+  document.getElementById('hcFabIcon').className = 'fas fa-times';
+  const wa = document.getElementById('hcWaBtn');
+  if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent('হ্যালো, আমার একটি প্রশ্ন আছে।');
+}
+function closeHelpCenter() {
+  _hcOpen = false;
+  document.getElementById('hcPanel').classList.remove('open');
+  document.getElementById('hcBackdrop').classList.remove('open');
+  document.getElementById('hcFabIcon').className = 'fas fa-headset';
+}
+function hcAsk(msg) {
+  closeHelpCenter();
+  window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+}
+let _faqOpen = false;
+function toggleFaq() {
+  _faqOpen = !_faqOpen;
+  document.getElementById('hcFaq').classList.toggle('open', _faqOpen);
+  document.getElementById('faqChevron').style.transform = _faqOpen ? 'rotate(180deg)' : '';
+}
+function toggleFaqItem(btn) {
+  const a = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  document.querySelectorAll('.hc-faq-q').forEach(b => { b.classList.remove('open'); if(b.nextElementSibling) b.nextElementSibling.classList.remove('open'); });
+  if (!isOpen) { btn.classList.add('open'); a.classList.add('open'); }
+}
+
 function _saveCustomerRecord(user){
   if(!user||!user.email)return;
   try{
