@@ -630,8 +630,20 @@ function openModal(id) {
   const inWish = wishlist.includes(id);
   const shareUrl = location.origin + location.pathname + '?p=' + id;
 
+  const videoEmbed = (() => {
+    if (!p.video) return '';
+    const v = p.video;
+    let embedUrl = '';
+    const ytMatch = v.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1`;
+    const ttMatch = v.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+    if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
+    if (!embedUrl) return '';
+    return `<div class="modal-video-wrap"><iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
+  })();
   document.getElementById('modalBody').innerHTML = `
     <img class="modal-img" src="${p.image}" alt="" />
+    ${videoEmbed}
     <div class="modal-info">
       <div class="modal-top-row">
         <h2 class="modal-name">${getName(p)}</h2>

@@ -302,8 +302,9 @@
         <div id="heroSlideForm" style="display:flex;flex-direction:column;gap:10px">
           <input type="hidden" id="hsIdx" value="0"/>
           <div class="field-wrap">
-            <div class="field-label">Image URL (model photo)</div>
-            <input type="url" id="hsImage" class="adm-input" placeholder="https://images.unsplash.com/..." oninput="previewHsImg(this.value)"/>
+            <div class="field-label">Slide Image</div>
+            <input type="url" id="hsImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewHsImg(this.value)"/>
+            <button class="adm-btn" onclick="pickImage('hsImage','hsImgPreview_inner')" style="width:100%;justify-content:center;margin-top:7px" id="hsUploadBtn"><i class="fas fa-camera"></i> Upload Photo from Phone</button>
           </div>
           <div id="hsImgPreview" style="width:100%;height:100px;border-radius:10px;background:#111;display:none;overflow:hidden;margin-bottom:2px">
             <img id="hsImgEl" style="width:100%;height:100%;object-fit:cover"/>
@@ -412,6 +413,11 @@
             </div>
           </div>
         </div>
+        <div class="setting-row">
+          <div class="setting-label">📸 Image Upload API Key (imgBB)</div>
+          <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:#e91e8c">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
+          <input type="text" id="setImgBBKey" class="adm-input" placeholder="Paste imgBB API key here (e.g. a1b2c3d4e5f6...)"/>
+        </div>
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
       </div>
 
@@ -482,8 +488,15 @@
 
     <div style="display:flex;flex-direction:column;gap:11px">
       <div class="field-wrap">
-        <div class="field-label">Image URL *</div>
-        <input type="url" id="pImage" class="adm-input" placeholder="https://images.unsplash.com/..." oninput="previewImg(this.value)"/>
+        <div class="field-label">Product Image *</div>
+        <input type="url" id="pImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewImg(this.value)"/>
+        <button class="adm-btn" onclick="pickImage('pImage','imgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px" id="pImgUploadBtn"><i class="fas fa-camera"></i> Upload HD Photo from Phone</button>
+      </div>
+
+      <div class="field-wrap">
+        <div class="field-label"><i class="fab fa-youtube" style="color:#ff0000"></i> Product Video URL (YouTube/TikTok — optional)</div>
+        <input type="url" id="pVideo" class="adm-input" placeholder="https://youtube.com/watch?v=... or https://youtu.be/..."/>
+        <div style="font-size:11px;color:#888;margin-top:4px">Paste a YouTube or TikTok link — video will appear in the product popup</div>
       </div>
 
       <div class="form-grid">
@@ -736,6 +749,7 @@ function openProductForm(id) {
     if (!p) return;
     document.getElementById('pEditId').value = id;
     document.getElementById('pImage').value = p.image || '';
+    document.getElementById('pVideo').value = p.video || '';
     document.getElementById('pNameEn').value = p.names?.en || p.nameEn || '';
     document.getElementById('pNameAr').value = p.names?.ar || p.nameAr || '';
     document.getElementById('pNameBn').value = p.names?.bn || p.nameBn || '';
@@ -752,7 +766,7 @@ function openProductForm(id) {
     previewImg(p.image || '');
   } else {
     document.getElementById('pEditId').value = '';
-    ['pImage','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pSizes','pColors','pRating','pRatingCount','pSold'].forEach(id => {
+    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pSizes','pColors','pRating','pRatingCount','pSold'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
@@ -798,6 +812,7 @@ function saveProduct() {
 
   const data = {
     image: document.getElementById('pImage').value.trim(),
+    video: document.getElementById('pVideo').value.trim() || undefined,
     names: {
       en: nameEn,
       ar: document.getElementById('pNameAr').value.trim() || nameEn,
@@ -1030,6 +1045,7 @@ function loadSettings() {
     el('setAnnouncement').value = s.announcement || '';
     el('setDelivery').value = s.delivery !== undefined ? s.delivery : 15;
     el('setFreeDelivery').value = s.freeDelivery || 100;
+    el('setImgBBKey').value = localStorage.getItem('exg_imgbb_key') || '';
   }
 }
 function saveSettings() {
@@ -1040,6 +1056,9 @@ function saveSettings() {
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
   };
   localStorage.setItem('exg_settings', JSON.stringify(s));
+  const imgbbKey = document.getElementById('setImgBBKey').value.trim();
+  if (imgbbKey) localStorage.setItem('exg_imgbb_key', imgbbKey);
+  else localStorage.removeItem('exg_imgbb_key');
   toast('✅ Settings saved!');
 }
 
@@ -1065,6 +1084,69 @@ function clearData(type) {
     location.reload();
   }
   toast('🗑️ Cleared: ' + (labels[type] || type));
+}
+
+/* ===== IMAGE UPLOAD ===== */
+function pickImage(inputId, previewImgId) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = async function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const btnId = inputId === 'pImage' ? 'pImgUploadBtn' : 'hsUploadBtn';
+    const btn = document.getElementById(btnId);
+    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    try {
+      const url = await uploadImage(file);
+      const inputEl = document.getElementById(inputId);
+      inputEl.value = url;
+      inputEl.dispatchEvent(new Event('input'));
+      toast('✅ Photo uploaded!');
+    } catch(err) {
+      toast('❌ ' + (err.message || 'Upload failed'));
+    } finally {
+      if (btn) btn.innerHTML = '<i class="fas fa-camera"></i> Upload HD Photo from Phone';
+    }
+  };
+  input.click();
+}
+
+async function uploadImage(file) {
+  const apiKey = localStorage.getItem('exg_imgbb_key') || '';
+  if (apiKey) {
+    const fd = new FormData();
+    fd.append('image', file);
+    fd.append('key', apiKey);
+    const res = await fetch('https://api.imgbb.com/1/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (data.success) return data.data.display_url || data.data.url;
+    throw new Error(data.error?.message || 'imgBB upload failed');
+  }
+  return await compressToBase64(file);
+}
+
+function compressToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 720;
+        let w = img.width, h = img.height;
+        if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+        if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.84));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 /* ===== PROMOS — HERO SLIDES ===== */

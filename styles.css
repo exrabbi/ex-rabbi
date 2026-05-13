@@ -731,6 +731,8 @@ img { max-width: 100%; display: block; }
 [dir="rtl"] .modal-close { right: auto; left: 14px; }
 .modal-body { padding-bottom: 20px; }
 .modal-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+.modal-video-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
+.modal-video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 .modal-info { padding: 16px; }
 .modal-name { font-size: 16px; font-weight: 600; color: #222; margin-bottom: 10px; }
 .modal-prices { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
