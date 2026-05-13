@@ -134,6 +134,33 @@ function _applyHeroOverrides() {
       if (s.pct) { const el = slide.querySelector('.hero-pct'); if (el) { const star = el.querySelector('.sp-inline'); el.innerHTML = s.pct + '<em>%</em>' + (star ? star.outerHTML : ''); } }
       if (s.sub) { const el = slide.querySelector('.hero-items-count'); if (el) el.innerHTML = s.sub; }
       if (s.image) { const el = slide.querySelector('.hero-model-img'); if (el) el.src = s.image; }
+
+      // Video override — injects iframe into hero-right, hides the model image
+      const rightEl = slide.querySelector('.hero-right');
+      if (rightEl) {
+        let existingVideo = rightEl.querySelector('.hero-slide-video');
+        if (s.video) {
+          let embedUrl = '';
+          const ytMatch = s.video.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+          if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}`;
+          const ttMatch = s.video.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
+          if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
+          if (embedUrl) {
+            const imgEl = rightEl.querySelector('.hero-model-img');
+            if (imgEl) imgEl.style.display = 'none';
+            if (!existingVideo) {
+              existingVideo = document.createElement('div');
+              existingVideo.className = 'hero-slide-video';
+              rightEl.insertBefore(existingVideo, rightEl.firstChild);
+            }
+            existingVideo.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+          }
+        } else if (existingVideo) {
+          existingVideo.remove();
+          const imgEl = rightEl.querySelector('.hero-model-img');
+          if (imgEl) imgEl.style.display = '';
+        }
+      }
     });
   } catch(e) {}
 }

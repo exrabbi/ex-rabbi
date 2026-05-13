@@ -165,6 +165,18 @@ img { max-width: 100%; display: block; }
   object-fit: cover; object-position: top center;
 }
 
+/* Hero slide video (replaces model image) */
+.hero-slide-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+.hero-slide-video iframe {
+  width: 100%; height: 100%;
+  border: none;
+  object-fit: cover;
+}
+
 /* SHEIN-style dual-line badge */
 .hero-brand-badge {
   display: inline-flex; flex-direction: column; align-items: flex-start;

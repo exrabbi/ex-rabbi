@@ -301,13 +301,29 @@
         </div>
         <div id="heroSlideForm" style="display:flex;flex-direction:column;gap:10px">
           <input type="hidden" id="hsIdx" value="0"/>
+          <!-- IMAGE -->
           <div class="field-wrap">
-            <div class="field-label">Slide Image</div>
+            <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> Slide Image</div>
             <input type="url" id="hsImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewHsImg(this.value)"/>
             <button class="adm-btn" onclick="pickImage('hsImage','hsImgPreview_inner')" style="width:100%;justify-content:center;margin-top:7px" id="hsUploadBtn"><i class="fas fa-camera"></i> Upload Photo from Phone</button>
           </div>
-          <div id="hsImgPreview" style="width:100%;height:100px;border-radius:10px;background:#111;display:none;overflow:hidden;margin-bottom:2px">
+          <div id="hsImgPreview" style="width:100%;height:110px;border-radius:10px;background:#111;display:none;overflow:hidden;margin-bottom:2px">
             <img id="hsImgEl" style="width:100%;height:100%;object-fit:cover"/>
+          </div>
+
+          <!-- VIDEO -->
+          <div class="field-wrap" style="border:1px solid #2a1a2a;border-radius:10px;padding:10px;background:#110a11">
+            <div class="field-label" style="color:#ff6b9d"><i class="fab fa-youtube" style="color:#ff0000"></i>&nbsp;<i class="fab fa-tiktok" style="color:#69c9d0"></i>&nbsp; Slide Video (YouTube / TikTok)</div>
+            <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok video URL" oninput="previewHsVideo(this.value)" style="margin-top:6px"/>
+            <div style="font-size:11px;color:#888;margin-top:5px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> Video plays muted + auto-loop on hero slide right side. Image still shows as fallback if no video.</div>
+          </div>
+          <div id="hsVideoPreview" style="display:none;width:100%;border-radius:10px;overflow:hidden;background:#000;border:1px solid #2a2a2a">
+            <img id="hsVideoThumb" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block"/>
+            <div style="padding:8px 10px;background:#111;display:flex;align-items:center;gap:8px">
+              <i class="fab fa-youtube" style="color:#ff0000;font-size:18px"></i>
+              <span id="hsVideoLabel" style="font-size:11px;color:#aaa;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
+              <button class="adm-btn sm gray" onclick="document.getElementById('hsVideo').value='';previewHsVideo('')" style="padding:4px 8px;font-size:10px"><i class="fas fa-times"></i> Remove</button>
+            </div>
           </div>
           <div class="form-grid">
             <div class="field-wrap">
@@ -1166,6 +1182,7 @@ function showHeroSlide(idx) {
   const s = slides[idx] || DEFAULT_SLIDES[idx] || {};
   document.getElementById('hsIdx').value = idx;
   document.getElementById('hsImage').value = s.image || '';
+  document.getElementById('hsVideo').value = s.video || '';
   document.getElementById('hsTag').value = s.tag || '';
   document.getElementById('hsPct').value = s.pct || '';
   const parts = (s.heading || '').split(/\n|<br\/?>/i);
@@ -1173,6 +1190,7 @@ function showHeroSlide(idx) {
   document.getElementById('hsHead2').value = parts[1] || '';
   document.getElementById('hsSub').value = s.sub || '';
   previewHsImg(s.image || '');
+  previewHsVideo(s.video || '');
 }
 
 function previewHsImg(url) {
@@ -1182,12 +1200,37 @@ function previewHsImg(url) {
   else box.style.display = 'none';
 }
 
+function previewHsVideo(url) {
+  const box = document.getElementById('hsVideoPreview');
+  const thumb = document.getElementById('hsVideoThumb');
+  const label = document.getElementById('hsVideoLabel');
+  if (!url) { box.style.display = 'none'; return; }
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    thumb.src = `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg`;
+    label.textContent = 'YouTube: ' + ytMatch[1];
+    box.style.display = 'block';
+    return;
+  }
+  const ttMatch = url.match(/tiktok\.com\/@([^/]+)\/video\/(\d+)/);
+  if (ttMatch) {
+    thumb.src = '';
+    label.textContent = 'TikTok @' + ttMatch[1] + ' — video ' + ttMatch[2];
+    box.style.display = 'block';
+    box.querySelector('i.fab').className = 'fab fa-tiktok';
+    box.querySelector('i.fab').style.color = '#69c9d0';
+    return;
+  }
+  box.style.display = 'none';
+}
+
 function saveHeroSlide() {
   const idx = parseInt(document.getElementById('hsIdx').value || '0');
   const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null]');
   while (slides.length < 3) slides.push(null);
   slides[idx] = {
     image: document.getElementById('hsImage').value.trim(),
+    video: document.getElementById('hsVideo').value.trim() || undefined,
     tag: document.getElementById('hsTag').value.trim(),
     pct: document.getElementById('hsPct').value.trim(),
     heading: [document.getElementById('hsHead1').value.trim(), document.getElementById('hsHead2').value.trim()].filter(Boolean).join('\n'),
