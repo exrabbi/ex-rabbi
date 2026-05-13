@@ -1681,3 +1681,71 @@ function markHelpful(btn) {
     if (txt) txt.textContent = newVal;
   }
 }
+
+/* ===== PWA INSTALL ===== */
+(function initPWA() {
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/ex-rabbi/sw.js').catch(() => {});
+  }
+
+  let deferredPrompt = null;
+
+  function showBanner() {
+    // Don't show if dismissed within the last 7 days
+    const dismissed = parseInt(localStorage.getItem('pwa_dismissed') || '0');
+    if (Date.now() - dismissed < 7 * 24 * 60 * 60 * 1000) return;
+    const banner = document.getElementById('pwaBanner');
+    if (banner) banner.classList.add('show');
+  }
+
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(showBanner, 3000);
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    const banner = document.getElementById('pwaBanner');
+    if (banner) banner.classList.remove('show');
+  });
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const installBtn = document.getElementById('pwaInstallBtn');
+    const dismissBtn = document.getElementById('pwaDismiss');
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        const banner = document.getElementById('pwaBanner');
+        if (banner) banner.classList.remove('show');
+      });
+    }
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', () => {
+        const banner = document.getElementById('pwaBanner');
+        if (banner) banner.classList.remove('show');
+        localStorage.setItem('pwa_dismissed', Date.now());
+      });
+    }
+
+    // iOS Safari: show banner with instructions since no beforeinstallprompt
+    const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+    const isStandalone = window.navigator.standalone === true;
+    if (isIos && !isStandalone) {
+      setTimeout(showBanner, 3000);
+      // Override install button for iOS
+      const btn = document.getElementById('pwaInstallBtn');
+      if (btn) {
+        btn.addEventListener('click', () => {
+          showToast('iOS: tap Share → "Add to Home Screen"');
+        }, { once: true });
+      }
+    }
+  });
+})();

@@ -73,6 +73,7 @@ const TRANSLATIONS = {
     applyCoupon: 'প্রয়োগ', couponApplied: 'কুপন প্রয়োগ হয়েছে!', couponInvalid: '❌ ভুল কুপন কোড',
     couponUsed: '❌ ইতিমধ্যে ব্যবহৃত', couponAlreadyUsed: 'এই কুপন আগেই ব্যবহার করেছেন',
     couponHowTo: 'চেকআউটে কোড পেস্ট করুন ১০% ছাড় পেতে', discount: 'ছাড়',
+    pwaInstallSub: 'অ্যাপ হিসেবে ইনস্টল করুন — ফ্রি', pwaInstall: 'ইনস্টল',
     // Location modal
     deliveryAddress: 'ডেলিভারি ঠিকানা', gpsBtn: 'GPS থেকে লোকেশন নিন',
     mapHint: 'মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন',
@@ -187,6 +188,7 @@ const TRANSLATIONS = {
     applyCoupon: 'Apply', couponApplied: 'Coupon applied!', couponInvalid: '❌ Invalid coupon code',
     couponUsed: '❌ Already used', couponAlreadyUsed: 'You already used this coupon',
     couponHowTo: 'Paste the code at checkout to get 10% off', discount: 'Discount',
+    pwaInstallSub: 'Install as App — Free', pwaInstall: 'Install',
     // Location modal
     deliveryAddress: 'Delivery Address', gpsBtn: 'Use My GPS Location',
     mapHint: 'Tap on the map to select location',
@@ -301,6 +303,7 @@ const TRANSLATIONS = {
     applyCoupon: 'تطبيق', couponApplied: 'تم تطبيق الكوبون!', couponInvalid: '❌ كود غير صحيح',
     couponUsed: '❌ مستخدم مسبقاً', couponAlreadyUsed: 'لقد استخدمت هذا الكوبون من قبل',
     couponHowTo: 'الصق الكود عند الدفع للحصول على خصم 10%', discount: 'خصم',
+    pwaInstallSub: 'ثبّت كتطبيق — مجاني', pwaInstall: 'تثبيت',
     // Location modal
     deliveryAddress: 'عنوان التوصيل', gpsBtn: 'استخدم موقع GPS',
     mapHint: 'اضغط على الخريطة لتحديد الموقع',
