@@ -1860,8 +1860,15 @@ async function publishToWebsite() {
     let sha = await getSha();
     let putRes = await doPut(sha);
 
-    // If 422 (SHA stale/missing), re-fetch SHA and retry once
-    if (putRes.status === 422) {
+    // If 409 or 422 (SHA stale/missing/conflict), re-fetch SHA and retry
+    if (putRes.status === 409 || putRes.status === 422) {
+      sha = await getSha();
+      putRes = await doPut(sha);
+    }
+
+    // Second retry if still conflicting
+    if (putRes.status === 409 || putRes.status === 422) {
+      await new Promise(r => setTimeout(r, 1500));
       sha = await getSha();
       putRes = await doPut(sha);
     }
@@ -1879,6 +1886,8 @@ async function publishToWebsite() {
         toast('❌ Token-এ write permission নেই — Contents: Read & Write দিন');
       } else if (putRes.status === 404) {
         toast('❌ Repo খুঁজে পাওয়া যাচ্ছে না — token-এ repo access দিন');
+      } else if (putRes.status === 409) {
+        toast('❌ পাবলিশ ব্যর্থ (409) — GitHub Token পরীক্ষা করুন (Settings → Token পরীক্ষা করুন বাটন)');
       } else if (putRes.status === 422) {
         toast('❌ পাবলিশ ব্যর্থ (422) — ' + (msg || 'SHA mismatch, আবার চেষ্টা করুন'));
       } else {
