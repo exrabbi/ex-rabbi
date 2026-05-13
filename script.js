@@ -1254,9 +1254,10 @@ function openHelpCenter() {
   document.getElementById('hcPanel').classList.add('open');
   document.getElementById('hcBackdrop').classList.add('open');
   document.getElementById('hcFabIcon').className = 'fas fa-times';
-  const wa = document.getElementById('hcWaBtn');
   const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const wa = document.getElementById('hcWaBtn');
   if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
+  applyTranslations();
 }
 function closeHelpCenter() {
   _hcOpen = false;
