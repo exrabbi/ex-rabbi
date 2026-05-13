@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v29</title>
+  <title>EX GLOBAL — Admin Panel v30</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -191,6 +191,7 @@
     <div style="display:flex;align-items:center;gap:8px">
       <span class="top-logo">EX GLOBAL</span>
       <span style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px">Admin</span>
+      <span style="font-size:9px;color:#555;background:#1a1a1a;border:1px solid #333;padding:2px 6px;border-radius:10px">v30</span>
     </div>
     <div class="top-actions">
       <button class="adm-btn sm gray" onclick="window.open('index.html','_blank')"><i class="fas fa-eye"></i> View Site</button>
@@ -318,21 +319,30 @@
 
           <!-- VIDEO -->
           <div class="field-wrap" style="border:1px solid #2a1a2a;border-radius:10px;padding:10px;background:#110a11">
-            <div class="field-label" style="color:#ff6b9d;margin-bottom:8px"><i class="fas fa-video" style="color:#7c3aed"></i> Slide Video</div>
+            <div class="field-label" style="color:#ff6b9d;margin-bottom:6px"><i class="fas fa-video" style="color:#7c3aed"></i> Slide Video <span style="font-size:10px;color:#555;font-weight:400">(optional)</span></div>
 
-            <!-- Upload from phone -->
-            <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:8px">
-              <i class="fas fa-video"></i> Upload Video from Phone
-            </button>
+            <!-- Easy YouTube tip -->
+            <div style="background:#1a1020;border:1px solid #3a1a3a;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#aaa;line-height:1.6">
+              <div style="color:#e91e8c;font-weight:600;margin-bottom:3px"><i class="fab fa-youtube"></i> সহজ পদ্ধতি — YouTube লিংক</div>
+              ১. ফোনে YouTube খুলুন → + বাটন → ভিডিও আপলোড করুন<br/>
+              ২. আপলোড হলে ভিডিওটি খুলুন → Share → Copy Link<br/>
+              ৩. নিচে পেস্ট করুন ✅
+            </div>
 
-            <!-- OR YouTube/TikTok -->
+            <!-- OR Upload from phone via Cloudinary -->
             <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
               <div style="flex:1;height:1px;background:#2a2a3a"></div>
-              <span style="font-size:10px;color:#555">OR paste YouTube / TikTok link</span>
+              <span style="font-size:10px;color:#555">অথবা সরাসরি ফোন থেকে আপলোড</span>
               <div style="flex:1;height:1px;background:#2a2a3a"></div>
             </div>
-            <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok video URL" oninput="previewHsVideo(this.value)"/>
-            <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> Video plays muted + auto-loop on hero slide right side.</div>
+            <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:10px">
+              <i class="fas fa-video"></i> Upload Video from Phone
+            </button>
+            <div style="font-size:10px;color:#555;text-align:center;margin-bottom:8px">⚠️ ফোন আপলোডের জন্য Settings-এ Cloudinary সেট করতে হবে</div>
+
+            <!-- YouTube/TikTok URL -->
+            <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok URL" oninput="previewHsVideo(this.value)"/>
+            <div style="font-size:11px;color:#555;margin-top:6px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> ভিডিও hero slide-এর ডান পাশে দেখাবে।</div>
           </div>
           <div id="hsVideoPreview" style="display:none;width:100%;border-radius:10px;overflow:hidden;background:#000;border:1px solid #2a2a2a">
             <video id="hsVideoEl" controls playsinline style="width:100%;max-height:160px;display:none"></video>
@@ -455,16 +465,17 @@
 
         <div class="setting-row" style="border:1px solid #2a1a3a;border-radius:10px;padding:12px;background:#0d0a1a;margin-top:6px">
           <div class="setting-label" style="color:#a78bfa"><i class="fas fa-video" style="color:#7c3aed"></i> Video Upload (Cloudinary — FREE)</div>
-          <div class="setting-desc" style="line-height:1.7;margin-bottom:8px">
-            <strong style="color:#7c3aed">How to get FREE Cloudinary key:</strong><br/>
-            1️⃣ Go to <strong>cloudinary.com</strong> → Sign up (free)<br/>
-            2️⃣ Dashboard → Settings → Upload<br/>
-            3️⃣ Scroll to <strong>"Upload presets"</strong> → Add upload preset<br/>
-            4️⃣ Set <strong>Signing mode = Unsigned</strong> → Save<br/>
-            5️⃣ Copy your <strong>Cloud name</strong> and <strong>Upload preset name</strong>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px">
+            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px">📲 ফোন থেকে ভিডিও আপলোডের জন্য Cloudinary লাগবে (সম্পূর্ণ ফ্রি):</div>
+            1️⃣ <strong>cloudinary.com</strong> এ যান → <strong>Sign Up Free</strong> করুন (Google দিয়েও হয়)<br/>
+            2️⃣ Dashboard-এ গিয়ে উপরে <strong>Cloud Name</strong> দেখুন — সেটা কপি করুন<br/>
+            3️⃣ Settings → Upload → <strong>"Upload presets"</strong> → <strong>Add upload preset</strong><br/>
+            4️⃣ <strong>Signing mode = Unsigned</strong> সেট করুন → Save<br/>
+            5️⃣ Preset-এর নাম কপি করুন → নিচে পেস্ট করুন ✅<br/>
+            <div style="color:#666;margin-top:4px">💡 YouTube লিংক দিলে Cloudinary লাগে না</div>
           </div>
-          <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (e.g. my-store-123)" style="margin-bottom:7px"/>
-          <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (e.g. unsigned_videos)"/>
+          <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (যেমন: my-store-abc123)" style="margin-bottom:7px"/>
+          <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (যেমন: unsigned_videos)"/>
         </div>
 
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>

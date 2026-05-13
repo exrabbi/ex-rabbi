@@ -145,7 +145,9 @@ function _applyHeroOverrides() {
           if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}`;
           const ttMatch = s.video.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
           if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
-          if (embedUrl) {
+          // Direct mp4/webm/Cloudinary video
+          const isDirectVideo = !embedUrl && (s.video.includes('cloudinary.com') || s.video.match(/\.(mp4|webm|mov)(\?|$)/i));
+          if (embedUrl || isDirectVideo) {
             const imgEl = rightEl.querySelector('.hero-model-img');
             if (imgEl) imgEl.style.display = 'none';
             if (!existingVideo) {
@@ -153,7 +155,11 @@ function _applyHeroOverrides() {
               existingVideo.className = 'hero-slide-video';
               rightEl.insertBefore(existingVideo, rightEl.firstChild);
             }
-            existingVideo.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+            if (isDirectVideo) {
+              existingVideo.innerHTML = `<video src="${s.video}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover"></video>`;
+            } else {
+              existingVideo.innerHTML = `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+            }
           }
         } else if (existingVideo) {
           existingVideo.remove();
