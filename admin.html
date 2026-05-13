@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v30</title>
+  <title>EX GLOBAL — Admin Panel v31</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -191,10 +191,14 @@
     <div style="display:flex;align-items:center;gap:8px">
       <span class="top-logo">EX GLOBAL</span>
       <span style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px">Admin</span>
-      <span style="font-size:9px;color:#555;background:#1a1a1a;border:1px solid #333;padding:2px 6px;border-radius:10px">v30</span>
+      <span style="font-size:9px;color:#555;background:#1a1a1a;border:1px solid #333;padding:2px 6px;border-radius:10px">v31</span>
     </div>
     <div class="top-actions">
       <button class="adm-btn sm gray" onclick="window.open('index.html','_blank')"><i class="fas fa-eye"></i> View Site</button>
+      <button class="adm-btn sm" onclick="publishToWebsite()" id="publishBtn" style="background:#16a34a;border-color:#16a34a;gap:5px">
+        <i class="fas fa-rocket" id="publishIcon"></i>
+        <span id="publishBtnText">Publish</span>
+      </button>
       <button class="logout-btn" onclick="doLogout()"><i class="fas fa-right-from-bracket"></i> Logout</button>
     </div>
   </div>
@@ -381,6 +385,9 @@
             <button class="adm-btn" onclick="saveHeroSlide()" style="flex:1;justify-content:center"><i class="fas fa-save"></i> Save Slide</button>
             <button class="adm-btn gray sm" onclick="resetHeroSlide()"><i class="fas fa-rotate-left"></i> Reset</button>
           </div>
+          <button class="adm-btn" onclick="publishToWebsite()" style="width:100%;justify-content:center;background:#16a34a;border-color:#16a34a;margin-top:6px">
+            <i class="fas fa-rocket"></i> সাইটে Publish করুন
+          </button>
         </div>
       </div>
 
@@ -476,6 +483,22 @@
           </div>
           <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (যেমন: my-store-abc123)" style="margin-bottom:7px"/>
           <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (যেমন: unsigned_videos)"/>
+        </div>
+
+        <!-- GITHUB PUBLISH TOKEN -->
+        <div class="setting-row" style="border:1px solid #0a3a1a;border-radius:10px;padding:14px;background:#071a0d;margin-top:6px">
+          <div class="setting-label" style="color:#4ade80;font-size:14px"><i class="fab fa-github"></i> 🚀 ওয়েবসাইটে Publish করুন</div>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
+            <div style="color:#4ade80;font-weight:600;margin-bottom:5px">আপনার চেঞ্জ সবার কাছে দেখাতে GitHub Token লাগবে (একবারই সেটাপ):</div>
+            1️⃣ <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:#60a5fa">github.com/settings/tokens</a> → "Generate new token"<br/>
+            2️⃣ Token name: <strong>ex-rabbi-publish</strong><br/>
+            3️⃣ Repository access → Only select: <strong>exrabbi/ex-rabbi</strong><br/>
+            4️⃣ Permissions → Contents: <strong>Read and write</strong> → Generate token<br/>
+            5️⃣ Token কপি করে নিচে পেস্ট করুন → Save করুন ✅<br/>
+            <div style="color:#555;margin-top:5px">💡 Token সেভ হলে উপরের সবুজ <strong>Publish</strong> বাটন দিয়ে যেকোনো সময় পাবলিশ করুন</div>
+          </div>
+          <input type="password" id="setGithubToken" class="adm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px"/>
+          <div id="publishStatus" style="margin-top:8px;font-size:11px;color:#666"></div>
         </div>
 
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
@@ -681,6 +704,9 @@
 
       <button class="adm-btn" onclick="saveProduct()" style="width:100%;justify-content:center;padding:13px;margin-top:4px">
         <i class="fas fa-save"></i> <span id="saveProdBtnTxt">Save Product</span>
+      </button>
+      <button class="adm-btn" onclick="saveProduct();setTimeout(publishToWebsite,300)" style="width:100%;justify-content:center;padding:13px;margin-top:8px;background:#16a34a;border-color:#16a34a">
+        <i class="fas fa-rocket"></i> Save &amp; Publish to Website
       </button>
     </div>
   </div>
@@ -1018,7 +1044,7 @@ function saveProduct() {
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
     const idx = PRODUCTS.findIndex(p => p.id === _editingId);
     if (idx !== -1) Object.assign(PRODUCTS[idx], data);
-    toast('✅ Product updated!');
+    toast('✅ Product updated! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
   } else {
     const maxId = Math.max(...PRODUCTS.map(p => p.id), 9000);
     const newProd = { id: maxId + 1, ...data };
@@ -1026,7 +1052,7 @@ function saveProduct() {
     const added = JSON.parse(localStorage.getItem('exg_products_added') || '[]');
     added.push(newProd);
     localStorage.setItem('exg_products_added', JSON.stringify(added));
-    toast('✅ Product added! ID: ' + newProd.id);
+    toast('✅ Product added! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
   }
   closeProdModal();
   renderProductList();
@@ -1230,6 +1256,8 @@ function loadSettings() {
     el('setImgBBKey').value = localStorage.getItem('exg_imgbb_key') || '';
     el('setCloudName').value = localStorage.getItem('exg_cloud_name') || '';
     el('setCloudPreset').value = localStorage.getItem('exg_cloud_preset') || '';
+    if (el('setGithubToken')) el('setGithubToken').value = localStorage.getItem('exg_github_token') || '';
+    updatePublishStatus();
   }
 }
 function saveSettings() {
@@ -1247,6 +1275,9 @@ function saveSettings() {
   const cloudPreset = document.getElementById('setCloudPreset').value.trim();
   if (cloudName) localStorage.setItem('exg_cloud_name', cloudName); else localStorage.removeItem('exg_cloud_name');
   if (cloudPreset) localStorage.setItem('exg_cloud_preset', cloudPreset); else localStorage.removeItem('exg_cloud_preset');
+  const ghToken = document.getElementById('setGithubToken').value.trim();
+  if (ghToken) localStorage.setItem('exg_github_token', ghToken); else localStorage.removeItem('exg_github_token');
+  updatePublishStatus();
   toast('✅ Settings saved!');
 }
 
@@ -1533,7 +1564,7 @@ function saveHeroSlide() {
     sub: document.getElementById('hsSub').value.trim(),
   };
   localStorage.setItem('exg_hero_slides', JSON.stringify(slides));
-  toast('✅ Slide ' + (idx + 1) + ' saved! Refresh main site to see changes.');
+  toast('✅ Slide ' + (idx + 1) + ' saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
 function resetHeroSlide() {
@@ -1589,7 +1620,7 @@ function saveFeaturedPins() {
   else localStorage.removeItem('exg_super_pins');
   if (trend) localStorage.setItem('exg_trend_pins', JSON.stringify(trend));
   else localStorage.removeItem('exg_trend_pins');
-  toast('✅ Featured sections saved! Refresh main site to apply.');
+  toast('✅ Featured sections saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
 /* ===== REVIEWS ===== */
@@ -1658,7 +1689,7 @@ function saveSocialLinks() {
     youtube: document.getElementById('socYoutube').value.trim(),
   };
   localStorage.setItem('exg_social_links', JSON.stringify(soc));
-  toast('✅ Social links saved! Refresh main site to apply.');
+  toast('✅ Social links saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
 /* ===== UTILS ===== */
@@ -1674,6 +1705,111 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ===== PUBLISH TO WEBSITE ===== */
+function collectStoreData() {
+  return {
+    products_custom:  JSON.parse(localStorage.getItem('exg_products_custom')  || '{}'),
+    products_added:   JSON.parse(localStorage.getItem('exg_products_added')   || '[]'),
+    products_deleted: JSON.parse(localStorage.getItem('exg_products_deleted') || '[]'),
+    hero_slides:      JSON.parse(localStorage.getItem('exg_hero_slides')      || '[]'),
+    settings:         JSON.parse(localStorage.getItem('exg_settings')         || '{}'),
+    social_links:     JSON.parse(localStorage.getItem('exg_social_links')     || '{}'),
+    flash_pins:       JSON.parse(localStorage.getItem('exg_flash_pins')       || 'null'),
+    super_pins:       JSON.parse(localStorage.getItem('exg_super_pins')       || 'null'),
+    trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
+    coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
+    published_at: new Date().toISOString()
+  };
+}
+
+function toBase64UTF8(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+
+function updatePublishStatus() {
+  const ts = localStorage.getItem('exg_last_published');
+  const el = document.getElementById('publishStatus');
+  if (!el) return;
+  if (ts) {
+    const d = new Date(ts);
+    el.innerHTML = '<i class="fas fa-check-circle" style="color:#4ade80"></i> শেষ পাবলিশ: ' + d.toLocaleString('bn-BD');
+  } else if (!localStorage.getItem('exg_github_token')) {
+    el.innerHTML = '<i class="fas fa-info-circle" style="color:#f59e0b"></i> Token সেট করুন তারপর Publish করুন';
+  } else {
+    el.innerHTML = '<i class="fas fa-info-circle" style="color:#60a5fa"></i> Token সেট আছে — উপরের Publish বাটন দিন';
+  }
+}
+
+async function publishToWebsite() {
+  const token = localStorage.getItem('exg_github_token');
+  if (!token) {
+    showTab('settings');
+    setTimeout(() => {
+      const el = document.getElementById('setGithubToken');
+      if (el) el.focus();
+    }, 300);
+    toast('⚠️ Settings-এ GitHub Token যোগ করুন!');
+    return;
+  }
+
+  const btn = document.getElementById('publishBtn');
+  const btnText = document.getElementById('publishBtnText');
+  const icon = document.getElementById('publishIcon');
+  btn.disabled = true;
+  icon.className = 'fas fa-spinner fa-spin';
+  btnText.textContent = 'Publishing...';
+
+  try {
+    const storeData = collectStoreData();
+    const content = toBase64UTF8(JSON.stringify(storeData, null, 2));
+    const apiBase = 'https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json';
+
+    // Get current file SHA (required to update existing file)
+    let sha = null;
+    try {
+      const getRes = await fetch(apiBase + '?ref=gh-pages', {
+        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (getRes.ok) { const fd = await getRes.json(); sha = fd.sha; }
+    } catch(e) {}
+
+    const body = { message: 'Publish store data ' + new Date().toISOString(), content, branch: 'gh-pages' };
+    if (sha) body.sha = sha;
+
+    const putRes = await fetch(apiBase, {
+      method: 'PUT',
+      headers: {
+        'Authorization': 'token ' + token,
+        'Content-Type': 'application/json',
+        'Accept': 'application/vnd.github.v3+json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (putRes.ok) {
+      localStorage.setItem('exg_last_published', new Date().toISOString());
+      updatePublishStatus();
+      toast('✅ সফলভাবে পাবলিশ হয়েছে! ওয়েবসাইট ১-২ মিনিটে আপডেট হবে।');
+    } else {
+      const err = await putRes.json();
+      if (err.message && err.message.includes('Bad credentials')) {
+        toast('❌ Token ভুল — Settings-এ সঠিক token দিন');
+      } else {
+        toast('❌ পাবলিশ ব্যর্থ: ' + (err.message || 'Unknown error'));
+      }
+    }
+  } catch(e) {
+    toast('❌ Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    icon.className = 'fas fa-rocket';
+    btnText.textContent = 'Publish';
+  }
 }
 </script>
 </body>

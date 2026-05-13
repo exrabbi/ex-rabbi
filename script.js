@@ -11,8 +11,34 @@ let heroIndex = 0;
 let heroTimer;
 let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 
+/* ===== PUBLISHED DATA SYNC ===== */
+async function loadPublishedData() {
+  try {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 3000);
+    const r = await fetch('data/store-data.json?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal });
+    clearTimeout(tid);
+    if (!r.ok) return;
+    const d = await r.json();
+    if (!d || !d.published_at) return;
+    const map = {
+      'exg_products_custom': d.products_custom,
+      'exg_products_added':  d.products_added,
+      'exg_products_deleted':d.products_deleted,
+      'exg_hero_slides':     d.hero_slides,
+      'exg_settings':        d.settings,
+      'exg_social_links':    d.social_links,
+      'exg_flash_pins':      d.flash_pins,
+      'exg_super_pins':      d.super_pins,
+      'exg_trend_pins':      d.trend_pins,
+      'exg_extra_coupons':   d.coupons,
+    };
+    Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
+  } catch(e) {}
+}
+
 /* ===== ADMIN PRODUCT OVERRIDES ===== */
-(function(){
+function _applyProductOverrides() {
   try{
     const c=JSON.parse(localStorage.getItem('exg_products_custom')||'{}');
     const a=JSON.parse(localStorage.getItem('exg_products_added')||'[]');
@@ -23,7 +49,7 @@ let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
     }
     PRODUCTS.push(...a);
   }catch(e){}
-})();
+}
 
 /* ===== THEME ===== */
 function applyTheme(theme) {
@@ -93,7 +119,9 @@ function setLang(lang) {
 }
 
 /* ===== INIT ===== */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadPublishedData(); // sync published data before rendering
+  _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery charge, free delivery threshold)
   try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;}catch(e){}
   applyTheme(currentTheme);
