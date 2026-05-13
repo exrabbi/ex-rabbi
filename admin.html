@@ -503,6 +503,9 @@
             <div style="color:#555;margin-top:5px">💡 Token সেভ হলে উপরের সবুজ <strong>Publish</strong> বাটন দিয়ে যেকোনো সময় পাবলিশ করুন</div>
           </div>
           <input type="password" id="setGithubToken" class="adm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px"/>
+          <button class="adm-btn" id="testTokenBtn" onclick="testGithubToken()" style="margin-top:7px;background:#1d4ed8;width:100%;justify-content:center">
+            <i class="fas fa-flask"></i> Token পরীক্ষা করুন
+          </button>
           <div id="publishStatus" style="margin-top:8px;font-size:11px;color:#666"></div>
         </div>
 
@@ -1834,26 +1837,34 @@ async function publishToWebsite() {
     const content = toBase64UTF8(jsonStr);
     const apiBase = 'https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json';
 
-    let sha = null;
-    try {
-      const getRes = await fetch(apiBase + '?ref=gh-pages', {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-      });
-      if (getRes.ok) { const fd = await getRes.json(); sha = fd.sha; }
-    } catch(e) {}
+    const ghHeaders = {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
+    };
 
-    const body = { message: 'Publish store data ' + new Date().toISOString(), content, branch: 'gh-pages' };
-    if (sha) body.sha = sha;
+    const getSha = async () => {
+      try {
+        const r = await fetch(apiBase + '?ref=gh-pages', { headers: ghHeaders });
+        if (r.ok) { const d = await r.json(); return d.sha || null; }
+      } catch(e) {}
+      return null;
+    };
 
-    const putRes = await fetch(apiBase, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + token,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify(body)
-    });
+    const doPut = async (sha) => {
+      const body = { message: 'Publish store data ' + new Date().toISOString(), content, branch: 'gh-pages' };
+      if (sha) body.sha = sha;
+      return fetch(apiBase, { method: 'PUT', headers: ghHeaders, body: JSON.stringify(body) });
+    };
+
+    let sha = await getSha();
+    let putRes = await doPut(sha);
+
+    // If 422 (SHA stale/missing), re-fetch SHA and retry once
+    if (putRes.status === 422) {
+      sha = await getSha();
+      putRes = await doPut(sha);
+    }
 
     if (putRes.ok) {
       localStorage.setItem('exg_last_published', new Date().toISOString());
@@ -1862,18 +1873,20 @@ async function publishToWebsite() {
     } else {
       const errData = await putRes.json().catch(() => ({}));
       const msg = errData.message || '';
-      if (msg.includes('Bad credentials') || putRes.status === 401) {
-        toast('❌ Token ভুল বা মেয়াদ শেষ — Settings-এ নতুন token দিন');
+      if (putRes.status === 401 || msg.toLowerCase().includes('bad credentials')) {
+        toast('❌ Token ভুল বা মেয়াদ শেষ — Settings-এ নতুন token দিন (Test বাটন দিয়ে চেক করুন)');
+      } else if (putRes.status === 403) {
+        toast('❌ Token-এ write permission নেই — Contents: Read & Write দিন');
       } else if (putRes.status === 404) {
-        toast('❌ Token-এ repo access নেই — Contents: Read & Write দিন');
+        toast('❌ Repo খুঁজে পাওয়া যাচ্ছে না — token-এ repo access দিন');
       } else if (putRes.status === 422) {
-        toast('❌ পাবলিশ ব্যর্থ — token permission চেক করুন');
+        toast('❌ পাবলিশ ব্যর্থ (422) — ' + (msg || 'SHA mismatch, আবার চেষ্টা করুন'));
       } else {
-        toast('❌ পাবলিশ ব্যর্থ (' + putRes.status + '): ' + (msg || 'Unknown error'));
+        toast('❌ পাবলিশ ব্যর্থ (' + putRes.status + '): ' + (msg.slice(0, 60) || 'Unknown error'));
       }
     }
   } catch(e) {
-    if (e.message === 'Failed to fetch') {
+    if (e.message === 'Failed to fetch' || e.name === 'TypeError') {
       toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন এবং আবার চেষ্টা করুন');
     } else {
       toast('❌ Error: ' + e.message);
@@ -1882,6 +1895,33 @@ async function publishToWebsite() {
     btn.disabled = false;
     icon.className = 'fas fa-rocket';
     btnText.textContent = 'Publish';
+  }
+}
+
+async function testGithubToken() {
+  const input = document.getElementById('setGithubToken');
+  const token = (input ? input.value.trim() : '') || localStorage.getItem('exg_github_token') || '';
+  if (!token) { toast('⚠️ আগে Token ইনপুট করুন'); return; }
+  const btn = document.getElementById('testTokenBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পরীক্ষা হচ্ছে...'; }
+  try {
+    const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' };
+    const res = await fetch('https://api.github.com/repos/exrabbi/ex-rabbi', { headers });
+    if (res.ok) {
+      const cr = await fetch('https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json?ref=gh-pages', { headers });
+      if (cr.ok) toast('✅ Token কাজ করছে! Publish করতে পারবেন।');
+      else toast('⚠️ Repo OK কিন্তু file পড়া যাচ্ছে না — আবার Publish চেষ্টা করুন');
+    } else if (res.status === 401) {
+      toast('❌ Token ভুল বা মেয়াদ শেষ — নতুন token বানিয়ে Settings-এ দিন');
+    } else if (res.status === 404) {
+      toast('❌ Repo access নেই — token-এ exrabbi/ex-rabbi repo permission দিন');
+    } else {
+      toast('❌ Token error: HTTP ' + res.status);
+    }
+  } catch(e) {
+    toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-flask"></i> Token পরীক্ষা করুন'; }
   }
 }
 </script>
