@@ -17,9 +17,27 @@
       "heading": "",
       "sub": ""
     },
-    null,
-    null,
-    null
+    {
+      "image": "",
+      "tag": "",
+      "pct": "",
+      "heading": "",
+      "sub": ""
+    },
+    {
+      "image": "",
+      "tag": "",
+      "pct": "",
+      "heading": "",
+      "sub": ""
+    },
+    {
+      "image": "",
+      "tag": "",
+      "pct": "",
+      "heading": "",
+      "sub": ""
+    }
   ],
   "settings": {
     "whatsapp": "966546224029",
@@ -38,5 +56,5 @@
       "oneTime": false
     }
   ],
-  "published_at": "2026-05-13T15:05:24.816Z"
+  "published_at": "2026-05-13T15:06:35.080Z"
 }
