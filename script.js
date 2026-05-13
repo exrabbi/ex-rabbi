@@ -198,7 +198,11 @@ function _applySocialLinks() {
     if (soc.facebook) document.querySelectorAll('.soc-fb').forEach(a => a.href = soc.facebook);
     if (soc.instagram) document.querySelectorAll('.soc-ig').forEach(a => a.href = soc.instagram);
     if (soc.youtube) document.querySelectorAll('.soc-yt').forEach(a => { a.href = soc.youtube; a.style.display = ''; });
-    if (settings.whatsapp) document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + settings.whatsapp);
+    if (settings.whatsapp) {
+      const waNum = settings.whatsapp;
+      const waMsg = encodeURIComponent('হ্যালো, আমার একটি প্রশ্ন আছে।');
+      document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + waNum + '?text=' + waMsg);
+    }
   } catch(e) {}
 }
 
