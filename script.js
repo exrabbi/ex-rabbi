@@ -15,7 +15,7 @@ let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 async function loadPublishedData() {
   try {
     const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 3000);
+    const tid = setTimeout(() => ctrl.abort(), 10000);
     const r = await fetch('data/store-data.json?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal });
     clearTimeout(tid);
     if (!r.ok) return;
