@@ -151,6 +151,8 @@ const TRANSLATIONS = {
     binanceCopied: '✓ ID কপি হয়েছে!', binanceConfirm: 'WhatsApp-এ Confirm করুন',
     binanceAmount: 'পরিমাণ (USDT):',
     waDeliveryAddress: 'ডেলিভারি ঠিকানা', waName: 'নাম', waPhone: 'ফোন', waCity: 'শহর', waAddress: 'ঠিকানা',
+    aiChatPlaceholder: 'আপনার প্রশ্ন লিখুন...',
+    aiChatTitle: 'EX GLOBAL সহকারী', aiChatOnline: 'অনলাইন',
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -304,6 +306,8 @@ const TRANSLATIONS = {
     binanceCopied: '✓ ID copied!', binanceConfirm: 'Confirm via WhatsApp',
     binanceAmount: 'Amount (USDT):',
     waDeliveryAddress: 'Delivery Address', waName: 'Name', waPhone: 'Phone', waCity: 'City', waAddress: 'Address',
+    aiChatPlaceholder: 'Type your question...',
+    aiChatTitle: 'EX GLOBAL Assistant', aiChatOnline: 'Online',
   },
   ar: {
     dir: 'rtl', currency: 'ر.س ', rate: 0.034,
@@ -457,5 +461,7 @@ const TRANSLATIONS = {
     waDeliveryAddress: 'عنوان التوصيل', waName: 'الاسم', waPhone: 'الهاتف', waCity: 'المدينة', waAddress: 'العنوان',
     binanceCopied: '✓ تم نسخ المعرّف!', binanceConfirm: 'تأكيد عبر واتساب',
     binanceAmount: 'المبلغ (USDT):',
+    aiChatPlaceholder: 'اكتب سؤالك هنا...',
+    aiChatTitle: 'مساعد EX GLOBAL', aiChatOnline: 'متصل',
   }
 };
