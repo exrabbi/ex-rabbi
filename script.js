@@ -10,48 +10,106 @@ function _getAudioCtx() {
   return _audioCtx;
 }
 
+function _note(ctx, freq, type, vol, start, dur) {
+  const osc = ctx.createOscillator();
+  const g   = ctx.createGain();
+  osc.connect(g); g.connect(ctx.destination);
+  osc.type = type; osc.frequency.setValueAtTime(freq, start);
+  g.gain.setValueAtTime(0, start);
+  g.gain.linearRampToValueAtTime(vol, start + 0.004);
+  g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+  osc.start(start); osc.stop(start + dur + 0.01);
+}
+
+function _playNavSound(navType) {
+  if (!_soundOn) return;
+  try {
+    const ctx = _getAudioCtx();
+    const t   = ctx.currentTime;
+
+    if (navType === 'shop') {
+      // Crystal bell — C6 + overtones, long shimmer (home feeling)
+      _note(ctx, 1047, 'sine', 0.055, t,      0.6);
+      _note(ctx, 2093, 'sine', 0.022, t,      0.4);
+      _note(ctx, 3136, 'sine', 0.010, t,      0.25);
+
+    } else if (navType === 'cat') {
+      // Wood marimba — E5 triangle, warm plunk
+      const osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(659, t);
+      osc.frequency.exponentialRampToValueAtTime(638, t + 0.12);
+      g.gain.setValueAtTime(0.08, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.26);
+      osc.start(t); osc.stop(t + 0.27);
+      // click attack
+      _note(ctx, 320, 'sine', 0.04, t, 0.018);
+
+    } else if (navType === 'trend') {
+      // Lightning spark — two rising notes E5→B5, snappy & electric
+      _note(ctx, 659, 'sine', 0.065, t,       0.14);
+      _note(ctx, 988, 'sine', 0.065, t + 0.08, 0.18);
+      // tiny fizz on second note
+      const w = ctx.createOscillator(), wg = ctx.createGain();
+      w.connect(wg); wg.connect(ctx.destination);
+      w.type = 'sawtooth'; w.frequency.setValueAtTime(988, t + 0.08);
+      wg.gain.setValueAtTime(0.012, t + 0.08);
+      wg.gain.exponentialRampToValueAtTime(0.0001, t + 0.15);
+      w.start(t + 0.08); w.stop(t + 0.16);
+
+    } else if (navType === 'cart') {
+      // Ka-ching major arpeggio — C5→E5→G5, rewarding
+      _note(ctx, 523, 'sine', 0.062, t,        0.22);
+      _note(ctx, 659, 'sine', 0.062, t + 0.07, 0.22);
+      _note(ctx, 784, 'sine', 0.062, t + 0.14, 0.28);
+      // sparkle on top note
+      _note(ctx, 1568, 'sine', 0.020, t + 0.14, 0.18);
+
+    } else if (navType === 'me') {
+      // Warm personal glow — A5 bending to G5, with soft overtone
+      const osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(880, t);
+      osc.frequency.exponentialRampToValueAtTime(784, t + 0.18);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.055, t + 0.006);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.38);
+      osc.start(t); osc.stop(t + 0.39);
+      _note(ctx, 1760, 'sine', 0.018, t, 0.20);
+    }
+  } catch(e) {}
+}
+
 function _playTick(type) {
   if (!_soundOn) return;
   try {
     const ctx = _getAudioCtx();
-    const gain = ctx.createGain();
-    gain.connect(ctx.destination);
+    const t   = ctx.currentTime;
 
     if (type === 'cart') {
-      // Two-note chime for Add to Cart
-      [880, 1320].forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        osc.connect(gain);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
-        gain.gain.setValueAtTime(0, ctx.currentTime);
-        gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
-        osc.start(ctx.currentTime + i * 0.07);
-        osc.stop(ctx.currentTime + i * 0.07 + 0.15);
-      });
+      // Cart-add voice handled by _playCartSound; this chime plays on cart tab open
+      _note(ctx, 880,  'sine', 0.062, t,       0.16);
+      _note(ctx, 1320, 'sine', 0.048, t + 0.07, 0.16);
+
     } else if (type === 'toggle') {
-      // Softer low tick for toggles
-      const osc = ctx.createOscillator();
-      osc.connect(gain);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(520, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.06);
-      gain.gain.setValueAtTime(0.06, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.08);
+      const osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(520, t);
+      osc.frequency.exponentialRampToValueAtTime(280, t + 0.06);
+      g.gain.setValueAtTime(0.06, t);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.07);
+      osc.start(t); osc.stop(t + 0.08);
+
     } else {
-      // Default: short elegant tap
-      const osc = ctx.createOscillator();
-      osc.connect(gain);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.055);
-      gain.gain.setValueAtTime(0.055, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
-      osc.start(ctx.currentTime);
-      osc.stop(ctx.currentTime + 0.08);
+      // Default: crispy iOS-style tap — quick bright click
+      const osc = ctx.createOscillator(), g = ctx.createGain();
+      osc.connect(g); g.connect(ctx.destination);
+      osc.type = 'sine'; osc.frequency.setValueAtTime(1100, t);
+      osc.frequency.exponentialRampToValueAtTime(680, t + 0.045);
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.05, t + 0.003);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + 0.065);
+      osc.start(t); osc.stop(t + 0.07);
     }
   } catch(e) {}
 }
@@ -63,7 +121,7 @@ function toggleSound(el) {
     el.classList.toggle('on', _soundOn);
     el.setAttribute('aria-checked', _soundOn);
   }
-  if (_soundOn) _playTick();
+  if (_soundOn) _playNavSound('shop');
 }
 
 // Global click sound listener
@@ -75,8 +133,11 @@ document.addEventListener('click', e => {
     '.flash-card, [onclick]'
   );
   if (!el) return;
-  // Choose sound type
-  if (el.classList.contains('add-cart-btn') || el.classList.contains('btn-add-cart') || el.classList.contains('wish-add-cart')) {
+  // Nav buttons get unique sounds
+  const navSound = el.dataset.sound;
+  if (navSound) {
+    _playNavSound(navSound);
+  } else if (el.classList.contains('add-cart-btn') || el.classList.contains('btn-add-cart') || el.classList.contains('wish-add-cart')) {
     _playTick('cart');
   } else if (el.tagName === 'INPUT' || el.type === 'checkbox') {
     // skip inputs
