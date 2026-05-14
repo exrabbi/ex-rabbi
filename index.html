@@ -85,7 +85,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=38" />
+  <link rel="stylesheet" href="styles.css?v=39" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -232,7 +232,7 @@
         <span class="cat-arch-line"></span>
       </div>
       <div class="cat-arch-grid">
-        <div class="cat-arch-card" onclick="filterCategory('women')">
+        <div class="cat-arch-card" data-cat="women" onclick="filterCategory('women')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -243,7 +243,7 @@
           </div>
           <span data-i18n="catWomen">মহিলা</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('men')">
+        <div class="cat-arch-card" data-cat="men" onclick="filterCategory('men')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -254,7 +254,7 @@
           </div>
           <span data-i18n="catMen">পুরুষ</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('kids')">
+        <div class="cat-arch-card" data-cat="kids" onclick="filterCategory('kids')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -265,7 +265,7 @@
           </div>
           <span data-i18n="catKids">শিশু</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('beauty')">
+        <div class="cat-arch-card" data-cat="beauty" onclick="filterCategory('beauty')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -276,7 +276,7 @@
           </div>
           <span data-i18n="catBeauty">বিউটি</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('shoes')">
+        <div class="cat-arch-card" data-cat="shoes" onclick="filterCategory('shoes')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -287,7 +287,7 @@
           </div>
           <span data-i18n="catShoes">জুতা</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('bags')">
+        <div class="cat-arch-card" data-cat="bags" onclick="filterCategory('bags')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -298,7 +298,7 @@
           </div>
           <span data-i18n="catBags">ব্যাগ</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('jewelry')">
+        <div class="cat-arch-card" data-cat="jewelry" onclick="filterCategory('jewelry')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -309,7 +309,7 @@
           </div>
           <span data-i18n="catJewelry">গহনা</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('home')">
+        <div class="cat-arch-card" data-cat="home" onclick="filterCategory('home')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -320,7 +320,7 @@
           </div>
           <span data-i18n="catHome">হোম</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('electronics')">
+        <div class="cat-arch-card" data-cat="electronics" onclick="filterCategory('electronics')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -331,7 +331,7 @@
           </div>
           <span data-i18n="catElectronics">ইলেকট্রনিক্স</span>
         </div>
-        <div class="cat-arch-card" onclick="filterCategory('sports')">
+        <div class="cat-arch-card" data-cat="sports" onclick="filterCategory('sports')">
           <div class="cat-arch-wrap">
             <div class="cat-arch-gem"></div>
             <div class="cat-arch-frame">
@@ -341,6 +341,47 @@
             </div>
           </div>
           <span data-i18n="catSports">স্পোর্টস</span>
+        </div>
+        <!-- Custom category slots 1-10 (hidden by default, shown when admin sets name+image) -->
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom1" style="display:none" onclick="filterCategory('custom1')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom1">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom2" style="display:none" onclick="filterCategory('custom2')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom2">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom3" style="display:none" onclick="filterCategory('custom3')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom3">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom4" style="display:none" onclick="filterCategory('custom4')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom4">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom5" style="display:none" onclick="filterCategory('custom5')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom5">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom6" style="display:none" onclick="filterCategory('custom6')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom6">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom7" style="display:none" onclick="filterCategory('custom7')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom7">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom8" style="display:none" onclick="filterCategory('custom8')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom8">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom9" style="display:none" onclick="filterCategory('custom9')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom9">Custom</span>
+        </div>
+        <div class="cat-arch-card cat-custom-slot" data-cat="custom10" style="display:none" onclick="filterCategory('custom10')">
+          <div class="cat-arch-wrap"><div class="cat-arch-gem"></div><div class="cat-arch-frame"><div class="cat-arch-inner"><img src="" alt="" loading="lazy" /></div></div></div>
+          <span class="cat-custom-label" data-cat-label="custom10">Custom</span>
         </div>
       </div>
     </section>
@@ -1428,8 +1469,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=38"></script>
-  <script src="products.js?v=38"></script>
-  <script src="script.js?v=38"></script>
+  <script src="translations.js?v=39"></script>
+  <script src="products.js?v=39"></script>
+  <script src="script.js?v=39"></script>
 </body>
 </html>

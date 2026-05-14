@@ -242,7 +242,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applySocialLinks();
   _applyAnnouncement();
   _loadCityVideo();
+  _applyCatImages();
 });
+
+/* ===== CATEGORY IMAGES OVERRIDE ===== */
+function _applyCatImages() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('exg_cat_images') || '{}');
+    Object.entries(saved).forEach(([key, url]) => {
+      const cards = document.querySelectorAll(`.cat-arch-card[data-cat="${key}"] .cat-arch-inner img`);
+      cards.forEach(img => { if (url) img.src = url; });
+    });
+    // Custom category slots (custom1..custom10)
+    const customCats = JSON.parse(localStorage.getItem('exg_custom_cats') || '{}');
+    for (let i = 1; i <= 10; i++) {
+      const key = 'custom' + i;
+      const card = document.querySelector(`.cat-arch-card[data-cat="${key}"]`);
+      if (!card) continue;
+      const data = customCats[key];
+      if (data && data.name && data.img) {
+        card.style.display = '';
+        const img = card.querySelector('.cat-arch-inner img');
+        if (img) img.src = data.img;
+        const label = card.querySelector('.cat-custom-label');
+        if (label) label.textContent = data.name;
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  } catch(e) {}
+}
 
 /* ===== ADMIN SITE OVERRIDES ===== */
 function _applyHeroOverrides() {

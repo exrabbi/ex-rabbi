@@ -352,6 +352,14 @@
     <!-- PROMOS -->
     <div class="tab-panel" id="tab-promos">
 
+      <!-- CATEGORY IMAGE EDITOR -->
+      <div class="sec">
+        <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-th-large"></i> Category Images</div>
+        <div style="font-size:11px;color:#888;margin-bottom:14px">প্রতিটা category-র ছবি পরিবর্তন করুন। Image-এ ক্লিক করুন বা Upload বাটন চাপুন।</div>
+        <div id="catImgGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px"></div>
+        <button class="adm-btn" onclick="saveCatImages()" style="margin-top:14px;width:100%;justify-content:center"><i class="fas fa-save"></i> Save Category Images</button>
+      </div>
+
       <!-- HERO SLIDES EDITOR -->
       <div class="sec">
         <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-images"></i> Hero Slides (5 slides)</div>
@@ -890,6 +898,7 @@ function initAdmin() {
   applyProductOverrides();
   renderDashboard();
   loadSettings();
+  loadCatImages();
 }
 
 /* ===== PRODUCT OVERRIDES ===== */
@@ -1843,6 +1852,171 @@ function deleteCoupon(idx) {
   saveExtraCoupons(extras);
   renderCoupons();
   toast('🗑️ Coupon deleted');
+}
+
+/* ===== CATEGORY IMAGES ===== */
+const CAT_DEFAULTS = {
+  women:       { label: 'Women / মহিলা',       img: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=200&h=220&fit=crop&q=85' },
+  men:         { label: 'Men / পুরুষ',           img: 'https://images.unsplash.com/photo-1488161628813-04466f872be2?w=200&h=220&fit=crop&q=85' },
+  kids:        { label: 'Kids / শিশু',           img: 'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200&h=220&fit=crop&q=85' },
+  beauty:      { label: 'Beauty / বিউটি',        img: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=220&fit=crop&q=85' },
+  shoes:       { label: 'Shoes / জুতা',          img: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=220&fit=crop&q=85' },
+  bags:        { label: 'Bags / ব্যাগ',           img: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=220&fit=crop&q=85' },
+  jewelry:     { label: 'Jewelry / গহনা',        img: 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=220&fit=crop&q=85' },
+  home:        { label: 'Home / হোম',            img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=220&fit=crop&q=85' },
+  electronics: { label: 'Electronics / ইলেকট্রনিক্স', img: 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=200&h=220&fit=crop&q=85' },
+  sports:      { label: 'Sports / স্পোর্টস',     img: 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=200&h=220&fit=crop&q=85' },
+};
+
+function loadCatImages() {
+  const saved = JSON.parse(localStorage.getItem('exg_cat_images') || '{}');
+  const customCats = JSON.parse(localStorage.getItem('exg_custom_cats') || '{}');
+  const grid = document.getElementById('catImgGrid');
+  if (!grid) return;
+
+  // Fixed 10 categories (image only)
+  const fixedHtml = Object.entries(CAT_DEFAULTS).map(([key, def]) => {
+    const currentImg = saved[key] || def.img;
+    return `
+      <div style="background:#111;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="font-size:11px;color:#aaa;font-weight:600;text-align:center">${def.label}</div>
+        <div style="position:relative;cursor:pointer" onclick="document.getElementById('catFileInput_${key}').click()">
+          <img id="catImg_${key}" src="${currentImg}" style="width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #c9904a;display:block" />
+          <div style="position:absolute;bottom:4px;right:-4px;background:#e91e8c;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff"><i class="fas fa-camera"></i></div>
+        </div>
+        <input type="file" id="catFileInput_${key}" accept="image/*" style="display:none" onchange="uploadCatImage('${key}',this)" />
+        <div id="catUploadStatus_${key}" style="font-size:10px;color:#4ade80;height:14px"></div>
+      </div>
+    `;
+  }).join('');
+
+  // Custom 10 categories (name + image)
+  let customHtml = '';
+  for (let i = 1; i <= 10; i++) {
+    const key = 'custom' + i;
+    const data = customCats[key] || {};
+    const currentImg = data.img || '';
+    const currentName = data.name || '';
+    customHtml += `
+      <div style="background:#151520;border:1px solid #2a2a4a;border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px">
+        <div style="font-size:10px;color:#7c6fff;font-weight:700;text-align:center;text-transform:uppercase;letter-spacing:.5px">Custom ${i}</div>
+        <div style="position:relative;cursor:pointer" onclick="document.getElementById('catFileInput_${key}').click()">
+          ${currentImg
+            ? `<img id="catImg_${key}" src="${currentImg}" style="width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #7c6fff;display:block" />`
+            : `<div id="catImg_${key}" style="width:80px;height:95px;border-radius:40px 40px 8px 8px;border:2px dashed #3a3a5a;background:#0d0d1a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+                <i class="fas fa-image" style="font-size:20px;color:#3a3a5a"></i>
+                <span style="font-size:9px;color:#3a3a5a">No image</span>
+               </div>`
+          }
+          <div style="position:absolute;bottom:4px;right:-4px;background:#7c3aed;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff"><i class="fas fa-camera"></i></div>
+        </div>
+        <input type="file" id="catFileInput_${key}" accept="image/*" style="display:none" onchange="uploadCustomCatImage('${key}',this)" />
+        <input type="text" id="catName_${key}" class="adm-input" placeholder="Category name..." value="${currentName}" style="font-size:11px;padding:6px 10px;text-align:center" oninput="stageCatName('${key}',this.value)" />
+        <div id="catUploadStatus_${key}" style="font-size:10px;color:#4ade80;height:14px"></div>
+      </div>
+    `;
+  }
+
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;padding:4px 0 2px">
+      <i class="fas fa-lock" style="color:#c9904a"></i> Fixed Categories (image only)
+    </div>
+    ${fixedHtml}
+    <div style="grid-column:1/-1;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;padding:8px 0 2px;border-top:1px solid #2a2a2a;margin-top:4px">
+      <i class="fas fa-plus" style="color:#7c3aed"></i> Custom Categories (name + image)
+    </div>
+    ${customHtml}
+  `;
+}
+
+async function uploadCatImage(key, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById(`catUploadStatus_${key}`);
+  if (status) status.textContent = 'Uploading...';
+  try {
+    const url = await uploadImage(file);
+    if (url) {
+      const img = document.getElementById(`catImg_${key}`);
+      if (img) { img.src = url; img.style.cssText = 'width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #c9904a;display:block'; }
+      const draft = JSON.parse(localStorage.getItem('exg_cat_images_draft') || '{}');
+      draft[key] = url;
+      localStorage.setItem('exg_cat_images_draft', JSON.stringify(draft));
+      if (status) { status.textContent = '✅ Uploaded!'; setTimeout(() => { if(status) status.textContent = ''; }, 2000); }
+    }
+  } catch(e) {
+    if (status) status.textContent = '❌ Failed';
+  }
+}
+
+async function uploadCustomCatImage(key, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const status = document.getElementById(`catUploadStatus_${key}`);
+  if (status) status.textContent = 'Uploading...';
+  try {
+    const url = await uploadImage(file);
+    if (url) {
+      const el = document.getElementById(`catImg_${key}`);
+      if (el) {
+        // Replace placeholder div with img element
+        if (el.tagName === 'DIV') {
+          const img = document.createElement('img');
+          img.id = `catImg_${key}`;
+          img.src = url;
+          img.style.cssText = 'width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #7c6fff;display:block';
+          el.parentNode.replaceChild(img, el);
+        } else {
+          el.src = url;
+        }
+      }
+      const draft = JSON.parse(localStorage.getItem('exg_custom_cats_draft') || '{}');
+      if (!draft[key]) draft[key] = {};
+      draft[key].img = url;
+      localStorage.setItem('exg_custom_cats_draft', JSON.stringify(draft));
+      if (status) { status.textContent = '✅ Uploaded!'; setTimeout(() => { if(status) status.textContent = ''; }, 2000); }
+    }
+  } catch(e) {
+    if (status) status.textContent = '❌ Failed';
+  }
+}
+
+function stageCatName(key, name) {
+  const draft = JSON.parse(localStorage.getItem('exg_custom_cats_draft') || '{}');
+  if (!draft[key]) draft[key] = {};
+  draft[key].name = name;
+  localStorage.setItem('exg_custom_cats_draft', JSON.stringify(draft));
+}
+
+function saveCatImages() {
+  // Save fixed category images
+  const saved = JSON.parse(localStorage.getItem('exg_cat_images') || '{}');
+  const draft = JSON.parse(localStorage.getItem('exg_cat_images_draft') || '{}');
+  localStorage.setItem('exg_cat_images', JSON.stringify({ ...saved, ...draft }));
+  localStorage.removeItem('exg_cat_images_draft');
+
+  // Save custom categories
+  const customSaved = JSON.parse(localStorage.getItem('exg_custom_cats') || '{}');
+  const customDraft = JSON.parse(localStorage.getItem('exg_custom_cats_draft') || '{}');
+  // Also pick up any name changes made via input fields directly
+  for (let i = 1; i <= 10; i++) {
+    const key = 'custom' + i;
+    const nameEl = document.getElementById(`catName_${key}`);
+    const imgEl = document.getElementById(`catImg_${key}`);
+    if (nameEl) {
+      if (!customDraft[key]) customDraft[key] = {};
+      customDraft[key].name = nameEl.value.trim();
+    }
+    if (imgEl && imgEl.src && imgEl.tagName === 'IMG') {
+      if (!customDraft[key]) customDraft[key] = {};
+      if (!customDraft[key].img) customDraft[key].img = imgEl.src;
+    }
+  }
+  localStorage.setItem('exg_custom_cats', JSON.stringify({ ...customSaved, ...customDraft }));
+  localStorage.removeItem('exg_custom_cats_draft');
+
+  _markAdminEdit();
+  toast('✅ Category images saved!');
 }
 
 /* ===== SETTINGS ===== */
