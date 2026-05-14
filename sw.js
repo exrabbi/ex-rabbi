@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v6';
+const CACHE = 'exglobal-v7';
 const STATIC = [
   '/ex-rabbi/styles.css',
   '/ex-rabbi/script.js',
