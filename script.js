@@ -1052,8 +1052,78 @@ function openMe() {
   document.getElementById('mePanel').classList.add('open');
   document.body.style.overflow = 'hidden';
   refreshMeAddress();
+  renderMyOrders();
   const wc = document.getElementById('meWishCount');
   if (wc) { wc.textContent = wishlist.length > 0 ? wishlist.length : ''; wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none'; }
+}
+
+function renderMyOrders() {
+  const wrap = document.getElementById('meOrdersList');
+  const countEl = document.getElementById('meOrderCount');
+  if (!wrap) return;
+  const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  const orders = currentUser
+    ? allOrders.filter(o => o.customer?.email && o.customer.email === currentUser.email)
+    : allOrders;
+
+  if (countEl) { countEl.textContent = orders.length; countEl.style.display = orders.length ? 'inline-block' : 'none'; }
+
+  if (!orders.length) {
+    wrap.innerHTML = `<div class="mo-empty"><i class="fas fa-bag-shopping"></i><span data-i18n="noOrdersYet">${t('noOrdersYet')||'No orders yet'}</span></div>`;
+    return;
+  }
+
+  const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const statusMap = _T.orderStatus || {};
+  const trackSteps = _T.orderTrack || ['Ordered','Confirmed','Shipped','Delivered'];
+  const statusStep = { pending:0, processing:1, shipped:2, delivered:3, cancelled:-1 };
+  const statusColor = { pending:'#f59e0b', processing:'#3b82f6', shipped:'#8b5cf6', delivered:'#10b981', cancelled:'#ef4444' };
+  const statusIcon  = { pending:'fa-clock', processing:'fa-gear fa-spin', shipped:'fa-truck', delivered:'fa-circle-check', cancelled:'fa-times-circle' };
+
+  wrap.innerHTML = orders.map(o => {
+    const st = o.status || 'pending';
+    const col = statusColor[st] || '#888';
+    const ico = statusIcon[st] || 'fa-clock';
+    const label = statusMap[st] || st;
+    const step = statusStep[st] ?? 0;
+    const cancelled = st === 'cancelled';
+    const date = o.date ? new Date(o.date).toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US', { day:'numeric', month:'short', year:'numeric' }) : '';
+    const items = (o.items || []).slice(0, 4);
+    const extraCount = (o.items || []).length - 4;
+    const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const total = lang.currency + Math.round(o.totalSAR * (lang.rate || 1)).toLocaleString();
+
+    const timeline = cancelled
+      ? `<div class="mo-cancelled-bar"><i class="fas fa-times-circle"></i> ${label}</div>`
+      : `<div class="mo-timeline">${trackSteps.map((s,i) => `
+          <div class="mo-step ${i <= step ? 'done' : ''}">
+            <div class="mo-dot">${i <= step ? '<i class="fas fa-check"></i>' : (i === step+1 ? '<i class="fas fa-circle" style="font-size:6px"></i>' : '')}</div>
+            <div class="mo-step-label">${s}</div>
+          </div>${i < trackSteps.length-1 ? '<div class="mo-line '+(i < step ? 'done' : '')+'"></div>' : ''}`).join('')}
+        </div>`;
+
+    return `<div class="mo-card">
+      <div class="mo-card-top">
+        <div class="mo-id-col">
+          <div class="mo-id">#${o.id}</div>
+          <div class="mo-date">${date}</div>
+        </div>
+        <div class="mo-status-pill" style="background:${col}20;color:${col};border:1px solid ${col}40">
+          <i class="fas ${ico}" style="font-size:10px"></i> ${label}
+        </div>
+      </div>
+      <div class="mo-items-row">
+        ${items.map(i => `<div class="mo-item-thumb" title="${i.name||''}"><img src="${i.image||''}" onerror="this.style.display='none'"/><span class="mo-item-qty">×${i.qty||1}</span></div>`).join('')}
+        ${extraCount > 0 ? `<div class="mo-item-more">+${extraCount}</div>` : ''}
+      </div>
+      <div class="mo-names">${(o.items||[]).map(i=>`${i.name||''}${i.qty>1?' ×'+i.qty:''}`).join(' · ')}</div>
+      ${timeline}
+      <div class="mo-footer">
+        <span class="mo-total-label">${_T.orderTotal||'Total'}</span>
+        <span class="mo-total-val">${total}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function closeMe() {

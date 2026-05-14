@@ -863,15 +863,17 @@
     </div>
 
     <!-- My Orders -->
-    <div class="me-card-block">
-      <div class="me-block-header">
-        <span class="me-block-title" data-i18n="myOrders">My orders</span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
+    <div class="me-card-block" id="meOrdersBlock">
+      <div class="me-block-header" style="border-bottom:none">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#e91e8c,#8b2be2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-box-open" style="color:#fff;font-size:14px"></i>
+          </div>
+          <span class="me-block-title" data-i18n="myOrders">My Orders</span>
+        </div>
+        <span id="meOrderCount" style="font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e91e8c,#8b2be2);padding:2px 9px;border-radius:20px;display:none"></span>
       </div>
-      <div class="me-orders-empty" id="meOrdersEmpty">
-        <i class="fas fa-bag-shopping"></i>
-        <span data-i18n="noOrdersYet">No orders yet</span>
-      </div>
+      <div id="meOrdersList"></div>
     </div>
 
     <!-- Account Menu -->

@@ -995,6 +995,75 @@ img { max-width: 100%; display: block; }
 }
 .me-orders-empty i { font-size: 20px; }
 
+/* ---- My Orders Cards ---- */
+.mo-empty { display:flex; align-items:center; gap:10px; padding:18px 18px; font-size:14px; color:#aaa; }
+.mo-empty i { font-size:22px; }
+.mo-card {
+  margin: 0 12px 12px; border-radius: 16px;
+  background: #f8f8fb; border: 1.5px solid #eee;
+  overflow: hidden;
+}
+.mo-card-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 14px 10px; border-bottom: 1px solid #eee;
+}
+.mo-id { font-size: 13px; font-weight: 800; color: #111; letter-spacing: .3px; }
+.mo-date { font-size: 11px; color: #999; margin-top: 2px; }
+.mo-status-pill {
+  font-size: 11px; font-weight: 700; padding: 4px 10px;
+  border-radius: 20px; display: flex; align-items: center; gap: 5px; white-space: nowrap;
+}
+.mo-items-row { display: flex; align-items: center; gap: 8px; padding: 10px 14px 4px; flex-wrap: wrap; }
+.mo-item-thumb {
+  position: relative; width: 48px; height: 48px; border-radius: 10px;
+  overflow: hidden; background: #eee; flex-shrink: 0;
+  border: 1.5px solid #e0e0e0;
+}
+.mo-item-thumb img { width:100%; height:100%; object-fit:cover; }
+.mo-item-qty {
+  position: absolute; bottom: 0; right: 0;
+  background: rgba(0,0,0,.6); color: #fff;
+  font-size: 9px; font-weight: 700; padding: 1px 4px;
+  border-radius: 5px 0 0 0;
+}
+.mo-item-more {
+  width: 48px; height: 48px; border-radius: 10px;
+  background: #eee; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #888;
+}
+.mo-names { font-size: 11px; color: #888; padding: 2px 14px 10px; line-height: 1.5; }
+
+/* Timeline */
+.mo-timeline {
+  display: flex; align-items: center;
+  padding: 10px 14px 8px; overflow-x: auto;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.mo-timeline::-webkit-scrollbar { display: none; }
+.mo-step { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+.mo-dot {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: #e0e0e0; color: #bbb;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 800; transition: all .3s;
+}
+.mo-step.done .mo-dot { background: linear-gradient(135deg,#e91e8c,#8b2be2); color: #fff; }
+.mo-step-label { font-size: 9px; color: #aaa; text-align: center; max-width: 52px; font-weight: 600; }
+.mo-step.done .mo-step-label { color: #e91e8c; }
+.mo-line { flex: 1; height: 2px; background: #e0e0e0; min-width: 24px; margin-bottom: 14px; transition: all .3s; }
+.mo-line.done { background: linear-gradient(90deg,#e91e8c,#8b2be2); }
+.mo-cancelled-bar {
+  margin: 6px 14px 8px; padding: 8px 12px; border-radius: 10px;
+  background: #fde8e8; color: #c0392b; font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; gap: 8px;
+}
+.mo-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 14px 12px; border-top: 1px solid #eee;
+}
+.mo-total-label { font-size: 12px; color: #888; font-weight: 600; }
+.mo-total-val { font-size: 15px; font-weight: 900; color: #111; }
+
 /* ---- Account menu list ---- */
 .me-list-block {}
 .me-list-item {
@@ -2263,6 +2332,20 @@ html, body { transition: background .35s, color .35s; }
   background: #1a1a1a;
   box-shadow: 0 2px 12px rgba(0,0,0,.4);
 }
+[data-theme="dark"] .mo-card { background:#1a1a1a; border-color:#2a2a2a; }
+[data-theme="dark"] .mo-card-top { border-bottom-color:#2a2a2a; }
+[data-theme="dark"] .mo-id { color:#eee; }
+[data-theme="dark"] .mo-date { color:#666; }
+[data-theme="dark"] .mo-names { color:#555; }
+[data-theme="dark"] .mo-items-row .mo-item-thumb { border-color:#333; background:#2a2a2a; }
+[data-theme="dark"] .mo-item-more { background:#2a2a2a; color:#666; }
+[data-theme="dark"] .mo-dot { background:#2a2a2a; }
+[data-theme="dark"] .mo-line { background:#2a2a2a; }
+[data-theme="dark"] .mo-step-label { color:#555; }
+[data-theme="dark"] .mo-footer { border-top-color:#2a2a2a; }
+[data-theme="dark"] .mo-total-label { color:#555; }
+[data-theme="dark"] .mo-total-val { color:#eee; }
+[data-theme="dark"] .mo-empty { color:#444; }
 [data-theme="dark"] .product-name,
 [data-theme="dark"] .product-title { color: #ddd; }
 [data-theme="dark"] .product-orig,
