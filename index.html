@@ -85,7 +85,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=40" />
+  <link rel="stylesheet" href="styles.css?v=41" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1449,15 +1449,15 @@
       <div class="ai-chat-header-left">
         <div class="ai-chat-avatar"><i class="fas fa-robot"></i></div>
         <div>
-          <div class="ai-chat-title">EX GLOBAL Assistant</div>
-          <div class="ai-chat-status"><span class="ai-online-dot"></span> Online</div>
+          <div class="ai-chat-title" data-i18n="aiChatTitle">EX GLOBAL Assistant</div>
+          <div class="ai-chat-status"><span class="ai-online-dot"></span> <span data-i18n="aiChatOnline">Online</span></div>
         </div>
       </div>
       <button class="ai-chat-close" onclick="closeAiChat()"><i class="fas fa-times"></i></button>
     </div>
     <div class="ai-chat-messages" id="aiChatMessages"></div>
     <div class="ai-chat-input-row">
-      <input type="text" id="aiChatInput" class="ai-chat-input" placeholder="আপনার প্রশ্ন লিখুন..." onkeydown="aiChatKeydown(event)" maxlength="500"/>
+      <input type="text" id="aiChatInput" class="ai-chat-input" data-i18n-placeholder="aiChatPlaceholder" placeholder="Type your question..." onkeydown="aiChatKeydown(event)" maxlength="500" autocomplete="off" autocorrect="off" spellcheck="false"/>
       <button class="ai-chat-send" id="aiChatSendBtn" onclick="sendAiMessage()"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
@@ -1469,8 +1469,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=40"></script>
-  <script src="products.js?v=40"></script>
-  <script src="script.js?v=40"></script>
+  <script src="translations.js?v=41"></script>
+  <script src="products.js?v=41"></script>
+  <script src="script.js?v=41"></script>
 </body>
 </html>
