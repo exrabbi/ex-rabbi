@@ -7,6 +7,7 @@ let visibleCount = 8;
 let currentLang = 'en';
 let selectedSize = '';
 let selectedColor = '';
+let _modalQty = 1;
 let heroIndex = 0;
 let heroTimer;
 let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
@@ -723,6 +724,7 @@ function openModal(id) {
   if (!p) return;
   selectedSize = p.sizes[0] || '';
   selectedColor = p.colors[0] || '';
+  _modalQty = 1;
   const inWish = wishlist.includes(id);
   const shareUrl = location.origin + location.pathname + '?p=' + id;
 
@@ -803,11 +805,21 @@ function openModal(id) {
         </button>
       </div>
     </div>
+    ${p.stock !== 0 ? `
+    <div class="modal-qty-row">
+      <span class="modal-qty-label">${t('qtyLabel')||'Quantity'}</span>
+      <div class="modal-qty-ctrl">
+        <button class="mq-btn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
+        <span class="mq-num" id="modalQtyNum">1</span>
+        <button class="mq-btn" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
+      </div>
+      <span class="modal-qty-price" id="modalQtyPrice">${fmt(p.price)}</span>
+    </div>` : ''}
     <div class="modal-actions">
       <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
         <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
+      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
     </div>
   `;
   history.replaceState({}, '', '?p=' + id);
@@ -876,8 +888,32 @@ function modalToggleWish(id) {
   toggleWish(id, btn);
   renderProducts(document.getElementById('searchInput')?.value || '');
 }
+function changeModalQty(delta, id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const max = p?.stock !== undefined ? p.stock : 99;
+  _modalQty = Math.max(1, Math.min(_modalQty + delta, max));
+  const numEl = document.getElementById('modalQtyNum');
+  const priceEl = document.getElementById('modalQtyPrice');
+  if (numEl) numEl.textContent = _modalQty;
+  if (priceEl && p) priceEl.textContent = fmt(p.price * _modalQty);
+  if (delta > 0 && p?.stock !== undefined && _modalQty >= p.stock)
+    showToast('⚠️ ' + (t('lowStock')||'Only {n} left!').replace('{n}', p.stock));
+}
+
 function modalAddCart(id) {
-  addToCart(id, selectedSize, selectedColor);
+  const p = PRODUCTS.find(x => x.id === id);
+  if (p && p.stock === 0) { showToast('❌ ' + t('outOfStock')); return; }
+  if (p && p.stock !== undefined && _modalQty > p.stock) {
+    showToast('⚠️ ' + (t('lowStock')||'Only {n} left!').replace('{n}', p.stock)); return;
+  }
+  // Add _modalQty times
+  const existing = cart.find(i => i.id === id);
+  if (existing) existing.qty += _modalQty;
+  else cart.push({ id, qty: _modalQty, size: selectedSize, color: selectedColor });
+  _saveCart();
+  updateCartBadge();
+  showToast(t('addedToCart'));
+  _modalQty = 1;
   closeModal();
 }
 
