@@ -828,23 +828,50 @@ function flyCartAdd(e, id) {
 }
 
 function _playCartSound() {
-  // Voice announcement: "Added successfully"
   try {
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      const phrases = { bn: 'আপনার প্রোডাক্টটি এড হয়েছে', en: 'Your product has been added', ar: 'تمت إضافة منتجك بنجاح' };
+      const phrases = {
+        bn: 'আপনার প্রোডাক্টটি এড হয়েছে',
+        en: 'Your product has been added to cart',
+        ar: 'تمت إضافة منتجك إلى السلة بنجاح'
+      };
+      const langMap = { bn: 'bn', en: 'en-US', ar: 'ar' };
       const text = phrases[currentLang] || phrases.en;
-      const utt = new SpeechSynthesisUtterance(text);
-      utt.rate = 1.05;
-      utt.pitch = 1.1;
-      utt.volume = 1;
-      // Pick a matching voice if available
-      const voices = window.speechSynthesis.getVoices();
-      const langMap = { bn: 'bn', en: 'en', ar: 'ar' };
-      const match = voices.find(v => v.lang.startsWith(langMap[currentLang] || 'en'));
-      if (match) utt.voice = match;
-      window.speechSynthesis.speak(utt);
-      return; // voice only — skip beep
+      const targetLang = langMap[currentLang] || 'en-US';
+
+      function _speak(voices) {
+        const utt = new SpeechSynthesisUtterance(text);
+        utt.lang = targetLang;
+        utt.rate = 0.88;   // slightly slower — clearer pronunciation
+        utt.pitch = 1.15;  // slightly higher — friendly & warm
+        utt.volume = 1;
+
+        // Priority: 1) female local voice, 2) any local voice, 3) best English female
+        const female = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]) && /female|woman|zira|samantha|victoria|monika|karen|veena|google/i.test(v.name));
+        const anyLocal = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
+        const engFemale = voices.find(v => v.lang.startsWith('en') && /female|samantha|zira|google|karen/i.test(v.name));
+        const anyEng = voices.find(v => v.lang.startsWith('en'));
+
+        utt.voice = female || anyLocal || engFemale || anyEng || null;
+        window.speechSynthesis.speak(utt);
+      }
+
+      // Voices may load async on first call
+      const loaded = window.speechSynthesis.getVoices();
+      if (loaded.length) {
+        _speak(loaded);
+      } else {
+        window.speechSynthesis.onvoiceschanged = () => {
+          _speak(window.speechSynthesis.getVoices());
+          window.speechSynthesis.onvoiceschanged = null;
+        };
+        // Trigger voice load on some browsers
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+        window.speechSynthesis.cancel();
+        setTimeout(() => _speak(window.speechSynthesis.getVoices()), 120);
+      }
+      return;
     }
   } catch(e) {}
   // Fallback beep if SpeechSynthesis unavailable
