@@ -582,6 +582,35 @@ function openCart() {
 function closeCart() {
   document.getElementById('cartSidebar').classList.remove('open');
   document.getElementById('cartOverlay').classList.remove('open');
+  // Reset confirmation screen when cart closes
+  setTimeout(() => {
+    const cc = document.getElementById('cartConfirmed');
+    const ci = document.getElementById('cartItems');
+    const cf = document.getElementById('cartFooter');
+    if (cc) cc.style.display = 'none';
+    if (ci) ci.style.display = '';
+    if (cf) { cf.style.display = cart.length ? 'block' : 'none'; }
+  }, 350);
+}
+
+function showOrderConfirm(orderId, totalDisplay) {
+  const cc  = document.getElementById('cartConfirmed');
+  const ci  = document.getElementById('cartItems');
+  const cf  = document.getElementById('cartFooter');
+  const hc  = document.getElementById('cartHeadCount');
+  if (!cc) return;
+  // Fill details
+  document.getElementById('ccOrderId').textContent   = orderId  ? '#' + orderId  : '';
+  document.getElementById('ccOrderTotal').textContent = totalDisplay || '';
+  if (hc) hc.textContent = '';
+  // Apply current language labels
+  applyTranslations();
+  // Swap views
+  if (ci) ci.style.display = 'none';
+  if (cf) cf.style.display = 'none';
+  cc.style.display = 'flex';
+  // Trigger SVG draw animation
+  setTimeout(() => cc.classList.add('animate'), 30);
 }
 function renderCart() {
   const container = document.getElementById('cartItems');
@@ -1126,8 +1155,13 @@ function whatsappCheckout() {
   const locText = typeof getLocationText === 'function' ? getLocationText() : '';
   const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}${couponLine}\n\n*${t('totalLabel')} ${fmtD(grandDisp)}*${locText}`;
   if (appliedCoupon) markCouponUsed(appliedCoupon.code);
-  _saveOrderRecord(cart, grandDisp, 'whatsapp');
+  const newOrd = _saveOrderRecord(cart, grandDisp, 'whatsapp');
   window.open(`https://wa.me/${getWANumber()}?text=${encodeURIComponent(msg)}`, '_blank');
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  cart = []; _saveCart(); updateCartBadge();
+  closePayment();
+  openCart();
+  showOrderConfirm(newOrd?.id, (lang.currency || 'SAR ') + Math.round(grandDisp * (lang.rate || 1)).toLocaleString());
 }
 
 /* ===== BOTTOM NAV ===== */
@@ -1530,9 +1564,10 @@ function _saveCustomerRecord(user){
 }
 
 function _saveOrderRecord(items,totalSAR,method){
+  let newOrder = null;
   try{
     const orders=JSON.parse(localStorage.getItem('exg_orders')||'[]');
-    orders.unshift({
+    newOrder = {
       id:'ORD'+Date.now(),
       date:new Date().toISOString(),
       items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,image:p?p.image:''};}).slice(0,20),
@@ -1541,7 +1576,8 @@ function _saveOrderRecord(items,totalSAR,method){
       customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},
       address:typeof savedLocation!=='undefined'?savedLocation:null,
       status:'pending'
-    });
+    };
+    orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
     // Reduce stock for each ordered item
@@ -1556,6 +1592,7 @@ function _saveOrderRecord(items,totalSAR,method){
     });
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
+  return newOrder;
 }
 
 function setUser(user) {
@@ -1838,10 +1875,13 @@ function processPayment() {
       const msg = `✅ *Binance Pay — AUTO CONFIRMED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Pay ID: ${BINANCE_PAY_ID}\n🔖 Ref: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
 
       setTimeout(() => {
-        _saveOrderRecord(cart, totalSAR, 'binance');
+        const bOrd = _saveOrderRecord(cart, totalSAR, 'binance');
         window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
-        cart = []; _saveCart(); updateCart();
-        setTimeout(closePayment, 3000);
+        const bLang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+        cart = []; _saveCart(); updateCartBadge();
+        closePayment();
+        openCart();
+        showOrderConfirm(bOrd?.id, (bLang.currency||'SAR ')+Math.round(totalSAR*(bLang.rate||1)).toLocaleString());
       }, 1200);
     }, 2800);
   }
@@ -1871,7 +1911,11 @@ function renderPayPalButtons() {
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
       showToast(t('paymentSuccess') + (details.payer.name.given_name || '') + '!');
-      cart = []; _saveCart(); updateCart(); closePayment();
+      const ppOrd = _saveOrderRecord(cart, cartSubtotalBase(), 'paypal');
+      const ppLang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const ppTotal = (ppLang.currency||'SAR ')+Math.round(cartSubtotalBase()*(ppLang.rate||1)).toLocaleString();
+      cart = []; _saveCart(); updateCartBadge(); closePayment(); openCart();
+      showOrderConfirm(ppOrd?.id, ppTotal);
     }),
     onError: () => showToast(t('paymentFailed'))
   }).render('#paypalBtnContainer');

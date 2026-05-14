@@ -610,6 +610,39 @@
         <p class="empty-cart-sub" data-i18n="cartEmpty">Cart is empty</p>
       </div>
     </div>
+    <!-- Order Confirmed screen (shown after order) -->
+    <div class="cart-confirmed" id="cartConfirmed" style="display:none">
+      <div class="cc-anim-wrap">
+        <div class="cc-circle">
+          <svg viewBox="0 0 52 52" class="cc-svg">
+            <circle class="cc-ring" cx="26" cy="26" r="24" fill="none"/>
+            <path class="cc-tick" fill="none" d="M14 27 l8 8 l16-16"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-title" data-i18n="orderConfirmed">Order Confirmed!</div>
+      <div class="cc-sub" data-i18n="orderConfirmedSub">আপনার অর্ডার পেয়েছি 🎉</div>
+      <div class="cc-id" id="ccOrderId"></div>
+      <div class="cc-total" id="ccOrderTotal"></div>
+      <!-- Mini tracking timeline -->
+      <div class="cc-track">
+        <div class="cc-step done"><div class="cc-dot"><i class="fas fa-check"></i></div><div class="cc-slabel" data-i18n="trackOrdered">Ordered</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step next"><div class="cc-dot"><i class="fas fa-gear"></i></div><div class="cc-slabel" data-i18n="trackConfirmed">Confirmed</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step"><div class="cc-dot"><i class="fas fa-truck"></i></div><div class="cc-slabel" data-i18n="trackShipped">Shipped</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step"><div class="cc-dot"><i class="fas fa-house"></i></div><div class="cc-slabel" data-i18n="trackDelivered">Delivered</div></div>
+      </div>
+      <div class="cc-btns">
+        <button class="cc-track-btn" onclick="closeCart();setTimeout(()=>{openMe();},200)">
+          <i class="fas fa-location-dot"></i> <span data-i18n="trackOrder">Track Order</span>
+        </button>
+        <button class="cc-cont-btn" onclick="closeCart()">
+          <span data-i18n="continueShopping">Continue Shopping</span> →
+        </button>
+      </div>
+    </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <!-- Delivery progress -->
       <div class="cart-del-prog" id="cartDelProg">
