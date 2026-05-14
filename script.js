@@ -972,12 +972,44 @@ function openModal(id) {
       </button>
       <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
     </div>
+    ${_deliveryEstHTML()}
   `;
   history.replaceState({}, '', '?p=' + id);
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
+function _deliveryEstHTML() {
+  const now = new Date();
+  const fmtDate = d => {
+    const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const n = d.getDate(), s = n===1||n===21||n===31?'st':n===2||n===22?'nd':n===3||n===23?'rd':'th';
+    return M[d.getMonth()] + ' ' + n + s;
+  };
+  const add = days => { const d = new Date(now); d.setDate(now.getDate()+days); return d; };
+  const d1 = now, d2a = add(1), d2b = add(2), d3a = add(4), d3b = add(7);
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const isAr = lang.dir === 'rtl';
+  const steps = [
+    { icon:'fas fa-cart-shopping', date: fmtDate(d1), label: t('detOrdered')||'Ordered', active: true },
+    { icon:'fas fa-box-open', date: fmtDate(d2a)+' – '+fmtDate(d2b), label: t('detReady')||'Order Ready', active: false },
+    { icon:'fas fa-house-chimney', date: fmtDate(d3a)+' – '+fmtDate(d3b), label: t('detDelivered')||'Delivered', active: false },
+  ];
+  const stepsHtml = (isAr ? [...steps].reverse() : steps).map((s, i, arr) => `
+    <div class="det-step${s.active?' det-active':''}">
+      <div class="det-node"><i class="${s.icon}"></i></div>
+      <div class="det-info">
+        <div class="det-date">${s.date}</div>
+        <div class="det-lbl">${s.label}</div>
+      </div>
+    </div>${i < arr.length-1 ? '<div class="det-line"></div>' : ''}`).join('');
+  return `
+  <div class="del-est">
+    <div class="del-est-head"><i class="fas fa-truck-fast"></i> ${t('estDelivery')||'Estimated Delivery'}</div>
+    <div class="del-est-track">${stepsHtml}</div>
+  </div>`;
+}
+
 function closeModal() {
   document.getElementById('productModal').classList.remove('open');
   document.getElementById('modalOverlay').classList.remove('open');
