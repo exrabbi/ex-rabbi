@@ -555,7 +555,7 @@ function setupEvents() {
     document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
   });
 
-  document.getElementById('menuBtn').addEventListener('click', openMe);
+  document.getElementById('menuBtn').addEventListener('click', openDrawer);
   document.getElementById('closeDrawer').addEventListener('click', closeDrawer);
   document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
   document.getElementById('cartBtn').addEventListener('click', openCart);
