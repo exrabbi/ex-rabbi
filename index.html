@@ -627,26 +627,26 @@
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
-    <button class="bot-btn active" onclick="setBottomActive(this)">
+    <button class="bot-btn active" data-sound="shop" onclick="setBottomActive(this)">
       <div class="bot-icon-wrap"><i class="fas fa-house-chimney"></i></div>
       <span data-i18n="navShop">Shop</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this);filterCategory('all')">
+    <button class="bot-btn" data-sound="cat" onclick="setBottomActive(this);filterCategory('all')">
       <div class="bot-icon-wrap"><i class="fas fa-border-all"></i></div>
       <span data-i18n="navCategory">Category</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this)">
+    <button class="bot-btn" data-sound="trend" onclick="setBottomActive(this)">
       <div class="bot-icon-wrap"><i class="fas fa-bolt-lightning"></i></div>
       <span data-i18n="navTrend">Trend</span>
     </button>
-    <button class="bot-btn" id="botCartBtn" onclick="setBottomActive(this);openCart()">
+    <button class="bot-btn" id="botCartBtn" data-sound="cart" onclick="setBottomActive(this);openCart()">
       <div class="bot-icon-wrap">
         <i class="fas fa-basket-shopping"></i>
         <span class="bot-nav-badge" id="botCartBadge" style="display:none">0</span>
       </div>
       <span data-i18n="navCart">Cart</span>
     </button>
-    <button class="bot-btn" onclick="setBottomActive(this);openMe()">
+    <button class="bot-btn" data-sound="me" onclick="setBottomActive(this);openMe()">
       <div class="bot-icon-wrap"><i class="fas fa-user-astronaut"></i></div>
       <span data-i18n="navMe">Me</span>
     </button>
