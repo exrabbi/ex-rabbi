@@ -828,6 +828,26 @@ function flyCartAdd(e, id) {
 }
 
 function _playCartSound() {
+  // Voice announcement: "Added successfully"
+  try {
+    if (window.speechSynthesis) {
+      window.speechSynthesis.cancel();
+      const phrases = { bn: 'এড সাকসেসফুল', en: 'Added successfully', ar: 'تمت الإضافة بنجاح' };
+      const text = phrases[currentLang] || phrases.en;
+      const utt = new SpeechSynthesisUtterance(text);
+      utt.rate = 1.05;
+      utt.pitch = 1.1;
+      utt.volume = 1;
+      // Pick a matching voice if available
+      const voices = window.speechSynthesis.getVoices();
+      const langMap = { bn: 'bn', en: 'en', ar: 'ar' };
+      const match = voices.find(v => v.lang.startsWith(langMap[currentLang] || 'en'));
+      if (match) utt.voice = match;
+      window.speechSynthesis.speak(utt);
+      return; // voice only — skip beep
+    }
+  } catch(e) {}
+  // Fallback beep if SpeechSynthesis unavailable
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
     const now = ctx.currentTime;
