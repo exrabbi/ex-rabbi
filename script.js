@@ -1339,6 +1339,15 @@ function renderMyOrders() {
           </div>${i < trackSteps.length-1 ? '<div class="mo-line '+(i < step ? 'done' : '')+'"></div>' : ''}`).join('')}
         </div>`;
 
+    // Delivery confirmation footer
+    const canConfirm = st === 'delivered' && !o.deliveryConfirmed;
+    const alreadyConfirmed = o.deliveryConfirmed;
+    const confirmBar = canConfirm
+      ? `<button class="mo-confirm-btn" onclick="confirmDelivery('${o.id}')"><i class="fas fa-circle-check"></i> ${t('confirmDelivery')||'Confirm Delivery Received'}</button>`
+      : alreadyConfirmed
+        ? `<div class="mo-confirmed-badge"><i class="fas fa-circle-check"></i> ${t('deliveryConfirmed')||'Delivery Confirmed'}</div>`
+        : '';
+
     return `<div class="mo-card">
       <div class="mo-card-top">
         <div class="mo-id-col">
@@ -1359,8 +1368,20 @@ function renderMyOrders() {
         <span class="mo-total-label">${_T.orderTotal||'Total'}</span>
         <span class="mo-total-val">${total}</span>
       </div>
+      ${confirmBar}
     </div>`;
   }).join('');
+}
+
+function confirmDelivery(orderId) {
+  const orders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  const o = orders.find(x => x.id === orderId);
+  if (!o || o.deliveryConfirmed) return; // already confirmed, block double-tap
+  o.deliveryConfirmed = true;
+  o.deliveryConfirmedAt = new Date().toISOString();
+  localStorage.setItem('exg_orders', JSON.stringify(orders));
+  showToast('✅ ' + (t('deliveryConfirmed') || 'Delivery Confirmed!'));
+  renderMyOrders();
 }
 
 function closeMe() {
