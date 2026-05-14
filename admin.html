@@ -581,6 +581,17 @@
           <div id="publishStatus" style="margin-top:8px;font-size:11px;color:#666"></div>
         </div>
 
+        <!-- AI CHATBOT SETTINGS -->
+        <div class="setting-row" style="border:1px solid #1e3a5f;border-radius:10px;padding:14px;background:#071428;margin-top:6px">
+          <div class="setting-label" style="color:#60a5fa;font-size:14px"><i class="fas fa-robot"></i> 🤖 AI Chatbot (Claude)</div>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
+            <div style="color:#60a5fa;font-weight:600;margin-bottom:5px">Cloudflare Worker URL নিচে দিন:</div>
+            Worker deploy করার পর যে URL পাবেন (যেমন: https://xxx.workers.dev) সেটা এখানে দিন।
+          </div>
+          <input type="url" id="setAiWorkerUrl" class="adm-input" placeholder="https://ex-rabbi-chat.your-name.workers.dev" style="font-size:12px"/>
+          <div style="margin-top:8px;font-size:11px;color:#666">⚠️ Worker URL ছাড়া chatbot কাজ করবে না</div>
+        </div>
+
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
       </div>
 
@@ -1850,6 +1861,7 @@ function loadSettings() {
     if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
     if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
     if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
+    if (el('setAiWorkerUrl')) el('setAiWorkerUrl').value = s.aiWorkerUrl || '';
     updatePublishStatus();
   }
 }
@@ -1861,6 +1873,7 @@ function saveSettings() {
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
     vatId:   (document.getElementById('setVatId')?.value || '').trim(),
     vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
+    aiWorkerUrl: (document.getElementById('setAiWorkerUrl')?.value || '').trim(),
   };
   localStorage.setItem('exg_settings', JSON.stringify(s));
   const imgbbKey = document.getElementById('setImgBBKey').value.trim();
