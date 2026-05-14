@@ -1895,6 +1895,37 @@ async function signInWithGoogle() {
   }
 }
 
+async function signInWithApple() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+    showToast(t('firebaseNotSetup')); return;
+  }
+  try {
+    const provider = new firebase.auth.OAuthProvider('apple.com');
+    provider.addScope('email');
+    provider.addScope('name');
+    const result = await firebase.auth().signInWithPopup(provider);
+    const u = result.user;
+    const displayName = u.displayName || (result.additionalUserInfo?.profile?.name?.firstName
+      ? (result.additionalUserInfo.profile.name.firstName + ' ' + (result.additionalUserInfo.profile.name.lastName || ''))
+      : (u.email ? u.email.split('@')[0] : 'Apple User'));
+    setUser({
+      name: displayName.trim(),
+      email: u.email,
+      avatar: u.photoURL || null,
+      uid: u.uid,
+      provider: 'apple'
+    });
+    closeAuth();
+    showToast(t('welcome') + displayName.split(' ')[0] + '!');
+  } catch (e) {
+    if (e.code === 'auth/operation-not-allowed') {
+      showToast(t('appleNotEnabled'));
+    } else if (e.code !== 'auth/popup-closed-by-user') {
+      showToast(t('appleLoginFailed'));
+    }
+  }
+}
+
 function signInManual() {
   const name = document.getElementById('authName').value.trim();
   const email = document.getElementById('authEmail').value.trim();
