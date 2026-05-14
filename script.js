@@ -2469,3 +2469,108 @@ function markHelpful(btn) {
     }
   });
 })();
+
+/* ===== AI CHATBOT ===== */
+let aiChatHistory = [];
+let aiChatOpen = false;
+
+function getAiWorkerUrl() {
+  try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiWorkerUrl || ''; } catch(e) { return ''; }
+}
+
+function openAiChat() {
+  const overlay = document.getElementById('aiChatOverlay');
+  const panel   = document.getElementById('aiChatPanel');
+  if (!overlay || !panel) return;
+  aiChatOpen = true;
+  overlay.classList.add('open');
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  const badge = document.getElementById('aiChatBadge');
+  if (badge) badge.style.display = 'none';
+  const inp = document.getElementById('aiChatInput');
+  if (inp) setTimeout(() => inp.focus(), 300);
+  if (aiChatHistory.length === 0) _aiRenderWelcome();
+}
+
+function closeAiChat() {
+  aiChatOpen = false;
+  document.getElementById('aiChatOverlay')?.classList.remove('open');
+  document.getElementById('aiChatPanel')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _aiRenderWelcome() {
+  const lang = getCurrentLang ? getCurrentLang() : 'BN';
+  const msgs = {
+    BN: 'আসসালামু আলাইকুম! 👋 আমি EX GLOBAL-এর AI সহকারী। পণ্য, অর্ডার বা যেকোনো বিষয়ে সাহায্য করতে পারি।',
+    EN: 'Hello! 👋 I\'m EX GLOBAL\'s AI assistant. I can help you with products, orders, or anything else!',
+    AR: 'السلام عليكم! 👋 أنا مساعد EX GLOBAL الذكي. يمكنني مساعدتك في المنتجات والطلبات وأي شيء آخر!'
+  };
+  _aiAppendMsg('assistant', msgs[lang] || msgs['EN']);
+}
+
+function _aiAppendMsg(role, text) {
+  const box = document.getElementById('aiChatMessages');
+  if (!box) return;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai-msg-' + role;
+  div.textContent = text;
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function _aiShowTyping() {
+  const box = document.getElementById('aiChatMessages');
+  if (!box) return;
+  const div = document.createElement('div');
+  div.className = 'ai-msg ai-msg-assistant ai-typing';
+  div.id = 'aiTypingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  box.appendChild(div);
+  box.scrollTop = box.scrollHeight;
+}
+
+function _aiRemoveTyping() {
+  document.getElementById('aiTypingIndicator')?.remove();
+}
+
+async function sendAiMessage() {
+  const inp = document.getElementById('aiChatInput');
+  if (!inp) return;
+  const text = inp.value.trim();
+  if (!text) return;
+  const workerUrl = getAiWorkerUrl();
+  if (!workerUrl) {
+    showToast('AI chatbot not configured yet.');
+    return;
+  }
+  inp.value = '';
+  _aiAppendMsg('user', text);
+  aiChatHistory.push({ role: 'user', content: text });
+  _aiShowTyping();
+  const sendBtn = document.getElementById('aiChatSendBtn');
+  if (sendBtn) sendBtn.disabled = true;
+  try {
+    const resp = await fetch(workerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: aiChatHistory })
+    });
+    const data = await resp.json();
+    _aiRemoveTyping();
+    const reply = data?.content?.[0]?.text || 'Sorry, I could not respond. Please try again.';
+    aiChatHistory.push({ role: 'assistant', content: reply });
+    _aiAppendMsg('assistant', reply);
+  } catch(e) {
+    _aiRemoveTyping();
+    _aiAppendMsg('assistant', 'Connection error. Please check your internet and try again.');
+  } finally {
+    if (sendBtn) sendBtn.disabled = false;
+    inp.focus();
+  }
+}
+
+function aiChatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAiMessage(); }
+}
