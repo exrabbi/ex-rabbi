@@ -581,7 +581,12 @@ function renderCart() {
 function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
 function quickAddCart(id) { addToCart(id, '', ''); }
 function addToCart(id, size, color) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (p && p.stock === 0) { showToast('❌ ' + (t('outOfStock') || 'Out of Stock')); return; }
   const existing = cart.find(i => i.id === id);
+  if (p && p.stock !== undefined && existing && existing.qty >= p.stock) {
+    showToast('⚠️ ' + (t('lowStock') || 'Only {n} left!').replace('{n}', p.stock)); return;
+  }
   if (existing) existing.qty++;
   else cart.push({ id, qty: 1, size, color });
   _saveCart();
@@ -591,6 +596,12 @@ function addToCart(id, size, color) {
 function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
   if (!item) return;
+  if (delta > 0) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (p && p.stock !== undefined && item.qty >= p.stock) {
+      showToast('⚠️ ' + (t('lowStock') || 'Only {n} left!').replace('{n}', p.stock)); return;
+    }
+  }
   item.qty += delta;
   if (item.qty <= 0) removeFromCart(id);
   else { _saveCart(); renderCart(); }
@@ -682,8 +693,8 @@ function renderWishlistPanel() {
             <span class="wish-item-orig">${fmt(p.originalPrice)}</span>
           </div>
           <div class="wish-item-actions">
-            <button class="wish-add-cart" onclick="addToCart(${id},null,null);showToast(t('addedToCart'))">
-              <i class="fas fa-bag-shopping"></i> ${t('addToCart') || 'Add to Cart'}
+            <button class="wish-add-cart${p.stock === 0 ? ' disabled' : ''}" onclick="${p.stock === 0 ? '' : `addToCart(${id},null,null)`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
+              <i class="fas fa-bag-shopping"></i> ${p.stock === 0 ? (t('outOfStock') || 'Out of Stock') : (t('addToCart') || 'Add to Cart')}
             </button>
             <button class="wish-remove-btn" onclick="removeFromWishlist(${id})">
               <i class="fas fa-heart"></i>
@@ -1419,8 +1430,21 @@ function cartSubtotalBase() {
   }, 0);
 }
 
+function _cartStockError() {
+  for (const item of cart) {
+    const p = PRODUCTS.find(x => x.id === item.id);
+    if (!p) continue;
+    if (p.stock === 0) return `"${getName(p)}" — ${t('outOfStock') || 'Out of Stock'}`;
+    if (p.stock !== undefined && item.qty > p.stock)
+      return `"${getName(p)}" — ${(t('lowStock')||'Only {n} left!').replace('{n}', p.stock)}`;
+  }
+  return null;
+}
+
 function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
+  const stockErr = _cartStockError();
+  if (stockErr) { showToast('🚫 ' + stockErr); return; }
   if (!currentUser) {
     closeCart();
     showToast(t('loginToOrder'));
@@ -1547,6 +1571,8 @@ function copyBinanceAddr() {
 }
 
 function processPayment() {
+  const stockErr = _cartStockError();
+  if (stockErr) { showToast('🚫 ' + stockErr); return; }
   if (selectedPayMethod === 'whatsapp') {
     closePayment();
     whatsappCheckout();
