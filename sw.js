@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v18';
+const CACHE = 'exglobal-v19';
 const STATIC = [
   '/ex-rabbi/favicon.svg',
   '/ex-rabbi/logo.svg',
