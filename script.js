@@ -1206,7 +1206,6 @@ function whatsappCheckout() {
   if (appliedCoupon) markCouponUsed(appliedCoupon.code);
   const newOrd = _saveOrderRecord(cart, grandDisp, 'whatsapp');
   window.open(`https://wa.me/${getWANumber()}?text=${encodeURIComponent(msg)}`, '_blank');
-  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   cart = []; _saveCart(); updateCartBadge();
   closePayment();
   openCart();
