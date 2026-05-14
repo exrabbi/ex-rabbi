@@ -660,6 +660,10 @@
           <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="orderSubtotal">Subtotal</span></span>
           <span class="cart-srow-val" id="cartSubtotalDisp"></span>
         </div>
+        <div class="cart-srow cart-vat-row" id="cartVatRow" style="display:none">
+          <span class="cart-srow-label"><i class="fas fa-receipt"></i> <span id="cartVatLabel">VAT (10%)</span></span>
+          <span class="cart-srow-val cart-vat-val" id="cartVatDisp"></span>
+        </div>
         <div class="cart-srow">
           <span class="cart-srow-label"><i class="fas fa-truck"></i> <span data-i18n="deliveryCharge">Delivery</span></span>
           <span class="cart-srow-val" id="cartDeliveryDisp"></span>
@@ -1069,6 +1073,10 @@
         <div class="pay-summary-row pay-discount-row" id="payDiscountRow" style="display:none">
           <span id="payDiscountLabel">Discount (10%)</span>
           <span id="payDiscount" style="color:#0a8f4a">-0</span>
+        </div>
+        <div class="pay-summary-row pay-vat-row" id="payVatRow" style="display:none">
+          <span id="payVatLabel">VAT (10%)</span>
+          <span id="payVat" style="color:#888"></span>
         </div>
         <div class="pay-summary-row">
           <span data-i18n="deliveryCharge">Delivery</span>

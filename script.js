@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPublishedData(); // sync published data before rendering
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery charge, free delivery threshold)
-  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;}catch(e){}
+  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   applyTheme(currentTheme);
   setLang('en');
   updateWishBadge();
@@ -475,6 +475,7 @@ function productCardHTML(p) {
         <div class="product-prices">
           <span class="price-current">${fmt(p.price)}</span>
           <span class="price-original">${fmt(p.originalPrice)}</span>
+          ${VAT_RATE > 0 ? `<span class="price-vat-badge">${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
@@ -693,6 +694,20 @@ function renderCart() {
     }
   }
   if (tot) tot.textContent = fmtD(subtotalDisp + deliveryDisp);
+  // VAT row
+  const vatRow = document.getElementById('cartVatRow');
+  const vatEl = document.getElementById('cartVatDisp');
+  const vatLbl = document.getElementById('cartVatLabel');
+  if (vatRow) {
+    if (VAT_RATE > 0) {
+      const vatAmt = subtotalDisp / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (vatEl) vatEl.textContent = fmtD(vatAmt);
+      if (vatLbl) vatLbl.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      vatRow.style.display = '';
+    } else {
+      vatRow.style.display = 'none';
+    }
+  }
   // Address warning strip
   let addrWarn = document.getElementById('cartAddrWarn');
   if (!addrWarn) {
@@ -904,6 +919,7 @@ function openModal(id) {
         <span class="modal-price-current">${fmt(p.price)}</span>
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
+        ${VAT_RATE > 0 ? `<span class="modal-vat-badge"><i class="fas fa-receipt"></i> ${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
       </div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
@@ -1151,6 +1167,20 @@ function refreshPaymentSummary() {
   if (freeDelivery) { delivEl.textContent = t('free') || 'Free'; delivEl.style.color = '#0a8f4a'; }
   else { delivEl.textContent = fmtD(deliveryDisp); delivEl.style.color = '#e91e8c'; }
   document.getElementById('payTotal').textContent = fmtD(grandDisp);
+  // VAT row in payment summary
+  const payVatRow = document.getElementById('payVatRow');
+  const payVatEl = document.getElementById('payVat');
+  const payVatLbl = document.getElementById('payVatLabel');
+  if (payVatRow) {
+    if (VAT_RATE > 0) {
+      const vatAmt = discountedSub / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (payVatEl) payVatEl.textContent = fmtD(vatAmt);
+      if (payVatLbl) payVatLbl.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      payVatRow.style.display = 'flex';
+    } else {
+      payVatRow.style.display = 'none';
+    }
+  }
   const btn = document.getElementById('payBtnText');
   if (btn) btn.textContent = (t('placeOrder') || 'Order') + ' — ' + fmtD(grandDisp);
 }
@@ -1673,6 +1703,7 @@ let paypalLoaded = false;
 
 let DELIVERY_SAR = 17;
 let FREE_DELIVERY_THRESHOLD_SAR = 100;
+let VAT_RATE = 10; // default 10% — overridden by admin settings
 
 function cartSubtotalBase() {
   return cart.reduce((s, i) => {
@@ -1727,6 +1758,20 @@ function openPayment() {
   }
   document.getElementById('payTotal').textContent = fmtD(grandDisp);
   document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtD(grandDisp);
+  // VAT row in payment summary
+  const payVatRow0 = document.getElementById('payVatRow');
+  const payVatEl0 = document.getElementById('payVat');
+  const payVatLbl0 = document.getElementById('payVatLabel');
+  if (payVatRow0) {
+    if (VAT_RATE > 0) {
+      const vatAmt0 = subtotalDisp / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (payVatEl0) payVatEl0.textContent = fmtD(vatAmt0);
+      if (payVatLbl0) payVatLbl0.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      payVatRow0.style.display = 'flex';
+    } else {
+      payVatRow0.style.display = 'none';
+    }
+  }
   const nudge = document.getElementById('payFreeNudge');
   if (nudge) {
     if (freeDelivery) {

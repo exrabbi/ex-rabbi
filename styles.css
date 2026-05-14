@@ -331,6 +331,7 @@ img { max-width: 100%; display: block; }
 .product-prices { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; }
 .price-current { font-size: 14px; font-weight: 700; color: #e91e8c; }
 .price-original { font-size: 11px; color: #aaa; text-decoration: line-through; }
+.price-vat-badge { font-size: 10px; font-weight: 600; color: #059669; background: #e6f7f0; border: 1px solid #b2dfdb; border-radius: 4px; padding: 1px 5px; white-space: nowrap; }
 .product-meta {
   display: flex; align-items: center;
   justify-content: space-between; margin-top: 4px;
@@ -690,6 +691,10 @@ img { max-width: 100%; display: block; }
 .cart-srow-val { font-weight: 700; color: #333; font-size: 13.5px; }
 .cart-srow-val.pink { color: #e91e8c; }
 .cart-srow-val.green { color: #059669; }
+.cart-vat-row .cart-srow-label { color: #059669; }
+.cart-vat-row .cart-srow-label i { color: #059669; }
+.cart-vat-val { color: #059669 !important; font-size: 12.5px !important; }
+.pay-vat-row { color: #059669 !important; font-size: 13px; }
 
 .cart-total-row {
   display: flex; justify-content: space-between; align-items: center;
@@ -769,6 +774,7 @@ img { max-width: 100%; display: block; }
 .modal-price-current { font-size: 22px; font-weight: 800; color: #e91e8c; }
 .modal-price-orig { font-size: 15px; color: #aaa; text-decoration: line-through; }
 .modal-discount { background: #fce4ec; color: #e91e8c; font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 4px; }
+.modal-vat-badge { font-size: 11px; font-weight: 600; color: #059669; background: #e6f7f0; border: 1px solid #b2dfdb; border-radius: 4px; padding: 2px 7px; display: flex; align-items: center; gap: 4px; }
 .modal-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
 .stars { color: #ff9800; font-size: 14px; }
 .rating-count { font-size: 13px; color: #888; }
