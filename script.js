@@ -1,5 +1,5 @@
 /* ===== STATE ===== */
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('exg_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
 let currentFilter = 'all';
 let currentSort = 'default';
@@ -577,11 +577,13 @@ function renderCart() {
   if (tot) tot.textContent = fmtD(subtotalDisp + deliveryDisp);
   if (footer) footer.style.display = 'block';
 }
+function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
 function quickAddCart(id) { addToCart(id, '', ''); }
 function addToCart(id, size, color) {
   const existing = cart.find(i => i.id === id);
   if (existing) existing.qty++;
   else cart.push({ id, qty: 1, size, color });
+  _saveCart();
   updateCartBadge();
   showToast(t('addedToCart'));
 }
@@ -590,11 +592,12 @@ function updateQty(id, delta) {
   if (!item) return;
   item.qty += delta;
   if (item.qty <= 0) removeFromCart(id);
-  else renderCart();
+  else { _saveCart(); renderCart(); }
   updateCartBadge();
 }
 function removeFromCart(id) {
   cart = cart.filter(i => i.id !== id);
+  _saveCart();
   renderCart();
   updateCartBadge();
 }
@@ -1597,7 +1600,7 @@ function processPayment() {
       setTimeout(() => {
         _saveOrderRecord(cart, totalSAR, 'binance');
         window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
-        cart = []; updateCart();
+        cart = []; _saveCart(); updateCart();
         setTimeout(closePayment, 3000);
       }, 1200);
     }, 2800);
@@ -1628,7 +1631,7 @@ function renderPayPalButtons() {
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
       showToast(t('paymentSuccess') + (details.payer.name.given_name || '') + '!');
-      cart = []; updateCart(); closePayment();
+      cart = []; _saveCart(); updateCart(); closePayment();
     }),
     onError: () => showToast(t('paymentFailed'))
   }).render('#paypalBtnContainer');

@@ -45,6 +45,7 @@
     .adm-btn.xs{padding:4px 9px;font-size:10px}
     .adm-btn.gray{background:#222;color:#888;border:1px solid rgba(255,255,255,.08)}
     .adm-btn.red{background:rgba(229,57,53,.18);color:#ef5350;border:1px solid rgba(229,57,53,.2)}
+    .adm-btn.red.locked-del{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);cursor:not-allowed}
     .adm-btn.green{background:rgba(5,150,105,.18);color:#34d399;border:1px solid rgba(5,150,105,.2)}
     .adm-btn.blue{background:rgba(33,150,243,.18);color:#64b5f6;border:1px solid rgba(33,150,243,.2)}
     .adm-btn.orange{background:rgba(255,152,0,.18);color:#ffb300;border:1px solid rgba(255,152,0,.2)}
@@ -913,23 +914,26 @@ function renderProductList() {
   });
   const base = location.href.replace(/admin\.html.*$/, '');
   document.getElementById('prodList').innerHTML = list.length
-    ? list.map(p => `
+    ? list.map(p => {
+        const locked = isProductLocked(p.id);
+        return `
       <div class="prod-item">
         <img class="prod-thumb" src="${p.image || ''}" onerror="this.style.opacity='.2'" loading="lazy"/>
         <div class="prod-info">
-          <div class="prod-name">${p.names?.en || p.nameEn || p.name || '—'}</div>
+          <div class="prod-name">${p.names?.en || p.nameEn || p.name || '—'}${locked ? ' <i class="fas fa-lock" title="'+locked+'" style="color:#f59e0b;font-size:11px;margin-left:4px"></i>' : ''}</div>
           <div class="prod-meta">ID ${p.id} &nbsp;
             <span class="pill pill-cat">${p.category || ''}</span>
             ${p.tag ? `<span class="pill pill-tag">${p.tag}</span>` : ''}
+            ${locked ? `<span class="pill" style="background:#78350f;color:#fde68a">${locked}</span>` : ''}
           </div>
         </div>
         <span class="prod-price">SAR ${p.price}</span>
         <div class="prod-actions">
           <button class="adm-btn xs blue" onclick="openProductForm(${p.id})" title="Edit"><i class="fas fa-pen"></i></button>
-          <button class="adm-btn xs red" onclick="deleteProduct(${p.id})" title="Delete"><i class="fas fa-trash"></i></button>
+          <button class="adm-btn xs red${locked ? ' locked-del' : ''}" onclick="deleteProduct(${p.id})" title="${locked || 'Delete'}">${locked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-trash"></i>'}</button>
         </div>
       </div>
-    `).join('')
+    `}).join('')
     : emptyState('fa-box-open', 'No products found');
 }
 
@@ -1337,9 +1341,43 @@ function saveProduct() {
   renderProductList();
 }
 
+function isProductLocked(id) {
+  const cartItems = JSON.parse(localStorage.getItem('exg_cart') || '[]');
+  if (cartItems.some(i => i.id === id)) return 'In Cart';
+  const wishItems = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
+  if (wishItems.includes(id)) return 'In Wishlist';
+  const activeOrders = getOrders().filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+  if (activeOrders.some(o => o.items && o.items.some(i => i.id === id))) return 'In Order';
+  return null;
+}
+
 function deleteProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const name = p ? (p.names?.en || p.nameEn || 'this product') : 'this product';
+
+  // Block if product is in customer's cart
+  const cartItems = JSON.parse(localStorage.getItem('exg_cart') || '[]');
+  if (cartItems.some(i => i.id === id)) {
+    toast('🚫 এই পণ্যটি Cart-এ আছে — কাস্টমার Cart থেকে সরালে তারপর Delete করা যাবে');
+    return;
+  }
+
+  // Block if product is in customer's wishlist
+  const wishItems = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
+  if (wishItems.includes(id)) {
+    toast('🚫 এই পণ্যটি কারো Wishlist-এ আছে — Wishlist থেকে সরালে তারপর Delete করা যাবে');
+    return;
+  }
+
+  // Block if product is in any active (non-delivered, non-cancelled) order
+  const activeOrders = getOrders().filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+  const blockedByOrder = activeOrders.find(o => o.items && o.items.some(i => i.id === id));
+  if (blockedByOrder) {
+    const custName = blockedByOrder.customer?.name || 'Guest';
+    toast(`🚫 এই পণ্যটি "${custName}"-এর Active Order-এ আছে — Order Deliver/Cancel করলে তারপর Delete করা যাবে`);
+    return;
+  }
+
   if (!confirm(`Delete "${name}"?`)) return;
   const deleted = JSON.parse(localStorage.getItem('exg_products_deleted') || '[]');
   if (!deleted.includes(id)) deleted.push(id);
