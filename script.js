@@ -764,6 +764,7 @@ function openModal(id) {
         ${p.colors.map((c,i) => `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('')}
       </div>
       <div class="modal-divider"></div>
+      ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
       <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
         <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>

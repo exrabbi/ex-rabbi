@@ -50,6 +50,30 @@
     .adm-btn.orange{background:rgba(255,152,0,.18);color:#ffb300;border:1px solid rgba(255,152,0,.2)}
     .logout-btn{background:rgba(255,255,255,.06);color:#888;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11px}
 
+    /* SIZE SELECTOR */
+    .size-selector{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+    .size-chip{padding:6px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:#111;color:#888;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none}
+    .size-chip.on{border-color:#e91e8c;background:rgba(233,30,140,.15);color:#e91e8c}
+
+    /* COLOR SELECTOR */
+    .color-selector{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .color-chip{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;user-select:none}
+    .color-chip-circle{width:30px;height:30px;border-radius:50%;border:2.5px solid rgba(255,255,255,.12);position:relative;transition:transform .15s}
+    .color-chip.on .color-chip-circle{border-color:#e91e8c;transform:scale(1.15)}
+    .color-chip.on .color-chip-circle::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+    .color-chip-label{font-size:9px;color:#666;font-weight:600;text-transform:uppercase}
+    .color-chip.on .color-chip-label{color:#e91e8c}
+    .color-add-row{display:flex;gap:6px;align-items:center;margin-top:6px}
+    .color-hex-input{width:90px;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
+    .color-hex-input:focus{border-color:#e91e8c}
+    .color-name-input{flex:1;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
+    .color-name-input:focus{border-color:#e91e8c}
+
+    /* DESCRIPTION */
+    .desc-editor{width:100%;min-height:100px;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;resize:vertical;line-height:1.6;transition:border .2s;font-family:inherit}
+    .desc-editor:focus{border-color:#e91e8c}
+    .desc-editor::placeholder{color:#3a3a3a}
+
     /* INPUTS */
     .adm-input{width:100%;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;transition:border .2s}
     .adm-input:focus{border-color:#e91e8c}
@@ -684,15 +708,29 @@
         </div>
       </div>
 
-      <div class="form-grid">
-        <div class="field-wrap">
-          <div class="field-label">Sizes (comma separated)</div>
-          <input type="text" id="pSizes" class="adm-input" placeholder="S, M, L, XL, XXL"/>
+      <!-- SIZE VISUAL SELECTOR -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📐 Size সিলেক্ট করুন</div>
+        <div class="size-selector" id="sizeSelectorWrap"></div>
+      </div>
+      <input type="hidden" id="pSizes"/>
+
+      <!-- COLOR VISUAL SELECTOR -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">🎨 Color সিলেক্ট করুন</div>
+        <div class="color-selector" id="colorSelectorWrap"></div>
+        <div class="color-add-row">
+          <input type="color" id="customColorHex" class="color-hex-input" value="#e91e8c" style="padding:2px;height:34px;cursor:pointer"/>
+          <input type="text" id="customColorName" class="color-name-input" placeholder="Custom রঙের নাম (e.g. Sky Blue)"/>
+          <button class="adm-btn sm" onclick="addCustomColor()"><i class="fas fa-plus"></i> Add</button>
         </div>
-        <div class="field-wrap">
-          <div class="field-label">Colors (hex codes)</div>
-          <input type="text" id="pColors" class="adm-input" placeholder="#e91e8c, #000000, #ffffff"/>
-        </div>
+      </div>
+      <input type="hidden" id="pColors"/>
+
+      <!-- DESCRIPTION -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📝 Description (পণ্যের বিবরণ)</div>
+        <textarea id="pDesc" class="desc-editor" placeholder="পণ্যের বিস্তারিত বিবরণ লিখুন — material, features, shipping info..."></textarea>
       </div>
 
       <div class="form-grid g3">
@@ -891,20 +929,23 @@ function openProductForm(id) {
     document.getElementById('pDiscount').value = p.discount || '';
     document.getElementById('pCategory').value = p.category || 'women';
     document.getElementById('pTag').value = p.tag || '';
-    document.getElementById('pSizes').value = (p.sizes || []).join(', ');
-    document.getElementById('pColors').value = (p.colors || []).join(', ');
     document.getElementById('pRating').value = p.rating || '';
     document.getElementById('pRatingCount').value = p.ratingCount || '';
     document.getElementById('pSold').value = p.sold || '';
+    document.getElementById('pDesc').value = p.description || '';
+    initSizeSelector(p.sizes || []);
+    initColorSelector(p.colors || []);
     previewImg(p.image || '');
   } else {
     document.getElementById('pEditId').value = '';
-    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pSizes','pColors','pRating','pRatingCount','pSold'].forEach(id => {
+    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pRating','pRatingCount','pSold','pDesc'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     document.getElementById('pCategory').value = 'women';
     document.getElementById('pTag').value = '';
+    initSizeSelector([]);
+    initColorSelector([]);
     clearExtraImgs();
   }
   document.getElementById('prodModalOverlay').classList.add('open');
@@ -1019,6 +1060,91 @@ function autoCalcDiscount() {
     document.getElementById('pDiscount').value = Math.round((1 - sale / orig) * 100);
   }
 }
+/* ===== SIZE & COLOR SELECTORS ===== */
+const PRESET_SIZES = ['XS','S','M','L','XL','XXL','XXXL','Free Size'];
+const PRESET_COLORS = [
+  {name:'Black',   hex:'#111111'},
+  {name:'White',   hex:'#f5f5f5'},
+  {name:'Red',     hex:'#e53935'},
+  {name:'Blue',    hex:'#1e88e5'},
+  {name:'Navy',    hex:'#1a237e'},
+  {name:'Green',   hex:'#43a047'},
+  {name:'Gold',    hex:'#ffc107'},
+  {name:'Gray',    hex:'#757575'},
+  {name:'Pink',    hex:'#e91e8c'},
+  {name:'Purple',  hex:'#7b1fa2'},
+  {name:'Orange',  hex:'#f57c00'},
+  {name:'Beige',   hex:'#d7c4a0'},
+  {name:'Brown',   hex:'#6d4c41'},
+  {name:'Yellow',  hex:'#fdd835'},
+];
+
+let _selSizes = [];
+let _selColors = []; // array of {name, hex}
+let _extraColors = []; // custom colors added by user
+
+function initSizeSelector(saved) {
+  _selSizes = [...saved];
+  renderSizeSelector();
+}
+function toggleSize(s) {
+  if (_selSizes.includes(s)) _selSizes = _selSizes.filter(x => x !== s);
+  else _selSizes.push(s);
+  renderSizeSelector();
+}
+function renderSizeSelector() {
+  const wrap = document.getElementById('sizeSelectorWrap');
+  if (!wrap) return;
+  wrap.innerHTML = PRESET_SIZES.map(s =>
+    `<div class="size-chip${_selSizes.includes(s)?' on':''}" onclick="toggleSize('${s}')">${s}</div>`
+  ).join('');
+}
+function getSelectedSizes() { return [..._selSizes]; }
+
+function initColorSelector(savedHexes) {
+  _selColors = [];
+  savedHexes.forEach(h => {
+    const preset = PRESET_COLORS.find(c => c.hex.toLowerCase() === h.toLowerCase());
+    if (preset) _selColors.push({...preset});
+    else _selColors.push({name: h, hex: h});
+  });
+  _extraColors = _selColors.filter(c => !PRESET_COLORS.find(p => p.hex.toLowerCase() === c.hex.toLowerCase()));
+  renderColorSelector();
+}
+function toggleColor(hex) {
+  const idx = _selColors.findIndex(c => c.hex.toLowerCase() === hex.toLowerCase());
+  if (idx !== -1) _selColors.splice(idx, 1);
+  else {
+    const preset = PRESET_COLORS.find(c => c.hex.toLowerCase() === hex.toLowerCase());
+    if (preset) _selColors.push({...preset});
+  }
+  renderColorSelector();
+}
+function addCustomColor() {
+  const hex = document.getElementById('customColorHex').value;
+  const name = document.getElementById('customColorName').value.trim() || hex;
+  if (!_selColors.find(c => c.hex.toLowerCase() === hex.toLowerCase())) {
+    _selColors.push({name, hex});
+    _extraColors.push({name, hex});
+  }
+  document.getElementById('customColorName').value = '';
+  renderColorSelector();
+}
+function renderColorSelector() {
+  const wrap = document.getElementById('colorSelectorWrap');
+  if (!wrap) return;
+  const allColors = [...PRESET_COLORS, ..._extraColors.filter(e => !PRESET_COLORS.find(p => p.hex === e.hex))];
+  wrap.innerHTML = allColors.map(c => {
+    const on = _selColors.find(s => s.hex.toLowerCase() === c.hex.toLowerCase());
+    const textColor = ['#f5f5f5','#fdd835','#ffc107','#d7c4a0'].includes(c.hex) ? '#333' : '#fff';
+    return `<div class="color-chip${on?' on':''}" onclick="toggleColor('${c.hex}')" title="${c.name}">
+      <div class="color-chip-circle" style="background:${c.hex}"></div>
+      <div class="color-chip-label">${c.name}</div>
+    </div>`;
+  }).join('');
+}
+function getSelectedColors() { return _selColors.map(c => c.hex); }
+
 function saveProduct() {
   const nameEn = document.getElementById('pNameEn').value.trim();
   const price = parseFloat(document.getElementById('pPrice').value);
@@ -1039,8 +1165,9 @@ function saveProduct() {
     discount: parseInt(document.getElementById('pDiscount').value) || 0,
     category: document.getElementById('pCategory').value,
     tag: document.getElementById('pTag').value,
-    sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(Boolean),
-    colors: document.getElementById('pColors').value.split(',').map(s => s.trim()).filter(Boolean),
+    sizes: getSelectedSizes(),
+    colors: getSelectedColors(),
+    description: document.getElementById('pDesc').value.trim(),
     rating: parseFloat(document.getElementById('pRating').value) || 4.5,
     ratingCount: parseInt(document.getElementById('pRatingCount').value) || 0,
     sold: document.getElementById('pSold').value.trim() || '0',

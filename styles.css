@@ -694,6 +694,7 @@ img { max-width: 100%; display: block; }
 .stars { color: #ff9800; font-size: 14px; }
 .rating-count { font-size: 13px; color: #888; }
 .modal-divider { height: 1px; background: #f0f0f0; margin: 12px 0; }
+.modal-desc { font-size: 13px; color: #555; line-height: 1.7; white-space: pre-line; }
 .modal-section-title { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 8px; }
 .size-options, .color-options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
 .size-opt {
