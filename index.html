@@ -204,6 +204,16 @@
       </div>
     </section>
 
+    <!-- ===== SAUDI CITY VIDEO ===== -->
+    <div class="city-video-section" id="cityVideoSection" style="display:none">
+      <div class="city-video-header">
+        <span>🇸🇦</span>
+        <span data-i18n="cityVideoTitle">Saudi Arabia</span>
+        <span class="city-sub" data-i18n="cityVideoSub">City Tour</span>
+      </div>
+      <div id="cityVideoContent"></div>
+    </div>
+
     <!-- INFO BAR -->
     <div class="info-bar">
       <div class="info-item">
@@ -600,6 +610,39 @@
         <p class="empty-cart-sub" data-i18n="cartEmpty">Cart is empty</p>
       </div>
     </div>
+    <!-- Order Confirmed screen (shown after order) -->
+    <div class="cart-confirmed" id="cartConfirmed" style="display:none">
+      <div class="cc-anim-wrap">
+        <div class="cc-circle">
+          <svg viewBox="0 0 52 52" class="cc-svg">
+            <circle class="cc-ring" cx="26" cy="26" r="24" fill="none"/>
+            <path class="cc-tick" fill="none" d="M14 27 l8 8 l16-16"/>
+          </svg>
+        </div>
+      </div>
+      <div class="cc-title" data-i18n="orderConfirmed">Order Confirmed!</div>
+      <div class="cc-sub" data-i18n="orderConfirmedSub">আপনার অর্ডার পেয়েছি 🎉</div>
+      <div class="cc-id" id="ccOrderId"></div>
+      <div class="cc-total" id="ccOrderTotal"></div>
+      <!-- Mini tracking timeline -->
+      <div class="cc-track">
+        <div class="cc-step done"><div class="cc-dot"><i class="fas fa-check"></i></div><div class="cc-slabel" data-i18n="trackOrdered">Ordered</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step next"><div class="cc-dot"><i class="fas fa-gear"></i></div><div class="cc-slabel" data-i18n="trackConfirmed">Confirmed</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step"><div class="cc-dot"><i class="fas fa-truck"></i></div><div class="cc-slabel" data-i18n="trackShipped">Shipped</div></div>
+        <div class="cc-tline"></div>
+        <div class="cc-step"><div class="cc-dot"><i class="fas fa-house"></i></div><div class="cc-slabel" data-i18n="trackDelivered">Delivered</div></div>
+      </div>
+      <div class="cc-btns">
+        <button class="cc-track-btn" onclick="closeCart();setTimeout(()=>{openMe();},200)">
+          <i class="fas fa-location-dot"></i> <span data-i18n="trackOrder">Track Order</span>
+        </button>
+        <button class="cc-cont-btn" onclick="closeCart()">
+          <span data-i18n="continueShopping">Continue Shopping</span> →
+        </button>
+      </div>
+    </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <!-- Delivery progress -->
       <div class="cart-del-prog" id="cartDelProg">
@@ -616,6 +659,10 @@
         <div class="cart-srow">
           <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="orderSubtotal">Subtotal</span></span>
           <span class="cart-srow-val" id="cartSubtotalDisp"></span>
+        </div>
+        <div class="cart-srow cart-vat-row" id="cartVatRow" style="display:none">
+          <span class="cart-srow-label"><i class="fas fa-receipt"></i> <span id="cartVatLabel">VAT (10%)</span></span>
+          <span class="cart-srow-val cart-vat-val" id="cartVatDisp"></span>
         </div>
         <div class="cart-srow">
           <span class="cart-srow-label"><i class="fas fa-truck"></i> <span data-i18n="deliveryCharge">Delivery</span></span>
@@ -666,11 +713,17 @@
 
   <!-- WHATSAPP FLOAT — replaced by Help Center below -->
 
+  <!-- ===== WHATSAPP FAB ===== -->
+  <a class="wa-fab soc-wa" id="waFab" href="https://wa.me/966546224029" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+    <span class="wa-fab-label" data-i18n="waFab">WhatsApp</span>
+  </a>
+
   <!-- ===== HELP CENTER ===== -->
   <!-- Floating button -->
   <button class="hc-fab" id="hcFab" onclick="toggleHelpCenter()" aria-label="Help Center">
     <i class="fas fa-headset" id="hcFabIcon"></i>
-    <span class="hc-fab-label">সাহায্য</span>
+    <span class="hc-fab-label" data-i18n="hcFabLabel">সাহায্য</span>
     <span class="hc-fab-dot"></span>
   </button>
 
@@ -684,8 +737,8 @@
       <div class="hc-header-left">
         <div class="hc-online-dot"></div>
         <div>
-          <div class="hc-title">EX GLOBAL সাহায্য কেন্দ্র</div>
-          <div class="hc-subtitle">সাধারণত ৫ মিনিটে উত্তর দিই ⚡</div>
+          <div class="hc-title" data-i18n="hcTitle">EX GLOBAL সাহায্য কেন্দ্র</div>
+          <div class="hc-subtitle" data-i18n="hcSubtitle">সাধারণত ৫ মিনিটে উত্তর দিই ⚡</div>
         </div>
       </div>
       <button class="hc-close" onclick="closeHelpCenter()"><i class="fas fa-times"></i></button>
@@ -696,8 +749,8 @@
       <a class="hc-wa-btn soc-wa" href="https://wa.me/966546224029?text=%E0%A6%B9%E0%A7%8D%E0%A6%AF%E0%A6%BE%E0%A6%B2%E0%A7%8B%2C%20%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%B0%20%E0%A6%8F%E0%A6%95%E0%A6%9F%E0%A6%BF%20%E0%A6%AA%E0%A7%8D%E0%A6%B0%E0%A6%B6%E0%A7%8D%E0%A6%A8%20%E0%A6%86%E0%A6%9B%E0%A7%87%E0%A5%A4" target="_blank" id="hcWaBtn">
         <i class="fab fa-whatsapp"></i>
         <div>
-          <div style="font-weight:700;font-size:14px">WhatsApp-এ চ্যাট করুন</div>
-          <div style="font-size:11px;opacity:.85">সরাসরি কথা বলুন</div>
+          <div style="font-weight:700;font-size:14px" data-i18n="hcWaBtn">WhatsApp-এ চ্যাট করুন</div>
+          <div style="font-size:11px;opacity:.85" data-i18n="hcWaSub">সরাসরি কথা বলুন</div>
         </div>
         <i class="fas fa-arrow-right" style="margin-left:auto;opacity:.7"></i>
       </a>
@@ -705,61 +758,30 @@
 
     <!-- Quick options -->
     <div class="hc-options">
-      <button class="hc-opt" onclick="hcAsk('আমার অর্ডার কোথায়? ট্র্যাক করতে চাই।')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgTrack')">
         <i class="fas fa-box-open" style="color:#e91e8c"></i>
-        <span>অর্ডার ট্র্যাক করুন</span>
+        <span data-i18n="hcOptTrack">অর্ডার ট্র্যাক করুন</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
-      <button class="hc-opt" onclick="hcAsk('রিটার্ন করতে চাই, কীভাবে করবো?')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgReturn')">
         <i class="fas fa-rotate-left" style="color:#f59e0b"></i>
-        <span>রিটার্ন / এক্সচেঞ্জ</span>
+        <span data-i18n="hcOptReturn">রিটার্ন / এক্সচেঞ্জ</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
-      <button class="hc-opt" onclick="hcAsk('পেমেন্ট সম্পর্কে জানতে চাই।')">
+      <button class="hc-opt" onclick="hcAskKey('hcMsgPayment')">
         <i class="fas fa-credit-card" style="color:#8b5cf6"></i>
-        <span>পেমেন্ট পদ্ধতি</span>
+        <span data-i18n="hcOptPayment">পেমেন্ট পদ্ধতি</span>
         <i class="fas fa-chevron-right hc-arr"></i>
       </button>
       <button class="hc-opt" onclick="toggleFaq()">
         <i class="fas fa-circle-question" style="color:#06b6d4"></i>
-        <span>সাধারণ প্রশ্ন (FAQ)</span>
+        <span data-i18n="hcOptFaq">সাধারণ প্রশ্ন (FAQ)</span>
         <i class="fas fa-chevron-down hc-arr" id="faqChevron"></i>
       </button>
     </div>
 
-    <!-- FAQ accordion -->
-    <div class="hc-faq" id="hcFaq">
-      <div class="hc-faq-item">
-        <button class="hc-faq-q" onclick="toggleFaqItem(this)">
-          ডেলিভারি কতদিনে হয়? <i class="fas fa-plus"></i>
-        </button>
-        <div class="hc-faq-a">সাধারণত ২-৫ কার্যদিবসের মধ্যে ডেলিভারি হয়। SAR ১০০-এর উপরে অর্ডারে ফ্রি ডেলিভারি।</div>
-      </div>
-      <div class="hc-faq-item">
-        <button class="hc-faq-q" onclick="toggleFaqItem(this)">
-          কীভাবে অর্ডার করবো? <i class="fas fa-plus"></i>
-        </button>
-        <div class="hc-faq-a">পণ্য সিলেক্ট করে কার্টে যোগ করুন → চেকআউট → WhatsApp-এ অর্ডার কনফার্ম করুন।</div>
-      </div>
-      <div class="hc-faq-item">
-        <button class="hc-faq-q" onclick="toggleFaqItem(this)">
-          রিটার্ন পলিসি কী? <i class="fas fa-plus"></i>
-        </button>
-        <div class="hc-faq-a">পণ্য পাওয়ার ৭ দিনের মধ্যে রিটার্ন করা যাবে। পণ্য অক্ষত থাকতে হবে। WhatsApp-এ যোগাযোগ করুন।</div>
-      </div>
-      <div class="hc-faq-item">
-        <button class="hc-faq-q" onclick="toggleFaqItem(this)">
-          কুপন কোড কোথায় দেবো? <i class="fas fa-plus"></i>
-        </button>
-        <div class="hc-faq-a">কার্টে গিয়ে "কুপন কোড লিখুন" বক্সে কোড দিন। ছাড় স্বয়ংক্রিয়ভাবে বিয়োগ হবে।</div>
-      </div>
-      <div class="hc-faq-item">
-        <button class="hc-faq-q" onclick="toggleFaqItem(this)">
-          পেমেন্ট কীভাবে করবো? <i class="fas fa-plus"></i>
-        </button>
-        <div class="hc-faq-a">WhatsApp-এ অর্ডার দিলে ক্যাশ অন ডেলিভারি, বিকাশ, নগদ বা ব্যাংক ট্রান্সফারে পেমেন্ট করা যায়।</div>
-      </div>
-    </div>
+    <!-- FAQ accordion (rendered dynamically by JS) -->
+    <div class="hc-faq" id="hcFaq"></div>
 
   </div>
   <!-- ===== END HELP CENTER ===== -->
@@ -878,15 +900,17 @@
     </div>
 
     <!-- My Orders -->
-    <div class="me-card-block">
-      <div class="me-block-header">
-        <span class="me-block-title" data-i18n="myOrders">My orders</span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
+    <div class="me-card-block" id="meOrdersBlock">
+      <div class="me-block-header" style="border-bottom:none">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#e91e8c,#8b2be2);display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-box-open" style="color:#fff;font-size:14px"></i>
+          </div>
+          <span class="me-block-title" data-i18n="myOrders">My Orders</span>
+        </div>
+        <span id="meOrderCount" style="font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e91e8c,#8b2be2);padding:2px 9px;border-radius:20px;display:none"></span>
       </div>
-      <div class="me-orders-empty" id="meOrdersEmpty">
-        <i class="fas fa-bag-shopping"></i>
-        <span data-i18n="noOrdersYet">No orders yet</span>
-      </div>
+      <div id="meOrdersList"></div>
     </div>
 
     <!-- Account Menu -->
@@ -974,6 +998,11 @@
           <span data-i18n="notifications">নোটিফিকেশন</span>
           <i class="fas fa-chevron-right"></i>
         </div>
+        <div class="settings-item" onclick="toggleSound(document.getElementById('soundToggle'))">
+          <i class="fas fa-volume-high" style="color:#e91e8c"></i>
+          <span data-i18n="soundFeedback">বাটন সাউন্ড</span>
+          <button id="soundToggle" class="snd-toggle on" role="switch" aria-checked="true" onclick="event.stopPropagation();toggleSound(this)"></button>
+        </div>
         <div class="settings-item">
           <i class="fas fa-sliders-h"></i>
           <span data-i18n="preferences">পছন্দ</span>
@@ -1044,6 +1073,10 @@
         <div class="pay-summary-row pay-discount-row" id="payDiscountRow" style="display:none">
           <span id="payDiscountLabel">Discount (10%)</span>
           <span id="payDiscount" style="color:#0a8f4a">-0</span>
+        </div>
+        <div class="pay-summary-row pay-vat-row" id="payVatRow" style="display:none">
+          <span id="payVatLabel">VAT (10%)</span>
+          <span id="payVat" style="color:#888"></span>
         </div>
         <div class="pay-summary-row">
           <span data-i18n="deliveryCharge">Delivery</span>

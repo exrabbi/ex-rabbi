@@ -1,5 +1,92 @@
+/* ===== SOUND SYSTEM ===== */
+let _soundOn = localStorage.getItem('exg_sound') !== 'off';
+let _audioCtx = null;
+
+function _getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === 'closed') {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+function _playTick(type) {
+  if (!_soundOn) return;
+  try {
+    const ctx = _getAudioCtx();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    if (type === 'cart') {
+      // Two-note chime for Add to Cart
+      [880, 1320].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.connect(gain);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.start(ctx.currentTime + i * 0.07);
+        osc.stop(ctx.currentTime + i * 0.07 + 0.15);
+      });
+    } else if (type === 'toggle') {
+      // Softer low tick for toggles
+      const osc = ctx.createOscillator();
+      osc.connect(gain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } else {
+      // Default: short elegant tap
+      const osc = ctx.createOscillator();
+      osc.connect(gain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.055);
+      gain.gain.setValueAtTime(0.055, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    }
+  } catch(e) {}
+}
+
+function toggleSound(el) {
+  _soundOn = !_soundOn;
+  localStorage.setItem('exg_sound', _soundOn ? 'on' : 'off');
+  if (el) {
+    el.classList.toggle('on', _soundOn);
+    el.setAttribute('aria-checked', _soundOn);
+  }
+  if (_soundOn) _playTick();
+}
+
+// Global click sound listener
+document.addEventListener('click', e => {
+  const el = e.target.closest(
+    'button, a, .product-card, .filter-btn, .sort-btn, .lang-btn, .size-opt, .color-opt, ' +
+    '.wish-btn, .hc-fab, .me-list-item, .me-block-header, .settings-item, ' +
+    '.tab-btn, .nav-btn, .bot-nav-btn, .hc-faq-q, .modal-thumb, .me-edit-pill, ' +
+    '.flash-card, [onclick]'
+  );
+  if (!el) return;
+  // Choose sound type
+  if (el.classList.contains('add-cart-btn') || el.classList.contains('btn-add-cart') || el.classList.contains('wish-add-cart')) {
+    _playTick('cart');
+  } else if (el.tagName === 'INPUT' || el.type === 'checkbox') {
+    // skip inputs
+  } else {
+    _playTick();
+  }
+}, { passive: true });
+
 /* ===== STATE ===== */
-let cart = [];
+let cart = JSON.parse(localStorage.getItem('exg_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
 let currentFilter = 'all';
 let currentSort = 'default';
@@ -7,6 +94,7 @@ let visibleCount = 8;
 let currentLang = 'en';
 let selectedSize = '';
 let selectedColor = '';
+let _modalQty = 1;
 let heroIndex = 0;
 let heroTimer;
 let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
@@ -21,6 +109,10 @@ async function loadPublishedData() {
     if (!r.ok) return;
     const d = await r.json();
     if (!d || !d.published_at) return;
+    // If admin made local edits AFTER the last publish, keep local data
+    const publishedAt = new Date(d.published_at).getTime();
+    const lastEdit = new Date(localStorage.getItem('exg_last_admin_edit') || 0).getTime();
+    if (lastEdit > publishedAt) return;
     const map = {
       'exg_products_custom': d.products_custom,
       'exg_products_added':  d.products_added,
@@ -32,6 +124,7 @@ async function loadPublishedData() {
       'exg_super_pins':      d.super_pins,
       'exg_trend_pins':      d.trend_pins,
       'exg_extra_coupons':   d.coupons,
+      'exg_city_video':      d.city_video,
     };
     Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
   } catch(e) {}
@@ -106,6 +199,7 @@ function setLang(lang) {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
   applyTranslations();
+  _applySocialLinks();
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
@@ -123,7 +217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadPublishedData(); // sync published data before rendering
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery charge, free delivery threshold)
-  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;}catch(e){}
+  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   applyTheme(currentTheme);
   setLang('en');
   updateWishBadge();
@@ -147,6 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyHeroOverrides();
   _applySocialLinks();
   _applyAnnouncement();
+  _loadCityVideo();
 });
 
 /* ===== ADMIN SITE OVERRIDES ===== */
@@ -198,7 +293,12 @@ function _applySocialLinks() {
     if (soc.facebook) document.querySelectorAll('.soc-fb').forEach(a => a.href = soc.facebook);
     if (soc.instagram) document.querySelectorAll('.soc-ig').forEach(a => a.href = soc.instagram);
     if (soc.youtube) document.querySelectorAll('.soc-yt').forEach(a => { a.href = soc.youtube; a.style.display = ''; });
-    if (settings.whatsapp) document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + settings.whatsapp);
+    if (settings.whatsapp) {
+      const waNum = settings.whatsapp;
+      const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const waMsg = encodeURIComponent(T.waMsg || 'Hello, I have a question.');
+      document.querySelectorAll('.soc-wa').forEach(a => a.href = 'https://wa.me/' + waNum + '?text=' + waMsg);
+    }
   } catch(e) {}
 }
 
@@ -212,6 +312,23 @@ function _applyAnnouncement() {
       if (!sessionStorage.getItem('announce_dismissed')) banner.style.display = 'flex';
     }
   } catch(e) {}
+}
+
+function _loadCityVideo() {
+  const url = (localStorage.getItem('exg_city_video') || '').trim();
+  const section = document.getElementById('cityVideoSection');
+  const content = document.getElementById('cityVideoContent');
+  if (!section || !content) return;
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) {
+    content.innerHTML = `<div class="city-video-wrap"><iframe src="https://www.youtube.com/embed/${ytMatch[1]}?rel=0&modestbranding=1" frameborder="0" allow="encrypted-media; fullscreen" allowfullscreen loading="lazy"></iframe></div>`;
+    section.style.display = 'block';
+  } else if (url && (url.includes('cloudinary.com') || url.match(/\.(mp4|webm|mov)(\?|$)/i))) {
+    content.innerHTML = `<div class="city-video-wrap"><video src="${url}" autoplay muted loop playsinline></video></div>`;
+    section.style.display = 'block';
+  } else {
+    section.style.display = 'none';
+  }
 }
 
 /* ===== HERO SLIDER ===== */
@@ -259,7 +376,7 @@ function renderFlashDeals() {
   document.getElementById('flashProducts').innerHTML = items.map(p => `
     <div class="flash-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" />
+        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -279,7 +396,7 @@ function renderSuperDeals() {
   document.getElementById('superDeals').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" />
+        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -299,7 +416,7 @@ function renderTrending() {
   document.getElementById('trendingProducts').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" />
+        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -346,7 +463,7 @@ function productCardHTML(p) {
   return `
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" />
+        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
@@ -358,14 +475,16 @@ function productCardHTML(p) {
         <div class="product-prices">
           <span class="price-current">${fmt(p.price)}</span>
           <span class="price-original">${fmt(p.originalPrice)}</span>
+          ${VAT_RATE > 0 ? `<span class="price-vat-badge">${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
           <span class="product-sold">${p.sold} ${t('soldText')}</span>
         </div>
+        ${p.stock === 0 ? `<div class="stock-badge out">${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low">${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok">${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
-      <button class="add-cart-btn" onclick="event.stopPropagation();quickAddCart(${p.id})">
-        ${t('addToCart')}
+      <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `quickAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
+        ${p.stock === 0 ? t('outOfStock') : t('addToCart')}
       </button>
     </div>
   `;
@@ -464,6 +583,35 @@ function openCart() {
 function closeCart() {
   document.getElementById('cartSidebar').classList.remove('open');
   document.getElementById('cartOverlay').classList.remove('open');
+  // Reset confirmation screen when cart closes
+  setTimeout(() => {
+    const cc = document.getElementById('cartConfirmed');
+    const ci = document.getElementById('cartItems');
+    const cf = document.getElementById('cartFooter');
+    if (cc) cc.style.display = 'none';
+    if (ci) ci.style.display = '';
+    if (cf) { cf.style.display = cart.length ? 'block' : 'none'; }
+  }, 350);
+}
+
+function showOrderConfirm(orderId, totalDisplay) {
+  const cc  = document.getElementById('cartConfirmed');
+  const ci  = document.getElementById('cartItems');
+  const cf  = document.getElementById('cartFooter');
+  const hc  = document.getElementById('cartHeadCount');
+  if (!cc) return;
+  // Fill details
+  document.getElementById('ccOrderId').textContent   = orderId  ? '#' + orderId  : '';
+  document.getElementById('ccOrderTotal').textContent = totalDisplay || '';
+  if (hc) hc.textContent = '';
+  // Apply current language labels
+  applyTranslations();
+  // Swap views
+  if (ci) ci.style.display = 'none';
+  if (cf) cf.style.display = 'none';
+  cc.style.display = 'flex';
+  // Trigger SVG draw animation
+  setTimeout(() => cc.classList.add('animate'), 30);
 }
 function renderCart() {
   const container = document.getElementById('cartItems');
@@ -546,26 +694,73 @@ function renderCart() {
     }
   }
   if (tot) tot.textContent = fmtD(subtotalDisp + deliveryDisp);
+  // VAT row
+  const vatRow = document.getElementById('cartVatRow');
+  const vatEl = document.getElementById('cartVatDisp');
+  const vatLbl = document.getElementById('cartVatLabel');
+  if (vatRow) {
+    if (VAT_RATE > 0) {
+      const vatAmt = subtotalDisp / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (vatEl) vatEl.textContent = fmtD(vatAmt);
+      if (vatLbl) vatLbl.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      vatRow.style.display = '';
+    } else {
+      vatRow.style.display = 'none';
+    }
+  }
+  // Address warning strip
+  let addrWarn = document.getElementById('cartAddrWarn');
+  if (!addrWarn) {
+    addrWarn = document.createElement('div');
+    addrWarn.id = 'cartAddrWarn';
+    addrWarn.className = 'cart-addr-warn';
+    addrWarn.onclick = () => { closeCart(); setTimeout(openLocation, 300); };
+    footer.insertBefore(addrWarn, footer.firstChild);
+  }
+  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
+    addrWarn.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${t('locationRequired') || 'Add delivery address'}`;
+    addrWarn.style.display = 'flex';
+  } else {
+    addrWarn.innerHTML = `<i class="fas fa-location-dot"></i> ${[savedLocation.name, savedLocation.city].filter(Boolean).join(' · ')} <span style="margin-left:auto;font-size:10px;opacity:.6">${t('change')||'Change'}</span>`;
+    addrWarn.style.display = 'flex';
+    addrWarn.style.background = '#e8f5e9';
+    addrWarn.style.color = '#2e7d32';
+    addrWarn.style.borderColor = '#c8e6c9';
+  }
   if (footer) footer.style.display = 'block';
 }
+function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
 function quickAddCart(id) { addToCart(id, '', ''); }
 function addToCart(id, size, color) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (p && p.stock === 0) { showToast('❌ ' + (t('outOfStock') || 'Out of Stock')); return; }
   const existing = cart.find(i => i.id === id);
+  if (p && p.stock !== undefined && existing && existing.qty >= p.stock) {
+    showToast('⚠️ ' + (t('lowStock') || 'Only {n} left!').replace('{n}', p.stock)); return;
+  }
   if (existing) existing.qty++;
   else cart.push({ id, qty: 1, size, color });
+  _saveCart();
   updateCartBadge();
   showToast(t('addedToCart'));
 }
 function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
   if (!item) return;
+  if (delta > 0) {
+    const p = PRODUCTS.find(x => x.id === id);
+    if (p && p.stock !== undefined && item.qty >= p.stock) {
+      showToast('⚠️ ' + (t('lowStock') || 'Only {n} left!').replace('{n}', p.stock)); return;
+    }
+  }
   item.qty += delta;
   if (item.qty <= 0) removeFromCart(id);
-  else renderCart();
+  else { _saveCart(); renderCart(); }
   updateCartBadge();
 }
 function removeFromCart(id) {
   cart = cart.filter(i => i.id !== id);
+  _saveCart();
   renderCart();
   updateCartBadge();
 }
@@ -649,8 +844,8 @@ function renderWishlistPanel() {
             <span class="wish-item-orig">${fmt(p.originalPrice)}</span>
           </div>
           <div class="wish-item-actions">
-            <button class="wish-add-cart" onclick="addToCart(${id},null,null);showToast(t('addedToCart'))">
-              <i class="fas fa-bag-shopping"></i> ${t('addToCart') || 'Add to Cart'}
+            <button class="wish-add-cart${p.stock === 0 ? ' disabled' : ''}" onclick="${p.stock === 0 ? '' : `addToCart(${id},null,null)`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
+              <i class="fas fa-bag-shopping"></i> ${p.stock === 0 ? (t('outOfStock') || 'Out of Stock') : (t('addToCart') || 'Add to Cart')}
             </button>
             <button class="wish-remove-btn" onclick="removeFromWishlist(${id})">
               <i class="fas fa-heart"></i>
@@ -679,6 +874,7 @@ function openModal(id) {
   if (!p) return;
   selectedSize = p.sizes[0] || '';
   selectedColor = p.colors[0] || '';
+  _modalQty = 1;
   const inWish = wishlist.includes(id);
   const shareUrl = location.origin + location.pathname + '?p=' + id;
 
@@ -723,11 +919,19 @@ function openModal(id) {
         <span class="modal-price-current">${fmt(p.price)}</span>
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
+        ${VAT_RATE > 0 ? `<span class="modal-vat-badge"><i class="fas fa-receipt"></i> ${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
       </div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · ${p.sold} ${t('soldText')}</span>
       </div>
+      ${p.stock === 0
+        ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>`
+        : p.stock !== undefined && p.stock <= 5
+          ? `<div class="modal-stock low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>`
+          : p.stock !== undefined
+            ? `<div class="modal-stock ok"><i class="fas fa-check-circle"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>`
+            : ''}
       <div class="modal-divider"></div>
       <p class="modal-section-title">${t('sizeSelect')}</p>
       <div class="size-options">
@@ -738,6 +942,7 @@ function openModal(id) {
         ${p.colors.map((c,i) => `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('')}
       </div>
       <div class="modal-divider"></div>
+      ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
       <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
         <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
@@ -751,11 +956,21 @@ function openModal(id) {
         </button>
       </div>
     </div>
+    ${p.stock !== 0 ? `
+    <div class="modal-qty-row">
+      <span class="modal-qty-label">${t('qtyLabel')||'Quantity'}</span>
+      <div class="modal-qty-ctrl">
+        <button class="mq-btn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
+        <span class="mq-num" id="modalQtyNum">1</span>
+        <button class="mq-btn" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
+      </div>
+      <span class="modal-qty-price" id="modalQtyPrice">${fmt(p.price)}</span>
+    </div>` : ''}
     <div class="modal-actions">
       <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
         <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart" onclick="modalAddCart(${p.id})">${t('addToCart')}</button>
+      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
     </div>
   `;
   history.replaceState({}, '', '?p=' + id);
@@ -824,8 +1039,32 @@ function modalToggleWish(id) {
   toggleWish(id, btn);
   renderProducts(document.getElementById('searchInput')?.value || '');
 }
+function changeModalQty(delta, id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const max = p?.stock !== undefined ? p.stock : 99;
+  _modalQty = Math.max(1, Math.min(_modalQty + delta, max));
+  const numEl = document.getElementById('modalQtyNum');
+  const priceEl = document.getElementById('modalQtyPrice');
+  if (numEl) numEl.textContent = _modalQty;
+  if (priceEl && p) priceEl.textContent = fmt(p.price * _modalQty);
+  if (delta > 0 && p?.stock !== undefined && _modalQty >= p.stock)
+    showToast('⚠️ ' + (t('lowStock')||'Only {n} left!').replace('{n}', p.stock));
+}
+
 function modalAddCart(id) {
-  addToCart(id, selectedSize, selectedColor);
+  const p = PRODUCTS.find(x => x.id === id);
+  if (p && p.stock === 0) { showToast('❌ ' + t('outOfStock')); return; }
+  if (p && p.stock !== undefined && _modalQty > p.stock) {
+    showToast('⚠️ ' + (t('lowStock')||'Only {n} left!').replace('{n}', p.stock)); return;
+  }
+  // Add _modalQty times
+  const existing = cart.find(i => i.id === id);
+  if (existing) existing.qty += _modalQty;
+  else cart.push({ id, qty: _modalQty, size: selectedSize, color: selectedColor });
+  _saveCart();
+  updateCartBadge();
+  showToast(t('addedToCart'));
+  _modalQty = 1;
   closeModal();
 }
 
@@ -928,6 +1167,20 @@ function refreshPaymentSummary() {
   if (freeDelivery) { delivEl.textContent = t('free') || 'Free'; delivEl.style.color = '#0a8f4a'; }
   else { delivEl.textContent = fmtD(deliveryDisp); delivEl.style.color = '#e91e8c'; }
   document.getElementById('payTotal').textContent = fmtD(grandDisp);
+  // VAT row in payment summary
+  const payVatRow = document.getElementById('payVatRow');
+  const payVatEl = document.getElementById('payVat');
+  const payVatLbl = document.getElementById('payVatLabel');
+  if (payVatRow) {
+    if (VAT_RATE > 0) {
+      const vatAmt = discountedSub / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (payVatEl) payVatEl.textContent = fmtD(vatAmt);
+      if (payVatLbl) payVatLbl.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      payVatRow.style.display = 'flex';
+    } else {
+      payVatRow.style.display = 'none';
+    }
+  }
   const btn = document.getElementById('payBtnText');
   if (btn) btn.textContent = (t('placeOrder') || 'Order') + ' — ' + fmtD(grandDisp);
 }
@@ -951,8 +1204,13 @@ function whatsappCheckout() {
   const locText = typeof getLocationText === 'function' ? getLocationText() : '';
   const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}${couponLine}\n\n*${t('totalLabel')} ${fmtD(grandDisp)}*${locText}`;
   if (appliedCoupon) markCouponUsed(appliedCoupon.code);
-  _saveOrderRecord(cart, grandDisp, 'whatsapp');
+  const newOrd = _saveOrderRecord(cart, grandDisp, 'whatsapp');
   window.open(`https://wa.me/${getWANumber()}?text=${encodeURIComponent(msg)}`, '_blank');
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  cart = []; _saveCart(); updateCartBadge();
+  closePayment();
+  openCart();
+  showOrderConfirm(newOrd?.id, (lang.currency || 'SAR ') + Math.round(grandDisp * (lang.rate || 1)).toLocaleString());
 }
 
 /* ===== BOTTOM NAV ===== */
@@ -1000,8 +1258,78 @@ function openMe() {
   document.getElementById('mePanel').classList.add('open');
   document.body.style.overflow = 'hidden';
   refreshMeAddress();
+  renderMyOrders();
   const wc = document.getElementById('meWishCount');
   if (wc) { wc.textContent = wishlist.length > 0 ? wishlist.length : ''; wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none'; }
+}
+
+function renderMyOrders() {
+  const wrap = document.getElementById('meOrdersList');
+  const countEl = document.getElementById('meOrderCount');
+  if (!wrap) return;
+  const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  const orders = currentUser
+    ? allOrders.filter(o => o.customer?.email && o.customer.email === currentUser.email)
+    : allOrders;
+
+  if (countEl) { countEl.textContent = orders.length; countEl.style.display = orders.length ? 'inline-block' : 'none'; }
+
+  if (!orders.length) {
+    wrap.innerHTML = `<div class="mo-empty"><i class="fas fa-bag-shopping"></i><span data-i18n="noOrdersYet">${t('noOrdersYet')||'No orders yet'}</span></div>`;
+    return;
+  }
+
+  const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const statusMap = _T.orderStatus || {};
+  const trackSteps = _T.orderTrack || ['Ordered','Confirmed','Shipped','Delivered'];
+  const statusStep = { pending:0, processing:1, shipped:2, delivered:3, cancelled:-1 };
+  const statusColor = { pending:'#f59e0b', processing:'#3b82f6', shipped:'#8b5cf6', delivered:'#10b981', cancelled:'#ef4444' };
+  const statusIcon  = { pending:'fa-clock', processing:'fa-gear fa-spin', shipped:'fa-truck', delivered:'fa-circle-check', cancelled:'fa-times-circle' };
+
+  wrap.innerHTML = orders.map(o => {
+    const st = o.status || 'pending';
+    const col = statusColor[st] || '#888';
+    const ico = statusIcon[st] || 'fa-clock';
+    const label = statusMap[st] || st;
+    const step = statusStep[st] ?? 0;
+    const cancelled = st === 'cancelled';
+    const date = o.date ? new Date(o.date).toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US', { day:'numeric', month:'short', year:'numeric' }) : '';
+    const items = (o.items || []).slice(0, 4);
+    const extraCount = (o.items || []).length - 4;
+    const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const total = lang.currency + Math.round(o.totalSAR * (lang.rate || 1)).toLocaleString();
+
+    const timeline = cancelled
+      ? `<div class="mo-cancelled-bar"><i class="fas fa-times-circle"></i> ${label}</div>`
+      : `<div class="mo-timeline">${trackSteps.map((s,i) => `
+          <div class="mo-step ${i <= step ? 'done' : ''}">
+            <div class="mo-dot">${i <= step ? '<i class="fas fa-check"></i>' : (i === step+1 ? '<i class="fas fa-circle" style="font-size:6px"></i>' : '')}</div>
+            <div class="mo-step-label">${s}</div>
+          </div>${i < trackSteps.length-1 ? '<div class="mo-line '+(i < step ? 'done' : '')+'"></div>' : ''}`).join('')}
+        </div>`;
+
+    return `<div class="mo-card">
+      <div class="mo-card-top">
+        <div class="mo-id-col">
+          <div class="mo-id">#${o.id}</div>
+          <div class="mo-date">${date}</div>
+        </div>
+        <div class="mo-status-pill" style="background:${col}20;color:${col};border:1px solid ${col}40">
+          <i class="fas ${ico}" style="font-size:10px"></i> ${label}
+        </div>
+      </div>
+      <div class="mo-items-row">
+        ${items.map(i => `<div class="mo-item-thumb" title="${i.name||''}"><img src="${i.image||''}" onerror="this.style.display='none'"/><span class="mo-item-qty">×${i.qty||1}</span></div>`).join('')}
+        ${extraCount > 0 ? `<div class="mo-item-more">+${extraCount}</div>` : ''}
+      </div>
+      <div class="mo-names">${(o.items||[]).map(i=>`${i.name||''}${i.qty>1?' ×'+i.qty:''}`).join(' · ')}</div>
+      ${timeline}
+      <div class="mo-footer">
+        <span class="mo-total-label">${_T.orderTotal||'Total'}</span>
+        <span class="mo-total-val">${total}</span>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 function closeMe() {
@@ -1026,6 +1354,8 @@ function openSettings() {
   const labels = { bn: 'বাংলা', en: 'English', ar: 'العربية' };
   const el = document.getElementById('curLangLabel');
   if (el) el.textContent = labels[currentLang] || labels.en;
+  const st = document.getElementById('soundToggle');
+  if (st) { st.classList.toggle('on', _soundOn); st.setAttribute('aria-checked', _soundOn); }
   document.getElementById('settingsPanel').classList.add('open');
 }
 
@@ -1228,8 +1558,20 @@ function openHelpCenter() {
   document.getElementById('hcPanel').classList.add('open');
   document.getElementById('hcBackdrop').classList.add('open');
   document.getElementById('hcFabIcon').className = 'fas fa-times';
+  const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const wa = document.getElementById('hcWaBtn');
-  if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent('হ্যালো, আমার একটি প্রশ্ন আছে।');
+  if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
+  // Render FAQ in current language
+  const faqWrap = document.getElementById('hcFaq');
+  if (faqWrap && _T.hcFaq) {
+    faqWrap.innerHTML = _T.hcFaq.map(item =>
+      `<div class="hc-faq-item">
+        <button class="hc-faq-q" onclick="toggleFaqItem(this)">${item.q} <i class="fas fa-plus"></i></button>
+        <div class="hc-faq-a">${item.a}</div>
+      </div>`
+    ).join('');
+  }
+  applyTranslations();
 }
 function closeHelpCenter() {
   _hcOpen = false;
@@ -1240,6 +1582,10 @@ function closeHelpCenter() {
 function hcAsk(msg) {
   closeHelpCenter();
   window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+}
+function hcAskKey(key) {
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  hcAsk(T[key] || T.waMsg || 'Hello, I have a question.');
 }
 let _faqOpen = false;
 function toggleFaq() {
@@ -1267,21 +1613,35 @@ function _saveCustomerRecord(user){
 }
 
 function _saveOrderRecord(items,totalSAR,method){
+  let newOrder = null;
   try{
     const orders=JSON.parse(localStorage.getItem('exg_orders')||'[]');
-    orders.unshift({
+    newOrder = {
       id:'ORD'+Date.now(),
       date:new Date().toISOString(),
-      items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,image:p?p.image:''};}).slice(0,20),
+      items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,size:i.size||'',color:i.color||'',image:p?p.image:''};}).slice(0,20),
       totalSAR:Math.round(totalSAR),
       method,
       customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},
       address:typeof savedLocation!=='undefined'?savedLocation:null,
       status:'pending'
-    });
+    };
+    orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
+    // Reduce stock for each ordered item
+    const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
+    items.forEach(i => {
+      const p = PRODUCTS.find(x => x.id === i.id);
+      if (p && p.stock !== undefined) {
+        p.stock = Math.max(0, p.stock - (i.qty || 1));
+        custom[p.id] = custom[p.id] || {};
+        custom[p.id].stock = p.stock;
+      }
+    });
+    localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
+  return newOrder;
 }
 
 function setUser(user) {
@@ -1343,6 +1703,7 @@ let paypalLoaded = false;
 
 let DELIVERY_SAR = 17;
 let FREE_DELIVERY_THRESHOLD_SAR = 100;
+let VAT_RATE = 10; // default 10% — overridden by admin settings
 
 function cartSubtotalBase() {
   return cart.reduce((s, i) => {
@@ -1351,12 +1712,32 @@ function cartSubtotalBase() {
   }, 0);
 }
 
+function _cartStockError() {
+  for (const item of cart) {
+    const p = PRODUCTS.find(x => x.id === item.id);
+    if (!p) continue;
+    if (p.stock === 0) return `"${getName(p)}" — ${t('outOfStock') || 'Out of Stock'}`;
+    if (p.stock !== undefined && item.qty > p.stock)
+      return `"${getName(p)}" — ${(t('lowStock')||'Only {n} left!').replace('{n}', p.stock)}`;
+  }
+  return null;
+}
+
 function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
+  const stockErr = _cartStockError();
+  if (stockErr) { showToast('🚫 ' + stockErr); return; }
   if (!currentUser) {
     closeCart();
     showToast(t('loginToOrder'));
     setTimeout(openAuth, 400);
+    return;
+  }
+  // Block if no delivery address
+  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
+    showToast(t('locationRequired') || '📍 Please add a delivery address');
+    closeCart();
+    setTimeout(openLocation, 400);
     return;
   }
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
@@ -1377,6 +1758,20 @@ function openPayment() {
   }
   document.getElementById('payTotal').textContent = fmtD(grandDisp);
   document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtD(grandDisp);
+  // VAT row in payment summary
+  const payVatRow0 = document.getElementById('payVatRow');
+  const payVatEl0 = document.getElementById('payVat');
+  const payVatLbl0 = document.getElementById('payVatLabel');
+  if (payVatRow0) {
+    if (VAT_RATE > 0) {
+      const vatAmt0 = subtotalDisp / (1 + VAT_RATE / 100) * (VAT_RATE / 100);
+      if (payVatEl0) payVatEl0.textContent = fmtD(vatAmt0);
+      if (payVatLbl0) payVatLbl0.textContent = (t('vatRow') || 'VAT ({r}%)').replace('{r}', VAT_RATE);
+      payVatRow0.style.display = 'flex';
+    } else {
+      payVatRow0.style.display = 'none';
+    }
+  }
   const nudge = document.getElementById('payFreeNudge');
   if (nudge) {
     if (freeDelivery) {
@@ -1479,6 +1874,8 @@ function copyBinanceAddr() {
 }
 
 function processPayment() {
+  const stockErr = _cartStockError();
+  if (stockErr) { showToast('🚫 ' + stockErr); return; }
   if (selectedPayMethod === 'whatsapp') {
     closePayment();
     whatsappCheckout();
@@ -1549,10 +1946,13 @@ function processPayment() {
       const msg = `✅ *Binance Pay — AUTO CONFIRMED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 ${langB.currency}${Math.round(totalSAR)} = *${usdt} USDT*\n🆔 Pay ID: ${BINANCE_PAY_ID}\n🔖 Ref: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
 
       setTimeout(() => {
-        _saveOrderRecord(cart, totalSAR, 'binance');
+        const bOrd = _saveOrderRecord(cart, totalSAR, 'binance');
         window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
-        cart = []; updateCart();
-        setTimeout(closePayment, 3000);
+        const bLang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+        cart = []; _saveCart(); updateCartBadge();
+        closePayment();
+        openCart();
+        showOrderConfirm(bOrd?.id, (bLang.currency||'SAR ')+Math.round(totalSAR*(bLang.rate||1)).toLocaleString());
       }, 1200);
     }, 2800);
   }
@@ -1582,7 +1982,11 @@ function renderPayPalButtons() {
     }),
     onApprove: (data, actions) => actions.order.capture().then(details => {
       showToast(t('paymentSuccess') + (details.payer.name.given_name || '') + '!');
-      cart = []; updateCart(); closePayment();
+      const ppOrd = _saveOrderRecord(cart, cartSubtotalBase(), 'paypal');
+      const ppLang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const ppTotal = (ppLang.currency||'SAR ')+Math.round(cartSubtotalBase()*(ppLang.rate||1)).toLocaleString();
+      cart = []; _saveCart(); updateCartBadge(); closePayment(); openCart();
+      showOrderConfirm(ppOrd?.id, ppTotal);
     }),
     onError: () => showToast(t('paymentFailed'))
   }).render('#paypalBtnContainer');
