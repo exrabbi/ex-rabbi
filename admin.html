@@ -140,6 +140,18 @@
     .order-items-txt{font-size:12px;color:#777;line-height:1.7;margin-bottom:8px}
     .order-detail-row{font-size:12px;color:#666;display:flex;align-items:center;gap:6px;margin-bottom:4px}
     .order-detail-row i{color:#3a3a3a;width:14px}
+    /* Order product cards */
+    .ord-prods{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+    .ord-prod-card{display:flex;align-items:center;gap:10px;background:#1a1a1a;border-radius:10px;padding:8px;border:1px solid #222}
+    .ord-prod-img{width:52px;height:52px;border-radius:8px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ord-prod-img img{width:100%;height:100%;object-fit:cover}
+    .ord-prod-name{font-size:12px;font-weight:600;color:#ccc;line-height:1.4;margin-bottom:3px}
+    .ord-prod-meta{font-size:11px;color:#555}
+    /* Address block */
+    .ord-addr-block{background:#151515;border:1px solid #252525;border-radius:10px;padding:10px 12px;margin-top:4px}
+    .ord-addr-title{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+    .ord-addr-row{font-size:12px;color:#aaa;display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;line-height:1.5}
+    .ord-addr-row i{color:#555;width:14px;flex-shrink:0;margin-top:2px}
 
     /* CUSTOMER LIST */
     .cust-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#111;border-radius:12px;margin-bottom:7px}
@@ -1441,9 +1453,34 @@ function orderRowHTML(o) {
   const STATUS_BADGE = { pending: 'badge-pending', processing: 'badge-processing', shipped: 'badge-shipped', delivered: 'badge-delivered', cancelled: 'badge-cancelled' };
   const status = o.status || 'pending';
   const date = new Date(o.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  const itemNames = (o.items || []).map(i => `${i.name || 'Item'} ×${i.qty || 1}`).join(' · ');
-  const addr = o.address ? [o.address.name, o.address.city, o.address.area].filter(Boolean).join(', ') : '';
+  const items = o.items || [];
   const phone = o.address?.phone || o.customer?.phone || '';
+  const a = o.address || {};
+  const mapLink = (a.lat && a.lng)
+    ? `<a href="https://maps.google.com/?q=${a.lat},${a.lng}" target="_blank" class="adm-btn xs blue" style="text-decoration:none"><i class="fas fa-map"></i> Map</a>`
+    : '';
+
+  // Product thumbnails row
+  const thumbsHtml = items.map(i => `
+    <div class="ord-prod-card">
+      <div class="ord-prod-img">${i.image ? `<img src="${i.image}" onerror="this.style.display='none'"/>` : '<i class="fas fa-box" style="color:#555;font-size:16px"></i>'}</div>
+      <div class="ord-prod-info">
+        <div class="ord-prod-name">${i.name || 'Product'}</div>
+        <div class="ord-prod-meta">×${i.qty || 1} &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
+      </div>
+    </div>`).join('');
+
+  // Address block
+  const hasAddr = a.name || a.city || a.area || a.address;
+  const addrHtml = hasAddr ? `
+    <div class="ord-addr-block">
+      <div class="ord-addr-title"><i class="fas fa-location-dot" style="color:#e91e8c"></i> Delivery Address</div>
+      ${a.name    ? `<div class="ord-addr-row"><i class="fas fa-user"></i>${a.name}</div>` : ''}
+      ${phone     ? `<div class="ord-addr-row"><i class="fas fa-phone"></i>${phone}</div>` : ''}
+      ${a.city    ? `<div class="ord-addr-row"><i class="fas fa-city"></i>${[a.city, a.area].filter(Boolean).join(', ')}</div>` : ''}
+      ${a.address ? `<div class="ord-addr-row"><i class="fas fa-map-pin"></i>${a.address}</div>` : ''}
+      ${mapLink   ? `<div style="margin-top:8px">${mapLink}</div>` : ''}
+    </div>` : `<div class="ord-addr-block" style="color:#e05252"><i class="fas fa-triangle-exclamation"></i> No address provided</div>`;
 
   return `
     <div class="order-item">
@@ -1459,17 +1496,15 @@ function orderRowHTML(o) {
         <i class="fas fa-chevron-down" style="color:#333;font-size:11px;flex-shrink:0"></i>
       </div>
       <div class="order-body" id="obody-${o.id}">
-        <div class="order-items-txt">${itemNames || '—'}</div>
-        ${o.customer?.email ? `<div class="order-detail-row"><i class="fas fa-envelope"></i>${o.customer.email}</div>` : ''}
-        ${phone ? `<div class="order-detail-row"><i class="fas fa-phone"></i>${phone}</div>` : ''}
-        ${addr ? `<div class="order-detail-row"><i class="fas fa-location-dot"></i>${addr}</div>` : ''}
-        ${o.address?.address ? `<div class="order-detail-row"><i class="fas fa-map-marker"></i>${o.address.address}</div>` : ''}
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+        <div class="ord-prods">${thumbsHtml}</div>
+        ${o.customer?.email ? `<div class="order-detail-row" style="margin-bottom:6px"><i class="fas fa-envelope"></i>${o.customer.email}</div>` : ''}
+        ${addrHtml}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
           <button class="adm-btn xs gray" onclick="updateOrderStatus('${o.id}','processing')"><i class="fas fa-spinner"></i> Processing</button>
           <button class="adm-btn xs blue" onclick="updateOrderStatus('${o.id}','shipped')"><i class="fas fa-truck"></i> Shipped</button>
           <button class="adm-btn xs green" onclick="updateOrderStatus('${o.id}','delivered')"><i class="fas fa-check"></i> Delivered</button>
           <button class="adm-btn xs red" onclick="updateOrderStatus('${o.id}','cancelled')"><i class="fas fa-ban"></i> Cancel</button>
-          ${phone ? `<button class="adm-btn xs" onclick="waMessage('${phone}','${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>` : ''}
+          ${phone ? `<button class="adm-btn xs" style="background:linear-gradient(135deg,#25d366,#128c7e)" onclick="waMessage('${phone}','${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>` : ''}
         </div>
       </div>
     </div>`;

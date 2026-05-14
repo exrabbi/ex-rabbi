@@ -693,6 +693,25 @@ function renderCart() {
     }
   }
   if (tot) tot.textContent = fmtD(subtotalDisp + deliveryDisp);
+  // Address warning strip
+  let addrWarn = document.getElementById('cartAddrWarn');
+  if (!addrWarn) {
+    addrWarn = document.createElement('div');
+    addrWarn.id = 'cartAddrWarn';
+    addrWarn.className = 'cart-addr-warn';
+    addrWarn.onclick = () => { closeCart(); setTimeout(openLocation, 300); };
+    footer.insertBefore(addrWarn, footer.firstChild);
+  }
+  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
+    addrWarn.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${t('locationRequired') || 'Add delivery address'}`;
+    addrWarn.style.display = 'flex';
+  } else {
+    addrWarn.innerHTML = `<i class="fas fa-location-dot"></i> ${[savedLocation.name, savedLocation.city].filter(Boolean).join(' · ')} <span style="margin-left:auto;font-size:10px;opacity:.6">${t('change')||'Change'}</span>`;
+    addrWarn.style.display = 'flex';
+    addrWarn.style.background = '#e8f5e9';
+    addrWarn.style.color = '#2e7d32';
+    addrWarn.style.borderColor = '#c8e6c9';
+  }
   if (footer) footer.style.display = 'block';
 }
 function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
@@ -1681,6 +1700,13 @@ function openPayment() {
     closeCart();
     showToast(t('loginToOrder'));
     setTimeout(openAuth, 400);
+    return;
+  }
+  // Block if no delivery address
+  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
+    showToast(t('locationRequired') || '📍 Please add a delivery address');
+    closeCart();
+    setTimeout(openLocation, 400);
     return;
   }
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
