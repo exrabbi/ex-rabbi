@@ -1494,13 +1494,24 @@ function orderRowHTML(o) {
       ${mapLink   ? `<div style="margin-top:8px">${mapLink}</div>` : ''}
     </div>` : `<div class="ord-addr-block" style="color:#e05252"><i class="fas fa-triangle-exclamation"></i> No address provided</div>`;
 
+  // Payment method badge
+  const PAY_META = {
+    whatsapp: { icon: 'fab fa-whatsapp',  label: 'WhatsApp',   color: '#25d366' },
+    paypal:   { icon: 'fab fa-paypal',    label: 'PayPal',     color: '#0070ba' },
+    card:     { icon: 'fas fa-credit-card', label: 'Card',     color: '#7c3aed' },
+    binance:  { icon: 'fas fa-coins',     label: 'Binance Pay', color: '#f0b90b' },
+  };
+  const pm = PAY_META[o.method] || { icon: 'fas fa-money-bill', label: o.method || 'Unknown', color: '#888' };
+  const payBadge = `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:${pm.color}22;color:${pm.color};border:1px solid ${pm.color}44;display:inline-flex;align-items:center;gap:4px"><i class="${pm.icon}"></i>${pm.label}</span>`;
+
   return `
     <div class="order-item">
       <div class="order-head" onclick="toggleOrderBody('${o.id}')">
         <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span style="font-size:13px;font-weight:700;color:#ddd">${o.customer?.name || 'Guest'}</span>
             <span class="badge ${STATUS_BADGE[status] || 'badge-pending'}">${status.toUpperCase()}</span>
+            ${payBadge}
           </div>
           <div style="font-size:10px;color:#444;margin-top:2px;font-family:monospace">${o.id} · ${date}</div>
         </div>
@@ -1517,6 +1528,7 @@ function orderRowHTML(o) {
           <button class="adm-btn xs green" onclick="updateOrderStatus('${o.id}','delivered')"><i class="fas fa-check"></i> Delivered</button>
           <button class="adm-btn xs red" onclick="updateOrderStatus('${o.id}','cancelled')"><i class="fas fa-ban"></i> Cancel</button>
           ${phone ? `<button class="adm-btn xs" style="background:linear-gradient(135deg,#25d366,#128c7e)" onclick="waMessage('${phone}','${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>` : ''}
+          <button class="adm-btn xs" style="background:#1a1a2e;border:1px solid #333;margin-left:auto" onclick="printOrder('${o.id}')"><i class="fas fa-print"></i> Print</button>
         </div>
       </div>
     </div>`;
@@ -1542,6 +1554,114 @@ function waMessage(phone, orderId) {
   const num = phone.replace(/[^0-9]/g, '');
   if (!num) return;
   window.open(`https://wa.me/${num}?text=Hello! Regarding your order ${orderId}`, '_blank');
+}
+
+function printOrder(orderId) {
+  const o = getOrders().find(x => x.id === orderId);
+  if (!o) return;
+  const a = o.address || {};
+  const phone = a.phone || o.customer?.phone || '';
+  const date = new Date(o.date).toLocaleString('en-US', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  const PAY_LABELS = { whatsapp:'WhatsApp', paypal:'PayPal', card:'Card', binance:'Binance Pay' };
+
+  const itemsHtml = (o.items || []).map(i => {
+    const variants = [i.size && `Size: ${i.size}`, i.color && `Color: ${i.color}`].filter(Boolean).join(' · ');
+    return `<tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee">
+        <img src="${i.image||''}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:8px" onerror="this.style.display='none'"/>
+        <span style="font-weight:600">${i.name||'Product'}</span>
+        ${variants ? `<br><span style="font-size:11px;color:#888;padding-left:48px">${variants}</span>` : ''}
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:center;font-weight:700">${i.qty||1}</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right">SAR ${i.price||0}</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:#e91e8c">SAR ${(i.price||0)*(i.qty||1)}</td>
+    </tr>`;
+  }).join('');
+
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html><html><head>
+    <meta charset="utf-8"/>
+    <title>Order ${o.id}</title>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:24px;max-width:680px;margin:auto}
+      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e91e8c}
+      .store-name{font-size:22px;font-weight:900;color:#e91e8c;letter-spacing:1px}
+      .store-sub{font-size:11px;color:#888;margin-top:3px}
+      .order-id{font-size:12px;font-family:monospace;color:#555;margin-bottom:4px}
+      .order-date{font-size:11px;color:#888}
+      .status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-top:4px}
+      .s-pending{background:#fff3cd;color:#b45309}
+      .s-processing{background:#dbeafe;color:#1d4ed8}
+      .s-shipped{background:#ede9fe;color:#7c3aed}
+      .s-delivered{background:#d1fae5;color:#065f46}
+      .s-cancelled{background:#fee2e2;color:#b91c1c}
+      .section{margin-bottom:18px}
+      .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#aaa;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0}
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      thead{background:#f9f9f9}
+      th{padding:8px 6px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#888;border-bottom:2px solid #eee}
+      th:nth-child(2),th:nth-child(3),th:nth-child(4){text-align:center}
+      th:last-child{text-align:right}
+      .totals-row{display:flex;justify-content:flex-end;gap:40px;padding:10px 6px;font-size:13px}
+      .grand-total{font-size:17px;font-weight:900;color:#e91e8c}
+      .addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
+      .addr-item{display:flex;flex-direction:column;gap:2px}
+      .addr-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#aaa;font-weight:700}
+      .addr-val{font-weight:600;color:#222}
+      .pay-row{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0}
+      .footer{margin-top:24px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#bbb;text-align:center}
+      @media print{body{padding:12px}button{display:none}}
+    </style>
+  </head><body>
+    <div class="print-header">
+      <div>
+        <div class="store-name">EX GLOBAL</div>
+        <div class="store-sub">exrabbi.github.io/ex-rabbi</div>
+      </div>
+      <div style="text-align:right">
+        <div class="order-id">${o.id}</div>
+        <div class="order-date">${date}</div>
+        <span class="status-badge s-${o.status||'pending'}">${o.status||'pending'}</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Order Items</div>
+      <table>
+        <thead><tr>
+          <th>Product</th><th style="text-align:center">Qty</th>
+          <th style="text-align:center">Price</th><th style="text-align:right">Total</th>
+        </tr></thead>
+        <tbody>${itemsHtml}</tbody>
+      </table>
+      <div class="totals-row">
+        <span>Total: <span class="grand-total">SAR ${o.totalSAR||0}</span></span>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Payment Method</div>
+      <div class="pay-row">${PAY_LABELS[o.method]||o.method||'—'}</div>
+    </div>
+
+    ${a.name || a.city ? `
+    <div class="section">
+      <div class="section-title">Delivery Address</div>
+      <div class="addr-grid">
+        ${a.name    ? `<div class="addr-item"><div class="addr-label">Name</div><div class="addr-val">${a.name}</div></div>` : ''}
+        ${phone     ? `<div class="addr-item"><div class="addr-label">Phone</div><div class="addr-val">${phone}</div></div>` : ''}
+        ${o.customer?.email ? `<div class="addr-item"><div class="addr-label">Email</div><div class="addr-val">${o.customer.email}</div></div>` : ''}
+        ${a.city    ? `<div class="addr-item"><div class="addr-label">City / Area</div><div class="addr-val">${[a.city,a.area].filter(Boolean).join(', ')}</div></div>` : ''}
+        ${a.address ? `<div class="addr-item" style="grid-column:1/-1"><div class="addr-label">Address</div><div class="addr-val">${a.address}</div></div>` : ''}
+      </div>
+    </div>` : ''}
+
+    <div class="footer">Printed from EX GLOBAL Admin · ${new Date().toLocaleString()}</div>
+    <br>
+    <button onclick="window.print()" style="padding:10px 24px;background:#e91e8c;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
+  </body></html>`);
+  win.document.close();
 }
 
 /* ===== CUSTOMERS ===== */
