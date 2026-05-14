@@ -1303,10 +1303,19 @@ function renderMyOrders() {
   const wrap = document.getElementById('meOrdersList');
   const countEl = document.getElementById('meOrderCount');
   if (!wrap) return;
+
+  // Not logged in → show login prompt, never show orders
+  if (!currentUser) {
+    if (countEl) { countEl.style.display = 'none'; }
+    wrap.innerHTML = `<div class="mo-empty" onclick="openAuth()" style="cursor:pointer">
+      <i class="fas fa-lock" style="color:#e91e8c"></i>
+      <span style="color:#e91e8c;font-weight:700">${t('loginToOrder')||'Login to view orders'}</span>
+    </div>`;
+    return;
+  }
+
   const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
-  const orders = currentUser
-    ? allOrders.filter(o => o.customer?.email && o.customer.email === currentUser.email)
-    : allOrders;
+  const orders = allOrders.filter(o => o.customer?.email && o.customer.email === currentUser.email);
 
   if (countEl) { countEl.textContent = orders.length; countEl.style.display = orders.length ? 'inline-block' : 'none'; }
 
