@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v4';
+const CACHE = 'exglobal-v7';
 const STATIC = [
   '/ex-rabbi/styles.css',
   '/ex-rabbi/script.js',
@@ -6,7 +6,6 @@ const STATIC = [
   '/ex-rabbi/products.js',
   '/ex-rabbi/favicon.svg',
   '/ex-rabbi/logo.svg',
-  '/ex-rabbi/logo.png',
 ];
 
 self.addEventListener('install', e => {
@@ -28,21 +27,24 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
-
-  // HTML pages: always network-first so updates are instant
+  // Network-first for HTML so updates are always served fresh
   if (url.pathname.endsWith('.html') || url.pathname.endsWith('/')) {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
+      fetch(e.request)
+        .then(res => { const c = res.clone(); caches.open(CACHE).then(cache => cache.put(e.request, c)); return res; })
+        .catch(() => caches.match(e.request))
     );
     return;
   }
-
-  // Static assets: cache-first
+  // Cache-first for static assets (CSS/JS/images)
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).then(res => {
-      const clone = res.clone();
-      caches.open(CACHE).then(c => c.put(e.request, clone));
-      return res;
-    }).catch(() => caches.match('/ex-rabbi/')))
+    caches.match(e.request).then(cached => {
+      if (cached) return cached;
+      return fetch(e.request).then(res => {
+        const c = res.clone();
+        caches.open(CACHE).then(cache => cache.put(e.request, c));
+        return res;
+      });
+    })
   );
 });
