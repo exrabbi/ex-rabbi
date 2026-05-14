@@ -85,7 +85,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=36" />
+  <link rel="stylesheet" href="styles.css?v=37" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -223,67 +223,121 @@
       </div>
     </div>
 
-    <!-- CATEGORY CIRCLES -->
-    <section class="section">
-      <h2 class="section-title" data-i18n="categories">ক্যাটাগরি</h2>
-      <div class="cat-circles">
-        <div class="cat-circle" onclick="filterCategory('women')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+    <!-- CATEGORY ARCH -->
+    <section class="cat-arch-section">
+      <div class="cat-arch-heading">
+        <span class="cat-arch-line"></span>
+        <h2 class="cat-arch-title" data-i18n="categories">ক্যাটাগরি</h2>
+        <span class="cat-arch-line"></span>
+      </div>
+      <div class="cat-arch-grid">
+        <div class="cat-arch-card" onclick="filterCategory('women')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catWomen">মহিলা</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('men')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('men')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1488161628813-04466f872be2?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catMen">পুরুষ</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('kids')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('kids')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catKids">শিশু</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('beauty')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('beauty')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catBeauty">বিউটি</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('shoes')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('shoes')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catShoes">জুতা</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('bags')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('bags')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catBags">ব্যাগ</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('jewelry')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('jewelry')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catJewelry">গহনা</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('home')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('home')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catHome">হোম</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('electronics')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('electronics')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
-          <span data-i18n="catElectronics">ইলেক্ট্রনিক্স</span>
+          <span data-i18n="catElectronics">ইলেকট্রনিক্স</span>
         </div>
-        <div class="cat-circle" onclick="filterCategory('sports')">
-          <div class="circle-img">
-            <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=80&h=80&fit=crop&q=80" alt="" loading="lazy" />
+        <div class="cat-arch-card" onclick="filterCategory('sports')">
+          <div class="cat-arch-wrap">
+            <div class="cat-arch-gem"></div>
+            <div class="cat-arch-frame">
+              <div class="cat-arch-inner">
+                <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=200&h=220&fit=crop&q=85" alt="" loading="lazy" />
+              </div>
+            </div>
           </div>
           <span data-i18n="catSports">স্পোর্টস</span>
         </div>
@@ -1373,8 +1427,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=36"></script>
-  <script src="products.js?v=36"></script>
-  <script src="script.js?v=36"></script>
+  <script src="translations.js?v=37"></script>
+  <script src="products.js?v=37"></script>
+  <script src="script.js?v=37"></script>
 </body>
 </html>

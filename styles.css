@@ -3178,3 +3178,164 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .ai-chat-input-row { background: #1a1a1a; border-color: #333; }
 [data-theme="dark"] .ai-chat-input { background: #2a2a2a; border-color: #444; color: #eee; }
 [data-theme="dark"] .ai-chat-input:focus { border-color: #667eea; }
+
+/* ===== ARCH CATEGORIES ===== */
+.cat-arch-section {
+  background: linear-gradient(180deg, #fdf6ec 0%, #fef9f3 60%, #fff 100%);
+  padding: 20px 0 28px;
+  position: relative;
+  overflow: hidden;
+}
+.cat-arch-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent 0%, #d4a055 30%, #f0d080 50%, #d4a055 70%, transparent 100%);
+}
+.cat-arch-section::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, #e8c070 40%, #d4a055 50%, #e8c070 60%, transparent 100%);
+}
+
+/* Heading row */
+.cat-arch-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 0 16px 14px;
+}
+.cat-arch-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #7c4a1e;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.cat-arch-line {
+  flex: 1;
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent, #c9904a, transparent);
+  max-width: 80px;
+}
+
+/* Scrollable grid */
+.cat-arch-grid {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 16px 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cat-arch-grid::-webkit-scrollbar { display: none; }
+
+/* Each card */
+.cat-arch-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1);
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-arch-card:active { transform: scale(.93); }
+
+/* Wrap holds gem + frame */
+.cat-arch-wrap {
+  position: relative;
+}
+
+/* Golden gem at top */
+.cat-arch-gem {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ffe066, #c9a030, #8b6010);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(180,120,20,.45);
+  z-index: 3;
+}
+.cat-arch-gem::after {
+  content: '';
+  position: absolute;
+  top: 2px; left: 3px;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.7);
+}
+
+/* Arch outer frame (gradient border) */
+.cat-arch-frame {
+  width: 82px;
+  height: 100px;
+  border-radius: 41px 41px 10px 10px;
+  background: linear-gradient(160deg, #f0c060 0%, #c98030 40%, #e8b050 70%, #a06020 100%);
+  padding: 2.5px;
+  box-shadow:
+    0 6px 20px rgba(180,100,20,.28),
+    0 2px 6px rgba(0,0,0,.12),
+    inset 0 1px 2px rgba(255,220,100,.4);
+  position: relative;
+  z-index: 1;
+}
+
+/* Arch inner (image container) */
+.cat-arch-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 38.5px 38.5px 8px 8px;
+  overflow: hidden;
+  background: #f5e8d8;
+}
+.cat-arch-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .4s ease;
+}
+.cat-arch-card:hover .cat-arch-inner img { transform: scale(1.08); }
+
+/* Label */
+.cat-arch-card span {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6b3a10;
+  text-align: center;
+  letter-spacing: .4px;
+  line-height: 1.2;
+}
+
+/* Active state — highlight */
+.cat-arch-card.active-cat .cat-arch-frame {
+  background: linear-gradient(160deg, #ff9a3c 0%, #e8691e 40%, #ff9a3c 70%, #c85010 100%);
+  box-shadow: 0 6px 24px rgba(220,80,20,.5), 0 2px 6px rgba(0,0,0,.15);
+}
+.cat-arch-card.active-cat span { color: #c85010; }
+
+/* Hover lift */
+@media(hover: hover) {
+  .cat-arch-card:hover { transform: translateY(-5px); }
+}
+
+/* Dark mode */
+[data-theme="dark"] .cat-arch-section {
+  background: linear-gradient(180deg, #1c1208 0%, #181410 60%, #1a1a1a 100%);
+}
+[data-theme="dark"] .cat-arch-title { color: #e0a050; }
+[data-theme="dark"] .cat-arch-card span { color: #d4956a; }
+[data-theme="dark"] .cat-arch-section::before {
+  background: linear-gradient(90deg, transparent 0%, #8b5e20 30%, #c09040 50%, #8b5e20 70%, transparent 100%);
+}
