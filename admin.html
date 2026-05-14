@@ -1531,6 +1531,7 @@ function orderRowHTML(o) {
             <span style="font-size:13px;font-weight:700;color:#ddd">${o.customer?.name || 'Guest'}</span>
             <span class="badge ${STATUS_BADGE[status] || 'badge-pending'}">${status.toUpperCase()}</span>
             ${payBadge}
+            ${o.deliveryConfirmed ? `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(16,185,129,.15);color:#34d399;border:1px solid rgba(16,185,129,.3);display:inline-flex;align-items:center;gap:4px"><i class="fas fa-circle-check"></i> Customer Confirmed</span>` : ''}
           </div>
           <div style="font-size:10px;color:#444;margin-top:2px;font-family:monospace">${o.id} · ${date}</div>
         </div>

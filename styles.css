@@ -1186,6 +1186,26 @@ img { max-width: 100%; display: block; }
 .mo-total-label { font-size: 12px; color: #888; font-weight: 600; }
 .mo-total-val { font-size: 15px; font-weight: 900; color: #111; }
 
+.mo-confirm-btn {
+  width: calc(100% - 28px); margin: 0 14px 14px;
+  padding: 13px 16px; border: none; border-radius: 12px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 14px rgba(16,185,129,.35);
+  transition: transform .15s, box-shadow .15s;
+}
+.mo-confirm-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(16,185,129,.25); }
+.mo-confirmed-badge {
+  width: calc(100% - 28px); margin: 0 14px 14px;
+  padding: 11px 16px; border-radius: 12px;
+  background: #f0fdf4; border: 1.5px solid #86efac;
+  color: #059669; font-size: 13px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+[data-theme="dark"] .mo-confirm-btn { box-shadow: 0 4px 14px rgba(16,185,129,.2); }
+[data-theme="dark"] .mo-confirmed-badge { background: rgba(16,185,129,.08); border-color: rgba(16,185,129,.3); color: #34d399; }
+
 /* ---- Account menu list ---- */
 .me-list-block {}
 .me-list-item {
