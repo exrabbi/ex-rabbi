@@ -1258,6 +1258,16 @@ function openHelpCenter() {
   const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const wa = document.getElementById('hcWaBtn');
   if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
+  // Render FAQ in current language
+  const faqWrap = document.getElementById('hcFaq');
+  if (faqWrap && _T.hcFaq) {
+    faqWrap.innerHTML = _T.hcFaq.map(item =>
+      `<div class="hc-faq-item">
+        <button class="hc-faq-q" onclick="toggleFaqItem(this)">${item.q} <i class="fas fa-plus"></i></button>
+        <div class="hc-faq-a">${item.a}</div>
+      </div>`
+    ).join('');
+  }
   applyTranslations();
 }
 function closeHelpCenter() {
