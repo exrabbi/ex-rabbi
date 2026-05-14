@@ -1,3 +1,90 @@
+/* ===== SOUND SYSTEM ===== */
+let _soundOn = localStorage.getItem('exg_sound') !== 'off';
+let _audioCtx = null;
+
+function _getAudioCtx() {
+  if (!_audioCtx || _audioCtx.state === 'closed') {
+    _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (_audioCtx.state === 'suspended') _audioCtx.resume();
+  return _audioCtx;
+}
+
+function _playTick(type) {
+  if (!_soundOn) return;
+  try {
+    const ctx = _getAudioCtx();
+    const gain = ctx.createGain();
+    gain.connect(ctx.destination);
+
+    if (type === 'cart') {
+      // Two-note chime for Add to Cart
+      [880, 1320].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        osc.connect(gain);
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.07);
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.07, ctx.currentTime + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.18);
+        osc.start(ctx.currentTime + i * 0.07);
+        osc.stop(ctx.currentTime + i * 0.07 + 0.15);
+      });
+    } else if (type === 'toggle') {
+      // Softer low tick for toggles
+      const osc = ctx.createOscillator();
+      osc.connect(gain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(280, ctx.currentTime + 0.06);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    } else {
+      // Default: short elegant tap
+      const osc = ctx.createOscillator();
+      osc.connect(gain);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(880, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(540, ctx.currentTime + 0.055);
+      gain.gain.setValueAtTime(0.055, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.07);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.08);
+    }
+  } catch(e) {}
+}
+
+function toggleSound(el) {
+  _soundOn = !_soundOn;
+  localStorage.setItem('exg_sound', _soundOn ? 'on' : 'off');
+  if (el) {
+    el.classList.toggle('on', _soundOn);
+    el.setAttribute('aria-checked', _soundOn);
+  }
+  if (_soundOn) _playTick();
+}
+
+// Global click sound listener
+document.addEventListener('click', e => {
+  const el = e.target.closest(
+    'button, a, .product-card, .filter-btn, .sort-btn, .lang-btn, .size-opt, .color-opt, ' +
+    '.wish-btn, .hc-fab, .me-list-item, .me-block-header, .settings-item, ' +
+    '.tab-btn, .nav-btn, .bot-nav-btn, .hc-faq-q, .modal-thumb, .me-edit-pill, ' +
+    '.flash-card, [onclick]'
+  );
+  if (!el) return;
+  // Choose sound type
+  if (el.classList.contains('add-cart-btn') || el.classList.contains('btn-add-cart') || el.classList.contains('wish-add-cart')) {
+    _playTick('cart');
+  } else if (el.tagName === 'INPUT' || el.type === 'checkbox') {
+    // skip inputs
+  } else {
+    _playTick();
+  }
+}, { passive: true });
+
 /* ===== STATE ===== */
 let cart = JSON.parse(localStorage.getItem('exg_cart') || '[]');
 let wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
@@ -1184,6 +1271,8 @@ function openSettings() {
   const labels = { bn: 'বাংলা', en: 'English', ar: 'العربية' };
   const el = document.getElementById('curLangLabel');
   if (el) el.textContent = labels[currentLang] || labels.en;
+  const st = document.getElementById('soundToggle');
+  if (st) { st.classList.toggle('on', _soundOn); st.setAttribute('aria-checked', _soundOn); }
   document.getElementById('settingsPanel').classList.add('open');
 }
 

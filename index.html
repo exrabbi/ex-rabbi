@@ -961,6 +961,11 @@
           <span data-i18n="notifications">নোটিফিকেশন</span>
           <i class="fas fa-chevron-right"></i>
         </div>
+        <div class="settings-item" onclick="toggleSound(document.getElementById('soundToggle'))">
+          <i class="fas fa-volume-high" style="color:#e91e8c"></i>
+          <span data-i18n="soundFeedback">বাটন সাউন্ড</span>
+          <button id="soundToggle" class="snd-toggle on" role="switch" aria-checked="true" onclick="event.stopPropagation();toggleSound(this)"></button>
+        </div>
         <div class="settings-item">
           <i class="fas fa-sliders-h"></i>
           <span data-i18n="preferences">পছন্দ</span>
