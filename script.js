@@ -834,9 +834,10 @@ function _playCartSound() {
       const phrases = {
         bn: 'আপনার প্রোডাক্টটি এড হয়েছে',
         en: 'Your product has been added to cart',
-        ar: 'تمت إضافة منتجك إلى السلة بنجاح'
+        ar: 'تمت إضافة منتجك إلى السلة بنجاح',
+        hi: 'आपका उत्पाद कार्ट में जोड़ा गया'
       };
-      const langMap = { bn: 'bn', en: 'en-US', ar: 'ar' };
+      const langMap = { bn: 'bn', en: 'en-US', ar: 'ar', hi: 'hi-IN' };
       const text = phrases[currentLang] || phrases.en;
       const targetLang = langMap[currentLang] || 'en-US';
 
