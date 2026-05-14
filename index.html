@@ -153,11 +153,12 @@
     <ul class="drawer-menu">
       <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
       <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
-      <li><a href="#" onclick="closeDrawer();return false;"><i class="fas fa-heart"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openWishlist,200);return false;"><i class="fas fa-heart" style="color:#e91e8c"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span> <span id="drawerWishCount" style="background:#e91e8c;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;display:none"></span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;"><i class="fas fa-tag" style="color:#8b2be2"></i> <span data-i18n="coupon">কুপন</span></a></li>
       <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
-      <li><a href="#"><i class="fas fa-tag"></i> <span data-i18n="coupon">কুপন</span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;"><i class="fas fa-gear" style="color:#64748b"></i> <span data-i18n="settings">সেটিংস</span></a></li>
       <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
-      <li><a href="#" onclick="closeDrawer();openSettings();return false;"><i class="fas fa-info-circle"></i> <span data-i18n="about">আমাদের সম্পর্কে</span></a></li>
+      <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">সাইন আউট</span></a></li>
       <li style="border-top:1px solid rgba(128,128,128,.15);margin-top:6px;padding-top:6px"><a href="store2.html"><i class="fas fa-store" style="color:#00c4b4"></i> EX STYLE Store</a></li>
       <li><a href="store3.html"><i class="fas fa-gem" style="color:#c9a227"></i> EX LUXE Store</a></li>
     </ul>
@@ -911,32 +912,6 @@
         <span id="meOrderCount" style="font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e91e8c,#8b2be2);padding:2px 9px;border-radius:20px;display:none"></span>
       </div>
       <div id="meOrdersList"></div>
-    </div>
-
-    <!-- Account Menu -->
-    <div class="me-card-block me-list-block">
-      <div class="me-list-item" onclick="closeMe();setTimeout(openWishlist,200)">
-        <div class="me-list-icon pink"><i class="fas fa-heart"></i></div>
-        <span data-i18n="wishlistMenu">Wishlist</span>
-        <span class="me-list-badge" id="meWishCount"></span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
-      </div>
-      <div class="me-list-item" onclick="openCouponPanel()">
-        <div class="me-list-icon purple"><i class="fas fa-tag"></i></div>
-        <span data-i18n="coupon">Coupon</span>
-        <span class="me-list-badge" id="meCouponBadge" style="display:none;background:#0a8f4a">1</span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
-      </div>
-      <div class="me-list-item" onclick="openSettings()">
-        <div class="me-list-icon gray"><i class="fas fa-gear"></i></div>
-        <span data-i18n="settings">Settings</span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
-      </div>
-      <div class="me-list-item" id="meSignOutItem" style="display:none" onclick="signOut()">
-        <div class="me-list-icon red"><i class="fas fa-right-from-bracket"></i></div>
-        <span data-i18n="signOut">Sign Out</span>
-        <i class="fas fa-chevron-right me-chev-r"></i>
-      </div>
     </div>
 
     <!-- Follow Us -->

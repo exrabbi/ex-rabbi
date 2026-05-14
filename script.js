@@ -787,6 +787,12 @@ function updateWishBadge() {
     badge.textContent = wishlist.length;
     badge.style.display = wishlist.length ? 'flex' : 'none';
   }
+  // Also update drawer wishlist count
+  const dwb = document.getElementById('drawerWishCount');
+  if (dwb) {
+    dwb.textContent = wishlist.length;
+    dwb.style.display = wishlist.length ? 'inline-block' : 'none';
+  }
 }
 
 function toggleWish(id, btn) {
@@ -1290,8 +1296,7 @@ function openMe() {
   document.body.style.overflow = 'hidden';
   refreshMeAddress();
   renderMyOrders();
-  const wc = document.getElementById('meWishCount');
-  if (wc) { wc.textContent = wishlist.length > 0 ? wishlist.length : ''; wc.style.display = wishlist.length > 0 ? 'inline-block' : 'none'; }
+  updateWishBadge();
 }
 
 function renderMyOrders() {
@@ -1717,11 +1722,13 @@ function updateAuthUI() {
   const guestEl = document.getElementById('meGuestState');
   const userEl  = document.getElementById('meUserState');
   const signOutItem = document.getElementById('meSignOutItem');
+  const drawerSignOut = document.getElementById('drawerSignOutItem');
   if (!guestEl || !userEl) return;
   if (currentUser) {
     guestEl.style.display = 'none';
     userEl.style.display  = 'flex';
     if (signOutItem) signOutItem.style.display = 'flex';
+    if (drawerSignOut) drawerSignOut.style.display = 'block';
     const nameEl  = document.getElementById('meUserName');
     const emailEl = document.getElementById('meUserEmail');
     if (nameEl)  nameEl.textContent  = currentUser.name  || '';
@@ -1743,6 +1750,7 @@ function updateAuthUI() {
     guestEl.style.display = 'flex';
     userEl.style.display  = 'none';
     if (signOutItem) signOutItem.style.display = 'none';
+    if (drawerSignOut) drawerSignOut.style.display = 'none';
   }
 }
 
