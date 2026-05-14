@@ -3152,15 +3152,22 @@ html, body { transition: background .35s, color .35s; }
 .ai-chat-fab {
   position: fixed;
   bottom: 80px; right: 16px;
-  width: 54px; height: 54px;
+  width: 54px; height: 62px;
   background: linear-gradient(135deg, #667eea, #764ba2);
-  border: none; border-radius: 50%;
-  color: #fff; font-size: 22px;
+  border: none; border-radius: 28px;
+  color: #fff; font-size: 20px;
   cursor: pointer;
   box-shadow: 0 4px 16px rgba(102,126,234,.5);
   z-index: 2900;
-  display: flex; align-items: center; justify-content: center;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
   transition: transform .2s, box-shadow .2s;
+}
+.ai-chat-fab::before {
+  content: 'AI';
+  font-size: 12px; font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  line-height: 1;
 }
 .ai-chat-fab:hover { transform: scale(1.1); box-shadow: 0 6px 22px rgba(102,126,234,.6); }
 .ai-chat-fab-badge {
