@@ -543,16 +543,25 @@ function setupEvents() {
     }
   });
   document.getElementById('searchInput').addEventListener('input', e => {
+    const q = e.target.value.trim();
     visibleCount = 8;
-    renderProducts(e.target.value.trim());
-    if (e.target.value.trim()) {
-      document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
-    }
+    renderProducts(q);
+    showSearchDropdown(q);
+  });
+  document.getElementById('searchInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') { closeSearchDropdown(); doAiSearch(document.getElementById('searchInput').value.trim()); }
+    if (e.key === 'Escape') closeSearchDropdown();
   });
   document.getElementById('searchSubmit').addEventListener('click', () => {
+    const q = document.getElementById('searchInput').value.trim();
+    closeSearchDropdown();
     visibleCount = 8;
-    renderProducts(document.getElementById('searchInput').value.trim());
+    renderProducts(q);
+    doAiSearch(q);
     document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#searchBar')) closeSearchDropdown();
   });
 
   document.getElementById('menuBtn').addEventListener('click', openDrawer);
@@ -2469,6 +2478,107 @@ function markHelpful(btn) {
     }
   });
 })();
+
+/* ===== AI SEARCH ===== */
+let _aiSearchTimer = null;
+
+function showSearchDropdown(q) {
+  const box = document.getElementById('searchDropdown');
+  if (!box) return;
+  if (!q || q.length < 2) { box.innerHTML = ''; box.classList.remove('open'); return; }
+
+  // Instant local results
+  const s = q.toLowerCase();
+  const localMatches = PRODUCTS.filter(p =>
+    getName(p).toLowerCase().includes(s) ||
+    p.category.includes(s) ||
+    (p.description || '').toLowerCase().includes(s)
+  ).slice(0, 6);
+
+  if (localMatches.length > 0) {
+    _renderDropdown(box, localMatches, false);
+  } else {
+    box.innerHTML = `<div class="sdrop-ai-loading"><span class="sdrop-spinner"></span> AI খুঁজছে...</div>`;
+    box.classList.add('open');
+  }
+
+  // Debounced AI search for better results
+  clearTimeout(_aiSearchTimer);
+  _aiSearchTimer = setTimeout(() => _runAiSearch(q, box, localMatches.length === 0), 700);
+}
+
+function _renderDropdown(box, products, isAi) {
+  if (!products.length) {
+    box.innerHTML = `<div class="sdrop-empty"><i class="fas fa-search"></i> কোনো পণ্য পাওয়া যায়নি</div>`;
+    box.classList.add('open');
+    return;
+  }
+  const badge = isAi ? '<span class="sdrop-ai-badge">AI</span>' : '';
+  box.innerHTML = `
+    <div class="sdrop-header">${badge} ${isAi ? 'AI সাজেশন' : 'পণ্য পাওয়া গেছে'} (${products.length})</div>
+    ${products.map(p => `
+      <div class="sdrop-item" onclick="closeSearchDropdown();openModal(${p.id})">
+        <img src="${p.image}" class="sdrop-img" loading="lazy" />
+        <div class="sdrop-info">
+          <div class="sdrop-name">${getName(p)}</div>
+          <div class="sdrop-price">${fmtD(p.price)}</div>
+        </div>
+        <i class="fas fa-chevron-right sdrop-arrow"></i>
+      </div>
+    `).join('')}
+  `;
+  box.classList.add('open');
+}
+
+async function _runAiSearch(q, box, noLocal) {
+  const workerUrl = getAiWorkerUrl();
+  if (!workerUrl || !noLocal) return;
+  try {
+    const productList = PRODUCTS.slice(0, 30).map(p => `id:${p.id} name:"${getName(p)}" cat:${p.category}`).join(', ');
+    const resp = await fetch(workerUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        messages: [{
+          role: 'user',
+          content: `Customer searched: "${q}". Available products: [${productList}]. Reply ONLY with a comma-separated list of up to 5 matching product IDs (numbers only). If nothing matches, reply "none".`
+        }]
+      })
+    });
+    const data = await resp.json();
+    const reply = data?.content?.[0]?.text || 'none';
+    if (reply.trim().toLowerCase() === 'none') {
+      box.innerHTML = `<div class="sdrop-empty"><i class="fas fa-robot"></i> "${q}" নামে কোনো পণ্য নেই</div>`;
+      return;
+    }
+    const ids = reply.match(/\d+/g)?.map(Number) || [];
+    const aiProducts = ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 5);
+    if (aiProducts.length) _renderDropdown(box, aiProducts, true);
+  } catch(e) {
+    if (noLocal) box.innerHTML = `<div class="sdrop-empty"><i class="fas fa-search"></i> কোনো পণ্য পাওয়া যায়নি</div>`;
+  }
+}
+
+async function doAiSearch(q) {
+  if (!q) return;
+  const workerUrl = getAiWorkerUrl();
+  if (!workerUrl) return;
+  const s = q.toLowerCase();
+  const localMatches = PRODUCTS.filter(p =>
+    getName(p).toLowerCase().includes(s) || p.category.includes(s)
+  );
+  if (localMatches.length > 0) return; // local results are enough
+  // Show AI thinking in products grid
+  const grid = document.getElementById('productsGrid');
+  if (grid) grid.innerHTML = `<div class="no-results"><i class="fas fa-robot fa-spin"></i><p>AI খুঁজছে...</p></div>`;
+  const box = document.getElementById('searchDropdown');
+  await _runAiSearch(q, box || document.createElement('div'), true);
+}
+
+function closeSearchDropdown() {
+  const box = document.getElementById('searchDropdown');
+  if (box) { box.classList.remove('open'); box.innerHTML = ''; }
+}
 
 /* ===== AI CHATBOT ===== */
 let aiChatHistory = [];
