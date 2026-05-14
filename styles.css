@@ -760,16 +760,15 @@ img { max-width: 100%; display: block; }
 .hc-fab {
   position: fixed; right: 14px; bottom: 80px; z-index: 200;
   background: linear-gradient(135deg, #e91e8c, #9c27b0);
-  color: #fff; border: none; border-radius: 28px;
-  display: flex; align-items: center; gap: 7px;
-  padding: 11px 16px; cursor: pointer;
+  color: #fff; border: none; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  width: 52px; height: 52px; cursor: pointer;
   box-shadow: 0 4px 18px rgba(233,30,140,.45);
-  font-size: 13px; font-weight: 700;
   transition: transform .2s, box-shadow .2s;
 }
 .hc-fab:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(233,30,140,.6); }
-.hc-fab i { font-size: 18px; }
-.hc-fab-label { font-size: 12px; font-weight: 700; letter-spacing: .3px; }
+.hc-fab i { font-size: 22px; }
+.hc-fab-label { display: none; }
 .hc-fab-dot {
   position: absolute; top: 6px; right: 6px;
   width: 9px; height: 9px; border-radius: 50%;
