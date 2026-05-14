@@ -193,11 +193,12 @@ img { max-width: 100%; display: block; }
   margin-left: auto; font-size: 10px; opacity: .75; font-weight: 400;
 }
 .city-video-wrap {
-  position: relative; padding-bottom: 56.25%; height: 0;
+  position: relative; padding-bottom: 38%; height: 0;
 }
-.city-video-wrap iframe {
+.city-video-wrap iframe,
+.city-video-wrap video {
   position: absolute; top: 0; left: 0;
-  width: 100%; height: 100%; border: none;
+  width: 100%; height: 100%; border: none; object-fit: cover;
 }
 
 /* ===== INFO BAR ===== */
