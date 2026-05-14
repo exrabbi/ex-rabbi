@@ -6,7 +6,7 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v31</title>
+  <title>EX GLOBAL — Admin Panel v32</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -45,10 +45,47 @@
     .adm-btn.xs{padding:4px 9px;font-size:10px}
     .adm-btn.gray{background:#222;color:#888;border:1px solid rgba(255,255,255,.08)}
     .adm-btn.red{background:rgba(229,57,53,.18);color:#ef5350;border:1px solid rgba(229,57,53,.2)}
+    .adm-btn.red.locked-del{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);cursor:not-allowed}
     .adm-btn.green{background:rgba(5,150,105,.18);color:#34d399;border:1px solid rgba(5,150,105,.2)}
     .adm-btn.blue{background:rgba(33,150,243,.18);color:#64b5f6;border:1px solid rgba(33,150,243,.2)}
     .adm-btn.orange{background:rgba(255,152,0,.18);color:#ffb300;border:1px solid rgba(255,152,0,.2)}
     .logout-btn{background:rgba(255,255,255,.06);color:#888;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11px}
+
+    /* SIZE SELECTOR */
+    .size-selector{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+    .size-chip{padding:6px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:#111;color:#888;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none}
+    .size-chip.on{border-color:#e91e8c;background:rgba(233,30,140,.15);color:#e91e8c}
+
+    /* COLOR SELECTOR */
+    .color-selector{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .color-chip{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;user-select:none}
+    .color-chip-circle{width:30px;height:30px;border-radius:50%;border:2.5px solid rgba(255,255,255,.12);position:relative;transition:transform .15s}
+    .color-chip.on .color-chip-circle{border-color:#e91e8c;transform:scale(1.15)}
+    .color-chip.on .color-chip-circle::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
+    .color-chip-label{font-size:9px;color:#666;font-weight:600;text-transform:uppercase}
+    .color-chip.on .color-chip-label{color:#e91e8c}
+    .color-add-row{display:flex;gap:6px;align-items:center;margin-top:6px}
+    .color-hex-input{width:90px;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
+    .color-hex-input:focus{border-color:#e91e8c}
+    .color-name-input{flex:1;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
+    .color-name-input:focus{border-color:#e91e8c}
+
+    /* DESCRIPTION */
+    .desc-editor{width:100%;min-height:100px;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;resize:vertical;line-height:1.6;transition:border .2s;font-family:inherit}
+    .desc-editor:focus{border-color:#e91e8c}
+    .desc-editor::placeholder{color:#3a3a3a}
+
+    /* IMAGE EDITOR */
+    .img-editor-wrap{position:relative;width:100%;padding-bottom:90%;overflow:hidden;border-radius:14px;background:#0a0a0a;border:2px dashed #2a2a2a;cursor:grab;touch-action:none;user-select:none}
+    .img-editor-wrap.has-img{border-style:solid;border-color:#333}
+    .img-editor-wrap:active{cursor:grabbing}
+    .img-editor-wrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:object-position .1s}
+    .img-editor-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+    .img-editor-hint{background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:5px 10px;border-radius:20px;backdrop-filter:blur(4px);opacity:1;transition:opacity .4s}
+    .img-editor-hint.hidden{opacity:0}
+    .img-editor-toolbar{display:flex;align-items:center;gap:8px;margin-top:7px}
+    .img-zoom-slider{flex:1;accent-color:#e91e8c;height:4px;cursor:pointer}
+    .img-zoom-val{font-size:11px;color:#888;min-width:34px;text-align:right;font-weight:700}
 
     /* INPUTS */
     .adm-input{width:100%;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;transition:border .2s}
@@ -103,6 +140,22 @@
     .order-items-txt{font-size:12px;color:#777;line-height:1.7;margin-bottom:8px}
     .order-detail-row{font-size:12px;color:#666;display:flex;align-items:center;gap:6px;margin-bottom:4px}
     .order-detail-row i{color:#3a3a3a;width:14px}
+    /* Order product cards */
+    .ord-prods{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+    .ord-prod-card{display:flex;align-items:center;gap:10px;background:#1a1a1a;border-radius:10px;padding:8px;border:1px solid #222}
+    .ord-prod-img{width:52px;height:52px;border-radius:8px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ord-prod-img img{width:100%;height:100%;object-fit:cover}
+    .ord-prod-name{font-size:12px;font-weight:600;color:#ccc;line-height:1.4;margin-bottom:3px}
+    .ord-prod-meta{font-size:11px;color:#555}
+    .ord-prod-qty{font-size:11px;color:#888;margin-bottom:4px}
+    .ord-prod-qty b{color:#a78bfa}
+    .ord-variants{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+    .ord-variant-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:#252525;color:#aaa;border:1px solid #333;display:flex;align-items:center;gap:3px}
+    /* Address block */
+    .ord-addr-block{background:#151515;border:1px solid #252525;border-radius:10px;padding:10px 12px;margin-top:4px}
+    .ord-addr-title{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+    .ord-addr-row{font-size:12px;color:#aaa;display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;line-height:1.5}
+    .ord-addr-row i{color:#555;width:14px;flex-shrink:0;margin-top:2px}
 
     /* CUSTOMER LIST */
     .cust-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#111;border-radius:12px;margin-bottom:7px}
@@ -444,6 +497,14 @@
           <input type="text" id="setWhatsApp" class="adm-input" placeholder="966546224029"/>
         </div>
         <div class="setting-row">
+          <div class="setting-label">🇸🇦 City Video</div>
+          <div class="setting-desc">হোম পেজে hero-র নিচে সৌদি আরব শহরের ভিডিও। YouTube লিংক পেস্ট করুন অথবা ফোন থেকে আপলোড করুন।</div>
+          <input type="url" id="setCityVideo" class="adm-input" placeholder="YouTube লিংক বা Cloudinary ভিডিও URL" style="margin-bottom:7px"/>
+          <button class="adm-btn" id="cityVideoUploadBtn" onclick="pickCityVideo()" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7)">
+            <i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড করুন
+          </button>
+        </div>
+        <div class="setting-row">
           <div class="setting-label">Site Announcement</div>
           <div class="setting-desc">Banner text at the top of the store (leave empty to hide)</div>
           <input type="text" id="setAnnouncement" class="adm-input" placeholder="e.g. 🎉 Free shipping today only!"/>
@@ -461,6 +522,22 @@
                 <div class="setting-desc">Free delivery above this cart value</div>
                 <input type="number" id="setFreeDelivery" class="adm-input" placeholder="100"/>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VAT Settings -->
+        <div class="setting-row" style="border:1px solid #1a2e1a;border-radius:10px;padding:12px;background:#0a140a;margin-top:6px">
+          <div class="setting-label" style="color:#86efac"><i class="fas fa-receipt" style="color:#10b981"></i> VAT / ভ্যাট সেটিংস</div>
+          <div class="setting-desc" style="margin-bottom:10px">Print করা invoice-এ VAT দেখাবে। ফাঁকা রাখলে VAT দেখাবে না।</div>
+          <div class="form-grid" style="gap:10px">
+            <div>
+              <div class="setting-label">VAT Registration ID</div>
+              <input type="text" id="setVatId" class="adm-input" placeholder="e.g. 310122393500003"/>
+            </div>
+            <div>
+              <div class="setting-label">VAT Rate (%)</div>
+              <input type="number" id="setVatRate" class="adm-input" placeholder="15" min="0" max="100" step="0.1"/>
             </div>
           </div>
         </div>
@@ -498,6 +575,9 @@
             <div style="color:#555;margin-top:5px">💡 Token সেভ হলে উপরের সবুজ <strong>Publish</strong> বাটন দিয়ে যেকোনো সময় পাবলিশ করুন</div>
           </div>
           <input type="password" id="setGithubToken" class="adm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px"/>
+          <button class="adm-btn" id="testTokenBtn" onclick="testGithubToken()" style="margin-top:7px;background:#1d4ed8;width:100%;justify-content:center">
+            <i class="fas fa-flask"></i> Token পরীক্ষা করুন
+          </button>
           <div id="publishStatus" style="margin-top:8px;font-size:11px;color:#666"></div>
         </div>
 
@@ -567,7 +647,20 @@
     </div>
     <input type="hidden" id="pEditId"/>
 
-    <div class="img-preview-box" id="imgPreviewBox"><img id="imgPreviewEl" src="" alt="preview"/></div>
+    <!-- Interactive image editor -->
+    <div class="img-editor-wrap" id="imgEditorWrap">
+      <img id="imgPreviewEl" src="" alt="preview"/>
+      <div class="img-editor-overlay"><div class="img-editor-hint" id="imgEditorHint">📸 ছবি drag করুন • pinch করে zoom করুন</div></div>
+    </div>
+    <div class="img-editor-toolbar" id="imgEditorToolbar" style="display:none">
+      <button class="adm-btn xs gray" onclick="imgZoomAdj(-0.1)" title="Zoom out"><i class="fas fa-minus"></i></button>
+      <input type="range" class="img-zoom-slider" id="imgZoomSlider" min="1" max="3" step="0.05" value="1" oninput="imgZoomSlide(this.value)"/>
+      <button class="adm-btn xs gray" onclick="imgZoomAdj(0.1)" title="Zoom in"><i class="fas fa-plus"></i></button>
+      <span class="img-zoom-val" id="imgZoomVal">1×</span>
+      <button class="adm-btn xs gray" onclick="imgResetFocus()" title="Reset"><i class="fas fa-undo"></i></button>
+    </div>
+    <!-- Hidden legacy element for compatibility -->
+    <div id="imgPreviewBox" style="display:none"></div>
 
     <div style="display:flex;flex-direction:column;gap:11px">
       <!-- MAIN IMAGE -->
@@ -676,15 +769,42 @@
         </div>
       </div>
 
-      <div class="form-grid">
-        <div class="field-wrap">
-          <div class="field-label">Sizes (comma separated)</div>
-          <input type="text" id="pSizes" class="adm-input" placeholder="S, M, L, XL, XXL"/>
+      <!-- SIZE VISUAL SELECTOR -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📐 Size সিলেক্ট করুন</div>
+        <div class="size-selector" id="sizeSelectorWrap"></div>
+      </div>
+      <input type="hidden" id="pSizes"/>
+
+      <!-- COLOR VISUAL SELECTOR -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">🎨 Color সিলেক্ট করুন</div>
+        <div class="color-selector" id="colorSelectorWrap"></div>
+        <div class="color-add-row">
+          <input type="color" id="customColorHex" class="color-hex-input" value="#e91e8c" style="padding:2px;height:34px;cursor:pointer"/>
+          <input type="text" id="customColorName" class="color-name-input" placeholder="Custom রঙের নাম (e.g. Sky Blue)"/>
+          <button class="adm-btn sm" onclick="addCustomColor()"><i class="fas fa-plus"></i> Add</button>
         </div>
-        <div class="field-wrap">
-          <div class="field-label">Colors (hex codes)</div>
-          <input type="text" id="pColors" class="adm-input" placeholder="#e91e8c, #000000, #ffffff"/>
+      </div>
+      <input type="hidden" id="pColors"/>
+
+      <!-- DESCRIPTION -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📝 Description (পণ্যের বিবরণ)</div>
+        <textarea id="pDesc" class="desc-editor" placeholder="পণ্যের বিস্তারিত বিবরণ লিখুন — material, features, shipping info..."></textarea>
+      </div>
+
+      <!-- STOCK -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📦 Stock (কতটি পণ্য আছে)</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="pStock" class="adm-input" placeholder="0 = স্টক শেষ, ফাঁকা = সীমাহীন" min="0" style="flex:1"/>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="adm-btn sm gray" onclick="document.getElementById('pStock').value=''">∞ Unlimited</button>
+            <button class="adm-btn sm gray" onclick="document.getElementById('pStock').value='0'">০ শেষ</button>
+          </div>
         </div>
+        <div style="font-size:11px;color:#555;margin-top:4px">ফাঁকা রাখলে স্টক দেখাবে না · 0 দিলে "স্টক শেষ" দেখাবে · সংখ্যা দিলে কত আছে দেখাবে</div>
       </div>
 
       <div class="form-grid g3">
@@ -839,23 +959,27 @@ function renderProductList() {
   });
   const base = location.href.replace(/admin\.html.*$/, '');
   document.getElementById('prodList').innerHTML = list.length
-    ? list.map(p => `
+    ? list.map(p => {
+        const locked = isProductLocked(p.id);
+        return `
       <div class="prod-item">
         <img class="prod-thumb" src="${p.image || ''}" onerror="this.style.opacity='.2'" loading="lazy"/>
         <div class="prod-info">
-          <div class="prod-name">${p.names?.en || p.nameEn || p.name || '—'}</div>
+          <div class="prod-name">${p.names?.en || p.nameEn || p.name || '—'}${locked ? ' <i class="fas fa-lock" title="'+locked+'" style="color:#f59e0b;font-size:11px;margin-left:4px"></i>' : ''}</div>
           <div class="prod-meta">ID ${p.id} &nbsp;
             <span class="pill pill-cat">${p.category || ''}</span>
             ${p.tag ? `<span class="pill pill-tag">${p.tag}</span>` : ''}
+            ${p.stock === 0 ? `<span class="pill" style="background:#3f0808;color:#fca5a5">স্টক শেষ</span>` : p.stock !== undefined ? `<span class="pill" style="background:#1a2e1a;color:#86efac">${p.stock} pcs</span>` : ''}
+            ${locked ? `<span class="pill" style="background:#78350f;color:#fde68a">${locked}</span>` : ''}
           </div>
         </div>
         <span class="prod-price">SAR ${p.price}</span>
         <div class="prod-actions">
           <button class="adm-btn xs blue" onclick="openProductForm(${p.id})" title="Edit"><i class="fas fa-pen"></i></button>
-          <button class="adm-btn xs red" onclick="deleteProduct(${p.id})" title="Delete"><i class="fas fa-trash"></i></button>
+          <button class="adm-btn xs red${locked ? ' locked-del' : ''}" onclick="deleteProduct(${p.id})" title="${locked || 'Delete'}">${locked ? '<i class="fas fa-lock"></i>' : '<i class="fas fa-trash"></i>'}</button>
         </div>
       </div>
-    `).join('')
+    `}).join('')
     : emptyState('fa-box-open', 'No products found');
 }
 
@@ -883,20 +1007,26 @@ function openProductForm(id) {
     document.getElementById('pDiscount').value = p.discount || '';
     document.getElementById('pCategory').value = p.category || 'women';
     document.getElementById('pTag').value = p.tag || '';
-    document.getElementById('pSizes').value = (p.sizes || []).join(', ');
-    document.getElementById('pColors').value = (p.colors || []).join(', ');
     document.getElementById('pRating').value = p.rating || '';
     document.getElementById('pRatingCount').value = p.ratingCount || '';
     document.getElementById('pSold').value = p.sold || '';
+    document.getElementById('pStock').value = p.stock !== undefined ? p.stock : '';
+    document.getElementById('pDesc').value = p.description || '';
+    initSizeSelector(p.sizes || []);
+    initColorSelector(p.colors || []);
     previewImg(p.image || '');
+    setImgFocus(p.imgFocus || {x:50,y:50,scale:1});
   } else {
     document.getElementById('pEditId').value = '';
-    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pSizes','pColors','pRating','pRatingCount','pSold'].forEach(id => {
+    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pRating','pRatingCount','pSold','pStock','pDesc'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
     document.getElementById('pCategory').value = 'women';
     document.getElementById('pTag').value = '';
+    initSizeSelector([]);
+    initColorSelector([]);
+    imgResetFocus();
     clearExtraImgs();
   }
   document.getElementById('prodModalOverlay').classList.add('open');
@@ -907,15 +1037,127 @@ function closeProdModal() {
   document.body.style.overflow = '';
 }
 function previewImg(url) {
-  const box = document.getElementById('imgPreviewBox');
+  const wrap = document.getElementById('imgEditorWrap');
+  const toolbar = document.getElementById('imgEditorToolbar');
   const img = document.getElementById('imgPreviewEl');
-  if (url && url.startsWith('http')) {
+  if (url && (url.startsWith('http') || url.startsWith('data:'))) {
     img.src = url;
-    box.classList.add('show');
+    wrap.classList.add('has-img');
+    if (toolbar) toolbar.style.display = 'flex';
+    setTimeout(() => {
+      const hint = document.getElementById('imgEditorHint');
+      if (hint) hint.classList.add('hidden');
+    }, 2500);
   } else {
-    box.classList.remove('show');
+    wrap.classList.remove('has-img');
+    if (toolbar) toolbar.style.display = 'none';
   }
 }
+
+/* ===== IMAGE FOCUS (DRAG + ZOOM) ===== */
+let _ifX = 50, _ifY = 50, _ifScale = 1;
+let _ifDrag = false, _ifLastX = 0, _ifLastY = 0;
+let _ifPinchDist = 0;
+
+function _applyFocus() {
+  const img = document.getElementById('imgPreviewEl');
+  if (!img) return;
+  img.style.objectPosition = _ifX + '% ' + _ifY + '%';
+  img.style.transform = 'scale(' + _ifScale + ')';
+  img.style.transformOrigin = _ifX + '% ' + _ifY + '%';
+  const sl = document.getElementById('imgZoomSlider');
+  if (sl) sl.value = _ifScale;
+  const vl = document.getElementById('imgZoomVal');
+  if (vl) vl.textContent = _ifScale.toFixed(1) + '×';
+}
+
+function imgZoomAdj(delta) {
+  _ifScale = Math.max(1, Math.min(3, _ifScale + delta));
+  _applyFocus();
+}
+function imgZoomSlide(v) {
+  _ifScale = parseFloat(v);
+  _applyFocus();
+}
+function imgResetFocus() {
+  _ifX = 50; _ifY = 50; _ifScale = 1;
+  _applyFocus();
+  const sl = document.getElementById('imgZoomSlider');
+  if (sl) sl.value = 1;
+}
+function getImgFocus() { return { x: _ifX, y: _ifY, scale: _ifScale }; }
+function setImgFocus(f) {
+  _ifX = f?.x ?? 50; _ifY = f?.y ?? 50; _ifScale = f?.scale ?? 1;
+  _applyFocus();
+  const sl = document.getElementById('imgZoomSlider');
+  if (sl) sl.value = _ifScale;
+}
+
+// Touch drag
+document.addEventListener('DOMContentLoaded', function() {
+  const wrap = document.getElementById('imgEditorWrap');
+  if (!wrap) return;
+
+  function pinchDist(t) { return Math.hypot(t[0].clientX-t[1].clientX, t[0].clientY-t[1].clientY); }
+
+  wrap.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      _ifDrag = true;
+      _ifLastX = e.touches[0].clientX;
+      _ifLastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      _ifPinchDist = pinchDist(e.touches);
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  wrap.addEventListener('touchmove', e => {
+    if (!document.getElementById('imgEditorWrap').classList.contains('has-img')) return;
+    if (e.touches.length === 1 && _ifDrag) {
+      const dx = e.touches[0].clientX - _ifLastX;
+      const dy = e.touches[0].clientY - _ifLastY;
+      _ifLastX = e.touches[0].clientX;
+      _ifLastY = e.touches[0].clientY;
+      const sens = 0.18 / _ifScale;
+      _ifX = Math.max(0, Math.min(100, _ifX - dx * sens));
+      _ifY = Math.max(0, Math.min(100, _ifY - dy * sens));
+      _applyFocus();
+    } else if (e.touches.length === 2) {
+      const d = pinchDist(e.touches);
+      const ratio = d / _ifPinchDist;
+      _ifPinchDist = d;
+      _ifScale = Math.max(1, Math.min(3, _ifScale * ratio));
+      _applyFocus();
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  wrap.addEventListener('touchend', () => { _ifDrag = false; });
+
+  // Mouse drag (desktop)
+  wrap.addEventListener('mousedown', e => {
+    _ifDrag = true; _ifLastX = e.clientX; _ifLastY = e.clientY;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', e => {
+    if (!_ifDrag) return;
+    const dx = e.clientX - _ifLastX, dy = e.clientY - _ifLastY;
+    _ifLastX = e.clientX; _ifLastY = e.clientY;
+    const sens = 0.18 / _ifScale;
+    _ifX = Math.max(0, Math.min(100, _ifX - dx * sens));
+    _ifY = Math.max(0, Math.min(100, _ifY - dy * sens));
+    _applyFocus();
+  });
+  document.addEventListener('mouseup', () => { _ifDrag = false; });
+
+  // Scroll wheel zoom on editor
+  wrap.addEventListener('wheel', e => {
+    if (!wrap.classList.contains('has-img')) return;
+    _ifScale = Math.max(1, Math.min(3, _ifScale - e.deltaY * 0.002));
+    _applyFocus();
+    e.preventDefault();
+  }, { passive: false });
+});
 /* ===== EXTRA IMAGES (GALLERY) ===== */
 let _extraImgSeq = 0;
 
@@ -1011,6 +1253,91 @@ function autoCalcDiscount() {
     document.getElementById('pDiscount').value = Math.round((1 - sale / orig) * 100);
   }
 }
+/* ===== SIZE & COLOR SELECTORS ===== */
+const PRESET_SIZES = ['XS','S','M','L','XL','XXL','XXXL','Free Size'];
+const PRESET_COLORS = [
+  {name:'Black',   hex:'#111111'},
+  {name:'White',   hex:'#f5f5f5'},
+  {name:'Red',     hex:'#e53935'},
+  {name:'Blue',    hex:'#1e88e5'},
+  {name:'Navy',    hex:'#1a237e'},
+  {name:'Green',   hex:'#43a047'},
+  {name:'Gold',    hex:'#ffc107'},
+  {name:'Gray',    hex:'#757575'},
+  {name:'Pink',    hex:'#e91e8c'},
+  {name:'Purple',  hex:'#7b1fa2'},
+  {name:'Orange',  hex:'#f57c00'},
+  {name:'Beige',   hex:'#d7c4a0'},
+  {name:'Brown',   hex:'#6d4c41'},
+  {name:'Yellow',  hex:'#fdd835'},
+];
+
+let _selSizes = [];
+let _selColors = []; // array of {name, hex}
+let _extraColors = []; // custom colors added by user
+
+function initSizeSelector(saved) {
+  _selSizes = [...saved];
+  renderSizeSelector();
+}
+function toggleSize(s) {
+  if (_selSizes.includes(s)) _selSizes = _selSizes.filter(x => x !== s);
+  else _selSizes.push(s);
+  renderSizeSelector();
+}
+function renderSizeSelector() {
+  const wrap = document.getElementById('sizeSelectorWrap');
+  if (!wrap) return;
+  wrap.innerHTML = PRESET_SIZES.map(s =>
+    `<div class="size-chip${_selSizes.includes(s)?' on':''}" onclick="toggleSize('${s}')">${s}</div>`
+  ).join('');
+}
+function getSelectedSizes() { return [..._selSizes]; }
+
+function initColorSelector(savedHexes) {
+  _selColors = [];
+  savedHexes.forEach(h => {
+    const preset = PRESET_COLORS.find(c => c.hex.toLowerCase() === h.toLowerCase());
+    if (preset) _selColors.push({...preset});
+    else _selColors.push({name: h, hex: h});
+  });
+  _extraColors = _selColors.filter(c => !PRESET_COLORS.find(p => p.hex.toLowerCase() === c.hex.toLowerCase()));
+  renderColorSelector();
+}
+function toggleColor(hex) {
+  const idx = _selColors.findIndex(c => c.hex.toLowerCase() === hex.toLowerCase());
+  if (idx !== -1) _selColors.splice(idx, 1);
+  else {
+    const preset = PRESET_COLORS.find(c => c.hex.toLowerCase() === hex.toLowerCase());
+    if (preset) _selColors.push({...preset});
+  }
+  renderColorSelector();
+}
+function addCustomColor() {
+  const hex = document.getElementById('customColorHex').value;
+  const name = document.getElementById('customColorName').value.trim() || hex;
+  if (!_selColors.find(c => c.hex.toLowerCase() === hex.toLowerCase())) {
+    _selColors.push({name, hex});
+    _extraColors.push({name, hex});
+  }
+  document.getElementById('customColorName').value = '';
+  renderColorSelector();
+}
+function renderColorSelector() {
+  const wrap = document.getElementById('colorSelectorWrap');
+  if (!wrap) return;
+  const allColors = [...PRESET_COLORS, ..._extraColors.filter(e => !PRESET_COLORS.find(p => p.hex === e.hex))];
+  wrap.innerHTML = allColors.map(c => {
+    const on = _selColors.find(s => s.hex.toLowerCase() === c.hex.toLowerCase());
+    const textColor = ['#f5f5f5','#fdd835','#ffc107','#d7c4a0'].includes(c.hex) ? '#333' : '#fff';
+    return `<div class="color-chip${on?' on':''}" onclick="toggleColor('${c.hex}')" title="${c.name}">
+      <div class="color-chip-circle" style="background:${c.hex}"></div>
+      <div class="color-chip-label">${c.name}</div>
+    </div>`;
+  }).join('');
+}
+function getSelectedColors() { return _selColors.map(c => c.hex); }
+
 function saveProduct() {
   const nameEn = document.getElementById('pNameEn').value.trim();
   const price = parseFloat(document.getElementById('pPrice').value);
@@ -1031,8 +1358,11 @@ function saveProduct() {
     discount: parseInt(document.getElementById('pDiscount').value) || 0,
     category: document.getElementById('pCategory').value,
     tag: document.getElementById('pTag').value,
-    sizes: document.getElementById('pSizes').value.split(',').map(s => s.trim()).filter(Boolean),
-    colors: document.getElementById('pColors').value.split(',').map(s => s.trim()).filter(Boolean),
+    sizes: getSelectedSizes(),
+    colors: getSelectedColors(),
+    description: document.getElementById('pDesc').value.trim(),
+    imgFocus: getImgFocus(),
+    stock: document.getElementById('pStock').value !== '' ? parseInt(document.getElementById('pStock').value) : undefined,
     rating: parseFloat(document.getElementById('pRating').value) || 4.5,
     ratingCount: parseInt(document.getElementById('pRatingCount').value) || 0,
     sold: document.getElementById('pSold').value.trim() || '0',
@@ -1054,13 +1384,48 @@ function saveProduct() {
     localStorage.setItem('exg_products_added', JSON.stringify(added));
     toast('✅ Product added! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
   }
+  _markAdminEdit();
   closeProdModal();
   renderProductList();
+}
+
+function isProductLocked(id) {
+  const cartItems = JSON.parse(localStorage.getItem('exg_cart') || '[]');
+  if (cartItems.some(i => i.id === id)) return 'In Cart';
+  const wishItems = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
+  if (wishItems.includes(id)) return 'In Wishlist';
+  const activeOrders = getOrders().filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+  if (activeOrders.some(o => o.items && o.items.some(i => i.id === id))) return 'In Order';
+  return null;
 }
 
 function deleteProduct(id) {
   const p = PRODUCTS.find(x => x.id === id);
   const name = p ? (p.names?.en || p.nameEn || 'this product') : 'this product';
+
+  // Block if product is in customer's cart
+  const cartItems = JSON.parse(localStorage.getItem('exg_cart') || '[]');
+  if (cartItems.some(i => i.id === id)) {
+    toast('🚫 এই পণ্যটি Cart-এ আছে — কাস্টমার Cart থেকে সরালে তারপর Delete করা যাবে');
+    return;
+  }
+
+  // Block if product is in customer's wishlist
+  const wishItems = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
+  if (wishItems.includes(id)) {
+    toast('🚫 এই পণ্যটি কারো Wishlist-এ আছে — Wishlist থেকে সরালে তারপর Delete করা যাবে');
+    return;
+  }
+
+  // Block if product is in any active (non-delivered, non-cancelled) order
+  const activeOrders = getOrders().filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+  const blockedByOrder = activeOrders.find(o => o.items && o.items.some(i => i.id === id));
+  if (blockedByOrder) {
+    const custName = blockedByOrder.customer?.name || 'Guest';
+    toast(`🚫 এই পণ্যটি "${custName}"-এর Active Order-এ আছে — Order Deliver/Cancel করলে তারপর Delete করা যাবে`);
+    return;
+  }
+
   if (!confirm(`Delete "${name}"?`)) return;
   const deleted = JSON.parse(localStorage.getItem('exg_products_deleted') || '[]');
   if (!deleted.includes(id)) deleted.push(id);
@@ -1070,6 +1435,7 @@ function deleteProduct(id) {
   // Remove from added list too
   const added = JSON.parse(localStorage.getItem('exg_products_added') || '[]');
   localStorage.setItem('exg_products_added', JSON.stringify(added.filter(x => x.id !== id)));
+  _markAdminEdit();
   renderProductList();
   toast('🗑️ Deleted: ' + name);
 }
@@ -1107,17 +1473,64 @@ function orderRowHTML(o) {
   const STATUS_BADGE = { pending: 'badge-pending', processing: 'badge-processing', shipped: 'badge-shipped', delivered: 'badge-delivered', cancelled: 'badge-cancelled' };
   const status = o.status || 'pending';
   const date = new Date(o.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-  const itemNames = (o.items || []).map(i => `${i.name || 'Item'} ×${i.qty || 1}`).join(' · ');
-  const addr = o.address ? [o.address.name, o.address.city, o.address.area].filter(Boolean).join(', ') : '';
+  const items = o.items || [];
   const phone = o.address?.phone || o.customer?.phone || '';
+  const a = o.address || {};
+  const mapQuery = (a.lat && a.lng)
+    ? `${a.lat},${a.lng}`
+    : encodeURIComponent([a.address, a.area, a.city, 'Saudi Arabia'].filter(Boolean).join(', '));
+  const mapLink = (a.lat || a.city || a.address)
+    ? `<a href="https://maps.google.com/?q=${mapQuery}" target="_blank" class="adm-btn xs blue" style="text-decoration:none"><i class="fas fa-map-location-dot"></i> Map</a>`
+    : '';
+
+  // Product thumbnails row
+  const thumbsHtml = items.map(i => {
+    const colorDot = i.color ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${i.color};border:1px solid rgba(255,255,255,.2);vertical-align:middle;margin-right:3px"></span>` : '';
+    const variants = [
+      i.size  ? `<span class="ord-variant-tag">📐 ${i.size}</span>`  : '',
+      i.color ? `<span class="ord-variant-tag">${colorDot}${i.color}</span>` : '',
+    ].filter(Boolean).join('');
+    return `
+    <div class="ord-prod-card">
+      <div class="ord-prod-img">${i.image ? `<img src="${i.image}" onerror="this.style.display='none'"/>` : '<i class="fas fa-box" style="color:#555;font-size:16px"></i>'}</div>
+      <div class="ord-prod-info">
+        <div class="ord-prod-name">${i.name || 'Product'}</div>
+        <div class="ord-prod-qty"><i class="fas fa-layer-group" style="font-size:9px;color:#7c3aed"></i> <b>${i.qty || 1} পিস</b> &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
+        ${variants ? `<div class="ord-variants">${variants}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  // Address block
+  const hasAddr = a.name || a.city || a.area || a.address;
+  const addrHtml = hasAddr ? `
+    <div class="ord-addr-block">
+      <div class="ord-addr-title"><i class="fas fa-location-dot" style="color:#e91e8c"></i> Delivery Address</div>
+      ${a.name    ? `<div class="ord-addr-row"><i class="fas fa-user"></i>${a.name}</div>` : ''}
+      ${phone     ? `<div class="ord-addr-row"><i class="fas fa-phone"></i>${phone}</div>` : ''}
+      ${a.city    ? `<div class="ord-addr-row"><i class="fas fa-city"></i>${[a.city, a.area].filter(Boolean).join(', ')}</div>` : ''}
+      ${a.address ? `<div class="ord-addr-row"><i class="fas fa-map-pin"></i>${a.address}</div>` : ''}
+      ${mapLink   ? `<div style="margin-top:8px">${mapLink}</div>` : ''}
+    </div>` : `<div class="ord-addr-block" style="color:#e05252"><i class="fas fa-triangle-exclamation"></i> No address provided</div>`;
+
+  // Payment method badge
+  const PAY_META = {
+    whatsapp: { icon: 'fab fa-whatsapp',  label: 'WhatsApp',   color: '#25d366' },
+    paypal:   { icon: 'fab fa-paypal',    label: 'PayPal',     color: '#0070ba' },
+    card:     { icon: 'fas fa-credit-card', label: 'Card',     color: '#7c3aed' },
+    binance:  { icon: 'fas fa-coins',     label: 'Binance Pay', color: '#f0b90b' },
+  };
+  const pm = PAY_META[o.method] || { icon: 'fas fa-money-bill', label: o.method || 'Unknown', color: '#888' };
+  const payBadge = `<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:${pm.color}22;color:${pm.color};border:1px solid ${pm.color}44;display:inline-flex;align-items:center;gap:4px"><i class="${pm.icon}"></i>${pm.label}</span>`;
 
   return `
     <div class="order-item">
       <div class="order-head" onclick="toggleOrderBody('${o.id}')">
         <div style="flex:1;min-width:0">
-          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
             <span style="font-size:13px;font-weight:700;color:#ddd">${o.customer?.name || 'Guest'}</span>
             <span class="badge ${STATUS_BADGE[status] || 'badge-pending'}">${status.toUpperCase()}</span>
+            ${payBadge}
           </div>
           <div style="font-size:10px;color:#444;margin-top:2px;font-family:monospace">${o.id} · ${date}</div>
         </div>
@@ -1125,17 +1538,16 @@ function orderRowHTML(o) {
         <i class="fas fa-chevron-down" style="color:#333;font-size:11px;flex-shrink:0"></i>
       </div>
       <div class="order-body" id="obody-${o.id}">
-        <div class="order-items-txt">${itemNames || '—'}</div>
-        ${o.customer?.email ? `<div class="order-detail-row"><i class="fas fa-envelope"></i>${o.customer.email}</div>` : ''}
-        ${phone ? `<div class="order-detail-row"><i class="fas fa-phone"></i>${phone}</div>` : ''}
-        ${addr ? `<div class="order-detail-row"><i class="fas fa-location-dot"></i>${addr}</div>` : ''}
-        ${o.address?.address ? `<div class="order-detail-row"><i class="fas fa-map-marker"></i>${o.address.address}</div>` : ''}
-        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+        <div class="ord-prods">${thumbsHtml}</div>
+        ${o.customer?.email ? `<div class="order-detail-row" style="margin-bottom:6px"><i class="fas fa-envelope"></i>${o.customer.email}</div>` : ''}
+        ${addrHtml}
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
           <button class="adm-btn xs gray" onclick="updateOrderStatus('${o.id}','processing')"><i class="fas fa-spinner"></i> Processing</button>
           <button class="adm-btn xs blue" onclick="updateOrderStatus('${o.id}','shipped')"><i class="fas fa-truck"></i> Shipped</button>
           <button class="adm-btn xs green" onclick="updateOrderStatus('${o.id}','delivered')"><i class="fas fa-check"></i> Delivered</button>
           <button class="adm-btn xs red" onclick="updateOrderStatus('${o.id}','cancelled')"><i class="fas fa-ban"></i> Cancel</button>
-          ${phone ? `<button class="adm-btn xs" onclick="waMessage('${phone}','${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>` : ''}
+          ${phone ? `<button class="adm-btn xs" style="background:linear-gradient(135deg,#25d366,#128c7e)" onclick="waMessage('${phone}','${o.id}')"><i class="fab fa-whatsapp"></i> WhatsApp</button>` : ''}
+          <button class="adm-btn xs" style="background:#1a1a2e;border:1px solid #333;margin-left:auto" onclick="printOrder('${o.id}')"><i class="fas fa-print"></i> Print</button>
         </div>
       </div>
     </div>`;
@@ -1161,6 +1573,182 @@ function waMessage(phone, orderId) {
   const num = phone.replace(/[^0-9]/g, '');
   if (!num) return;
   window.open(`https://wa.me/${num}?text=Hello! Regarding your order ${orderId}`, '_blank');
+}
+
+function printOrder(orderId) {
+  const o = getOrders().find(x => x.id === orderId);
+  if (!o) return;
+  const a = o.address || {};
+  const phone = a.phone || o.customer?.phone || '';
+  const date = new Date(o.date).toLocaleString('en-US', { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  const PAY_LABELS = { whatsapp:'WhatsApp', paypal:'PayPal', card:'Card', binance:'Binance Pay' };
+
+  const itemsHtml = (o.items || []).map(i => {
+    const variants = [i.size && `Size: ${i.size}`, i.color && `Color: ${i.color}`].filter(Boolean).join(' · ');
+    return `<tr>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee">
+        <img src="${i.image||''}" style="width:40px;height:40px;object-fit:cover;border-radius:6px;vertical-align:middle;margin-right:8px" onerror="this.style.display='none'"/>
+        <span style="font-weight:600">${i.name||'Product'}</span>
+        ${variants ? `<br><span style="font-size:11px;color:#888;padding-left:48px">${variants}</span>` : ''}
+      </td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:center;font-weight:700">${i.qty||1}</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right">SAR ${i.price||0}</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:#e91e8c">SAR ${(i.price||0)*(i.qty||1)}</td>
+    </tr>`;
+  }).join('');
+
+  // Load VAT settings
+  const sett = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  const vatId   = sett.vatId   || '';
+  const vatRate = parseFloat(sett.vatRate) || 0;
+  const subtotal = o.totalSAR || 0;
+  const vatAmt   = vatRate > 0 ? Math.round(subtotal / (1 + vatRate/100) * (vatRate/100) * 100) / 100 : 0;
+  const exclVat  = vatRate > 0 ? Math.round((subtotal - vatAmt) * 100) / 100 : subtotal;
+
+  const totalsHtml = vatRate > 0 ? `
+    <tr style="background:#fafafa"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#666">Subtotal (excl. VAT)</td><td style="padding:6px 6px;text-align:right;font-size:12px">SAR ${exclVat.toFixed(2)}</td></tr>
+    <tr style="background:#f0fdf4"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">VAT (${vatRate}%)</td><td style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">SAR ${vatAmt.toFixed(2)}</td></tr>
+    <tr style="background:#fff"><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #e91e8c">Total (incl. VAT)</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #e91e8c">SAR ${subtotal}</td></tr>
+  ` : `<tr><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #eee">Total</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #eee">SAR ${subtotal}</td></tr>`;
+
+  const mapInvoiceQuery = (a.lat && a.lng)
+    ? `${a.lat},${a.lng}`
+    : encodeURIComponent([a.address, a.area, a.city, 'Saudi Arabia'].filter(Boolean).join(', '));
+  const mapInvoiceLink = (a.lat || a.city || a.address)
+    ? `<a href="https://maps.google.com/?q=${mapInvoiceQuery}" target="_blank" style="font-size:11px;color:#e91e8c;text-decoration:none;font-weight:700">📍 View on Google Maps</a>`
+    : '';
+  const htmlContent = `<!DOCTYPE html><html dir="ltr"><head>
+    <meta charset="utf-8"/>
+    <title>Invoice ${o.id}</title>
+    <style>
+      *{box-sizing:border-box;margin:0;padding:0}
+      body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:24px;max-width:720px;margin:auto}
+      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #e91e8c}
+      .store-name{font-size:24px;font-weight:900;color:#e91e8c;letter-spacing:1px}
+      .store-sub{font-size:11px;color:#888;margin-top:3px}
+      .vat-id-line{font-size:11px;color:#555;margin-top:6px;font-weight:600}
+      .vat-id-line span{background:#f0fdf4;color:#059669;padding:2px 8px;border-radius:6px;border:1px solid #bbf7d0;font-family:monospace;font-size:12px}
+      .order-id{font-size:13px;font-family:monospace;color:#555;margin-bottom:4px;font-weight:700}
+      .order-date{font-size:11px;color:#888}
+      .status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-top:4px}
+      .s-pending{background:#fff3cd;color:#b45309} .s-processing{background:#dbeafe;color:#1d4ed8}
+      .s-shipped{background:#ede9fe;color:#7c3aed} .s-delivered{background:#d1fae5;color:#065f46} .s-cancelled{background:#fee2e2;color:#b91c1c}
+      .section{margin-bottom:20px}
+      .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#aaa;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0}
+      table{width:100%;border-collapse:collapse;font-size:13px}
+      thead{background:#f9f9f9}
+      th{padding:9px 6px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#888;border-bottom:2px solid #eee}
+      th:nth-child(2),th:nth-child(3),th:last-child{text-align:right}
+      .addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px}
+      .addr-item{display:flex;flex-direction:column;gap:2px}
+      .addr-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#aaa;font-weight:700}
+      .addr-val{font-weight:600;color:#222}
+      .pay-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
+      .footer{margin-top:24px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#bbb;text-align:center;line-height:1.7}
+      @media print{button{display:none!important}.no-print{display:none}}
+    </style>
+  </head><body>
+    <div class="print-header">
+      <div>
+        <div class="store-name">EX GLOBAL</div>
+        <div class="store-sub">exrabbi.github.io/ex-rabbi · Saudi Arabia</div>
+        ${vatId ? `<div class="vat-id-line">VAT Registration No: <span>${vatId}</span></div>` : ''}
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:4px">TAX INVOICE</div>
+        <div class="order-id">${o.id}</div>
+        <div class="order-date">${date}</div>
+        <div><span class="status-badge s-${o.status||'pending'}">${o.status||'pending'}</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Order Items</div>
+      <table>
+        <thead><tr>
+          <th>Product</th>
+          <th style="text-align:right">Qty</th>
+          <th style="text-align:right">Unit Price</th>
+          <th style="text-align:right">Total</th>
+        </tr></thead>
+        <tbody>
+          ${itemsHtml}
+          ${totalsHtml}
+        </tbody>
+      </table>
+    </div>
+
+    ${vatRate > 0 ? `
+    <div class="section" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px">
+      <div class="section-title" style="color:#059669;border-bottom-color:#bbf7d0">VAT Summary</div>
+      <table style="font-size:12px">
+        <tr><td style="padding:4px 0;color:#555">VAT Rate</td><td style="padding:4px 0;text-align:right;font-weight:700">${vatRate}%</td></tr>
+        <tr><td style="padding:4px 0;color:#555">Taxable Amount (excl. VAT)</td><td style="padding:4px 0;text-align:right;font-weight:700">SAR ${exclVat.toFixed(2)}</td></tr>
+        <tr><td style="padding:4px 0;color:#059669;font-weight:700">VAT Amount</td><td style="padding:4px 0;text-align:right;font-weight:900;color:#059669">SAR ${vatAmt.toFixed(2)}</td></tr>
+        ${vatId ? `<tr><td style="padding:4px 0;color:#555">VAT ID</td><td style="padding:4px 0;text-align:right;font-family:monospace;font-weight:700">${vatId}</td></tr>` : ''}
+      </table>
+    </div>` : ''}
+
+    <div class="section" style="display:flex;gap:20px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div class="section-title">Payment Method</div>
+        <span class="pay-badge">${PAY_LABELS[o.method]||o.method||'—'}</span>
+      </div>
+      ${o.customer?.email ? `<div style="flex:1"><div class="section-title">Customer</div><div style="font-size:12px;font-weight:600">${o.customer.name||''}</div><div style="font-size:11px;color:#888">${o.customer.email}</div></div>` : ''}
+    </div>
+
+    ${a.name || a.city ? `
+    <div class="section">
+      <div class="section-title">Delivery Address</div>
+      <div class="addr-grid">
+        ${a.name    ? `<div class="addr-item"><div class="addr-label">Name</div><div class="addr-val">${a.name}</div></div>` : ''}
+        ${phone     ? `<div class="addr-item"><div class="addr-label">Phone</div><div class="addr-val">${phone}</div></div>` : ''}
+        ${a.city    ? `<div class="addr-item"><div class="addr-label">City / Area</div><div class="addr-val">${[a.city,a.area].filter(Boolean).join(', ')}</div></div>` : ''}
+        ${a.address ? `<div class="addr-item" style="grid-column:1/-1"><div class="addr-label">Full Address</div><div class="addr-val">${a.address}</div></div>` : ''}
+        ${mapInvoiceLink ? `<div class="addr-item" style="grid-column:1/-1;margin-top:6px">${mapInvoiceLink}</div>` : ''}
+      </div>
+    </div>` : ''}
+
+    <div class="footer">
+      EX GLOBAL · Saudi Arabia${vatId ? ' · VAT: '+vatId : ''}<br>
+      Invoice generated: ${new Date().toLocaleString()}
+    </div>
+    <br class="no-print">
+    <button onclick="window.print()" class="no-print" style="padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
+  </body></html>`;
+  try {
+    const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+    const blobUrl = URL.createObjectURL(blob);
+    const win2 = window.open(blobUrl, '_blank');
+    if (!win2) {
+      // Fallback: inject into iframe overlay
+      _printFallback(htmlContent);
+    } else {
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    }
+  } catch(e) {
+    _printFallback(htmlContent);
+  }
+}
+
+function _printFallback(html) {
+  let overlay = document.getElementById('_printOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = '_printOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#111;overflow:auto;display:flex;flex-direction:column';
+    document.body.appendChild(overlay);
+  }
+  const blob2 = new Blob([html], { type: 'text/html; charset=utf-8' });
+  const url2 = URL.createObjectURL(blob2);
+  overlay.innerHTML = `
+    <div style="display:flex;gap:10px;padding:12px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0">
+      <a href="${url2}" target="_blank" style="flex:1;padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block">🖨️ Open to Print / Save PDF</a>
+      <button onclick="document.getElementById('_printOverlay').remove()" style="padding:12px 16px;background:#333;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <iframe src="${url2}" style="flex:1;border:none;width:100%;background:#fff"></iframe>`;
+  overlay.style.display = 'flex';
+  setTimeout(() => URL.revokeObjectURL(url2), 120000);
 }
 
 /* ===== CUSTOMERS ===== */
@@ -1194,7 +1782,8 @@ function custRowHTML(c) {
 
 /* ===== COUPONS ===== */
 function getExtraCoupons() { return JSON.parse(localStorage.getItem('exg_extra_coupons') || '[]'); }
-function saveExtraCoupons(arr) { localStorage.setItem('exg_extra_coupons', JSON.stringify(arr)); }
+function saveExtraCoupons(arr) { localStorage.setItem('exg_extra_coupons', JSON.stringify(arr)); _markAdminEdit(); }
+function _markAdminEdit() { localStorage.setItem('exg_last_admin_edit', new Date().toISOString()); }
 
 function renderCoupons() {
   const used = JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
@@ -1257,6 +1846,9 @@ function loadSettings() {
     el('setCloudName').value = localStorage.getItem('exg_cloud_name') || '';
     el('setCloudPreset').value = localStorage.getItem('exg_cloud_preset') || '';
     if (el('setGithubToken')) el('setGithubToken').value = localStorage.getItem('exg_github_token') || '';
+    if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
+    if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
+    if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
     updatePublishStatus();
   }
 }
@@ -1266,6 +1858,8 @@ function saveSettings() {
     announcement: document.getElementById('setAnnouncement').value.trim(),
     delivery: parseFloat(document.getElementById('setDelivery').value) || 0,
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
+    vatId:   (document.getElementById('setVatId')?.value || '').trim(),
+    vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
   };
   localStorage.setItem('exg_settings', JSON.stringify(s));
   const imgbbKey = document.getElementById('setImgBBKey').value.trim();
@@ -1277,6 +1871,9 @@ function saveSettings() {
   if (cloudPreset) localStorage.setItem('exg_cloud_preset', cloudPreset); else localStorage.removeItem('exg_cloud_preset');
   const ghToken = document.getElementById('setGithubToken').value.trim();
   if (ghToken) localStorage.setItem('exg_github_token', ghToken); else localStorage.removeItem('exg_github_token');
+  const cityVideo = document.getElementById('setCityVideo') ? document.getElementById('setCityVideo').value.trim() : '';
+  if (cityVideo) localStorage.setItem('exg_city_video', cityVideo); else localStorage.removeItem('exg_city_video');
+  _markAdminEdit();
   updatePublishStatus();
   toast('✅ Settings saved!');
 }
@@ -1315,17 +1912,18 @@ function pickImage(inputId, previewImgId) {
     if (!file) return;
     const btnId = inputId === 'pImage' ? 'pImgUploadBtn' : 'hsUploadBtn';
     const btn = document.getElementById(btnId);
-    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    const origBtnText = btn ? btn.innerHTML : '';
+    if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
     try {
       const url = await uploadImage(file);
       const inputEl = document.getElementById(inputId);
       inputEl.value = url;
       inputEl.dispatchEvent(new Event('input'));
-      toast('✅ Photo uploaded!');
+      toast('✅ ছবি আপলোড হয়েছে!');
     } catch(err) {
-      toast('❌ ' + (err.message || 'Upload failed'));
+      toast('❌ ' + (err.message || 'আপলোড ব্যর্থ হয়েছে'));
     } finally {
-      if (btn) btn.innerHTML = '<i class="fas fa-camera"></i> Upload HD Photo from Phone';
+      if (btn) btn.innerHTML = origBtnText;
     }
   };
   input.click();
@@ -1355,6 +1953,8 @@ async function uploadImage(file) {
       if (data.success) return data.data.display_url || data.data.url;
     } catch(e) { /* fall through */ }
   }
+  const isHEIC = /^image\/(heic|heif)$/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
+  if (isHEIC) throw new Error('iPhone HEIC ছবি — Settings-এ Cloudinary সেট করুন (ফ্রি)');
   return await compressToBase64(file);
 }
 
@@ -1371,12 +1971,13 @@ function compressToBase64(file) {
         const canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        resolve(canvas.toDataURL('image/jpeg', 0.84));
+        try { resolve(canvas.toDataURL('image/jpeg', 0.84)); }
+        catch(e) { reject(new Error('ছবি কম্প্রেস করা যায়নি')); }
       };
-      img.onerror = reject;
+      img.onerror = () => reject(new Error('ছবি লোড হয়নি — JPG বা PNG ব্যবহার করুন'));
       img.src = e.target.result;
     };
-    reader.onerror = reject;
+    reader.onerror = () => reject(new Error('ফাইল পড়া যায়নি'));
     reader.readAsDataURL(file);
   });
 }
@@ -1386,7 +1987,7 @@ function pickVideo() {
   const cloudName = localStorage.getItem('exg_cloud_name') || '';
   const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
   if (!cloudName || !cloudPreset) {
-    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    toast('⚠️ ভিডিও আপলোড করতে Settings-এ Cloudinary সেট করুন — অথবা YouTube লিংক পেস্ট করুন');
     showTab('settings');
     return;
   }
@@ -1512,7 +2113,7 @@ function showHeroSlide(idx) {
 function previewHsImg(url) {
   const box = document.getElementById('hsImgPreview');
   const img = document.getElementById('hsImgEl');
-  if (url && url.startsWith('http')) { img.src = url; box.style.display = 'block'; }
+  if (url && (url.startsWith('http') || url.startsWith('data:'))) { img.src = url; box.style.display = 'block'; }
   else box.style.display = 'none';
 }
 
@@ -1556,7 +2157,7 @@ function pickHsVideo() {
   const cloudName = localStorage.getItem('exg_cloud_name') || '';
   const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
   if (!cloudName || !cloudPreset) {
-    toast('⚠️ Please set Cloudinary Cloud Name & Upload Preset in Settings first!');
+    toast('⚠️ ভিডিও আপলোড করতে Settings-এ Cloudinary সেট করুন — অথবা YouTube লিংক পেস্ট করুন');
     showTab('settings'); return;
   }
   const inp = document.createElement('input');
@@ -1580,6 +2181,33 @@ function pickHsVideo() {
   inp.click();
 }
 
+function pickCityVideo() {
+  const cloudName = localStorage.getItem('exg_cloud_name') || '';
+  const cloudPreset = localStorage.getItem('exg_cloud_preset') || '';
+  if (!cloudName || !cloudPreset) {
+    toast('⚠️ ভিডিও আপলোড করতে Settings-এ Cloudinary সেট করুন — অথবা YouTube লিংক পেস্ট করুন');
+    showTab('settings'); return;
+  }
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'video/*';
+  inp.onchange = async function(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 100 * 1024 * 1024) { toast('❌ Video too large (max 100MB)'); return; }
+    const btn = document.getElementById('cityVideoUploadBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... 0%';
+    btn.disabled = true;
+    try {
+      const url = await uploadVideoToCloud(file, cloudName, cloudPreset, pct => {
+        btn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে... ${pct}%`;
+      });
+      document.getElementById('setCityVideo').value = url;
+      toast('✅ ভিডিও আপলোড সম্পন্ন!');
+    } catch(err) { toast('❌ ' + (err.message || 'Upload failed')); }
+    finally { btn.innerHTML = '<i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড করুন'; btn.disabled = false; }
+  };
+  inp.click();
+}
+
 function saveHeroSlide() {
   const idx = parseInt(document.getElementById('hsIdx').value || '0');
   const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[null,null,null,null,null]');
@@ -1593,6 +2221,7 @@ function saveHeroSlide() {
     sub: document.getElementById('hsSub').value.trim(),
   };
   localStorage.setItem('exg_hero_slides', JSON.stringify(slides));
+  _markAdminEdit();
   toast('✅ Slide ' + (idx + 1) + ' saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1649,6 +2278,7 @@ function saveFeaturedPins() {
   else localStorage.removeItem('exg_super_pins');
   if (trend) localStorage.setItem('exg_trend_pins', JSON.stringify(trend));
   else localStorage.removeItem('exg_trend_pins');
+  _markAdminEdit();
   toast('✅ Featured sections saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1718,6 +2348,7 @@ function saveSocialLinks() {
     youtube: document.getElementById('socYoutube').value.trim(),
   };
   localStorage.setItem('exg_social_links', JSON.stringify(soc));
+  _markAdminEdit();
   toast('✅ Social links saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
 }
 
@@ -1749,6 +2380,7 @@ function collectStoreData() {
     super_pins:       JSON.parse(localStorage.getItem('exg_super_pins')       || 'null'),
     trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
     coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
+    city_video:       localStorage.getItem('exg_city_video') || '',
     published_at: new Date().toISOString()
   };
 }
@@ -1814,26 +2446,45 @@ async function publishToWebsite() {
     const content = toBase64UTF8(jsonStr);
     const apiBase = 'https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json';
 
-    let sha = null;
-    try {
-      const getRes = await fetch(apiBase + '?ref=gh-pages', {
-        headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-      });
-      if (getRes.ok) { const fd = await getRes.json(); sha = fd.sha; }
-    } catch(e) {}
+    const ghHeaders = {
+      'Authorization': 'Bearer ' + token,
+      'Content-Type': 'application/json',
+      'Accept': 'application/vnd.github.v3+json'
+    };
 
-    const body = { message: 'Publish store data ' + new Date().toISOString(), content, branch: 'gh-pages' };
-    if (sha) body.sha = sha;
+    const getSha = async () => {
+      try {
+        // Public repo: try without auth first so SHA always works regardless of token state
+        const r = await fetch(apiBase + '?ref=gh-pages');
+        if (r.ok) { const d = await r.json(); return d.sha || null; }
+        // Fallback: with auth
+        const r2 = await fetch(apiBase + '?ref=gh-pages', { headers: ghHeaders });
+        if (r2.ok) { const d = await r2.json(); return d.sha || null; }
+      } catch(e) {}
+      return null;
+    };
 
-    const putRes = await fetch(apiBase, {
-      method: 'PUT',
-      headers: {
-        'Authorization': 'token ' + token,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.github.v3+json'
-      },
-      body: JSON.stringify(body)
-    });
+    const doPut = async (sha) => {
+      const body = { message: 'Publish store data ' + new Date().toISOString(), content, branch: 'gh-pages' };
+      if (sha) body.sha = sha;
+      return fetch(apiBase, { method: 'PUT', headers: ghHeaders, body: JSON.stringify(body) });
+    };
+
+    let sha = await getSha();
+    let putRes = await doPut(sha);
+
+    // If 409 or 422 (SHA stale/missing/conflict), re-fetch SHA and retry
+    if (putRes.status === 409 || putRes.status === 422) {
+      sha = await getSha();
+      putRes = await doPut(sha);
+    }
+
+    // Second retry if still conflicting
+    if (putRes.status === 409 || putRes.status === 422) {
+      await new Promise(r => setTimeout(r, 1500));
+      sha = await getSha();
+      putRes = await doPut(sha);
+    }
 
     if (putRes.ok) {
       localStorage.setItem('exg_last_published', new Date().toISOString());
@@ -1842,18 +2493,22 @@ async function publishToWebsite() {
     } else {
       const errData = await putRes.json().catch(() => ({}));
       const msg = errData.message || '';
-      if (msg.includes('Bad credentials') || putRes.status === 401) {
-        toast('❌ Token ভুল বা মেয়াদ শেষ — Settings-এ নতুন token দিন');
+      if (putRes.status === 401 || msg.toLowerCase().includes('bad credentials')) {
+        toast('❌ Token ভুল বা মেয়াদ শেষ — Settings-এ নতুন token দিন (Test বাটন দিয়ে চেক করুন)');
+      } else if (putRes.status === 403) {
+        toast('❌ Token-এ write permission নেই — Contents: Read & Write দিন');
       } else if (putRes.status === 404) {
-        toast('❌ Token-এ repo access নেই — Contents: Read & Write দিন');
+        toast('❌ Repo খুঁজে পাওয়া যাচ্ছে না — token-এ repo access দিন');
+      } else if (putRes.status === 409) {
+        toast('❌ পাবলিশ ব্যর্থ (409) — GitHub Token পরীক্ষা করুন (Settings → Token পরীক্ষা করুন বাটন)');
       } else if (putRes.status === 422) {
-        toast('❌ পাবলিশ ব্যর্থ — token permission চেক করুন');
+        toast('❌ পাবলিশ ব্যর্থ (422) — ' + (msg || 'SHA mismatch, আবার চেষ্টা করুন'));
       } else {
-        toast('❌ পাবলিশ ব্যর্থ (' + putRes.status + '): ' + (msg || 'Unknown error'));
+        toast('❌ পাবলিশ ব্যর্থ (' + putRes.status + '): ' + (msg.slice(0, 60) || 'Unknown error'));
       }
     }
   } catch(e) {
-    if (e.message === 'Failed to fetch') {
+    if (e.message === 'Failed to fetch' || e.name === 'TypeError') {
       toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন এবং আবার চেষ্টা করুন');
     } else {
       toast('❌ Error: ' + e.message);
@@ -1862,6 +2517,36 @@ async function publishToWebsite() {
     btn.disabled = false;
     icon.className = 'fas fa-rocket';
     btnText.textContent = 'Publish';
+  }
+}
+
+async function testGithubToken() {
+  const input = document.getElementById('setGithubToken');
+  // Always save first if input has a value, then test from localStorage
+  const inputVal = input ? input.value.trim() : '';
+  if (inputVal) { localStorage.setItem('exg_github_token', inputVal); }
+  const token = localStorage.getItem('exg_github_token') || '';
+  if (!token) { toast('⚠️ আগে Token ইনপুট করুন'); return; }
+  const btn = document.getElementById('testTokenBtn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পরীক্ষা হচ্ছে...'; }
+  try {
+    const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' };
+    // Test file read access directly (works for both classic and fine-grained tokens)
+    const cr = await fetch('https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json?ref=gh-pages', { headers });
+    if (cr.ok || cr.status === 404) {
+      // 200 = file exists and readable, 404 = repo accessible but file not yet created — both mean token works
+      toast('✅ Token কাজ করছে! Publish করতে পারবেন।');
+    } else if (cr.status === 401) {
+      toast('❌ Token ভুল বা মেয়াদ শেষ — নতুন token বানিয়ে Settings-এ দিন');
+    } else if (cr.status === 403) {
+      toast('❌ Token-এ Contents permission নেই — Fine-grained token-এ Contents: Read and write দিন');
+    } else {
+      toast('❌ Token error: HTTP ' + cr.status + ' — Settings সেভ করে আবার চেষ্টা করুন');
+    }
+  } catch(e) {
+    toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন');
+  } finally {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-flask"></i> Token পরীক্ষা করুন'; }
   }
 }
 </script>
