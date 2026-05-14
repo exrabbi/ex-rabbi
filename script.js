@@ -512,7 +512,7 @@ function productCardHTML(p) {
         </div>
         ${p.stock === 0 ? `<div class="stock-badge out">${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low">${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok">${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
-      <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `quickAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
+      <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
         ${p.stock === 0 ? t('outOfStock') : t('addToCart')}
       </button>
     </div>
@@ -769,6 +769,122 @@ function renderCart() {
 }
 function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
 function quickAddCart(id) { addToCart(id, '', ''); }
+
+/* ===== FLY-TO-CART ANIMATION ===== */
+function flyCartAdd(e, id) {
+  e.stopPropagation();
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p || p.stock === 0) return;
+
+  const btn = e.currentTarget || e.target.closest('.add-cart-btn');
+  const card = btn ? btn.closest('.product-card') : null;
+  const imgEl = card ? card.querySelector('img') : null;
+  const imgSrc = (imgEl && imgEl.src) ? imgEl.src : (p.image || '');
+
+  const cartBtn = document.getElementById('botCartBtn');
+  if (!cartBtn || !imgSrc) { addToCart(id, '', ''); return; }
+
+  const startRect = btn ? btn.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0 };
+  const endRect = cartBtn.getBoundingClientRect();
+
+  const size = 52;
+  const startX = startRect.left + startRect.width / 2 - size / 2;
+  const startY = startRect.top - size / 2;
+  const endX = endRect.left + endRect.width / 2 - size / 2;
+  const endY = endRect.top + endRect.height / 2 - size / 2;
+
+  const fly = document.createElement('div');
+  fly.style.cssText = `position:fixed;width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;border:2.5px solid #e91e8c;box-shadow:0 0 18px rgba(233,30,140,.7);z-index:99999;pointer-events:none;left:${startX}px;top:${startY}px;will-change:transform,opacity`;
+  fly.innerHTML = `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+  document.body.appendChild(fly);
+
+  // Button press effect
+  if (btn) { btn.style.transform = 'scale(.93)'; setTimeout(() => { btn.style.transform = ''; }, 200); }
+
+  const duration = 620;
+  const arcHeight = Math.max(120, Math.abs(startY - endY) * 0.55);
+  const t0 = performance.now();
+
+  function easeInOut(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function step(now) {
+    const raw = Math.min((now - t0) / duration, 1);
+    const p = easeInOut(raw);
+    const x = startX + (endX - startX) * p;
+    const y = startY + (endY - startY) * p - arcHeight * Math.sin(Math.PI * raw);
+    const scale = 1 - 0.55 * p;
+    const opacity = raw > 0.8 ? 1 - (raw - 0.8) / 0.2 : 1;
+    fly.style.left = x + 'px';
+    fly.style.top = y + 'px';
+    fly.style.transform = `scale(${scale})`;
+    fly.style.opacity = opacity;
+    if (raw < 1) { requestAnimationFrame(step); return; }
+    fly.remove();
+    _playCartSound();
+    _bounceCartIcon();
+    addToCart(id, '', '');
+  }
+  requestAnimationFrame(step);
+}
+
+function _playCartSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    // Layer 1: warm "plop" thud
+    const o1 = ctx.createOscillator();
+    const g1 = ctx.createGain();
+    o1.type = 'sine';
+    o1.frequency.setValueAtTime(520, now);
+    o1.frequency.exponentialRampToValueAtTime(180, now + 0.18);
+    g1.gain.setValueAtTime(0, now);
+    g1.gain.linearRampToValueAtTime(0.28, now + 0.015);
+    g1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+    o1.connect(g1); g1.connect(ctx.destination);
+    o1.start(now); o1.stop(now + 0.35);
+    // Layer 2: high bright "ding"
+    const o2 = ctx.createOscillator();
+    const g2 = ctx.createGain();
+    o2.type = 'triangle';
+    o2.frequency.setValueAtTime(1100, now);
+    o2.frequency.exponentialRampToValueAtTime(700, now + 0.12);
+    g2.gain.setValueAtTime(0, now);
+    g2.gain.linearRampToValueAtTime(0.14, now + 0.01);
+    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+    o2.connect(g2); g2.connect(ctx.destination);
+    o2.start(now); o2.stop(now + 0.25);
+    // Layer 3: tiny sparkle
+    const o3 = ctx.createOscillator();
+    const g3 = ctx.createGain();
+    o3.type = 'sine';
+    o3.frequency.setValueAtTime(2200, now + 0.02);
+    o3.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
+    g3.gain.setValueAtTime(0, now + 0.02);
+    g3.gain.linearRampToValueAtTime(0.07, now + 0.04);
+    g3.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+    o3.connect(g3); g3.connect(ctx.destination);
+    o3.start(now + 0.02); o3.stop(now + 0.2);
+  } catch(e) {}
+}
+
+function _bounceCartIcon() {
+  const btn = document.getElementById('botCartBtn');
+  if (!btn) return;
+  btn.style.transition = 'transform .12s';
+  btn.style.transform = 'scale(1.35)';
+  setTimeout(() => { btn.style.transform = 'scale(0.88)'; }, 120);
+  setTimeout(() => { btn.style.transform = 'scale(1.12)'; }, 240);
+  setTimeout(() => { btn.style.transform = ''; }, 360);
+  // Flash the badge
+  const badge = document.getElementById('botCartBadge');
+  if (badge) {
+    badge.style.transform = 'scale(1.8)';
+    badge.style.background = '#fff';
+    badge.style.color = '#e91e8c';
+    setTimeout(() => { badge.style.transform = ''; badge.style.background = ''; badge.style.color = ''; }, 350);
+  }
+}
+
 function addToCart(id, size, color) {
   const p = PRODUCTS.find(x => x.id === id);
   if (p && p.stock === 0) { showToast('❌ ' + (t('outOfStock') || 'Out of Stock')); return; }
@@ -780,7 +896,6 @@ function addToCart(id, size, color) {
   else cart.push({ id, qty: 1, size, color });
   _saveCart();
   updateCartBadge();
-  showToast(t('addedToCart'));
 }
 function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
@@ -1133,13 +1248,42 @@ function modalAddCart(id) {
   if (p && p.stock !== undefined && _modalQty > p.stock) {
     showToast('⚠️ ' + (t('lowStock')||'Only {n} left!').replace('{n}', p.stock)); return;
   }
-  // Add _modalQty times
+  // Fly animation from modal button
+  const btn = document.getElementById('modalAddCartBtn');
+  const imgSrc = p.image || '';
+  const cartBtn = document.getElementById('botCartBtn');
+  if (btn && imgSrc && cartBtn) {
+    const startRect = btn.getBoundingClientRect();
+    const endRect = cartBtn.getBoundingClientRect();
+    const size = 52;
+    const startX = startRect.left + startRect.width/2 - size/2;
+    const startY = startRect.top - size/2;
+    const endX = endRect.left + endRect.width/2 - size/2;
+    const endY = endRect.top + endRect.height/2 - size/2;
+    const fly = document.createElement('div');
+    fly.style.cssText = `position:fixed;width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;border:2.5px solid #e91e8c;box-shadow:0 0 18px rgba(233,30,140,.7);z-index:99999;pointer-events:none;left:${startX}px;top:${startY}px`;
+    fly.innerHTML = `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+    document.body.appendChild(fly);
+    const dur = 580, arc = Math.max(100, Math.abs(startY-endY)*.5);
+    const t0 = performance.now();
+    function ease(t){return t<.5?2*t*t:-1+(4-2*t)*t;}
+    (function step(now){
+      const raw = Math.min((now-t0)/dur,1), pp = ease(raw);
+      fly.style.left = (startX+(endX-startX)*pp)+'px';
+      fly.style.top = (startY+(endY-startY)*pp - arc*Math.sin(Math.PI*raw))+'px';
+      fly.style.transform = `scale(${1-0.55*pp})`;
+      fly.style.opacity = raw>.8 ? 1-(raw-.8)/.2 : 1;
+      if(raw<1){requestAnimationFrame(step);}
+      else{fly.remove();_playCartSound();_bounceCartIcon();}
+    })(t0);
+  } else {
+    _playCartSound(); _bounceCartIcon();
+  }
   const existing = cart.find(i => i.id === id);
   if (existing) existing.qty += _modalQty;
   else cart.push({ id, qty: _modalQty, size: selectedSize, color: selectedColor });
   _saveCart();
   updateCartBadge();
-  showToast(t('addedToCart'));
   _modalQty = 1;
   closeModal();
 }
