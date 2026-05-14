@@ -1589,7 +1589,7 @@ function _saveOrderRecord(items,totalSAR,method){
     newOrder = {
       id:'ORD'+Date.now(),
       date:new Date().toISOString(),
-      items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,image:p?p.image:''};}).slice(0,20),
+      items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,size:i.size||'',color:i.color||'',image:p?p.image:''};}).slice(0,20),
       totalSAR:Math.round(totalSAR),
       method,
       customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},

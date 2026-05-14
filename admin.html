@@ -147,6 +147,10 @@
     .ord-prod-img img{width:100%;height:100%;object-fit:cover}
     .ord-prod-name{font-size:12px;font-weight:600;color:#ccc;line-height:1.4;margin-bottom:3px}
     .ord-prod-meta{font-size:11px;color:#555}
+    .ord-prod-qty{font-size:11px;color:#888;margin-bottom:4px}
+    .ord-prod-qty b{color:#a78bfa}
+    .ord-variants{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+    .ord-variant-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:#252525;color:#aaa;border:1px solid #333;display:flex;align-items:center;gap:3px}
     /* Address block */
     .ord-addr-block{background:#151515;border:1px solid #252525;border-radius:10px;padding:10px 12px;margin-top:4px}
     .ord-addr-title{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
@@ -1461,14 +1465,22 @@ function orderRowHTML(o) {
     : '';
 
   // Product thumbnails row
-  const thumbsHtml = items.map(i => `
+  const thumbsHtml = items.map(i => {
+    const colorDot = i.color ? `<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${i.color};border:1px solid rgba(255,255,255,.2);vertical-align:middle;margin-right:3px"></span>` : '';
+    const variants = [
+      i.size  ? `<span class="ord-variant-tag">📐 ${i.size}</span>`  : '',
+      i.color ? `<span class="ord-variant-tag">${colorDot}${i.color}</span>` : '',
+    ].filter(Boolean).join('');
+    return `
     <div class="ord-prod-card">
       <div class="ord-prod-img">${i.image ? `<img src="${i.image}" onerror="this.style.display='none'"/>` : '<i class="fas fa-box" style="color:#555;font-size:16px"></i>'}</div>
       <div class="ord-prod-info">
         <div class="ord-prod-name">${i.name || 'Product'}</div>
-        <div class="ord-prod-meta">×${i.qty || 1} &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
+        <div class="ord-prod-qty"><i class="fas fa-layer-group" style="font-size:9px;color:#7c3aed"></i> <b>${i.qty || 1} পিস</b> &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
+        ${variants ? `<div class="ord-variants">${variants}</div>` : ''}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 
   // Address block
   const hasAddr = a.name || a.city || a.area || a.address;
