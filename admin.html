@@ -525,6 +525,22 @@
             </div>
           </div>
         </div>
+
+        <!-- VAT Settings -->
+        <div class="setting-row" style="border:1px solid #1a2e1a;border-radius:10px;padding:12px;background:#0a140a;margin-top:6px">
+          <div class="setting-label" style="color:#86efac"><i class="fas fa-receipt" style="color:#10b981"></i> VAT / ভ্যাট সেটিংস</div>
+          <div class="setting-desc" style="margin-bottom:10px">Print করা invoice-এ VAT দেখাবে। ফাঁকা রাখলে VAT দেখাবে না।</div>
+          <div class="form-grid" style="gap:10px">
+            <div>
+              <div class="setting-label">VAT Registration ID</div>
+              <input type="text" id="setVatId" class="adm-input" placeholder="e.g. 310122393500003"/>
+            </div>
+            <div>
+              <div class="setting-label">VAT Rate (%)</div>
+              <input type="number" id="setVatRate" class="adm-input" placeholder="15" min="0" max="100" step="0.1"/>
+            </div>
+          </div>
+        </div>
         <div class="setting-row">
           <div class="setting-label">📸 Image Upload API Key (imgBB)</div>
           <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:#e91e8c">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
@@ -1578,51 +1594,63 @@ function printOrder(orderId) {
     </tr>`;
   }).join('');
 
+  // Load VAT settings
+  const sett = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  const vatId   = sett.vatId   || '';
+  const vatRate = parseFloat(sett.vatRate) || 0;
+  const subtotal = o.totalSAR || 0;
+  const vatAmt   = vatRate > 0 ? Math.round(subtotal / (1 + vatRate/100) * (vatRate/100) * 100) / 100 : 0;
+  const exclVat  = vatRate > 0 ? Math.round((subtotal - vatAmt) * 100) / 100 : subtotal;
+
+  const totalsHtml = vatRate > 0 ? `
+    <tr style="background:#fafafa"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#666">Subtotal (excl. VAT)</td><td style="padding:6px 6px;text-align:right;font-size:12px">SAR ${exclVat.toFixed(2)}</td></tr>
+    <tr style="background:#f0fdf4"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">VAT (${vatRate}%)</td><td style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">SAR ${vatAmt.toFixed(2)}</td></tr>
+    <tr style="background:#fff"><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #e91e8c">Total (incl. VAT)</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #e91e8c">SAR ${subtotal}</td></tr>
+  ` : `<tr><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #eee">Total</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #eee">SAR ${subtotal}</td></tr>`;
+
   const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html><head>
+  win.document.write(`<!DOCTYPE html><html dir="ltr"><head>
     <meta charset="utf-8"/>
-    <title>Order ${o.id}</title>
+    <title>Invoice ${o.id}</title>
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
-      body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:24px;max-width:680px;margin:auto}
-      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #e91e8c}
-      .store-name{font-size:22px;font-weight:900;color:#e91e8c;letter-spacing:1px}
+      body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:24px;max-width:720px;margin:auto}
+      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #e91e8c}
+      .store-name{font-size:24px;font-weight:900;color:#e91e8c;letter-spacing:1px}
       .store-sub{font-size:11px;color:#888;margin-top:3px}
-      .order-id{font-size:12px;font-family:monospace;color:#555;margin-bottom:4px}
+      .vat-id-line{font-size:11px;color:#555;margin-top:6px;font-weight:600}
+      .vat-id-line span{background:#f0fdf4;color:#059669;padding:2px 8px;border-radius:6px;border:1px solid #bbf7d0;font-family:monospace;font-size:12px}
+      .order-id{font-size:13px;font-family:monospace;color:#555;margin-bottom:4px;font-weight:700}
       .order-date{font-size:11px;color:#888}
       .status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-top:4px}
-      .s-pending{background:#fff3cd;color:#b45309}
-      .s-processing{background:#dbeafe;color:#1d4ed8}
-      .s-shipped{background:#ede9fe;color:#7c3aed}
-      .s-delivered{background:#d1fae5;color:#065f46}
-      .s-cancelled{background:#fee2e2;color:#b91c1c}
-      .section{margin-bottom:18px}
+      .s-pending{background:#fff3cd;color:#b45309} .s-processing{background:#dbeafe;color:#1d4ed8}
+      .s-shipped{background:#ede9fe;color:#7c3aed} .s-delivered{background:#d1fae5;color:#065f46} .s-cancelled{background:#fee2e2;color:#b91c1c}
+      .section{margin-bottom:20px}
       .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#aaa;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0}
       table{width:100%;border-collapse:collapse;font-size:13px}
       thead{background:#f9f9f9}
-      th{padding:8px 6px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#888;border-bottom:2px solid #eee}
-      th:nth-child(2),th:nth-child(3),th:nth-child(4){text-align:center}
-      th:last-child{text-align:right}
-      .totals-row{display:flex;justify-content:flex-end;gap:40px;padding:10px 6px;font-size:13px}
-      .grand-total{font-size:17px;font-weight:900;color:#e91e8c}
-      .addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px}
+      th{padding:9px 6px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#888;border-bottom:2px solid #eee}
+      th:nth-child(2),th:nth-child(3),th:last-child{text-align:right}
+      .addr-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px}
       .addr-item{display:flex;flex-direction:column;gap:2px}
       .addr-label{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:#aaa;font-weight:700}
       .addr-val{font-weight:600;color:#222}
-      .pay-row{display:flex;align-items:center;gap:10px;font-size:13px;padding:8px 0}
-      .footer{margin-top:24px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#bbb;text-align:center}
-      @media print{body{padding:12px}button{display:none}}
+      .pay-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;background:#f3f4f6;color:#374151;border:1px solid #e5e7eb}
+      .footer{margin-top:24px;padding-top:12px;border-top:1px solid #eee;font-size:10px;color:#bbb;text-align:center;line-height:1.7}
+      @media print{button{display:none!important}.no-print{display:none}}
     </style>
   </head><body>
     <div class="print-header">
       <div>
         <div class="store-name">EX GLOBAL</div>
-        <div class="store-sub">exrabbi.github.io/ex-rabbi</div>
+        <div class="store-sub">exrabbi.github.io/ex-rabbi · Saudi Arabia</div>
+        ${vatId ? `<div class="vat-id-line">VAT Registration No: <span>${vatId}</span></div>` : ''}
       </div>
       <div style="text-align:right">
+        <div style="font-size:11px;color:#aaa;font-weight:600;margin-bottom:4px">TAX INVOICE</div>
         <div class="order-id">${o.id}</div>
         <div class="order-date">${date}</div>
-        <span class="status-badge s-${o.status||'pending'}">${o.status||'pending'}</span>
+        <div><span class="status-badge s-${o.status||'pending'}">${o.status||'pending'}</span></div>
       </div>
     </div>
 
@@ -1630,19 +1658,35 @@ function printOrder(orderId) {
       <div class="section-title">Order Items</div>
       <table>
         <thead><tr>
-          <th>Product</th><th style="text-align:center">Qty</th>
-          <th style="text-align:center">Price</th><th style="text-align:right">Total</th>
+          <th>Product</th>
+          <th style="text-align:right">Qty</th>
+          <th style="text-align:right">Unit Price</th>
+          <th style="text-align:right">Total</th>
         </tr></thead>
-        <tbody>${itemsHtml}</tbody>
+        <tbody>
+          ${itemsHtml}
+          ${totalsHtml}
+        </tbody>
       </table>
-      <div class="totals-row">
-        <span>Total: <span class="grand-total">SAR ${o.totalSAR||0}</span></span>
-      </div>
     </div>
 
-    <div class="section">
-      <div class="section-title">Payment Method</div>
-      <div class="pay-row">${PAY_LABELS[o.method]||o.method||'—'}</div>
+    ${vatRate > 0 ? `
+    <div class="section" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px">
+      <div class="section-title" style="color:#059669;border-bottom-color:#bbf7d0">VAT Summary</div>
+      <table style="font-size:12px">
+        <tr><td style="padding:4px 0;color:#555">VAT Rate</td><td style="padding:4px 0;text-align:right;font-weight:700">${vatRate}%</td></tr>
+        <tr><td style="padding:4px 0;color:#555">Taxable Amount (excl. VAT)</td><td style="padding:4px 0;text-align:right;font-weight:700">SAR ${exclVat.toFixed(2)}</td></tr>
+        <tr><td style="padding:4px 0;color:#059669;font-weight:700">VAT Amount</td><td style="padding:4px 0;text-align:right;font-weight:900;color:#059669">SAR ${vatAmt.toFixed(2)}</td></tr>
+        ${vatId ? `<tr><td style="padding:4px 0;color:#555">VAT ID</td><td style="padding:4px 0;text-align:right;font-family:monospace;font-weight:700">${vatId}</td></tr>` : ''}
+      </table>
+    </div>` : ''}
+
+    <div class="section" style="display:flex;gap:20px;flex-wrap:wrap">
+      <div style="flex:1">
+        <div class="section-title">Payment Method</div>
+        <span class="pay-badge">${PAY_LABELS[o.method]||o.method||'—'}</span>
+      </div>
+      ${o.customer?.email ? `<div style="flex:1"><div class="section-title">Customer</div><div style="font-size:12px;font-weight:600">${o.customer.name||''}</div><div style="font-size:11px;color:#888">${o.customer.email}</div></div>` : ''}
     </div>
 
     ${a.name || a.city ? `
@@ -1651,15 +1695,17 @@ function printOrder(orderId) {
       <div class="addr-grid">
         ${a.name    ? `<div class="addr-item"><div class="addr-label">Name</div><div class="addr-val">${a.name}</div></div>` : ''}
         ${phone     ? `<div class="addr-item"><div class="addr-label">Phone</div><div class="addr-val">${phone}</div></div>` : ''}
-        ${o.customer?.email ? `<div class="addr-item"><div class="addr-label">Email</div><div class="addr-val">${o.customer.email}</div></div>` : ''}
         ${a.city    ? `<div class="addr-item"><div class="addr-label">City / Area</div><div class="addr-val">${[a.city,a.area].filter(Boolean).join(', ')}</div></div>` : ''}
-        ${a.address ? `<div class="addr-item" style="grid-column:1/-1"><div class="addr-label">Address</div><div class="addr-val">${a.address}</div></div>` : ''}
+        ${a.address ? `<div class="addr-item" style="grid-column:1/-1"><div class="addr-label">Full Address</div><div class="addr-val">${a.address}</div></div>` : ''}
       </div>
     </div>` : ''}
 
-    <div class="footer">Printed from EX GLOBAL Admin · ${new Date().toLocaleString()}</div>
-    <br>
-    <button onclick="window.print()" style="padding:10px 24px;background:#e91e8c;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
+    <div class="footer">
+      EX GLOBAL · Saudi Arabia${vatId ? ' · VAT: '+vatId : ''}<br>
+      Invoice generated: ${new Date().toLocaleString()}
+    </div>
+    <br class="no-print">
+    <button onclick="window.print()" class="no-print" style="padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
   </body></html>`);
   win.document.close();
 }
@@ -1760,6 +1806,8 @@ function loadSettings() {
     el('setCloudPreset').value = localStorage.getItem('exg_cloud_preset') || '';
     if (el('setGithubToken')) el('setGithubToken').value = localStorage.getItem('exg_github_token') || '';
     if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
+    if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
+    if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
     updatePublishStatus();
   }
 }
@@ -1769,6 +1817,8 @@ function saveSettings() {
     announcement: document.getElementById('setAnnouncement').value.trim(),
     delivery: parseFloat(document.getElementById('setDelivery').value) || 0,
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
+    vatId:   (document.getElementById('setVatId')?.value || '').trim(),
+    vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
   };
   localStorage.setItem('exg_settings', JSON.stringify(s));
   const imgbbKey = document.getElementById('setImgBBKey').value.trim();
