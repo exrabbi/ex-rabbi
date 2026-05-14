@@ -1853,10 +1853,14 @@ function openHelpCenter() {
   document.getElementById('hcPanel').classList.add('open');
   document.getElementById('hcBackdrop').classList.add('open');
   document.getElementById('hcFabIcon').className = 'fas fa-times';
+  // Hide overlapping FABs
+  const aiFab = document.getElementById('aiChatFab');
+  const waFab = document.getElementById('waFab');
+  if (aiFab) aiFab.style.display = 'none';
+  if (waFab) waFab.style.display = 'none';
   const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const wa = document.getElementById('hcWaBtn');
   if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
-  // Render FAQ in current language
   const faqWrap = document.getElementById('hcFaq');
   if (faqWrap && _T.hcFaq) {
     faqWrap.innerHTML = _T.hcFaq.map(item =>
@@ -1873,6 +1877,11 @@ function closeHelpCenter() {
   document.getElementById('hcPanel').classList.remove('open');
   document.getElementById('hcBackdrop').classList.remove('open');
   document.getElementById('hcFabIcon').className = 'fas fa-headset';
+  // Restore FABs
+  const aiFab = document.getElementById('aiChatFab');
+  const waFab = document.getElementById('waFab');
+  if (aiFab) aiFab.style.display = '';
+  if (waFab) waFab.style.display = '';
 }
 function hcAsk(msg) {
   closeHelpCenter();
