@@ -832,7 +832,7 @@ function _playCartSound() {
   try {
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
-      const phrases = { bn: 'এড সাকসেসফুল', en: 'Added successfully', ar: 'تمت الإضافة بنجاح' };
+      const phrases = { bn: 'আপনার প্রোডাক্টটি এড হয়েছে', en: 'Your product has been added', ar: 'تمت إضافة منتجك بنجاح' };
       const text = phrases[currentLang] || phrases.en;
       const utt = new SpeechSynthesisUtterance(text);
       utt.rate = 1.05;
