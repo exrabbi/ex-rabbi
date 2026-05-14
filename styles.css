@@ -1446,6 +1446,16 @@ img { max-width: 100%; display: block; }
 }
 .btn-google-signin:active { background: #f5f5f5; }
 .btn-google-signin img { width: 22px; height: 22px; }
+.btn-apple-signin {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 13px 16px; border-radius: 12px; margin-top: 10px;
+  border: none; background: #000;
+  font-size: 14px; font-weight: 600; color: #fff; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.22); transition: background .15s, transform .1s;
+}
+.btn-apple-signin:active { background: #222; transform: scale(0.98); }
+[data-theme=dark] .btn-apple-signin { background: #fff; color: #000; }
+[data-theme=dark] .btn-apple-signin:active { background: #e0e0e0; }
 .auth-divider {
   display: flex; align-items: center; gap: 8px;
   margin: 14px 0; color: #bbb; font-size: 11px;
