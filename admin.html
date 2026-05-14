@@ -1476,8 +1476,11 @@ function orderRowHTML(o) {
   const items = o.items || [];
   const phone = o.address?.phone || o.customer?.phone || '';
   const a = o.address || {};
-  const mapLink = (a.lat && a.lng)
-    ? `<a href="https://maps.google.com/?q=${a.lat},${a.lng}" target="_blank" class="adm-btn xs blue" style="text-decoration:none"><i class="fas fa-map"></i> Map</a>`
+  const mapQuery = (a.lat && a.lng)
+    ? `${a.lat},${a.lng}`
+    : encodeURIComponent([a.address, a.area, a.city, 'Saudi Arabia'].filter(Boolean).join(', '));
+  const mapLink = (a.lat || a.city || a.address)
+    ? `<a href="https://maps.google.com/?q=${mapQuery}" target="_blank" class="adm-btn xs blue" style="text-decoration:none"><i class="fas fa-map-location-dot"></i> Map</a>`
     : '';
 
   // Product thumbnails row
@@ -1608,8 +1611,13 @@ function printOrder(orderId) {
     <tr style="background:#fff"><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #e91e8c">Total (incl. VAT)</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #e91e8c">SAR ${subtotal}</td></tr>
   ` : `<tr><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #eee">Total</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #eee">SAR ${subtotal}</td></tr>`;
 
-  const win = window.open('', '_blank');
-  win.document.write(`<!DOCTYPE html><html dir="ltr"><head>
+  const mapInvoiceQuery = (a.lat && a.lng)
+    ? `${a.lat},${a.lng}`
+    : encodeURIComponent([a.address, a.area, a.city, 'Saudi Arabia'].filter(Boolean).join(', '));
+  const mapInvoiceLink = (a.lat || a.city || a.address)
+    ? `<a href="https://maps.google.com/?q=${mapInvoiceQuery}" target="_blank" style="font-size:11px;color:#e91e8c;text-decoration:none;font-weight:700">📍 View on Google Maps</a>`
+    : '';
+  const htmlContent = `<!DOCTYPE html><html dir="ltr"><head>
     <meta charset="utf-8"/>
     <title>Invoice ${o.id}</title>
     <style>
@@ -1697,6 +1705,7 @@ function printOrder(orderId) {
         ${phone     ? `<div class="addr-item"><div class="addr-label">Phone</div><div class="addr-val">${phone}</div></div>` : ''}
         ${a.city    ? `<div class="addr-item"><div class="addr-label">City / Area</div><div class="addr-val">${[a.city,a.area].filter(Boolean).join(', ')}</div></div>` : ''}
         ${a.address ? `<div class="addr-item" style="grid-column:1/-1"><div class="addr-label">Full Address</div><div class="addr-val">${a.address}</div></div>` : ''}
+        ${mapInvoiceLink ? `<div class="addr-item" style="grid-column:1/-1;margin-top:6px">${mapInvoiceLink}</div>` : ''}
       </div>
     </div>` : ''}
 
@@ -1706,8 +1715,40 @@ function printOrder(orderId) {
     </div>
     <br class="no-print">
     <button onclick="window.print()" class="no-print" style="padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
-  </body></html>`);
-  win.document.close();
+  </body></html>`;
+  try {
+    const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
+    const blobUrl = URL.createObjectURL(blob);
+    const win2 = window.open(blobUrl, '_blank');
+    if (!win2) {
+      // Fallback: inject into iframe overlay
+      _printFallback(htmlContent);
+    } else {
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+    }
+  } catch(e) {
+    _printFallback(htmlContent);
+  }
+}
+
+function _printFallback(html) {
+  let overlay = document.getElementById('_printOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = '_printOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#111;overflow:auto;display:flex;flex-direction:column';
+    document.body.appendChild(overlay);
+  }
+  const blob2 = new Blob([html], { type: 'text/html; charset=utf-8' });
+  const url2 = URL.createObjectURL(blob2);
+  overlay.innerHTML = `
+    <div style="display:flex;gap:10px;padding:12px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0">
+      <a href="${url2}" target="_blank" style="flex:1;padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block">🖨️ Open to Print / Save PDF</a>
+      <button onclick="document.getElementById('_printOverlay').remove()" style="padding:12px 16px;background:#333;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer">✕</button>
+    </div>
+    <iframe src="${url2}" style="flex:1;border:none;width:100%;background:#fff"></iframe>`;
+  overlay.style.display = 'flex';
+  setTimeout(() => URL.revokeObjectURL(url2), 120000);
 }
 
 /* ===== CUSTOMERS ===== */
