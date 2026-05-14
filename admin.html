@@ -762,6 +762,19 @@
         <textarea id="pDesc" class="desc-editor" placeholder="পণ্যের বিস্তারিত বিবরণ লিখুন — material, features, shipping info..."></textarea>
       </div>
 
+      <!-- STOCK -->
+      <div class="field-wrap" style="margin-bottom:4px">
+        <div class="field-label">📦 Stock (কতটি পণ্য আছে)</div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <input type="number" id="pStock" class="adm-input" placeholder="0 = স্টক শেষ, ফাঁকা = সীমাহীন" min="0" style="flex:1"/>
+          <div style="display:flex;gap:6px;flex-shrink:0">
+            <button class="adm-btn sm gray" onclick="document.getElementById('pStock').value=''">∞ Unlimited</button>
+            <button class="adm-btn sm gray" onclick="document.getElementById('pStock').value='0'">০ শেষ</button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:#555;margin-top:4px">ফাঁকা রাখলে স্টক দেখাবে না · 0 দিলে "স্টক শেষ" দেখাবে · সংখ্যা দিলে কত আছে দেখাবে</div>
+      </div>
+
       <div class="form-grid g3">
         <div class="field-wrap">
           <div class="field-label">Rating (0–5)</div>
@@ -924,6 +937,7 @@ function renderProductList() {
           <div class="prod-meta">ID ${p.id} &nbsp;
             <span class="pill pill-cat">${p.category || ''}</span>
             ${p.tag ? `<span class="pill pill-tag">${p.tag}</span>` : ''}
+            ${p.stock === 0 ? `<span class="pill" style="background:#3f0808;color:#fca5a5">স্টক শেষ</span>` : p.stock !== undefined ? `<span class="pill" style="background:#1a2e1a;color:#86efac">${p.stock} pcs</span>` : ''}
             ${locked ? `<span class="pill" style="background:#78350f;color:#fde68a">${locked}</span>` : ''}
           </div>
         </div>
@@ -964,6 +978,7 @@ function openProductForm(id) {
     document.getElementById('pRating').value = p.rating || '';
     document.getElementById('pRatingCount').value = p.ratingCount || '';
     document.getElementById('pSold').value = p.sold || '';
+    document.getElementById('pStock').value = p.stock !== undefined ? p.stock : '';
     document.getElementById('pDesc').value = p.description || '';
     initSizeSelector(p.sizes || []);
     initColorSelector(p.colors || []);
@@ -971,7 +986,7 @@ function openProductForm(id) {
     setImgFocus(p.imgFocus || {x:50,y:50,scale:1});
   } else {
     document.getElementById('pEditId').value = '';
-    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pRating','pRatingCount','pSold','pDesc'].forEach(id => {
+    ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pRating','pRatingCount','pSold','pStock','pDesc'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
     });
@@ -1315,6 +1330,7 @@ function saveProduct() {
     colors: getSelectedColors(),
     description: document.getElementById('pDesc').value.trim(),
     imgFocus: getImgFocus(),
+    stock: document.getElementById('pStock').value !== '' ? parseInt(document.getElementById('pStock').value) : undefined,
     rating: parseFloat(document.getElementById('pRating').value) || 4.5,
     ratingCount: parseInt(document.getElementById('pRatingCount').value) || 0,
     sold: document.getElementById('pSold').value.trim() || '0',

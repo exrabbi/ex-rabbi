@@ -392,9 +392,10 @@ function productCardHTML(p) {
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
           <span class="product-sold">${p.sold} ${t('soldText')}</span>
         </div>
+        ${p.stock === 0 ? `<div class="stock-badge out">${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low">${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok">${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
-      <button class="add-cart-btn" onclick="event.stopPropagation();quickAddCart(${p.id})">
-        ${t('addToCart')}
+      <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `quickAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
+        ${p.stock === 0 ? t('outOfStock') : t('addToCart')}
       </button>
     </div>
   `;
@@ -760,6 +761,13 @@ function openModal(id) {
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · ${p.sold} ${t('soldText')}</span>
       </div>
+      ${p.stock === 0
+        ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>`
+        : p.stock !== undefined && p.stock <= 5
+          ? `<div class="modal-stock low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>`
+          : p.stock !== undefined
+            ? `<div class="modal-stock ok"><i class="fas fa-check-circle"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>`
+            : ''}
       <div class="modal-divider"></div>
       <p class="modal-section-title">${t('sizeSelect')}</p>
       <div class="size-options">
@@ -788,7 +796,7 @@ function openModal(id) {
       <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
         <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart" onclick="modalAddCart(${p.id})">${t('addToCart')}</button>
+      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
     </div>
   `;
   history.replaceState({}, '', '?p=' + id);
@@ -1330,6 +1338,17 @@ function _saveOrderRecord(items,totalSAR,method){
     });
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
+    // Reduce stock for each ordered item
+    const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
+    items.forEach(i => {
+      const p = PRODUCTS.find(x => x.id === i.id);
+      if (p && p.stock !== undefined) {
+        p.stock = Math.max(0, p.stock - (i.qty || 1));
+        custom[p.id] = custom[p.id] || {};
+        custom[p.id].stock = p.stock;
+      }
+    });
+    localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
 }
 
