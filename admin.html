@@ -222,6 +222,16 @@
       .form-grid.g3{grid-template-columns:1fr 1fr}
       .stat-row{grid-template-columns:repeat(2,1fr)}
     }
+
+    /* CAT CROP MODAL */
+    .cat-crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+    .cat-crop-overlay.open{display:flex}
+    .cat-crop-modal{background:#111;border-radius:22px;padding:20px 18px 24px;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08)}
+    .cat-crop-preview{position:relative;width:200px;height:240px;border-radius:100px 100px 14px 14px;overflow:hidden;border:3px solid #c9904a;background:#0a0a0a;cursor:grab;touch-action:none;user-select:none;box-shadow:0 0 30px rgba(201,144,74,.25)}
+    .cat-crop-preview:active{cursor:grabbing}
+    .cat-crop-preview img{position:absolute;pointer-events:none;will-change:transform}
+    .cat-crop-zoom-row{display:flex;align-items:center;gap:10px;width:100%}
+    .cat-crop-hint{font-size:11px;color:#444;text-align:center;line-height:1.5}
   </style>
 </head>
 <body>
@@ -1929,56 +1939,22 @@ function loadCatImages() {
   `;
 }
 
-async function uploadCatImage(key, input) {
+function uploadCatImage(key, input) {
   const file = input.files[0];
   if (!file) return;
-  const status = document.getElementById(`catUploadStatus_${key}`);
-  if (status) status.textContent = 'Uploading...';
-  try {
-    const url = await uploadImage(file);
-    if (url) {
-      const img = document.getElementById(`catImg_${key}`);
-      if (img) { img.src = url; img.style.cssText = 'width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #c9904a;display:block'; }
-      const draft = JSON.parse(localStorage.getItem('exg_cat_images_draft') || '{}');
-      draft[key] = url;
-      localStorage.setItem('exg_cat_images_draft', JSON.stringify(draft));
-      if (status) { status.textContent = '✅ Uploaded!'; setTimeout(() => { if(status) status.textContent = ''; }, 2000); }
-    }
-  } catch(e) {
-    if (status) status.textContent = '❌ Failed';
-  }
+  const reader = new FileReader();
+  reader.onload = e => openCatCrop(key, false, e.target.result);
+  reader.readAsDataURL(file);
+  input.value = '';
 }
 
-async function uploadCustomCatImage(key, input) {
+function uploadCustomCatImage(key, input) {
   const file = input.files[0];
   if (!file) return;
-  const status = document.getElementById(`catUploadStatus_${key}`);
-  if (status) status.textContent = 'Uploading...';
-  try {
-    const url = await uploadImage(file);
-    if (url) {
-      const el = document.getElementById(`catImg_${key}`);
-      if (el) {
-        // Replace placeholder div with img element
-        if (el.tagName === 'DIV') {
-          const img = document.createElement('img');
-          img.id = `catImg_${key}`;
-          img.src = url;
-          img.style.cssText = 'width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #7c6fff;display:block';
-          el.parentNode.replaceChild(img, el);
-        } else {
-          el.src = url;
-        }
-      }
-      const draft = JSON.parse(localStorage.getItem('exg_custom_cats_draft') || '{}');
-      if (!draft[key]) draft[key] = {};
-      draft[key].img = url;
-      localStorage.setItem('exg_custom_cats_draft', JSON.stringify(draft));
-      if (status) { status.textContent = '✅ Uploaded!'; setTimeout(() => { if(status) status.textContent = ''; }, 2000); }
-    }
-  } catch(e) {
-    if (status) status.textContent = '❌ Failed';
-  }
+  const reader = new FileReader();
+  reader.onload = e => openCatCrop(key, true, e.target.result);
+  reader.readAsDataURL(file);
+  input.value = '';
 }
 
 function stageCatName(key, name) {
@@ -2737,6 +2713,158 @@ async function testGithubToken() {
     if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-flask"></i> Token পরীক্ষা করুন'; }
   }
 }
+</script>
+
+<!-- ===== CATEGORY IMAGE CROP MODAL ===== -->
+<div class="cat-crop-overlay" id="catCropOverlay">
+  <div class="cat-crop-modal">
+    <div style="width:100%;display:flex;align-items:center;justify-content:space-between">
+      <div style="font-size:14px;font-weight:800;color:#ddd"><i class="fas fa-crop-alt" style="color:#e91e8c"></i> Image Adjuster</div>
+      <button class="modal-close-btn" onclick="closeCatCrop()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cat-crop-hint">📱 Drag করুন • Pinch বা Slider দিয়ে Zoom করুন</div>
+    <div class="cat-crop-preview" id="catCropPreview">
+      <img id="catCropImgEl" src="" alt="" />
+    </div>
+    <div class="cat-crop-zoom-row">
+      <i class="fas fa-search-minus" style="color:#555;font-size:13px"></i>
+      <input type="range" class="img-zoom-slider" id="catCropZoomSlider" min="1" max="4" step="0.05" value="1" oninput="_catCropZoomSlide(this.value)" style="flex:1;accent-color:#e91e8c"/>
+      <i class="fas fa-search-plus" style="color:#555;font-size:13px"></i>
+      <span id="catCropZoomVal" style="font-size:11px;color:#888;min-width:32px;text-align:right">1×</span>
+    </div>
+    <div style="display:flex;gap:10px;width:100%">
+      <button class="adm-btn gray" onclick="_catCropReset()" style="flex:1;justify-content:center"><i class="fas fa-undo"></i> Reset</button>
+      <button class="adm-btn" onclick="applyCatCrop()" style="flex:2;justify-content:center"><i class="fas fa-check"></i> Apply & Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== CATEGORY IMAGE CROP SYSTEM ===== */
+let _catCropKey = null, _catCropIsCustom = false;
+let _catCropState = { x:0, y:0, scale:1, baseScale:1 };
+let _catCropDrag = { active:false, startX:0, startY:0, imgX:0, imgY:0 };
+let _catCropPinch = { active:false, startDist:0, startScale:1 };
+const _CROP_W = 200, _CROP_H = 240;
+
+function openCatCrop(key, isCustom, imgUrl) {
+  _catCropKey = key; _catCropIsCustom = isCustom;
+  const img = document.getElementById('catCropImgEl');
+  img.src = imgUrl;
+  img.onload = () => {
+    const bs = Math.max(_CROP_W / img.naturalWidth, _CROP_H / img.naturalHeight);
+    _catCropState = { x:0, y:0, scale:1, baseScale:bs };
+    document.getElementById('catCropZoomSlider').value = 1;
+    document.getElementById('catCropZoomVal').textContent = '1×';
+    _catCropUpdateDisplay();
+  };
+  document.getElementById('catCropOverlay').classList.add('open');
+}
+function closeCatCrop() { document.getElementById('catCropOverlay').classList.remove('open'); }
+
+function _catCropUpdateDisplay() {
+  const img = document.getElementById('catCropImgEl');
+  const total = _catCropState.baseScale * _catCropState.scale;
+  const w = img.naturalWidth * total, h = img.naturalHeight * total;
+  _catCropState.x = Math.min(0, Math.max(_CROP_W - w, _catCropState.x));
+  _catCropState.y = Math.min(0, Math.max(_CROP_H - h, _catCropState.y));
+  img.style.width = w + 'px'; img.style.height = h + 'px';
+  img.style.left = _catCropState.x + 'px'; img.style.top = _catCropState.y + 'px';
+}
+function _catCropZoomSlide(v) {
+  _catCropState.scale = parseFloat(v);
+  document.getElementById('catCropZoomVal').textContent = parseFloat(v).toFixed(1) + '×';
+  _catCropUpdateDisplay();
+}
+function _catCropReset() {
+  _catCropState.x = 0; _catCropState.y = 0; _catCropState.scale = 1;
+  document.getElementById('catCropZoomSlider').value = 1;
+  document.getElementById('catCropZoomVal').textContent = '1×';
+  _catCropUpdateDisplay();
+}
+
+function applyCatCrop() {
+  const canvas = document.createElement('canvas');
+  canvas.width = _CROP_W; canvas.height = _CROP_H;
+  const ctx = canvas.getContext('2d');
+  const img = document.getElementById('catCropImgEl');
+  const w = parseFloat(img.style.width), h = parseFloat(img.style.height);
+  const x = parseFloat(img.style.left), y = parseFloat(img.style.top);
+  ctx.drawImage(img, x, y, w, h);
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+
+  const thumbStyle = `width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;display:block`;
+  if (!_catCropIsCustom) {
+    const el = document.getElementById(`catImg_${_catCropKey}`);
+    if (el) { el.src = dataUrl; el.style.cssText = thumbStyle + ';border:2px solid #c9904a'; }
+    const draft = JSON.parse(localStorage.getItem('exg_cat_images_draft') || '{}');
+    draft[_catCropKey] = dataUrl;
+    localStorage.setItem('exg_cat_images_draft', JSON.stringify(draft));
+  } else {
+    const el = document.getElementById(`catImg_${_catCropKey}`);
+    if (el && el.tagName === 'DIV') {
+      const newImg = document.createElement('img');
+      newImg.id = `catImg_${_catCropKey}`;
+      newImg.src = dataUrl;
+      newImg.style.cssText = thumbStyle + ';border:2px solid #7c6fff';
+      el.parentNode.replaceChild(newImg, el);
+    } else if (el) { el.src = dataUrl; }
+    const draft = JSON.parse(localStorage.getItem('exg_custom_cats_draft') || '{}');
+    if (!draft[_catCropKey]) draft[_catCropKey] = {};
+    draft[_catCropKey].img = dataUrl;
+    localStorage.setItem('exg_custom_cats_draft', JSON.stringify(draft));
+  }
+  const st = document.getElementById(`catUploadStatus_${_catCropKey}`);
+  if (st) { st.textContent = '✅ Done!'; setTimeout(() => { if(st) st.textContent=''; }, 2000); }
+  closeCatCrop();
+  toast('✅ Image adjusted & saved!');
+}
+
+// ── Drag (mouse) ──
+document.addEventListener('DOMContentLoaded', () => {
+  const preview = document.getElementById('catCropPreview');
+  preview.addEventListener('mousedown', e => {
+    _catCropDrag = { active:true, startX:e.clientX, startY:e.clientY, imgX:_catCropState.x, imgY:_catCropState.y };
+    e.preventDefault();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!_catCropDrag.active) return;
+    _catCropState.x = _catCropDrag.imgX + (e.clientX - _catCropDrag.startX);
+    _catCropState.y = _catCropDrag.imgY + (e.clientY - _catCropDrag.startY);
+    _catCropUpdateDisplay();
+  });
+  window.addEventListener('mouseup', () => { _catCropDrag.active = false; });
+
+  // ── Touch drag + pinch ──
+  preview.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      _catCropDrag = { active:true, startX:e.touches[0].clientX, startY:e.touches[0].clientY, imgX:_catCropState.x, imgY:_catCropState.y };
+    } else if (e.touches.length === 2) {
+      _catCropDrag.active = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      _catCropPinch = { active:true, startDist:Math.hypot(dx,dy), startScale:_catCropState.scale };
+    }
+    e.preventDefault();
+  }, { passive:false });
+  preview.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && _catCropDrag.active) {
+      _catCropState.x = _catCropDrag.imgX + (e.touches[0].clientX - _catCropDrag.startX);
+      _catCropState.y = _catCropDrag.imgY + (e.touches[0].clientY - _catCropDrag.startY);
+      _catCropUpdateDisplay();
+    } else if (e.touches.length === 2 && _catCropPinch.active) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const ns = Math.min(4, Math.max(1, _catCropPinch.startScale * (Math.hypot(dx,dy) / _catCropPinch.startDist)));
+      _catCropState.scale = ns;
+      document.getElementById('catCropZoomSlider').value = ns;
+      document.getElementById('catCropZoomVal').textContent = ns.toFixed(1) + '×';
+      _catCropUpdateDisplay();
+    }
+    e.preventDefault();
+  }, { passive:false });
+  preview.addEventListener('touchend', () => { _catCropDrag.active = false; _catCropPinch.active = false; });
+});
 </script>
 </body>
 </html>
