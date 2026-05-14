@@ -1568,7 +1568,8 @@ function renderMyOrders() {
     const label = statusMap[st] || st;
     const step = statusStep[st] ?? 0;
     const cancelled = st === 'cancelled';
-    const date = o.date ? new Date(o.date).toLocaleDateString(currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US', { day:'numeric', month:'short', year:'numeric' }) : '';
+    const _localeMap = { ar: 'ar-SA', bn: 'bn-BD', hi: 'hi-IN' };
+    const date = o.date ? new Date(o.date).toLocaleDateString(_localeMap[currentLang] || 'en-US', { day:'numeric', month:'short', year:'numeric' }) : '';
     const items = (o.items || []).slice(0, 4);
     const extraCount = (o.items || []).length - 4;
     const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
