@@ -620,7 +620,7 @@ function productCardHTML(p) {
         <div class="product-prices">
           <span class="price-current">${fmt(p.price)}</span>
           <span class="price-original">${fmt(p.originalPrice)}</span>
-          ${VAT_RATE > 0 ? `<span class="price-vat-badge">${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
+          ${VAT_RATE > 0 ? `<span class="price-vat-badge"><i class="fas fa-receipt"></i>${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
@@ -834,18 +834,37 @@ function renderCart() {
   const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
   const fmtD = v => lang.currency + Math.round(v).toLocaleString();
 
-  // Delivery progress bar
+  // Delivery progress (VIP design)
   const pct = Math.min(100, (subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100);
-  const barFill = document.getElementById('cartDelBarFill');
-  const progText = document.getElementById('cartDelProgText');
   const progBox = document.getElementById('cartDelProg');
-  if (barFill) { barFill.style.width = pct + '%'; barFill.classList.toggle('full', freeDelivery); }
-  if (progBox) progBox.classList.toggle('free-del', freeDelivery);
-  if (progText) {
+  const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
+  if (progBox) {
     if (freeDelivery) {
-      progText.textContent = t('freeDeliveryActive');
+      progBox.innerHTML = `
+        <div class="ndg-free-pill" style="margin:0 0 10px">
+          <div class="ndg-icon-circle"><i class="fas fa-truck-fast"></i></div>
+          <span>${t('freeDeliveryActive').replace(/🎉/g,'')}</span>
+          <div class="ndg-check"><i class="fas fa-check"></i></div>
+        </div>`;
     } else {
-      progText.textContent = t('addMoreFree') + ' ' + fmtD(FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp) + ' ' + t('moreForFree');
+      progBox.innerHTML = `
+        <div class="ndg-vip" style="margin:0 0 10px">
+          <div class="ndg-top">
+            <div class="ndg-left">
+              <div class="ndg-icon"><i class="fas fa-truck-fast"></i></div>
+              <div class="ndg-texts">
+                <span class="ndg-label">${t('addMoreFree') || 'Add'}</span>
+                <span class="ndg-amount">${fmtD(needed)}</span>
+                <span class="ndg-sub">${t('moreForFree') || 'more for free delivery'}</span>
+              </div>
+            </div>
+            <div class="ndg-badge"><i class="fas fa-gift"></i> FREE</div>
+          </div>
+          <div class="ndg-bar-track">
+            <div class="ndg-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <div class="ndg-labels"><span>SAR 0</span><span>★ SAR ${FREE_DELIVERY_THRESHOLD_SAR} FREE</span></div>
+        </div>`;
     }
   }
 
@@ -3183,6 +3202,32 @@ function closeReviews() {
   document.body.style.overflow = '';
 }
 
+const REV_KEYWORDS = [
+  { label: 'Comfortable',  words: ['comfort','comfortable','مريح','आरामदायक','আরামদায়ক'] },
+  { label: 'Perfect Fit',  words: ['fit perfectly','perfect fit','مقاس مثالي','মাপ মিলেছে','আকার ঠিক'] },
+  { label: 'Excellent',    words: ['excellent','amazing','rائع','رائع','অসাধারণ','अद्भुत'] },
+  { label: 'Good Quality', words: ['quality','جودة','গুণমান','गुणवत्ता','কোয়ালিটি'] },
+  { label: 'Fast Delivery',words: ['delivery','days','توصيل','ডেলিভারি','डिलीवरी','দিনে'] },
+  { label: 'Recommended',  words: ['recommend','أنصح','অর্ডার করব','recommend'] },
+];
+
+const COUNTRY_FLAGS = {
+  'Saudi Arabia':'🇸🇦','Riyadh':'🇸🇦','Jeddah':'🇸🇦','Mecca':'🇸🇦','Medina':'🇸🇦',
+  'Dammam':'🇸🇦','Makkah':'🇸🇦','Al Qatif':'🇸🇦','KSA':'🇸🇦',
+  'UAE':'🇦🇪','Dubai':'🇦🇪','Abu Dhabi':'🇦🇪',
+  'Kuwait':'🇰🇼','Qatar':'🇶🇦','Oman':'🇴🇲','Bahrain':'🇧🇭',
+  'Egypt':'🇪🇬','Bangladesh':'🇧🇩','Algeria':'🇩🇿','Pakistan':'🇵🇰',
+  'India':'🇮🇳','Jordan':'🇯🇴','Morocco':'🇲🇦','Lebanon':'🇱🇧',
+};
+
+function _revCountry(c) {
+  if (!c) return '';
+  for (const [k,v] of Object.entries(COUNTRY_FLAGS)) {
+    if (c.toLowerCase().includes(k.toLowerCase())) return v;
+  }
+  return '🌍';
+}
+
 function renderRevSummary() {
   const all = getAllReviews();
   const total = all.length;
@@ -3190,7 +3235,7 @@ function renderRevSummary() {
   document.getElementById('revAvgScore').textContent = avg.toFixed(1);
   document.getElementById('revTotalCount').textContent = (total + 1248).toLocaleString();
   const starsEl = document.getElementById('revAvgStars');
-  starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#ddd'}">★</span>`).join('');
+  starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#e0e0e0'}">★</span>`).join('');
   const barsEl = document.getElementById('revBarsCol');
   const colors = ['','#e64a19','#f57c00','#ff8f00','#ffa000','#ffd700'];
   barsEl.innerHTML = [5,4,3,2,1].map(star => {
@@ -3201,9 +3246,24 @@ function renderRevSummary() {
   // Update entry strip count
   const ec = document.getElementById('revEntryCount');
   if (ec) ec.textContent = (total+1248).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+
+  // Keyword pills
+  const pillsEl = document.getElementById('revKeywordRow');
+  if (pillsEl) {
+    const pills = REV_KEYWORDS.map(kw => {
+      const cnt = all.filter(r => {
+        const txt = (typeof r.text === 'object') ? (r.text.en || '') : (r.text || '');
+        return kw.words.some(w => txt.toLowerCase().includes(w.toLowerCase()));
+      }).length;
+      return { label: kw.label, cnt };
+    }).filter(p => p.cnt > 0).sort((a,b) => b.cnt - a.cnt);
+    pillsEl.innerHTML = pills.map(p =>
+      `<button class="rev-kw-pill" onclick="filterRevByKeyword('${p.label}',this)">${p.label}(${p.cnt})</button>`
+    ).join('');
+  }
 }
 
-function renderRevList(filter) {
+function renderRevList(filter, keyword) {
   activeRevFilter = filter;
   const all = getAllReviews();
   let filtered = all;
@@ -3211,6 +3271,13 @@ function renderRevList(filter) {
   else if (filter === '4') filtered = all.filter(r=>r.rating===4);
   else if (filter === '3') filtered = all.filter(r=>r.rating<=3);
   else if (filter === 'photos') filtered = all.filter(r=>r.photos && r.photos.length>0);
+  if (keyword) {
+    const kw = REV_KEYWORDS.find(k=>k.label===keyword);
+    if (kw) filtered = filtered.filter(r=>{
+      const txt = (typeof r.text === 'object') ? (r.text.en || '') : (r.text || '');
+      return kw.words.some(w=>txt.toLowerCase().includes(w.toLowerCase()));
+    });
+  }
   const list = document.getElementById('revList');
   if (!filtered.length) {
     list.innerHTML = `<div class="rev-empty"><i class="fas fa-comment-slash"></i><p>${t('noReviews')}</p></div>`;
@@ -3218,23 +3285,31 @@ function renderRevList(filter) {
   }
   list.innerHTML = filtered.map(r => {
     const txt = (typeof r.text === 'object') ? (r.text[currentLang] || r.text.en) : r.text;
-    const stars = [1,2,3,4,5].map(i=>`<span style="color:${i<=r.rating?'#ffd700':'#ddd'}">★</span>`).join('');
-    const photos = (r.photos||[]).length ? `<div class="rev-card-photos">${r.photos.map(p=>`<img src="${p}" alt="" loading="lazy"/>`).join('')}</div>` : '';
-    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+    const stars = [1,2,3,4,5].map(i=>`<i class="fa${i<=r.rating?'s':'r'} fa-star" style="color:${i<=r.rating?'#222':'#e0e0e0'};font-size:12px"></i>`).join('');
+    const photos = (r.photos||[]).length
+      ? `<div class="rev-card-photos">${r.photos.map(p=>`<img src="${p}" alt="" loading="lazy" onclick="event.stopPropagation()"/>`).join('')}</div>` : '';
+    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}) : '';
+    const flag = _revCountry(r.country);
+    const helpful = JSON.parse(localStorage.getItem('exg_helpful_'+r.id)||'{"cnt":'+(r.helpful||0)+',"voted":false}');
     return `<div class="rev-card">
       <div class="rev-card-top">
-        <div class="rev-avatar" style="background:${r.grad||'#e91e8c'}">${r.initial||r.name[0]}</div>
-        <div class="rev-card-info">
-          <div class="rev-card-name">${r.name} <span class="rev-verified"><i class="fas fa-check-circle"></i> ${t('verifiedPurchase')}</span></div>
-          <div class="rev-card-meta">${dateStr}${r.country?' · '+r.country:''}</div>
+        <div class="rev-avatar-temu" style="background:${r.grad||'#e91e8c'}">${r.initial||r.name[0]}</div>
+        <div class="rev-temu-meta">
+          <div class="rev-temu-name">${r.name}${flag?' <span class="rev-flag">in ${flag}</span>':''}<span class="rev-temu-date"> on ${dateStr}</span></div>
+          <div class="rev-temu-stars">${stars}</div>
         </div>
-        <div class="rev-card-stars">${stars}</div>
       </div>
-      ${r.product?`<div class="rev-card-product"><i class="fas fa-box"></i> ${r.product}</div>`:''}
+      ${r.product?`<div class="rev-purchased"><span class="rev-purchased-lbl">${t('purchasedLabel')||'Purchased:'}</span> ${r.product}</div>`:''}
       <p class="rev-card-text">${txt}</p>
       ${photos}
-      <div class="rev-card-footer">
-        ${buildReactions(r.id, r.helpful||0)}
+      <div class="rev-temu-footer">
+        <button class="rev-temu-action" onclick="_revShare(${r.id})"><i class="fas fa-share-nodes"></i> ${t('shareAction')||'Share'}</button>
+        <span class="rev-pipe">|</span>
+        <button class="rev-temu-action rev-helpful-btn" id="revHelp${r.id}" onclick="_revHelpful(${r.id},this)">
+          <i class="${helpful.voted?'fas':'far'} fa-thumbs-up"></i> ${t('helpfulAction')||'Helpful'} ${helpful.cnt > 0?'('+helpful.cnt+')':''}
+        </button>
+        <span class="rev-pipe">|</span>
+        <button class="rev-temu-action rev-report-btn" onclick="_revReport(${r.id})"><i class="fas fa-flag"></i> ${t('reportAction')||'Report'}</button>
       </div>
     </div>`;
   }).join('');
@@ -3242,8 +3317,43 @@ function renderRevList(filter) {
 
 function filterReviewsBy(filter, el) {
   document.querySelectorAll('.rev-filter').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.rev-kw-pill').forEach(b=>b.classList.remove('active'));
   if (el) el.classList.add('active');
   renderRevList(filter);
+}
+
+function filterRevByKeyword(keyword, el) {
+  document.querySelectorAll('.rev-kw-pill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.rev-filter').forEach(b=>b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderRevList('all', keyword);
+}
+
+function _revHelpful(id, btn) {
+  const key = 'exg_helpful_' + id;
+  const data = JSON.parse(localStorage.getItem(key) || '{"cnt":0,"voted":false}');
+  if (data.voted) return;
+  const rev = getAllReviews().find(r=>r.id===id);
+  data.cnt = (rev ? rev.helpful||0 : data.cnt) + 1;
+  data.voted = true;
+  localStorage.setItem(key, JSON.stringify(data));
+  if (btn) {
+    btn.innerHTML = `<i class="fas fa-thumbs-up"></i> ${t('helpfulAction')||'Helpful'} (${data.cnt})`;
+    btn.style.color = '#e91e8c';
+  }
+}
+
+function _revShare(id) {
+  if (navigator.share) {
+    navigator.share({ title: 'EX GLOBAL Review', url: location.href });
+  } else {
+    navigator.clipboard?.writeText(location.href);
+    showToast(t('linkCopied') || 'Link copied!');
+  }
+}
+
+function _revReport(id) {
+  showToast('Report submitted. Thank you.');
 }
 
 function openWriteReview() {
@@ -4317,6 +4427,299 @@ async function _saveOrderToFirestore(orderData) {
     fab.addEventListener('click', e => { if (dragged) { dragged = false; e.stopImmediatePropagation(); } }, true);
   });
 })();
+
+// ===== VISUAL SEARCH =====
+function openVisualSearch() {
+  const sheet = document.getElementById('vsSheet');
+  sheet.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  applyTranslations();
+}
+function closeVisualSearch() {
+  document.getElementById('vsSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function vsCapture() {
+  closeVisualSearch();
+  setTimeout(() => document.getElementById('vsFileCapture').click(), 100);
+}
+function vsAlbum() {
+  closeVisualSearch();
+  setTimeout(() => document.getElementById('vsFileAlbum').click(), 100);
+}
+function vsShowHistory() {
+  const hist = JSON.parse(localStorage.getItem('exg_vs_history') || '[]');
+  closeVisualSearch();
+  if (!hist.length) { showToast(t('vsNoHistory') || 'No visual search history'); return; }
+  // Show last searched item as filter
+  _vsShowResults(hist[0].matchIds, hist[0].thumb, true);
+}
+
+function _vsHandleFile(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  showToast((t('vsAnalyzing') || 'Analyzing image...'));
+  const reader = new FileReader();
+  reader.onload = e => _vsProcessImage(e.target.result, file.name);
+  reader.readAsDataURL(file);
+}
+
+function _vsProcessImage(dataUrl, name) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.getElementById('vsCanvas');
+    const SIZE = 64;
+    canvas.width = SIZE; canvas.height = SIZE;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, SIZE, SIZE);
+    const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+
+    // Average color
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 128) continue; // skip transparent
+      r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+    }
+    if (!count) { showToast('❌ Could not read image'); return; }
+    r = Math.round(r / count); g = Math.round(g / count); b = Math.round(b / count);
+    const dominant = [r, g, b];
+
+    // Score each product by color similarity
+    const scored = PRODUCTS.map(p => {
+      const minDist = (p.colors || []).reduce((best, hex) => {
+        const rgb = _vsHexToRgb(hex);
+        if (!rgb) return best;
+        const d = _vsColorDist(dominant, rgb);
+        return Math.min(best, d);
+      }, 999999);
+      return { p, minDist };
+    });
+
+    scored.sort((a, b) => a.minDist - b.minDist);
+    const matchIds = scored.slice(0, 12).map(s => s.p.id);
+
+    // Save to history
+    const hist = JSON.parse(localStorage.getItem('exg_vs_history') || '[]');
+    hist.unshift({ matchIds, thumb: dataUrl, ts: Date.now() });
+    localStorage.setItem('exg_vs_history', JSON.stringify(hist.slice(0, 5)));
+
+    _vsShowResults(matchIds, dataUrl, false);
+  };
+  img.src = dataUrl;
+}
+
+function _vsColorDist(rgb1, rgb2) {
+  const dr = rgb1[0] - rgb2[0], dg = rgb1[1] - rgb2[1], db = rgb1[2] - rgb2[2];
+  return Math.sqrt(dr*dr + dg*dg + db*db);
+}
+
+function _vsHexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+  return m ? [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)] : null;
+}
+
+function _vsShowResults(matchIds, thumb, fromHistory) {
+  // Filter products to matched IDs
+  const matched = PRODUCTS.filter(p => matchIds.includes(p.id));
+
+  // Close any open panels, scroll to top, show results
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    // Inject banner above product grid
+    _vsInjectBanner(thumb, matched.length, fromHistory, matchIds);
+    // Filter grid to matched products
+    _vsFilterGrid(matched);
+  }, 200);
+}
+
+function _vsInjectBanner(thumb, count) {
+  document.getElementById('vsBanner')?.remove();
+  const banner = document.createElement('div');
+  banner.id = 'vsBanner';
+  banner.className = 'vs-result-banner';
+  banner.innerHTML = `
+    <img class="vs-result-thumb" src="${thumb}" alt="search">
+    <div>
+      <div class="vs-result-label">${t('vsResultLabel') || 'Visual Match'}</div>
+      <div class="vs-result-sub">${count} ${t('vsResultSub') || 'similar products found'}</div>
+    </div>
+    <button class="vs-result-clear" onclick="_vsClearSearch()" title="Clear">×</button>`;
+  const grid = document.getElementById('productsGrid');
+  if (grid && grid.parentNode) grid.parentNode.insertBefore(banner, grid);
+}
+
+function _vsFilterGrid(matched) {
+  const grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  grid.innerHTML = matched.map(p => productCardHTML(p)).join('');
+  document.getElementById('loadMoreBtn').style.display = 'none';
+}
+
+function _vsClearSearch() {
+  document.getElementById('vsBanner')?.remove();
+  renderProducts();
+}
+
+// ===== ACCOUNT SECURITY PANEL =====
+function openAccountSecurity() {
+  document.getElementById('secOverlay').classList.add('open');
+  document.getElementById('secPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _secRefresh();
+  applyTranslations();
+}
+
+function closeAccountSecurity() {
+  document.getElementById('secOverlay').classList.remove('open');
+  document.getElementById('secPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _secRefresh() {
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  const sec  = JSON.parse(localStorage.getItem('exg_security') || '{}');
+
+  // Phone
+  const phone = sec.phone || (user && user.phone) || '';
+  document.getElementById('secPhoneVal').textContent = phone || t('notAdded');
+  const phoneBtnSpan = document.getElementById('secPhoneBtn').querySelector('span');
+  phoneBtnSpan.textContent = t(phone ? 'edit' : 'add');
+
+  // Email
+  const email = (user && user.email) || '';
+  document.getElementById('secEmailVal').textContent = email || '—';
+
+  // Password
+  const hasPass = !!sec.hasPassword;
+  document.getElementById('secPasswordVal').textContent = t(hasPass ? 'passwordSet' : 'notSet');
+  const passBtnSpan = document.getElementById('secPasswordBtn').querySelector('span');
+  passBtnSpan.textContent = t(hasPass ? 'change' : 'add');
+
+  // 2FA
+  const twoFA = !!sec.twoFA;
+  document.getElementById('sec2FAVal').textContent = t(twoFA ? 'twoFactorOn' : 'twoFactorOff');
+  document.getElementById('sec2FABtnText').textContent = t(twoFA ? 'turnOff' : 'turnOn');
+
+  // Google
+  const googleLinked = !!sec.googleLinked || !!(user && user.provider === 'google');
+  document.getElementById('secGoogleVal').textContent = t(googleLinked ? 'linked' : 'notLinked');
+  document.getElementById('secGoogleBtnText').textContent = t(googleLinked ? 'linked' : 'link');
+  document.getElementById('secGoogleBtn').classList.toggle('linked', googleLinked);
+
+  // Facebook
+  const fbLinked = !!sec.fbLinked || !!(user && user.provider === 'facebook');
+  document.getElementById('secFbVal').textContent = t(fbLinked ? 'linked' : 'notLinked');
+  document.getElementById('secFbBtnText').textContent = t(fbLinked ? 'linked' : 'link');
+  document.getElementById('secFbBtn').classList.toggle('linked', fbLinked);
+}
+
+function secPhoneEdit() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const current = sec.phone || '';
+  const val = prompt(t('enterPhone'), current);
+  if (val === null) return;
+  const clean = val.trim();
+  if (clean && !/^\+?[\d\s\-]{7,16}$/.test(clean)) { showToast('❌ ' + t('invalidPhone')); return; }
+  sec.phone = clean;
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast('✓ ' + t('phoneAdded'));
+}
+
+function secEmailEdit() {
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  const current = (user && user.email) || '';
+  const val = prompt(t('enterNewEmail'), current);
+  if (val === null) return;
+  const clean = val.trim();
+  if (clean && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { showToast('❌ ' + t('enterValidEmail')); return; }
+  if (user) { user.email = clean; localStorage.setItem('exglobal_user', JSON.stringify(user)); }
+  _secRefresh();
+  showToast('✓ ' + t('emailUpdated'));
+}
+
+function secPasswordEdit() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const val = prompt(t('enterNewPassword'));
+  if (val === null) return;
+  if (val.length < 6) { showToast('❌ ' + t('passwordTooShort')); return; }
+  sec.hasPassword = true;
+  sec.passwordAt = Date.now();
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast('✓ ' + t('passwordChanged'));
+}
+
+function sec2FAToggle() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  sec.twoFA = !sec.twoFA;
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast(t(sec.twoFA ? 'twoFactorEnabled' : 'twoFactorDisabled'));
+}
+
+function secGoogleLink() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  if (sec.googleLinked || (user && user.provider === 'google')) return;
+  closeAccountSecurity();
+  setTimeout(openAuth, 300);
+}
+
+function secFbLink() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  if (sec.fbLinked || (user && user.provider === 'facebook')) return;
+  closeAccountSecurity();
+  setTimeout(openAuth, 300);
+}
+
+function openSignInActivity() {
+  const history = JSON.parse(localStorage.getItem('exg_signin_history') || '[]');
+  const user    = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+
+  // Build list (always show current session at top)
+  const rows = [];
+  if (user) {
+    rows.push({ device: navigator.platform || 'This Device', ts: Date.now(), current: true });
+  }
+  rows.push(...history.slice(0, 4));
+
+  const sheet = document.createElement('div');
+  sheet.className = 'sec-activity-sheet';
+  sheet.innerHTML = `
+    <div class="sec-activity-bg" onclick="this.parentElement.remove()"></div>
+    <div class="sec-activity-card">
+      <div class="sec-activity-handle"></div>
+      <div class="sec-activity-title">${t('signInActivity')}</div>
+      ${rows.length ? rows.map(r => `
+        <div class="sec-act-item">
+          <div class="sec-act-dot ${r.current ? 'current' : 'old'}"></div>
+          <div class="sec-act-info">
+            <div class="sec-act-device">${r.device}${r.current ? ' (' + t('thisDevice') + ')' : ''}</div>
+            <div class="sec-act-time">${new Date(r.ts).toLocaleString()}</div>
+          </div>
+        </div>`).join('') : `<p style="color:#aaa;font-size:13px">${t('noSignInHistory')}</p>`}
+      <button class="sec-act-close-btn" onclick="this.closest('.sec-activity-sheet').remove()">${t('close') || 'Close'}</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  requestAnimationFrame(() => sheet.classList.add('open'));
+}
+
+function confirmDeleteAccount() {
+  if (!confirm(t('confirmDeleteAccount'))) return;
+  localStorage.clear();
+  showToast(t('accountDeleted'));
+  setTimeout(() => location.reload(), 1500);
+}
+
+// Log sign-in event to history
+function _logSignIn(device) {
+  const history = JSON.parse(localStorage.getItem('exg_signin_history') || '[]');
+  history.unshift({ device: device || navigator.platform || 'Web Browser', ts: Date.now() });
+  localStorage.setItem('exg_signin_history', JSON.stringify(history.slice(0, 10)));
+}
 
 // Check for Moyasar callback on page load
 (function _checkMoyasarCallback() {
