@@ -1728,15 +1728,15 @@ function openProfile() {
   // Gender
   _selectedGender = u.gender || 'male';
   selectGender(_selectedGender);
-  // Show modal
+  // Show panel
   document.getElementById('profileOverlay').classList.add('open');
-  document.getElementById('profileModal').classList.add('open');
+  document.getElementById('profilePanel').style.transform = 'translateX(0)';
   document.body.style.overflow = 'hidden';
 }
 
 function closeProfile() {
   document.getElementById('profileOverlay').classList.remove('open');
-  document.getElementById('profileModal').classList.remove('open');
+  document.getElementById('profilePanel').style.transform = 'translateX(100%)';
   document.body.style.overflow = '';
 }
 
