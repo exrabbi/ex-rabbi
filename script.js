@@ -1845,8 +1845,16 @@ function getLocationText() {
 // Init auth and address on page load
 document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
-  // Firebase auth state listener (if Firebase is configured)
+  // Firebase auth state listener + redirect result handler
   if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+    // Handle Google redirect result on page load
+    firebase.auth().getRedirectResult().then(result => {
+      if (result && result.user) {
+        setUser({ name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid, provider: 'google' });
+        closeAuth();
+        showToast(t('welcome') + result.user.displayName.split(' ')[0] + '!');
+      }
+    }).catch(() => {});
     firebase.auth().onAuthStateChanged(user => {
       if (user && !currentUser) {
         setUser({ name: user.displayName, email: user.email, avatar: user.photoURL, uid: user.uid, provider: 'google' });
@@ -1880,16 +1888,8 @@ async function signInWithGoogle() {
   }
   try {
     const provider = new firebase.auth.GoogleAuthProvider();
-    const result = await firebase.auth().signInWithPopup(provider);
-    setUser({
-      name: result.user.displayName,
-      email: result.user.email,
-      avatar: result.user.photoURL,
-      uid: result.user.uid,
-      provider: 'google'
-    });
-    closeAuth();
-    showToast(t('welcome') + result.user.displayName.split(' ')[0] + '!');
+    // Use redirect (works on all mobile browsers, no popup blocking)
+    await firebase.auth().signInWithRedirect(provider);
   } catch (e) {
     showToast(t('googleLoginFailed'));
   }
