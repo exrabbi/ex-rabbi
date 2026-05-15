@@ -621,10 +621,26 @@ function setupEvents() {
     });
   });
 
-  document.getElementById('loadMoreBtn').addEventListener('click', () => {
-    visibleCount += 8;
-    renderProducts(document.getElementById('searchInput').value);
-  });
+  // Infinite scroll — load more products when sentinel enters viewport
+  const sentinel = document.getElementById('autoLoadSentinel');
+  const spinner  = document.getElementById('autoLoadSpinner');
+  if (sentinel) {
+    const observer = new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) return;
+      const q = document.getElementById('searchInput').value;
+      // Check if more products exist
+      const allFiltered = PRODUCTS.filter(p => !q || p.names?.bn?.includes(q) || p.names?.en?.toLowerCase().includes(q.toLowerCase()));
+      if (visibleCount >= allFiltered.length) return;
+      // Show spinner briefly then load more
+      if (spinner) spinner.style.display = 'block';
+      setTimeout(() => {
+        visibleCount += 8;
+        renderProducts(q);
+        if (spinner) spinner.style.display = 'none';
+      }, 400);
+    }, { rootMargin: '200px' });
+    observer.observe(sentinel);
+  }
 
   document.getElementById('searchToggleBtn').addEventListener('click', () => {
     document.getElementById('searchBar').classList.toggle('open');

@@ -434,7 +434,10 @@
         </div>
       </div>
       <div class="products-grid" id="productsGrid"></div>
-      <button class="load-more-btn" id="loadMoreBtn" data-i18n="loadMore">আরও দেখুন</button>
+      <div id="loadMoreBtn" style="display:none"></div>
+      <div id="autoLoadSentinel" style="height:60px;display:flex;align-items:center;justify-content:center">
+        <div id="autoLoadSpinner" style="display:none"><i class="fas fa-spinner fa-spin" style="color:#e91e8c;font-size:22px"></i></div>
+      </div>
     </section>
 
     <!-- CUSTOMER REVIEWS -->
