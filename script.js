@@ -620,7 +620,7 @@ function productCardHTML(p) {
         <div class="product-prices">
           <span class="price-current">${fmt(p.price)}</span>
           <span class="price-original">${fmt(p.originalPrice)}</span>
-          ${VAT_RATE > 0 ? `<span class="price-vat-badge">${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
+          ${VAT_RATE > 0 ? `<span class="price-vat-badge"><i class="fas fa-receipt"></i>${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
