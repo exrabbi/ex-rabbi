@@ -1869,6 +1869,32 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 function openAuth() {
   closeMe();
   setTimeout(() => {
+    const loggedInView = document.getElementById('authLoggedIn');
+    const loginView = document.getElementById('authLoginView');
+    if (currentUser) {
+      if (loggedInView) loggedInView.style.display = 'block';
+      if (loginView) loginView.style.display = 'none';
+      const nameEl = document.getElementById('authUserName');
+      const emailEl = document.getElementById('authUserEmail');
+      const img = document.getElementById('authAvatarImg');
+      const fallback = document.getElementById('authAvatarFallback');
+      if (nameEl) nameEl.textContent = currentUser.name || '';
+      if (emailEl) emailEl.textContent = currentUser.email || '';
+      if (img && fallback) {
+        if (currentUser.avatar) {
+          img.src = currentUser.avatar;
+          img.style.display = 'block';
+          fallback.style.display = 'none';
+        } else {
+          img.style.display = 'none';
+          fallback.style.display = 'flex';
+          fallback.textContent = (currentUser.name || '?')[0].toUpperCase();
+        }
+      }
+    } else {
+      if (loggedInView) loggedInView.style.display = 'none';
+      if (loginView) loginView.style.display = 'block';
+    }
     document.getElementById('authOverlay').classList.add('open');
     document.getElementById('authModal').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -2063,6 +2089,8 @@ function setUser(user) {
   localStorage.setItem('exglobal_user', JSON.stringify(user));
   _saveCustomerRecord(user);
   updateAuthUI();
+  // Request notification permission after login (silent — only asks once)
+  setTimeout(() => requestNotifPermission(), 3000);
 }
 
 function signOut() {
@@ -3023,3 +3051,108 @@ async function sendAiMessage() {
 function aiChatKeydown(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAiMessage(); }
 }
+
+/* ===== PUSH NOTIFICATIONS ===== */
+let _fcmMessaging = null;
+let _notifListening = false;
+
+function _getVapidKey() {
+  try { return JSON.parse(localStorage.getItem('exg_settings') || '{}').vapidKey || ''; } catch(e) { return ''; }
+}
+
+function _updateNotifStatusUI() {
+  const el = document.getElementById('notifStatus');
+  if (!el) return;
+  if (!('Notification' in window)) { el.textContent = ''; return; }
+  if (Notification.permission === 'granted') el.textContent = '✅ চালু';
+  else if (Notification.permission === 'denied') el.textContent = '🚫 বন্ধ';
+  else el.textContent = 'ট্যাপ করুন';
+}
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) {
+    showToast('এই ব্রাউজারে নোটিফিকেশন সাপোর্ট নেই।');
+    return;
+  }
+  if (Notification.permission === 'denied') {
+    showToast('নোটিফিকেশন বন্ধ আছে। ব্রাউজার সেটিংস থেকে চালু করুন।');
+    return;
+  }
+  if (Notification.permission === 'granted') {
+    _updateNotifStatusUI();
+    await _doFcmSubscribe();
+    return;
+  }
+  const perm = await Notification.requestPermission();
+  _updateNotifStatusUI();
+  if (perm === 'granted') {
+    showToast('🔔 নোটিফিকেশন চালু হয়েছে!');
+    await _doFcmSubscribe();
+  }
+}
+
+async function _doFcmSubscribe() {
+  const vapidKey = _getVapidKey();
+  if (!vapidKey) return; // VAPID key not set yet — token saved when admin configures it
+  if (!('serviceWorker' in navigator)) return;
+  try {
+    if (!_fcmMessaging) {
+      if (typeof firebase === 'undefined' || !firebase.apps?.length || !firebase.messaging) return;
+      _fcmMessaging = firebase.messaging();
+    }
+    const swReg = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+    await navigator.serviceWorker.ready;
+    const token = await _fcmMessaging.getToken({ vapidKey, serviceWorkerRegistration: swReg });
+    if (token) await _saveFcmToken(token);
+  } catch(e) {
+    console.warn('FCM subscribe error:', e);
+  }
+}
+
+async function _saveFcmToken(token) {
+  if (!currentUser?.uid) return;
+  if (typeof firebase === 'undefined' || !firebase.apps?.length || !firebase.firestore) return;
+  try {
+    await firebase.firestore().collection('fcm_tokens').doc(currentUser.uid).set({
+      token,
+      uid:   currentUser.uid,
+      name:  currentUser.name  || '',
+      email: currentUser.email || '',
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  } catch(e) {
+    console.warn('Token save error:', e);
+  }
+}
+
+function listenNotifications() {
+  if (_notifListening) return;
+  if (typeof firebase === 'undefined' || !firebase.apps?.length || !firebase.firestore) return;
+  _notifListening = true;
+  try {
+    firebase.firestore().collection('notifications')
+      .orderBy('createdAt', 'desc').limit(1)
+      .onSnapshot(snap => {
+        snap.docChanges().forEach(ch => {
+          if (ch.type === 'added') {
+            const d = ch.doc.data();
+            const ts = d.createdAt?.toDate?.() || new Date(0);
+            if (Date.now() - ts.getTime() < 90000) {
+              const msg = [d.title, d.body].filter(Boolean).join(': ');
+              showToast('🔔 ' + msg, 7000);
+            }
+          }
+        });
+      });
+  } catch(e) {}
+}
+
+// Init on page load
+document.addEventListener('DOMContentLoaded', () => {
+  _updateNotifStatusUI();
+  listenNotifications();
+  // If already had permission + user logged in, re-subscribe silently
+  if (Notification.permission === 'granted' && currentUser) {
+    _doFcmSubscribe();
+  }
+});
