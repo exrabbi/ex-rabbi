@@ -1082,11 +1082,15 @@
       </div>
 
       <div class="settings-links">
-        <a href="#" data-i18n="termsOfUse">ব্যবহারের শর্ত</a>
+        <a href="#" onclick="openPage('about');return false"   data-i18n="aboutUs">আমাদের সম্পর্কে</a>
         <span>·</span>
-        <a href="#" data-i18n="privacyPolicy">প্রাইভেসি পলিসি</a>
+        <a href="#" onclick="openPage('contact');return false" data-i18n="contactUs">যোগাযোগ</a>
         <span>·</span>
-        <a href="#" data-i18n="returnPolicy">রিটার্ন পলিসি</a>
+        <a href="#" onclick="openPage('privacy');return false" data-i18n="privacyPolicy">প্রাইভেসি পলিসি</a>
+        <span>·</span>
+        <a href="#" onclick="openPage('refund');return false"  data-i18n="refundPolicy">রিফান্ড পলিসি</a>
+        <span>·</span>
+        <a href="#" onclick="openPage('shipping');return false" data-i18n="shippingPolicy">শিপিং পলিসি</a>
       </div>
     </div>
   </aside>
@@ -1579,6 +1583,31 @@
     <i class="fas fa-robot"></i>
     <span class="ai-chat-fab-badge" id="aiChatBadge" style="display:none">1</span>
   </button>
+
+  <!-- ===== PAGE PANEL (About / Contact / Privacy / Refund / Shipping) ===== -->
+  <div class="page-overlay" id="pageOverlay" onclick="closePage()"></div>
+  <aside class="page-panel" id="pagePanel">
+    <div class="page-head">
+      <button class="page-back" onclick="closePage()"><i class="fas fa-arrow-left"></i></button>
+      <span class="page-title" id="pageTitle"></span>
+      <div style="width:36px"></div>
+    </div>
+    <div class="page-body" id="pageBody"></div>
+  </aside>
+
+  <!-- ===== SITE FOOTER ===== -->
+  <footer class="site-footer">
+    <div class="site-footer-logo">EX GLOBAL</div>
+    <p class="site-footer-tagline" data-i18n="footerTagline">Fashion for everyone · Saudi Arabia</p>
+    <div class="site-footer-links">
+      <a onclick="openPage('about')"    data-i18n="aboutUs">About Us</a>
+      <a onclick="openPage('contact')"  data-i18n="contactUs">Contact</a>
+      <a onclick="openPage('privacy')"  data-i18n="privacyPolicy">Privacy Policy</a>
+      <a onclick="openPage('refund')"   data-i18n="refundPolicy">Refund Policy</a>
+      <a onclick="openPage('shipping')" data-i18n="shippingPolicy">Shipping Policy</a>
+    </div>
+    <p class="site-footer-copy">© 2025 EX GLOBAL. All rights reserved.</p>
+  </footer>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
