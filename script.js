@@ -552,10 +552,12 @@ function renderProducts(searchTerm = '') {
   const dots      = document.getElementById('autoLoadDots');
   const loadText  = document.getElementById('autoLoadText');
   const allDone   = document.getElementById('allLoadedMsg');
+  const allDoneSpan = allDone ? allDone.querySelector('span') : null;
   const allLoaded = visibleCount >= filtered.length;
   if (dots)     dots.style.display     = allLoaded ? 'none' : 'flex';
-  if (loadText) loadText.style.display = allLoaded ? 'none' : 'block';
+  if (loadText) { loadText.style.display = allLoaded ? 'none' : 'block'; loadText.textContent = t('loadingMore') || 'Loading...'; }
   if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
+  if (allDoneSpan) allDoneSpan.textContent = t('allProductsShown') || 'All shown';
 }
 
 function productCardHTML(p) {
