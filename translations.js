@@ -91,7 +91,7 @@ const TRANSLATIONS = {
     needHelp: 'সাহায্য দরকার?',
     // Auth modal
     authTitle: 'স্বাগতম!', authSubtitle: 'আপনার অ্যাকাউন্টে প্রবেশ করুন',
-    googleLogin: 'Google দিয়ে লগইন করুন', appleLogin: 'Apple দিয়ে লগইন করুন', authOr: 'অথবা নাম ও ইমেইল দিন',
+    googleLogin: 'Google দিয়ে লগইন করুন', facebookLogin: 'Facebook দিয়ে লগইন করুন', appleLogin: 'Apple দিয়ে লগইন করুন', authOr: 'অথবা নাম ও ইমেইল দিন',
     authNamePh: 'আপনার পুরো নাম', authEmailPh: 'ইমেইল অ্যাড্রেস', authPhonePh: 'ফোন নম্বর (ঐচ্ছিক)',
     authSubmit: 'প্রবেশ করুন', authTerms: 'লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন',
     loginRegister: 'লগইন / রেজিস্টার', savedBadge: 'সেভড', signedOut: 'সাইন আউট হয়েছে',
@@ -142,6 +142,7 @@ const TRANSLATIONS = {
     fillAllFields: 'সব তথ্য পূরণ করুন', addressSaved: '✓ ঠিকানা সেভ হয়েছে',
     firebaseNotSetup: '⚠️ Firebase সেটআপ হয়নি', googleLoginFailed: 'Google লগইন ব্যর্থ হয়েছে',
     appleLoginFailed: 'Apple লগইন ব্যর্থ হয়েছে', appleNotEnabled: '⚙️ Apple লগইন এখনো activate হয়নি — Firebase console-এ enable করুন',
+    facebookLoginFailed: 'Facebook লগইন ব্যর্থ হয়েছে', facebookNotEnabled: '⚙️ Facebook লগইন এখনো activate হয়নি — Firebase console-এ enable করুন',
     enterName: 'নাম লিখুন', enterValidEmail: 'সঠিক ইমেইল দিন', welcome: '✓ স্বাগতম, ',
     paypalOpening: 'PayPal খুলছে...', paypalNotSetup: '⚠️ PayPal সেটআপ হয়নি — WhatsApp অর্ডার দিন',
     fillCardDetails: 'সব কার্ড তথ্য দিন', cardNotSetup: '⚠️ Card gateway সেটআপ হয়নি',
@@ -247,7 +248,7 @@ const TRANSLATIONS = {
     needHelp: 'Need Help?',
     // Auth modal
     authTitle: 'Welcome!', authSubtitle: 'Sign in to your account',
-    googleLogin: 'Continue with Google', appleLogin: 'Continue with Apple', authOr: 'or enter your details',
+    googleLogin: 'Continue with Google', facebookLogin: 'Continue with Facebook', appleLogin: 'Continue with Apple', authOr: 'or enter your details',
     authNamePh: 'Full name', authEmailPh: 'Email address', authPhonePh: 'Phone number (optional)',
     authSubmit: 'Sign In', authTerms: 'By signing in you agree to our Terms of Use',
     loginRegister: 'Login / Register', savedBadge: 'SAVED', signedOut: 'Signed out',
@@ -403,7 +404,7 @@ const TRANSLATIONS = {
     needHelp: 'تحتاج مساعدة؟',
     // Auth modal
     authTitle: 'أهلاً بك!', authSubtitle: 'سجّل الدخول إلى حسابك',
-    googleLogin: 'الدخول بـ Google', appleLogin: 'الدخول بـ Apple', authOr: 'أو أدخل بياناتك',
+    googleLogin: 'الدخول بـ Google', facebookLogin: 'الدخول بـ Facebook', appleLogin: 'الدخول بـ Apple', authOr: 'أو أدخل بياناتك',
     authNamePh: 'الاسم الكامل', authEmailPh: 'البريد الإلكتروني', authPhonePh: 'رقم الهاتف (اختياري)',
     authSubmit: 'دخول', authTerms: 'بالدخول توافق على شروط الاستخدام',
     loginRegister: 'دخول / تسجيل', savedBadge: 'محفوظ', signedOut: 'تم تسجيل الخروج',
@@ -545,7 +546,7 @@ const TRANSLATIONS = {
     termsOfUse: 'उपयोग की शर्तें', privacyPolicy: 'गोपनीयता नीति', returnPolicy: 'वापसी नीति',
     needHelp: 'मदद चाहिए?',
     authTitle: 'स्वागत है!', authSubtitle: 'अपने अकाउंट में प्रवेश करें',
-    googleLogin: 'Google से लॉगिन करें', appleLogin: 'Apple से लॉगिन करें', authOr: 'या नाम और ईमेल दें',
+    googleLogin: 'Google से लॉगिन करें', facebookLogin: 'Facebook से लॉगिन करें', appleLogin: 'Apple से लॉगिन करें', authOr: 'या नाम और ईमेल दें',
     authNamePh: 'आपका पूरा नाम', authEmailPh: 'ईमेल पता', authPhonePh: 'फोन नंबर (वैकल्पिक)',
     authSubmit: 'प्रवेश करें', authTerms: 'लॉगिन करके आप हमारी शर्तें मान रहे हैं',
     loginRegister: 'लॉगिन / रजिस्टर', savedBadge: 'सेव्ड', signedOut: 'साइन आउट हुए',

@@ -1446,6 +1446,14 @@ img { max-width: 100%; display: block; }
 }
 .btn-google-signin:active { background: #f5f5f5; }
 .btn-google-signin img { width: 22px; height: 22px; }
+.btn-facebook-signin {
+  width: 100%; display: flex; align-items: center; justify-content: center;
+  gap: 10px; padding: 13px 16px; border-radius: 12px; margin-top: 10px;
+  border: none; background: #1877F2;
+  font-size: 14px; font-weight: 600; color: #fff; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(24,119,242,.3); transition: background .15s, transform .1s;
+}
+.btn-facebook-signin:active { background: #1565c0; transform: scale(0.98); }
 .btn-apple-signin {
   width: 100%; display: flex; align-items: center; justify-content: center;
   gap: 10px; padding: 13px 16px; border-radius: 12px; margin-top: 10px;
