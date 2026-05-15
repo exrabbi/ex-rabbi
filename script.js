@@ -3504,6 +3504,58 @@ function getAiWorkerUrl() {
   try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiWorkerUrl || ''; } catch(e) { return ''; }
 }
 
+/* ── AI Usage tracking ── */
+function _aiGetUsage() {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const d = JSON.parse(localStorage.getItem('exg_ai_usage') || '{}');
+    if (d.date !== today) return { date: today, count: 0 };
+    return d;
+  } catch(e) { return { date: new Date().toISOString().slice(0, 10), count: 0 }; }
+}
+function _aiGetLimit() {
+  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 20; }
+  catch(e) { return 20; }
+}
+function _aiIncrUsage() {
+  const u = _aiGetUsage(); u.count++;
+  localStorage.setItem('exg_ai_usage', JSON.stringify(u));
+  _aiUpdateUsageBar();
+}
+function _aiUpdateUsageBar() {
+  const u = _aiGetUsage();
+  const limit = _aiGetLimit();
+  const count = u.count;
+  const pct   = Math.min(Math.round((count / limit) * 100), 100);
+  const _T    = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
+  const textEl = document.getElementById('aiUsageText');
+  const pctEl  = document.getElementById('aiUsagePct');
+  const fillEl = document.getElementById('aiUsageFill');
+
+  if (textEl) {
+    const tpl = _T.aiUsageLabel || 'Today: {used}/{limit} messages';
+    textEl.textContent = tpl.replace('{used}', count).replace('{limit}', limit);
+  }
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (fillEl) {
+    fillEl.style.width = pct + '%';
+    fillEl.classList.toggle('warn', pct >= 70 && pct < 100);
+    fillEl.classList.toggle('full', pct >= 100);
+  }
+
+  const inp     = document.getElementById('aiChatInput');
+  const sendBtn = document.getElementById('aiChatSendBtn');
+  const isOver  = count >= limit;
+  if (inp) {
+    inp.disabled = isOver;
+    inp.placeholder = isOver
+      ? (_T.aiLimitReached || 'Daily limit reached. Try again tomorrow.')
+      : (_T.aiChatPlaceholder || 'Type your question...');
+  }
+  if (sendBtn) sendBtn.disabled = isOver;
+}
+
 function openAiChat() {
   const overlay = document.getElementById('aiChatOverlay');
   const panel   = document.getElementById('aiChatPanel');
@@ -3514,9 +3566,10 @@ function openAiChat() {
   document.body.style.overflow = 'hidden';
   const badge = document.getElementById('aiChatBadge');
   if (badge) badge.style.display = 'none';
-  const inp = document.getElementById('aiChatInput');
-  if (inp) setTimeout(() => inp.focus(), 300);
+  _aiUpdateUsageBar();
   if (aiChatHistory.length === 0) _aiRenderWelcome();
+  const inp = document.getElementById('aiChatInput');
+  if (inp && !inp.disabled) setTimeout(() => inp.focus(), 300);
 }
 
 function closeAiChat() {
@@ -3566,6 +3619,17 @@ async function sendAiMessage() {
   if (!inp) return;
   const text = inp.value.trim();
   if (!text) return;
+
+  // Check daily limit
+  const usage = _aiGetUsage();
+  const limit = _aiGetLimit();
+  if (usage.count >= limit) {
+    const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    _aiAppendMsg('assistant', _T.aiLimitReached || 'Daily AI message limit reached. Please try again tomorrow.');
+    inp.value = '';
+    return;
+  }
+
   const workerUrl = getAiWorkerUrl();
   if (!workerUrl) {
     showToast('AI chatbot not configured yet.');
@@ -3588,12 +3652,14 @@ async function sendAiMessage() {
     const reply = data?.content?.[0]?.text || 'Sorry, I could not respond. Please try again.';
     aiChatHistory.push({ role: 'assistant', content: reply });
     _aiAppendMsg('assistant', reply);
+    _aiIncrUsage(); // increment AFTER successful response
   } catch(e) {
     _aiRemoveTyping();
     _aiAppendMsg('assistant', 'Connection error. Please check your internet and try again.');
   } finally {
-    if (sendBtn) sendBtn.disabled = false;
-    inp.focus();
+    const u2 = _aiGetUsage();
+    if (sendBtn) sendBtn.disabled = u2.count >= limit;
+    if (u2.count < limit) inp.focus();
   }
 }
 

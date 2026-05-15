@@ -1572,6 +1572,19 @@
       </div>
       <button class="ai-chat-close" onclick="closeAiChat()"><i class="fas fa-times"></i></button>
     </div>
+    <!-- AI Usage Bar -->
+    <div class="ai-usage-bar" id="aiUsageBar">
+      <div class="ai-usage-row">
+        <div class="ai-usage-left">
+          <i class="fas fa-comment-dots"></i>
+          <span id="aiUsageText">আজকে 0/20 মেসেজ</span>
+        </div>
+        <span class="ai-usage-pct" id="aiUsagePct">0%</span>
+      </div>
+      <div class="ai-usage-track">
+        <div class="ai-usage-fill" id="aiUsageFill"></div>
+      </div>
+    </div>
     <div class="ai-chat-messages" id="aiChatMessages"></div>
     <div class="ai-chat-input-row">
       <input type="text" id="aiChatInput" class="ai-chat-input" data-i18n-placeholder="aiChatPlaceholder" placeholder="Type your question..." onkeydown="aiChatKeydown(event)" maxlength="500" autocomplete="off" autocorrect="off" spellcheck="false"/>
@@ -1636,8 +1649,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=48"></script>
-  <script src="products.js?v=48"></script>
+  <script src="translations.js?v=49"></script>
+  <script src="products.js?v=49"></script>
   <script src="script.js?v=49"></script>
 </body>
 </html>
