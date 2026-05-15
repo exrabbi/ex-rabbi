@@ -3698,6 +3698,178 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ═══════════════════════════════════════════════════════════════════
+   ORDER TRACKING
+   ═══════════════════════════════════════════════════════════════════ */
+
+function openTrackPanel(prefillId) {
+  document.getElementById('trackOverlay').classList.add('open');
+  document.getElementById('trackPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  applyTranslations();
+  if (prefillId) {
+    document.getElementById('trackInput').value = prefillId;
+    setTimeout(searchOrder, 100);
+  } else {
+    setTimeout(() => document.getElementById('trackInput').focus(), 300);
+  }
+}
+
+function closeTrackPanel() {
+  document.getElementById('trackOverlay').classList.remove('open');
+  document.getElementById('trackPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function searchOrder() {
+  const raw = (document.getElementById('trackInput').value || '').trim().toUpperCase();
+  if (!raw) { showToast(t('enterOrderId') || 'Enter Order ID'); return; }
+
+  const resultEl = document.getElementById('trackResult');
+  resultEl.innerHTML = '<div class="trk-loading"><div class="trk-spinner"></div></div>';
+
+  // 1. localStorage first (same device)
+  const localOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  const localMatch = localOrders.find(o =>
+    (o.id || '').toUpperCase() === raw ||
+    (o.trackingNumber || '').toUpperCase() === raw ||
+    (o.awb || '').toUpperCase() === raw
+  );
+  if (localMatch) { _renderTrackResult(localMatch, resultEl); return; }
+
+  // 2. Firestore lookup
+  try {
+    const FIREBASE_API_KEY = 'AIzaSyCPSsxifbE92WqEa2VsGdSqaJIRTPkZiLQ';
+    const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/exglobal21/databases/(default)/documents';
+    const resp = await fetch(`${FIRESTORE_BASE}/notifications/${encodeURIComponent(raw)}?key=${FIREBASE_API_KEY}`);
+    if (resp.ok) {
+      const doc = await resp.json();
+      if (doc.fields) {
+        const order = _fsFieldsToObj(doc.fields);
+        if (order.docType === 'order' || order.id) { _renderTrackResult(order, resultEl); return; }
+      }
+    }
+  } catch (e) { /* network issue, fall through */ }
+
+  resultEl.innerHTML = `<div class="trk-not-found">
+    <i class="fas fa-magnifying-glass"></i>
+    <p>${t('orderNotFound') || 'Order not found. Please check your Order ID.'}</p>
+  </div>`;
+}
+
+function _fsFieldsToObj(fields) {
+  function fromVal(v) {
+    if (!v) return null;
+    if ('stringValue' in v) return v.stringValue;
+    if ('integerValue' in v) return parseInt(v.integerValue, 10);
+    if ('doubleValue' in v) return v.doubleValue;
+    if ('booleanValue' in v) return v.booleanValue;
+    if ('nullValue' in v) return null;
+    if ('arrayValue' in v) return (v.arrayValue.values || []).map(fromVal);
+    if ('mapValue' in v) {
+      const obj = {};
+      for (const [k, fv] of Object.entries(v.mapValue.fields || {})) obj[k] = fromVal(fv);
+      return obj;
+    }
+    return null;
+  }
+  const obj = {};
+  for (const [k, fv] of Object.entries(fields)) obj[k] = fromVal(fv);
+  return obj;
+}
+
+function _renderTrackResult(order, el) {
+  const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const trackSteps = _T.orderTrack || ['Ordered', 'Confirmed', 'Shipped', 'Delivered'];
+  const statusStep  = { pending: 0, confirmed: 1, processing: 1, shipped: 2, delivered: 3 };
+  const statusColor = { pending: '#f59e0b', confirmed: '#3b82f6', processing: '#3b82f6', shipped: '#8b5cf6', delivered: '#10b981', cancelled: '#ef4444' };
+  const statusIcon  = { pending: 'fa-clock', confirmed: 'fa-check-circle', processing: 'fa-gear fa-spin', shipped: 'fa-truck', delivered: 'fa-circle-check', cancelled: 'fa-times-circle' };
+
+  const st   = order.status || 'pending';
+  const step = statusStep[st] ?? 0;
+  const col  = statusColor[st] || '#888';
+  const ico  = statusIcon[st]  || 'fa-clock';
+  const label = ((_T.orderStatus || {})[st]) || st;
+  const lang  = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const total = lang.currency + Math.round((order.totalSAR || 0) * (lang.rate || 1)).toLocaleString();
+  const _localeMap = { ar: 'ar-SA', bn: 'bn-BD', hi: 'hi-IN' };
+  const date  = order.date ? new Date(order.date).toLocaleDateString(_localeMap[currentLang] || 'en-US', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+  const items = (order.items || []).slice(0, 5);
+  const trackingNum = order.trackingNumber || order.awb || '';
+
+  const timeline = `<div class="mo-timeline" style="margin:16px 0 8px">${
+    trackSteps.map((s, i) => `
+      <div class="mo-step ${i <= step ? 'done' : ''}">
+        <div class="mo-dot">${i <= step ? '<i class="fas fa-check"></i>' : (i === step + 1 ? '<i class="fas fa-circle" style="font-size:6px"></i>' : '')}</div>
+        <div class="mo-step-label">${s}</div>
+      </div>${i < trackSteps.length - 1 ? `<div class="mo-line ${i < step ? 'done' : ''}"></div>` : ''}`)
+    .join('')}
+  </div>`;
+
+  const awbSection = trackingNum ? `
+    <div class="trk-awb-row">
+      <i class="fas fa-truck" style="color:#8b5cf6;font-size:14px"></i>
+      <span class="trk-awb-label">${t('trackingNumber') || 'Tracking #'}</span>
+      <span class="trk-awb-num">${trackingNum}</span>
+      <button class="trk-copy-btn" onclick="navigator.clipboard?.writeText('${trackingNum}').then(()=>showToast('✅ Copied!'))">
+        <i class="fas fa-copy"></i>
+      </button>
+    </div>` : '';
+
+  el.innerHTML = `
+    <div class="trk-result-card">
+      <div class="trk-result-top">
+        <div>
+          <div class="trk-order-id">#${order.id || ''}</div>
+          <div class="trk-order-date">${date}</div>
+        </div>
+        <div class="trk-status-pill" style="background:${col}18;color:${col};border:1px solid ${col}35">
+          <i class="fas ${ico}" style="font-size:11px"></i> ${label}
+        </div>
+      </div>
+      ${items.length ? `<div class="mo-items-row" style="margin:14px 0 0">
+        ${items.map(i => `<div class="mo-item-thumb"><img src="${i.image || ''}" onerror="this.style.display='none'"/><span class="mo-item-qty">×${i.qty || 1}</span></div>`).join('')}
+      </div>` : ''}
+      <div class="trk-names">${(order.items || []).map(i => `${i.name || ''}${(i.qty || 1) > 1 ? ' ×' + i.qty : ''}`).join(' · ')}</div>
+      ${timeline}
+      ${awbSection}
+      <div class="trk-total-row">
+        <span style="color:#888;font-size:13px">${_T.orderTotal || 'Total'}</span>
+        <span style="font-weight:700;color:#e91e8c;font-size:15px">${total}</span>
+      </div>
+      <div id="trkLiveEvents"></div>
+    </div>`;
+
+  if (trackingNum) _fetchLiveTracking(trackingNum);
+}
+
+async function _fetchLiveTracking(awb) {
+  const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  const workerUrl = (s.workerUrl2 || localStorage.getItem('exg_worker_url2') || '').replace(/\/$/, '');
+  if (!workerUrl) return;
+  try {
+    const resp = await fetch(`${workerUrl}/api/track/${encodeURIComponent(awb)}`);
+    if (!resp.ok) return;
+    const data = await resp.json();
+    const events = data.events || data.trackingEvents || [];
+    if (!events.length) return;
+    const eventsEl = document.getElementById('trkLiveEvents');
+    if (!eventsEl) return;
+    eventsEl.innerHTML = `
+      <div class="trk-events-head"><i class="fas fa-route"></i> ${t('liveTracking') || 'Live Tracking'}</div>
+      <div class="trk-events-list">
+        ${events.map(ev => `
+          <div class="trk-event-item">
+            <div class="trk-event-dot"></div>
+            <div class="trk-event-info">
+              <div class="trk-event-desc">${ev.description || ev.UpdateDescription || ev.status || ''}</div>
+              <div class="trk-event-time">${ev.timestamp || ev.UpdateDateTime || ''} ${ev.location || ev.UpdateLocation?.City ? '· ' + (ev.location || ev.UpdateLocation?.City || '') : ''}</div>
+            </div>
+          </div>`).join('')}
+      </div>`;
+  } catch (e) { /* silent */ }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    MOYASAR PAYMENT INTEGRATION
    Saudi Arabia payment gateway — supports mada, Visa, Mastercard
    ═══════════════════════════════════════════════════════════════════ */
