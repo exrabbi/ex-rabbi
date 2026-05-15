@@ -27,7 +27,7 @@ img { max-width: 100%; display: block; }
 .icon-btn {
   position: relative; color: #fff;
   font-size: 18px; padding: 6px;
-  border-radius: 50%; transition: background .2s;
+  border-radius: 50%; transition: background .2s, transform .22s cubic-bezier(.34,1.56,.64,1);
 }
 .icon-btn:hover { background: rgba(255,255,255,.2); }
 .logo {
@@ -316,7 +316,7 @@ img { max-width: 100%; display: block; }
   width: 28px; height: 28px;
   background: rgba(255,255,255,.85); border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; color: #bbb; transition: all .2s;
+  font-size: 13px; color: #bbb; transition: all .2s, transform .28s cubic-bezier(.34,1.56,.64,1);
   backdrop-filter: blur(4px);
 }
 [dir="rtl"] .wish-btn { right: auto; left: 6px; }
@@ -3490,3 +3490,8 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .sdrop-item { border-color: #242424; }
 [data-theme="dark"] .sdrop-item:hover { background: #2a2040; }
 [data-theme="dark"] .sdrop-name { color: #eee; }
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%            { transform: scale(1.1); opacity: 1; }
+}
