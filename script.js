@@ -1197,6 +1197,324 @@ function _flyWishAnimation(id, srcBtn) {
   requestAnimationFrame(step);
 }
 
+/* ===== STATIC PAGES ===== */
+const PAGE_CONTENT = {
+  about: {
+    en: { title: 'About Us', body: `
+      <h2>🛍️ Welcome to EX GLOBAL</h2>
+      <p>EX GLOBAL is a premium online fashion destination proudly serving customers across Saudi Arabia. We bring the latest trends in women's, men's, and children's fashion — along with beauty products and home essentials — all at competitive prices with fast, reliable delivery.</p>
+      <div class="info-card">🇸🇦 Based in Saudi Arabia · Serving the Kingdom since 2021</div>
+      <h2>🎯 Our Mission</h2>
+      <p>We believe everyone deserves access to quality fashion. Our team carefully curates every product in our collection to ensure the highest standards of style, comfort, and value.</p>
+      <h2>💎 Why Shop With Us?</h2>
+      <ul>
+        <li>Thousands of products across all categories</li>
+        <li>Free shipping on orders over SAR 100</li>
+        <li>7-day hassle-free returns</li>
+        <li>Secure payment — Cash on Delivery available</li>
+        <li>Fast delivery across Saudi Arabia</li>
+      </ul>
+      <h2>📱 Follow Us</h2>
+      <p>Stay updated with the latest arrivals and exclusive offers on our social media channels.</p>
+    `},
+    ar: { title: 'من نحن', body: `
+      <h2>🛍️ مرحباً بك في EX GLOBAL</h2>
+      <p>EX GLOBAL هو متجر أزياء إلكتروني متميز يخدم عملاءنا في جميع أنحاء المملكة العربية السعودية. نقدم لك أحدث صيحات الموضة للنساء والرجال والأطفال، فضلاً عن منتجات التجميل ومستلزمات المنزل، بأسعار تنافسية وتوصيل سريع وموثوق.</p>
+      <div class="info-card">🇸🇦 مقرنا في المملكة العربية السعودية · نخدم المملكة منذ عام 2021</div>
+      <h2>🎯 مهمتنا</h2>
+      <p>نؤمن بأن الجميع يستحق الوصول إلى أزياء عالية الجودة. يختار فريقنا كل منتج في مجموعتنا بعناية لضمان أعلى معايير الأناقة والراحة والقيمة.</p>
+      <h2>💎 لماذا تتسوق معنا؟</h2>
+      <ul>
+        <li>آلاف المنتجات في جميع الفئات</li>
+        <li>شحن مجاني للطلبات التي تزيد عن 100 ريال</li>
+        <li>إرجاع مجاني خلال 7 أيام</li>
+        <li>دفع آمن — الدفع عند الاستلام متاح</li>
+        <li>توصيل سريع في جميع أنحاء المملكة</li>
+      </ul>
+    `},
+    bn: { title: 'আমাদের সম্পর্কে', body: `
+      <h2>🛍️ EX GLOBAL-এ স্বাগতম</h2>
+      <p>EX GLOBAL সৌদি আরব জুড়ে গ্রাহকদের সেবা দেওয়া একটি প্রিমিয়াম অনলাইন ফ্যাশন স্টোর। আমরা নারী, পুরুষ ও শিশুদের জন্য সর্বশেষ ফ্যাশন, বিউটি পণ্য এবং হোম প্রোডাক্ট সরবরাহ করি — সব প্রতিযোগিতামূলক মূল্যে এবং দ্রুত ডেলিভারিতে।</p>
+      <div class="info-card">🇸🇦 সৌদি আরবে প্রতিষ্ঠিত · ২০২১ সাল থেকে সেবায় আছি</div>
+      <h2>🎯 আমাদের লক্ষ্য</h2>
+      <p>আমরা বিশ্বাস করি সবাই মানসম্মত ফ্যাশন পাওয়ার যোগ্য। আমাদের টিম প্রতিটি পণ্য যত্ন সহকারে বাছাই করে সর্বোচ্চ মান নিশ্চিত করে।</p>
+      <h2>💎 আমাদের বেছে নিন কেন?</h2>
+      <ul>
+        <li>সব ক্যাটাগরিতে হাজার হাজার পণ্য</li>
+        <li>SAR ১০০-এর উপরে অর্ডারে ফ্রি শিপিং</li>
+        <li>৭ দিনের সহজ রিটার্ন</li>
+        <li>নিরাপদ পেমেন্ট — ক্যাশ অন ডেলিভারি সুবিধা</li>
+        <li>সৌদি আরব জুড়ে দ্রুত ডেলিভারি</li>
+      </ul>
+    `},
+  },
+  contact: {
+    en: { title: 'Contact Us', body: `
+      <h2>💬 Get In Touch</h2>
+      <p>We're here to help! Reach out to us through any of the channels below and we'll get back to you as soon as possible.</p>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=Hello, I need help with my order" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
+      <div class="info-card">⏰ Available: Saturday – Thursday · 9 AM – 9 PM (AST)<br/>We reply within <strong>2–4 hours</strong> during working hours.</div>
+      <h2>📧 Email</h2>
+      <p>support@exglobal.online</p>
+      <h2>📱 Social Media</h2>
+      <p>You can also DM us on Instagram or TikTok for quick questions about products, sizes, or availability.</p>
+      <h2>📦 Order Issues?</h2>
+      <p>If you have a problem with your order (wrong item, damaged product, delayed delivery), please WhatsApp us with your order number and a photo — we'll resolve it quickly.</p>
+    `},
+    ar: { title: 'اتصل بنا', body: `
+      <h2>💬 تواصل معنا</h2>
+      <p>نحن هنا لمساعدتك! تواصل معنا عبر أي من القنوات أدناه وسنرد عليك في أقرب وقت ممكن.</p>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=مرحباً، أحتاج مساعدة بخصوص طلبي" target="_blank"><i class="fab fa-whatsapp"></i> واتساب: 966546224029+</a>
+      <div class="info-card">⏰ متاحون: السبت – الخميس · 9 صباحاً – 9 مساءً<br/>نرد خلال <strong>2–4 ساعات</strong> في ساعات العمل.</div>
+      <h2>📧 البريد الإلكتروني</h2>
+      <p>support@exglobal.online</p>
+      <h2>📦 مشكلة في طلبك؟</h2>
+      <p>إذا كانت لديك مشكلة في طلبك (منتج خاطئ، تالف، تأخر في التوصيل)، يرجى التواصل معنا عبر واتساب مع رقم الطلب وصورة — وسنحلها بسرعة.</p>
+    `},
+    bn: { title: 'যোগাযোগ করুন', body: `
+      <h2>💬 আমাদের সাথে যোগাযোগ</h2>
+      <p>আমরা সবসময় আপনার সাহায্যে আছি। যেকোনো প্রশ্ন বা সমস্যায় নিচের যেকোনো মাধ্যমে যোগাযোগ করুন।</p>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=হ্যালো, আমার অর্ডার নিয়ে সাহায্য দরকার" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
+      <div class="info-card">⏰ সময়: শনিবার – বৃহস্পতিবার · সকাল ৯টা – রাত ৯টা<br/>কর্মঘণ্টায় <strong>২–৪ ঘণ্টার</strong> মধ্যে সাড়া দিই।</div>
+      <h2>📧 ইমেইল</h2>
+      <p>support@exglobal.online</p>
+      <h2>📦 অর্ডারে সমস্যা?</h2>
+      <p>ভুল পণ্য, ক্ষতিগ্রস্ত পণ্য বা ডেলিভারি দেরি হলে — অর্ডার নম্বর ও ছবি সহ WhatsApp করুন, আমরা দ্রুত সমাধান করব।</p>
+    `},
+  },
+  privacy: {
+    en: { title: 'Privacy Policy', body: `
+      <p style="color:#888;font-size:12px">Last updated: January 2025</p>
+      <h2>📋 Information We Collect</h2>
+      <ul>
+        <li>Name, phone number, and delivery address (for order processing)</li>
+        <li>Email address (for account creation and order updates)</li>
+        <li>Device information and browsing data (via cookies)</li>
+        <li>Payment information — processed securely and never stored on our servers</li>
+      </ul>
+      <h2>🔒 How We Use Your Information</h2>
+      <ul>
+        <li>To process and deliver your orders</li>
+        <li>To send order confirmations and delivery updates via WhatsApp</li>
+        <li>To improve our website and customer experience</li>
+        <li>To send promotional offers (you can opt out anytime)</li>
+      </ul>
+      <h2>🚫 We Do NOT</h2>
+      <ul>
+        <li>Sell your personal data to third parties</li>
+        <li>Store your payment card details</li>
+        <li>Share your information without your consent</li>
+      </ul>
+      <h2>🍪 Cookies</h2>
+      <p>We use cookies to remember your cart, language preference, and improve your browsing experience. You can disable cookies in your browser settings at any time.</p>
+      <h2>📬 Contact</h2>
+      <p>For privacy concerns, contact us at: support@exglobal.online</p>
+    `},
+    ar: { title: 'سياسة الخصوصية', body: `
+      <p style="color:#888;font-size:12px">آخر تحديث: يناير 2025</p>
+      <h2>📋 المعلومات التي نجمعها</h2>
+      <ul>
+        <li>الاسم ورقم الهاتف وعنوان التوصيل (لمعالجة الطلبات)</li>
+        <li>البريد الإلكتروني (لإنشاء الحساب وتحديثات الطلبات)</li>
+        <li>معلومات الجهاز وبيانات التصفح (عبر ملفات تعريف الارتباط)</li>
+      </ul>
+      <h2>🔒 كيف نستخدم معلوماتك</h2>
+      <ul>
+        <li>لمعالجة طلباتك وتوصيلها</li>
+        <li>لإرسال تأكيدات الطلبات عبر واتساب</li>
+        <li>لتحسين موقعنا وتجربة العملاء</li>
+      </ul>
+      <h2>🚫 لا نقوم بـ</h2>
+      <ul>
+        <li>بيع بياناتك الشخصية لأطراف ثالثة</li>
+        <li>تخزين بيانات بطاقتك الائتمانية</li>
+        <li>مشاركة معلوماتك دون موافقتك</li>
+      </ul>
+    `},
+    bn: { title: 'প্রাইভেসি পলিসি', body: `
+      <p style="color:#888;font-size:12px">সর্বশেষ আপডেট: জানুয়ারি ২০২৫</p>
+      <h2>📋 আমরা যা তথ্য সংগ্রহ করি</h2>
+      <ul>
+        <li>নাম, ফোন নম্বর ও ডেলিভারি ঠিকানা (অর্ডার প্রক্রিয়াকরণের জন্য)</li>
+        <li>ইমেইল ঠিকানা (অ্যাকাউন্ট ও অর্ডার আপডেটের জন্য)</li>
+        <li>ডিভাইসের তথ্য ও ব্রাউজিং ডেটা (কুকি-র মাধ্যমে)</li>
+      </ul>
+      <h2>🔒 তথ্য ব্যবহারের উদ্দেশ্য</h2>
+      <ul>
+        <li>আপনার অর্ডার প্রক্রিয়া ও ডেলিভারি করতে</li>
+        <li>WhatsApp-এ অর্ডার কনফার্মেশন পাঠাতে</li>
+        <li>ওয়েবসাইট ও সেবা উন্নত করতে</li>
+      </ul>
+      <h2>🚫 আমরা করি না</h2>
+      <ul>
+        <li>তৃতীয় পক্ষের কাছে আপনার তথ্য বিক্রি</li>
+        <li>পেমেন্ট কার্ডের তথ্য সংরক্ষণ</li>
+        <li>আপনার অনুমতি ছাড়া তথ্য শেয়ার</li>
+      </ul>
+      <h2>📬 যোগাযোগ</h2>
+      <p>গোপনীয়তা সংক্রান্ত যেকোনো বিষয়ে: support@exglobal.online</p>
+    `},
+  },
+  refund: {
+    en: { title: 'Refund Policy', body: `
+      <div class="info-card">✅ We offer a <strong>7-day return window</strong> from the date of delivery.</div>
+      <h2>📦 Return Conditions</h2>
+      <ul>
+        <li>Item must be unused and in original condition</li>
+        <li>Original packaging and tags must be intact</li>
+        <li>Item must not be washed, altered, or damaged</li>
+        <li>Sale items and undergarments are non-returnable</li>
+      </ul>
+      <h2>🔄 How to Return</h2>
+      <ul>
+        <li>WhatsApp us at +966 546 224 029 within 7 days of delivery</li>
+        <li>Send your order number and photos of the item</li>
+        <li>Our team will arrange pickup or guide you through the process</li>
+      </ul>
+      <h2>💰 Refund Timeline</h2>
+      <ul>
+        <li>Refunds are processed within <strong>3–5 business days</strong> after we receive the item</li>
+        <li>Refund will be credited to your original payment method</li>
+        <li>For Cash on Delivery orders: refund via bank transfer</li>
+      </ul>
+      <h2>❌ Non-Returnable Items</h2>
+      <ul>
+        <li>Underwear and swimwear (for hygiene reasons)</li>
+        <li>Customised or personalised items</li>
+        <li>Items marked as final sale</li>
+      </ul>
+    `},
+    ar: { title: 'سياسة الاسترجاع', body: `
+      <div class="info-card">✅ نقدم <strong>نافذة إرجاع مدتها 7 أيام</strong> من تاريخ التسليم.</div>
+      <h2>📦 شروط الإرجاع</h2>
+      <ul>
+        <li>يجب أن تكون السلعة غير مستخدمة وفي حالتها الأصلية</li>
+        <li>يجب أن تكون العبوة الأصلية والعلامات سليمة</li>
+        <li>لا يجوز أن تكون السلعة مغسولة أو معدلة أو تالفة</li>
+        <li>لا يمكن إرجاع الملابس الداخلية والعناصر المخصومة</li>
+      </ul>
+      <h2>🔄 كيفية الإرجاع</h2>
+      <ul>
+        <li>تواصل معنا عبر واتساب خلال 7 أيام من التسليم</li>
+        <li>أرسل رقم طلبك وصور المنتج</li>
+        <li>سيتولى فريقنا ترتيب الاستلام</li>
+      </ul>
+      <h2>💰 موعد الاسترداد</h2>
+      <p>تتم معالجة المبالغ المستردة خلال <strong>3–5 أيام عمل</strong> بعد استلام المنتج.</p>
+    `},
+    bn: { title: 'রিফান্ড পলিসি', body: `
+      <div class="info-card">✅ ডেলিভারির তারিখ থেকে <strong>৭ দিনের মধ্যে</strong> রিটার্ন করা যাবে।</div>
+      <h2>📦 রিটার্নের শর্ত</h2>
+      <ul>
+        <li>পণ্য অব্যবহৃত ও মূল অবস্থায় থাকতে হবে</li>
+        <li>মূল প্যাকেজিং ও ট্যাগ অক্ষত থাকতে হবে</li>
+        <li>পণ্য ধোয়া, পরিবর্তন বা ক্ষতিগ্রস্ত হলে রিটার্ন হবে না</li>
+        <li>অন্তর্বাস ও সেল পণ্য ফেরতযোগ্য নয়</li>
+      </ul>
+      <h2>🔄 রিটার্ন প্রক্রিয়া</h2>
+      <ul>
+        <li>ডেলিভারির ৭ দিনের মধ্যে +966 546 224 029-এ WhatsApp করুন</li>
+        <li>অর্ডার নম্বর ও পণ্যের ছবি পাঠান</li>
+        <li>আমাদের টিম পিকআপ বা প্রক্রিয়া গাইড করবে</li>
+      </ul>
+      <h2>💰 রিফান্ড সময়সীমা</h2>
+      <p>পণ্য পাওয়ার <strong>৩–৫ কর্মদিবসের</strong> মধ্যে রিফান্ড প্রক্রিয়া সম্পন্ন হবে।</p>
+      <h2>❌ রিটার্নযোগ্য নয়</h2>
+      <ul>
+        <li>অন্তর্বাস ও সুইমওয়্যার (স্বাস্থ্যবিধির কারণে)</li>
+        <li>কাস্টমাইজড বা ব্যক্তিগতকৃত পণ্য</li>
+        <li>ফাইনাল সেল হিসেবে চিহ্নিত পণ্য</li>
+      </ul>
+    `},
+  },
+  shipping: {
+    en: { title: 'Shipping Policy', body: `
+      <div class="info-card">🚚 We deliver across <strong>all regions of Saudi Arabia</strong>.</div>
+      <h2>⏱️ Delivery Times</h2>
+      <ul>
+        <li><strong>Riyadh, Jeddah, Dammam:</strong> 1–3 business days</li>
+        <li><strong>Other major cities:</strong> 2–4 business days</li>
+        <li><strong>Remote areas:</strong> 4–7 business days</li>
+      </ul>
+      <h2>💰 Shipping Rates</h2>
+      <ul>
+        <li>Standard shipping: <strong>SAR 15</strong></li>
+        <li>Free shipping on orders over <strong>SAR 100</strong> 🎉</li>
+      </ul>
+      <h2>📦 Order Processing</h2>
+      <ul>
+        <li>Orders placed before 2 PM are processed the same day</li>
+        <li>Orders placed after 2 PM are processed the next business day</li>
+        <li>You'll receive a WhatsApp notification once your order is shipped</li>
+      </ul>
+      <h2>🔍 Track Your Order</h2>
+      <p>Once shipped, you'll receive a tracking number via WhatsApp. You can also check your order status in the <strong>My Account</strong> section of the app.</p>
+      <h2>❓ Delayed Delivery?</h2>
+      <p>If your order hasn't arrived within the expected timeframe, please contact us on WhatsApp at +966 546 224 029 with your order number.</p>
+    `},
+    ar: { title: 'سياسة الشحن', body: `
+      <div class="info-card">🚚 نوصل إلى <strong>جميع مناطق المملكة العربية السعودية</strong>.</div>
+      <h2>⏱️ مواعيد التسليم</h2>
+      <ul>
+        <li><strong>الرياض وجدة والدمام:</strong> 1–3 أيام عمل</li>
+        <li><strong>المدن الرئيسية الأخرى:</strong> 2–4 أيام عمل</li>
+        <li><strong>المناطق النائية:</strong> 4–7 أيام عمل</li>
+      </ul>
+      <h2>💰 رسوم الشحن</h2>
+      <ul>
+        <li>الشحن العادي: <strong>15 ريال</strong></li>
+        <li>شحن مجاني للطلبات التي تزيد عن <strong>100 ريال</strong> 🎉</li>
+      </ul>
+      <h2>📦 معالجة الطلبات</h2>
+      <ul>
+        <li>الطلبات قبل 2 مساءً تُعالج في نفس اليوم</li>
+        <li>ستتلقى إشعاراً عبر واتساب عند شحن طلبك</li>
+      </ul>
+    `},
+    bn: { title: 'শিপিং পলিসি', body: `
+      <div class="info-card">🚚 আমরা <strong>সৌদি আরবের সব অঞ্চলে</strong> ডেলিভারি দিই।</div>
+      <h2>⏱️ ডেলিভারির সময়</h2>
+      <ul>
+        <li><strong>রিয়াদ, জেদ্দা, দাম্মাম:</strong> ১–৩ কর্মদিবস</li>
+        <li><strong>অন্যান্য প্রধান শহর:</strong> ২–৪ কর্মদিবস</li>
+        <li><strong>দূরবর্তী এলাকা:</strong> ৪–৭ কর্মদিবস</li>
+      </ul>
+      <h2>💰 শিপিং চার্জ</h2>
+      <ul>
+        <li>স্ট্যান্ডার্ড শিপিং: <strong>SAR ১৫</strong></li>
+        <li>SAR ১০০-এর উপরে অর্ডারে ফ্রি শিপিং 🎉</li>
+      </ul>
+      <h2>📦 অর্ডার প্রক্রিয়াকরণ</h2>
+      <ul>
+        <li>দুপুর ২টার আগের অর্ডার একই দিনে প্রক্রিয়া করা হয়</li>
+        <li>শিপমেন্টের পর WhatsApp-এ ট্র্যাকিং নম্বর পাঠানো হবে</li>
+      </ul>
+      <h2>❓ দেরি হলে কি করবেন?</h2>
+      <p>নির্ধারিত সময়ের মধ্যে পণ্য না আসলে অর্ডার নম্বর সহ +966 546 224 029-এ WhatsApp করুন।</p>
+    `},
+  },
+};
+
+function openPage(type) {
+  const page = PAGE_CONTENT[type];
+  if (!page) return;
+  const lang = page[currentLang] || page.en;
+  document.getElementById('pageTitle').textContent = lang.title;
+  document.getElementById('pageBody').innerHTML = lang.body;
+  document.getElementById('pagePanel').classList.add('open');
+  document.getElementById('pageOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  // Close settings panel if open
+  const sp = document.getElementById('settingsPanel');
+  if (sp && sp.classList.contains('open')) sp.classList.remove('open');
+}
+
+function closePage() {
+  document.getElementById('pagePanel').classList.remove('open');
+  document.getElementById('pageOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 function openWishlist() {
   renderWishlistPanel();
   document.getElementById('wishOverlay').classList.add('open');
