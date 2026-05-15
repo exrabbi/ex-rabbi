@@ -834,18 +834,37 @@ function renderCart() {
   const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
   const fmtD = v => lang.currency + Math.round(v).toLocaleString();
 
-  // Delivery progress bar
+  // Delivery progress (VIP design)
   const pct = Math.min(100, (subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100);
-  const barFill = document.getElementById('cartDelBarFill');
-  const progText = document.getElementById('cartDelProgText');
   const progBox = document.getElementById('cartDelProg');
-  if (barFill) { barFill.style.width = pct + '%'; barFill.classList.toggle('full', freeDelivery); }
-  if (progBox) progBox.classList.toggle('free-del', freeDelivery);
-  if (progText) {
+  const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
+  if (progBox) {
     if (freeDelivery) {
-      progText.textContent = t('freeDeliveryActive');
+      progBox.innerHTML = `
+        <div class="ndg-free-pill" style="margin:0 0 10px">
+          <div class="ndg-icon-circle"><i class="fas fa-truck-fast"></i></div>
+          <span>${t('freeDeliveryActive').replace(/🎉/g,'')}</span>
+          <div class="ndg-check"><i class="fas fa-check"></i></div>
+        </div>`;
     } else {
-      progText.textContent = t('addMoreFree') + ' ' + fmtD(FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp) + ' ' + t('moreForFree');
+      progBox.innerHTML = `
+        <div class="ndg-vip" style="margin:0 0 10px">
+          <div class="ndg-top">
+            <div class="ndg-left">
+              <div class="ndg-icon"><i class="fas fa-truck-fast"></i></div>
+              <div class="ndg-texts">
+                <span class="ndg-label">${t('addMoreFree') || 'Add'}</span>
+                <span class="ndg-amount">${fmtD(needed)}</span>
+                <span class="ndg-sub">${t('moreForFree') || 'more for free delivery'}</span>
+              </div>
+            </div>
+            <div class="ndg-badge"><i class="fas fa-gift"></i> FREE</div>
+          </div>
+          <div class="ndg-bar-track">
+            <div class="ndg-bar-fill" style="width:${pct}%"></div>
+          </div>
+          <div class="ndg-labels"><span>SAR 0</span><span>★ SAR ${FREE_DELIVERY_THRESHOLD_SAR} FREE</span></div>
+        </div>`;
     }
   }
 
@@ -4317,6 +4336,139 @@ async function _saveOrderToFirestore(orderData) {
     fab.addEventListener('click', e => { if (dragged) { dragged = false; e.stopImmediatePropagation(); } }, true);
   });
 })();
+
+// ===== VISUAL SEARCH =====
+function openVisualSearch() {
+  const sheet = document.getElementById('vsSheet');
+  sheet.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  applyTranslations();
+}
+function closeVisualSearch() {
+  document.getElementById('vsSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function vsCapture() {
+  closeVisualSearch();
+  setTimeout(() => document.getElementById('vsFileCapture').click(), 100);
+}
+function vsAlbum() {
+  closeVisualSearch();
+  setTimeout(() => document.getElementById('vsFileAlbum').click(), 100);
+}
+function vsShowHistory() {
+  const hist = JSON.parse(localStorage.getItem('exg_vs_history') || '[]');
+  closeVisualSearch();
+  if (!hist.length) { showToast(t('vsNoHistory') || 'No visual search history'); return; }
+  // Show last searched item as filter
+  _vsShowResults(hist[0].matchIds, hist[0].thumb, true);
+}
+
+function _vsHandleFile(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  showToast((t('vsAnalyzing') || 'Analyzing image...'));
+  const reader = new FileReader();
+  reader.onload = e => _vsProcessImage(e.target.result, file.name);
+  reader.readAsDataURL(file);
+}
+
+function _vsProcessImage(dataUrl, name) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.getElementById('vsCanvas');
+    const SIZE = 64;
+    canvas.width = SIZE; canvas.height = SIZE;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, SIZE, SIZE);
+    const data = ctx.getImageData(0, 0, SIZE, SIZE).data;
+
+    // Average color
+    let r = 0, g = 0, b = 0, count = 0;
+    for (let i = 0; i < data.length; i += 4) {
+      if (data[i + 3] < 128) continue; // skip transparent
+      r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+    }
+    if (!count) { showToast('❌ Could not read image'); return; }
+    r = Math.round(r / count); g = Math.round(g / count); b = Math.round(b / count);
+    const dominant = [r, g, b];
+
+    // Score each product by color similarity
+    const scored = PRODUCTS.map(p => {
+      const minDist = (p.colors || []).reduce((best, hex) => {
+        const rgb = _vsHexToRgb(hex);
+        if (!rgb) return best;
+        const d = _vsColorDist(dominant, rgb);
+        return Math.min(best, d);
+      }, 999999);
+      return { p, minDist };
+    });
+
+    scored.sort((a, b) => a.minDist - b.minDist);
+    const matchIds = scored.slice(0, 12).map(s => s.p.id);
+
+    // Save to history
+    const hist = JSON.parse(localStorage.getItem('exg_vs_history') || '[]');
+    hist.unshift({ matchIds, thumb: dataUrl, ts: Date.now() });
+    localStorage.setItem('exg_vs_history', JSON.stringify(hist.slice(0, 5)));
+
+    _vsShowResults(matchIds, dataUrl, false);
+  };
+  img.src = dataUrl;
+}
+
+function _vsColorDist(rgb1, rgb2) {
+  const dr = rgb1[0] - rgb2[0], dg = rgb1[1] - rgb2[1], db = rgb1[2] - rgb2[2];
+  return Math.sqrt(dr*dr + dg*dg + db*db);
+}
+
+function _vsHexToRgb(hex) {
+  const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex.trim());
+  return m ? [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)] : null;
+}
+
+function _vsShowResults(matchIds, thumb, fromHistory) {
+  // Filter products to matched IDs
+  const matched = PRODUCTS.filter(p => matchIds.includes(p.id));
+
+  // Close any open panels, scroll to top, show results
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  setTimeout(() => {
+    // Inject banner above product grid
+    _vsInjectBanner(thumb, matched.length, fromHistory, matchIds);
+    // Filter grid to matched products
+    _vsFilterGrid(matched);
+  }, 200);
+}
+
+function _vsInjectBanner(thumb, count) {
+  document.getElementById('vsBanner')?.remove();
+  const banner = document.createElement('div');
+  banner.id = 'vsBanner';
+  banner.className = 'vs-result-banner';
+  banner.innerHTML = `
+    <img class="vs-result-thumb" src="${thumb}" alt="search">
+    <div>
+      <div class="vs-result-label">${t('vsResultLabel') || 'Visual Match'}</div>
+      <div class="vs-result-sub">${count} ${t('vsResultSub') || 'similar products found'}</div>
+    </div>
+    <button class="vs-result-clear" onclick="_vsClearSearch()" title="Clear">×</button>`;
+  const grid = document.getElementById('productsGrid');
+  if (grid && grid.parentNode) grid.parentNode.insertBefore(banner, grid);
+}
+
+function _vsFilterGrid(matched) {
+  const grid = document.getElementById('productsGrid');
+  if (!grid) return;
+  grid.innerHTML = matched.map(p => productCardHTML(p)).join('');
+  document.getElementById('loadMoreBtn').style.display = 'none';
+}
+
+function _vsClearSearch() {
+  document.getElementById('vsBanner')?.remove();
+  renderProducts();
+}
 
 // ===== ACCOUNT SECURITY PANEL =====
 function openAccountSecurity() {
