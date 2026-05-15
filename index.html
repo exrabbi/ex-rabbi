@@ -1452,14 +1452,15 @@
     </div>
   </div>
 
-  <!-- PROFILE MODAL -->
-  <div class="auth-overlay" id="profileOverlay" onclick="closeProfile()"></div>
-  <div class="auth-modal" id="profileModal" style="max-height:92vh;overflow-y:auto">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <button onclick="closeProfile()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#555;padding:4px"><i class="fas fa-arrow-left"></i></button>
+  <!-- PROFILE PANEL -->
+  <div class="me-overlay" id="profileOverlay" onclick="closeProfile()"></div>
+  <aside id="profilePanel" style="position:fixed;top:0;right:0;bottom:0;left:0;background:#f4f4f4;z-index:320;transform:translateX(100%);transition:transform .3s cubic-bezier(.22,1,.36,1);overflow-y:auto;padding:0 0 40px">
+    <div style="background:#fff;display:flex;align-items:center;justify-content:space-between;padding:14px 16px;position:sticky;top:0;z-index:1;border-bottom:1px solid #eee">
+      <button onclick="closeProfile()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#333;padding:4px;line-height:1"><i class="fas fa-arrow-left"></i></button>
       <span style="font-size:16px;font-weight:700;color:#222" data-i18n="myAccount">আমার অ্যাকাউন্ট</span>
       <div style="width:32px"></div>
     </div>
+    <div style="padding:0 16px;margin-top:16px">
 
     <!-- Avatar -->
     <div style="text-align:center;margin-bottom:20px">
@@ -1538,7 +1539,8 @@
       <i class="fas fa-right-from-bracket"></i> <span data-i18n="signOut">সাইন আউট</span>
     </button>
   </div>
-  <!-- END PROFILE MODAL -->
+  </aside>
+  <!-- END PROFILE PANEL -->
 
   <!-- AI CHAT WIDGET -->
   <div id="aiChatOverlay" class="ai-chat-overlay" onclick="closeAiChat()"></div>
