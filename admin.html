@@ -274,6 +274,7 @@
     </div>
     <div class="top-actions">
       <button class="adm-btn sm gray" onclick="window.open('index.html','_blank')"><i class="fas fa-eye"></i> View Site</button>
+      <span id="syncBadge" style="font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;display:none;align-items:center;gap:5px"></span>
       <button class="adm-btn sm" onclick="publishToWebsite()" id="publishBtn" style="background:#16a34a;border-color:#16a34a;gap:5px">
         <i class="fas fa-rocket" id="publishIcon"></i>
         <span id="publishBtnText">Publish</span>
@@ -570,11 +571,18 @@
         <div style="font-size:12px;color:#aaa;line-height:1.9">
           <div style="color:#60a5fa;font-weight:600;margin-bottom:6px">প্রথমবার ব্যবহারের আগে Firebase-এ কিছু সেটআপ করতে হবে:</div>
           1️⃣ <a href="https://console.firebase.google.com/project/exglobal21/firestore" target="_blank" style="color:#60a5fa">Firebase Console → Firestore</a> → <strong>Create database</strong> (Start in test mode)<br/>
-          2️⃣ <a href="https://console.firebase.google.com/project/exglobal21/settings/cloudmessaging" target="_blank" style="color:#60a5fa">Project Settings → Cloud Messaging</a><br/>
-          3️⃣ <strong>Web Push certificates</strong> → <strong>Generate key pair</strong> → VAPID key কপি করুন<br/>
-          4️⃣ <strong>Cloud Messaging API (Legacy)</strong> Enable করুন → <strong>Server key</strong> কপি করুন<br/>
-          5️⃣ Settings ট্যাবে গিয়ে দুটো key পেস্ট করুন → Save করুন ✅<br/>
-          <div style="color:#555;margin-top:6px">💡 এরপর থেকে যে ইউজার লগইন করবে, তার ফোনে নোটিফিকেশন পারমিশন চাওয়া হবে।</div>
+          2️⃣ Firestore → <strong>Rules</strong> ট্যাব → নিচের rules পেস্ট করুন → Publish:<br/>
+          <div style="background:#0a0a0a;border:1px solid #1e3a5f;border-radius:8px;padding:10px;margin:6px 0;font-family:monospace;font-size:10px;color:#86efac;white-space:pre-wrap">rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /store_config/{doc} { allow read, write: if true; }
+    match /fcm_tokens/{uid}   { allow read, write: if true; }
+    match /notifications/{d}  { allow read, write: if true; }
+  }
+}</div>
+          3️⃣ <a href="https://console.firebase.google.com/project/exglobal21/settings/cloudmessaging" target="_blank" style="color:#60a5fa">Project Settings → Cloud Messaging</a> → <strong>Web Push certificates</strong> → Generate key pair<br/>
+          4️⃣ Settings ট্যাবে VAPID key পেস্ট করুন → Save করুন ✅<br/>
+          <div style="color:#4ade80;margin-top:6px">✅ এরপর থেকে Admin-এ কিছু Save করলেই সব device-এ (iPhone/Android/PC) automatically আপডেট হবে!</div>
         </div>
       </div>
     </div>
@@ -1490,7 +1498,7 @@ function saveProduct() {
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
     const idx = PRODUCTS.findIndex(p => p.id === _editingId);
     if (idx !== -1) Object.assign(PRODUCTS[idx], data);
-    toast('✅ Product updated! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
+    toast('✅ Product updated! সব device-এ sync হচ্ছে... ✅');
   } else {
     const maxId = Math.max(...PRODUCTS.map(p => p.id), 9000);
     const newProd = { id: maxId + 1, ...data };
@@ -1498,7 +1506,7 @@ function saveProduct() {
     const added = JSON.parse(localStorage.getItem('exg_products_added') || '[]');
     added.push(newProd);
     localStorage.setItem('exg_products_added', JSON.stringify(added));
-    toast('✅ Product added! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
+    toast('✅ Product added! সব device-এ sync হচ্ছে... ✅');
   }
   _markAdminEdit();
   closeProdModal();
@@ -1900,7 +1908,59 @@ function custRowHTML(c) {
 /* ===== COUPONS ===== */
 function getExtraCoupons() { return JSON.parse(localStorage.getItem('exg_extra_coupons') || '[]'); }
 function saveExtraCoupons(arr) { localStorage.setItem('exg_extra_coupons', JSON.stringify(arr)); _markAdminEdit(); }
-function _markAdminEdit() { localStorage.setItem('exg_last_admin_edit', new Date().toISOString()); }
+function _markAdminEdit() {
+  localStorage.setItem('exg_last_admin_edit', new Date().toISOString());
+  _scheduleAutoSync();
+}
+
+/* ===== FIRESTORE AUTO-SYNC ===== */
+let _syncTimer = null;
+function _scheduleAutoSync() {
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(_doFirestoreSync, 1200);
+  _showSyncBadge('syncing');
+}
+
+async function _doFirestoreSync() {
+  try {
+    if (typeof firebase === 'undefined' || !firebase.apps?.length || typeof firebase.firestore !== 'function') {
+      _showSyncBadge('off'); return;
+    }
+    const db = firebase.firestore();
+    // Don't include secrets in Firestore (stay in localStorage only)
+    const data = {
+      hero_slides:      JSON.parse(localStorage.getItem('exg_hero_slides')      || '[]'),
+      settings:         JSON.parse(localStorage.getItem('exg_settings')         || '{}'),
+      social_links:     JSON.parse(localStorage.getItem('exg_social_links')     || '{}'),
+      products_custom:  JSON.parse(localStorage.getItem('exg_products_custom')  || '{}'),
+      products_added:   JSON.parse(localStorage.getItem('exg_products_added')   || '[]'),
+      products_deleted: JSON.parse(localStorage.getItem('exg_products_deleted') || '[]'),
+      flash_pins:       JSON.parse(localStorage.getItem('exg_flash_pins')       || 'null'),
+      super_pins:       JSON.parse(localStorage.getItem('exg_super_pins')       || 'null'),
+      trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
+      coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
+      city_video:       localStorage.getItem('exg_city_video') || '',
+      cat_images:       JSON.parse(localStorage.getItem('exg_cat_images')       || '{}'),
+      custom_cats:      JSON.parse(localStorage.getItem('exg_custom_cats')      || '{}'),
+      updated_at:       firebase.firestore.FieldValue.serverTimestamp(),
+    };
+    await db.collection('store_config').doc('main').set(data);
+    _showSyncBadge('ok');
+  } catch(e) {
+    console.warn('Auto-sync failed:', e);
+    _showSyncBadge('err');
+  }
+}
+
+function _showSyncBadge(state) {
+  const b = document.getElementById('syncBadge');
+  if (!b) return;
+  b.style.display = 'flex';
+  if (state === 'syncing') { b.style.background='#1e3a5f'; b.style.color='#60a5fa'; b.innerHTML='<i class="fas fa-spinner fa-spin" style="font-size:9px"></i> Syncing...'; }
+  if (state === 'ok')      { b.style.background='#14532d'; b.style.color='#4ade80'; b.innerHTML='<i class="fas fa-check" style="font-size:9px"></i> Synced'; setTimeout(()=>b.style.display='none',3000); }
+  if (state === 'err')     { b.style.background='#450a0a'; b.style.color='#f87171'; b.innerHTML='<i class="fas fa-exclamation" style="font-size:9px"></i> Sync failed'; setTimeout(()=>b.style.display='none',6000); }
+  if (state === 'off')     { b.style.display = 'none'; }
+}
 
 function renderCoupons() {
   const used = JSON.parse(localStorage.getItem('exglobal_used_coupons') || '[]');
@@ -2478,7 +2538,7 @@ function saveHeroSlide() {
   };
   localStorage.setItem('exg_hero_slides', JSON.stringify(slides));
   _markAdminEdit();
-  toast('✅ Slide ' + (idx + 1) + ' saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
+  toast('✅ Slide ' + (idx + 1) + ' saved! সব device-এ sync হচ্ছে... ✅');
 }
 
 function resetHeroSlide() {
@@ -2535,7 +2595,7 @@ function saveFeaturedPins() {
   if (trend) localStorage.setItem('exg_trend_pins', JSON.stringify(trend));
   else localStorage.removeItem('exg_trend_pins');
   _markAdminEdit();
-  toast('✅ Featured sections saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
+  toast('✅ Featured sections saved! সব device-এ sync হচ্ছে... ✅');
 }
 
 /* ===== REVIEWS ===== */
@@ -2605,7 +2665,7 @@ function saveSocialLinks() {
   };
   localStorage.setItem('exg_social_links', JSON.stringify(soc));
   _markAdminEdit();
-  toast('✅ Social links saved! উপরের Publish বাটন দিয়ে সাইটে প্রকাশ করুন।');
+  toast('✅ Social links saved! সব device-এ sync হচ্ছে... ✅');
 }
 
 /* ===== UTILS ===== */
