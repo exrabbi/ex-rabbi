@@ -186,7 +186,7 @@ async function _tryLoadFirestore() {
     if (typeof firebase === 'undefined' || !firebase.apps?.length || typeof firebase.firestore !== 'function') return false;
     const db = firebase.firestore();
     const doc = await Promise.race([
-      db.collection('store_config').doc('main').get(),
+      db.collection('notifications').doc('store-config').get(),
       new Promise((_, rej) => setTimeout(() => rej(new Error('fs-timeout')), 5000))
     ]);
     if (!doc.exists) return false;

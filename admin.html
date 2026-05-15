@@ -1944,7 +1944,7 @@ async function _doFirestoreSync() {
       custom_cats:      JSON.parse(localStorage.getItem('exg_custom_cats')      || '{}'),
       updated_at:       firebase.firestore.FieldValue.serverTimestamp(),
     };
-    await db.collection('store_config').doc('main').set(data);
+    await db.collection('notifications').doc('store-config').set(data);
     _showSyncBadge('ok');
   } catch(e) {
     console.warn('Auto-sync failed:', e);
