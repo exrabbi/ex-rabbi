@@ -1332,45 +1332,37 @@
       </div>
       <div class="auth-brand-name">EX GLOBAL</div>
     </div>
-    <h2 class="auth-title" data-i18n="authTitle">স্বাগতম!</h2>
-    <p class="auth-subtitle" data-i18n="authSubtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+    <h2 class="auth-title" id="authTitleText" data-i18n="authTitle">স্বাগতম!</h2>
+    <p class="auth-subtitle" id="authSubtitleText" data-i18n="authSubtitle">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
 
-    <!-- Google Sign-In -->
-    <button class="btn-google-signin" onclick="signInWithGoogle()">
-      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-      <span data-i18n="googleLogin">Google দিয়ে লগইন করুন</span>
-    </button>
-
-    <!-- Facebook Sign-In -->
-    <button class="btn-facebook-signin" onclick="signInWithFacebook()">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-      <span data-i18n="facebookLogin">Facebook দিয়ে লগইন করুন</span>
-    </button>
-
-    <!-- Apple Sign-In -->
-    <button class="btn-apple-signin" onclick="signInWithApple()">
-      <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.7 9.05 7.42c1.42.07 2.4.83 3.23.89.84.06 2.38-.89 4.02-.76 1.53.13 2.63.68 3.36 1.74-3.13 1.88-2.36 6.04.63 7.28-.51 1.33-1.16 2.65-3.24 3.71zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg>
-      <span data-i18n="appleLogin">Apple দিয়ে লগইন করুন</span>
-    </button>
-
-    <div class="auth-divider"><span data-i18n="authOr">অথবা নাম ও ইমেইল দিন</span></div>
-
-    <div class="auth-field">
-      <i class="fas fa-user"></i>
-      <input type="text" id="authName" data-i18n-placeholder="authNamePh" placeholder="আপনার পুরো নাম" autocomplete="name" />
+    <!-- Logged-in view -->
+    <div id="authLoggedIn" style="display:none; text-align:center;">
+      <div id="authUserAvatar" style="width:72px;height:72px;border-radius:50%;margin:0 auto 10px;background:#f0f0f0;overflow:hidden;border:3px solid #e91e8c;">
+        <img id="authAvatarImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;" />
+        <div id="authAvatarFallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#e91e8c;"></div>
+      </div>
+      <div id="authUserName" style="font-size:18px;font-weight:700;color:#222;margin-bottom:4px;"></div>
+      <div id="authUserEmail" style="font-size:13px;color:#888;margin-bottom:20px;"></div>
+      <button onclick="signOut()" style="width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,#e91e8c,#b5179e);color:#fff;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;">
+        <i class="fas fa-sign-out-alt"></i> <span data-i18n="signOut">সাইন আউট করুন</span>
+      </button>
     </div>
-    <div class="auth-field">
-      <i class="fas fa-envelope"></i>
-      <input type="email" id="authEmail" data-i18n-placeholder="authEmailPh" placeholder="ইমেইল অ্যাড্রেস" autocomplete="email" />
+
+    <!-- Login view -->
+    <div id="authLoginView">
+      <!-- Google Sign-In -->
+      <button class="btn-google-signin" onclick="signInWithGoogle()">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+        <span data-i18n="googleLogin">Google দিয়ে লগইন করুন</span>
+      </button>
+
+      <!-- Facebook Sign-In -->
+      <button class="btn-facebook-signin" onclick="signInWithFacebook()">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        <span data-i18n="facebookLogin">Facebook দিয়ে লগইন করুন</span>
+      </button>
+      <p class="auth-terms" style="margin-top:16px;"><span data-i18n="authTerms">লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন</span></p>
     </div>
-    <div class="auth-field">
-      <i class="fas fa-phone"></i>
-      <input type="tel" id="authPhone" data-i18n-placeholder="authPhonePh" placeholder="ফোন নম্বর (ঐচ্ছিক)" autocomplete="tel" />
-    </div>
-    <button class="btn-auth-submit" onclick="signInManual()">
-      <i class="fas fa-sign-in-alt"></i> <span data-i18n="authSubmit">প্রবেশ করুন</span>
-    </button>
-    <p class="auth-terms"><span data-i18n="authTerms">লগইন করে আপনি আমাদের শর্তাবলী মেনে নিচ্ছেন</span></p>
   </div>
 
   <div class="loc-overlay" id="locOverlay" onclick="closeLocation()"></div>
