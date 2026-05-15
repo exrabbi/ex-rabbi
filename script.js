@@ -1987,8 +1987,17 @@ function whatsappCheckout() {
 
 /* ===== BOTTOM NAV ===== */
 function setBottomActive(el) {
+  if (el.classList.contains('active')) return;
   document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
   el.classList.add('active');
+  // Bounce the icon on tap
+  const wrap = el.querySelector('.bot-icon-wrap');
+  if (wrap) {
+    wrap.style.animation = 'none';
+    void wrap.offsetWidth; // reflow
+    wrap.style.animation = 'botIconBounce .4s cubic-bezier(.34,1.56,.64,1)';
+    setTimeout(() => { wrap.style.animation = ''; }, 420);
+  }
 }
 
 /* ===== TOAST ===== */
