@@ -1869,6 +1869,32 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 function openAuth() {
   closeMe();
   setTimeout(() => {
+    const loggedInView = document.getElementById('authLoggedIn');
+    const loginView = document.getElementById('authLoginView');
+    if (currentUser) {
+      if (loggedInView) loggedInView.style.display = 'block';
+      if (loginView) loginView.style.display = 'none';
+      const nameEl = document.getElementById('authUserName');
+      const emailEl = document.getElementById('authUserEmail');
+      const img = document.getElementById('authAvatarImg');
+      const fallback = document.getElementById('authAvatarFallback');
+      if (nameEl) nameEl.textContent = currentUser.name || '';
+      if (emailEl) emailEl.textContent = currentUser.email || '';
+      if (img && fallback) {
+        if (currentUser.avatar) {
+          img.src = currentUser.avatar;
+          img.style.display = 'block';
+          fallback.style.display = 'none';
+        } else {
+          img.style.display = 'none';
+          fallback.style.display = 'flex';
+          fallback.textContent = (currentUser.name || '?')[0].toUpperCase();
+        }
+      }
+    } else {
+      if (loggedInView) loggedInView.style.display = 'none';
+      if (loginView) loginView.style.display = 'block';
+    }
     document.getElementById('authOverlay').classList.add('open');
     document.getElementById('authModal').classList.add('open');
     document.body.style.overflow = 'hidden';
