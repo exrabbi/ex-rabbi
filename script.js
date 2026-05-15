@@ -4180,6 +4180,89 @@ async function _saveOrderToFirestore(orderData) {
   }
 }
 
+/* ═══════════════════════════════════════════════════════════════════
+   DRAGGABLE AI FAB
+   ═══════════════════════════════════════════════════════════════════ */
+(function _initDraggableFab() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const fab = document.getElementById('aiChatFab');
+    if (!fab) return;
+
+    const STORE_KEY = 'exg_ai_fab_pos';
+    const W = 54, H = 62, EDGE = 12;
+
+    // Restore saved position
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      if (saved) {
+        fab.style.left   = saved.left + 'px';
+        fab.style.top    = saved.top  + 'px';
+        fab.style.right  = 'auto';
+        fab.style.bottom = 'auto';
+      }
+    } catch(e) {}
+
+    let startX, startY, startLeft, startTop, dragged = false;
+
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+    function onStart(e) {
+      const isTouch = e.touches;
+      const cx = isTouch ? e.touches[0].clientX : e.clientX;
+      const cy = isTouch ? e.touches[0].clientY : e.clientY;
+      const rect = fab.getBoundingClientRect();
+      startX = cx; startY = cy;
+      startLeft = rect.left; startTop = rect.top;
+      dragged = false;
+      fab.classList.add('dragging');
+      fab.style.left   = startLeft + 'px';
+      fab.style.top    = startTop  + 'px';
+      fab.style.right  = 'auto';
+      fab.style.bottom = 'auto';
+      document.addEventListener(isTouch ? 'touchmove' : 'mousemove', onMove, { passive: false });
+      document.addEventListener(isTouch ? 'touchend'  : 'mouseup',   onEnd,  { once: true });
+    }
+
+    function onMove(e) {
+      const isTouch = e.touches;
+      const cx = isTouch ? e.touches[0].clientX : e.clientX;
+      const cy = isTouch ? e.touches[0].clientY : e.clientY;
+      const dx = cx - startX, dy = cy - startY;
+      if (!dragged && Math.abs(dx) + Math.abs(dy) > 6) dragged = true;
+      if (!dragged) return;
+      if (isTouch) e.preventDefault();
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const newLeft = clamp(startLeft + dx, EDGE, vw - W - EDGE);
+      const newTop  = clamp(startTop  + dy, EDGE, vh - H - EDGE);
+      fab.style.left = newLeft + 'px';
+      fab.style.top  = newTop  + 'px';
+    }
+
+    function onEnd(e) {
+      const isTouch = e.changedTouches;
+      document.removeEventListener(isTouch ? 'touchmove' : 'mousemove', onMove);
+      fab.classList.remove('dragging');
+      if (!dragged) return; // was a tap — let onclick fire
+      // Snap to nearest edge
+      const rect = fab.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const snapLeft = rect.left < vw / 2
+        ? EDGE
+        : vw - W - EDGE;
+      fab.style.left = snapLeft + 'px';
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify({ left: snapLeft, top: rect.top }));
+      } catch(_) {}
+    }
+
+    fab.addEventListener('mousedown',  onStart);
+    fab.addEventListener('touchstart', onStart, { passive: true });
+
+    // Prevent click from firing after a drag
+    fab.addEventListener('click', e => { if (dragged) { dragged = false; e.stopImmediatePropagation(); } }, true);
+  });
+})();
+
 // Check for Moyasar callback on page load
 (function _checkMoyasarCallback() {
   if (window.location.search.includes('moyasar_callback=1')) {
