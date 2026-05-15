@@ -1912,12 +1912,22 @@ async function signInWithGoogle() {
     showToast(t('firebaseNotSetup'));
     return;
   }
+  const provider = new firebase.auth.GoogleAuthProvider();
   try {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    // Use redirect (works on all mobile browsers, no popup blocking)
-    await firebase.auth().signInWithRedirect(provider);
+    // Popup works best — triggered by user tap so browsers allow it
+    const result = await firebase.auth().signInWithPopup(provider);
+    if (result.user) {
+      setUser({ name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid, provider: 'google' });
+      closeAuth();
+      showToast(t('welcome') + (result.user.displayName || '').split(' ')[0] + '!');
+    }
   } catch (e) {
-    showToast(t('googleLoginFailed'));
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+      // Fallback to redirect if popup is blocked
+      try { await firebase.auth().signInWithRedirect(provider); } catch(e2) {}
+    } else if (e.code !== 'auth/cancelled-popup-request') {
+      showToast(t('googleLoginFailed'));
+    }
   }
 }
 
@@ -1925,13 +1935,20 @@ async function signInWithFacebook() {
   if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
     showToast(t('firebaseNotSetup')); return;
   }
+  const provider = new firebase.auth.FacebookAuthProvider();
   try {
-    const provider = new firebase.auth.FacebookAuthProvider();
-    await firebase.auth().signInWithRedirect(provider);
+    const result = await firebase.auth().signInWithPopup(provider);
+    if (result.user) {
+      setUser({ name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid, provider: 'facebook' });
+      closeAuth();
+      showToast(t('welcome') + (result.user.displayName || '').split(' ')[0] + '!');
+    }
   } catch (e) {
-    if (e.code === 'auth/operation-not-allowed') {
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+      try { await firebase.auth().signInWithRedirect(provider); } catch(e2) {}
+    } else if (e.code === 'auth/operation-not-allowed') {
       showToast(t('facebookNotEnabled'));
-    } else {
+    } else if (e.code !== 'auth/cancelled-popup-request') {
       showToast(t('facebookLoginFailed'));
     }
   }
