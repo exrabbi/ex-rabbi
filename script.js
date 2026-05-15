@@ -1698,14 +1698,76 @@ function closeMe() {
 }
 
 function openEditProfile() {
+  openProfile();
+}
+
+let _selectedGender = '';
+
+function openProfile() {
+  if (!currentUser) { openAuth(); return; }
+  // Populate fields
+  const u = currentUser;
+  const nameParts = (u.name || '').split(' ');
+  document.getElementById('profileFirstName').value    = u.firstName || nameParts[0] || '';
+  document.getElementById('profileLastName').value     = u.lastName  || nameParts.slice(1).join(' ') || '';
+  document.getElementById('profilePhone').value        = u.phone       || '';
+  document.getElementById('profileBirthday').value     = u.birthday    || '';
+  document.getElementById('profileNationality').value  = u.nationality || '';
+  document.getElementById('profileEmailDisplay').textContent = u.email || '';
+  document.getElementById('profileDisplayName').textContent  = u.name  || '';
+  document.getElementById('profileDisplayEmail').textContent = u.email || '';
+  // Avatar
+  const img = document.getElementById('profileAvatarImg');
+  const fallback = document.getElementById('profileAvatarFallback');
+  if (u.avatar) {
+    img.src = u.avatar; img.style.display = 'block'; fallback.style.display = 'none';
+  } else {
+    img.style.display = 'none'; fallback.style.display = 'flex';
+    fallback.textContent = (u.name || '?')[0].toUpperCase();
+  }
+  // Gender
+  _selectedGender = u.gender || 'male';
+  selectGender(_selectedGender);
+  // Show modal
+  document.getElementById('profileOverlay').classList.add('open');
+  document.getElementById('profileModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeProfile() {
+  document.getElementById('profileOverlay').classList.remove('open');
+  document.getElementById('profileModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectGender(g) {
+  _selectedGender = g;
+  const mBtn = document.getElementById('genderMaleBtn');
+  const fBtn = document.getElementById('genderFemaleBtn');
+  if (!mBtn || !fBtn) return;
+  if (g === 'male') {
+    mBtn.style.border = '2px solid #e91e8c'; mBtn.style.background = '#fce4f3'; mBtn.style.color = '#e91e8c';
+    fBtn.style.border = '2px solid #ddd';    fBtn.style.background = '#f5f5f5'; fBtn.style.color = '#888';
+  } else {
+    fBtn.style.border = '2px solid #e91e8c'; fBtn.style.background = '#fce4f3'; fBtn.style.color = '#e91e8c';
+    mBtn.style.border = '2px solid #ddd';    mBtn.style.background = '#f5f5f5'; mBtn.style.color = '#888';
+  }
+}
+
+function saveProfile() {
   if (!currentUser) return;
-  const nameEl  = document.getElementById('authName');
-  const emailEl = document.getElementById('authEmail');
-  const phoneEl = document.getElementById('authPhone');
-  if (nameEl)  nameEl.value  = currentUser.name  || '';
-  if (emailEl) emailEl.value = currentUser.email || '';
-  if (phoneEl) phoneEl.value = currentUser.phone || '';
-  openAuth();
+  const firstName   = document.getElementById('profileFirstName').value.trim();
+  const lastName    = document.getElementById('profileLastName').value.trim();
+  const phone       = document.getElementById('profilePhone').value.trim();
+  const birthday    = document.getElementById('profileBirthday').value;
+  const nationality = document.getElementById('profileNationality').value.trim();
+  const fullName    = [firstName, lastName].filter(Boolean).join(' ') || currentUser.name;
+  const updated = { ...currentUser, name: fullName, firstName, lastName, phone, birthday, nationality, gender: _selectedGender };
+  setUser(updated);
+  // Update display name in profile header
+  document.getElementById('profileDisplayName').textContent = fullName;
+  showToast('✅ প্রোফাইল সেভ হয়েছে!');
+  setTimeout(closeProfile, 800);
 }
 
 function openSettings() {
