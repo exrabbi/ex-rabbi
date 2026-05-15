@@ -232,7 +232,8 @@ function fmt(price) {
 }
 
 function getName(p) {
-  return (p.names && p.names[currentLang]) || p.names.en || '';
+  if (!p.names) return '';
+  return p.names[currentLang] || p.names.en || p.names.bn || p.names.ar || p.names.hi || '';
 }
 
 function applyTranslations() {
@@ -253,6 +254,7 @@ function applyTranslations() {
 
 function setLang(lang) {
   currentLang = lang;
+  localStorage.setItem('exg_lang', lang);
   const T = TRANSLATIONS[lang];
   document.documentElement.dir = T.dir;
   document.documentElement.lang = lang;
@@ -280,7 +282,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Apply admin settings (delivery charge, free delivery threshold)
   try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   applyTheme(currentTheme);
-  setLang('en');
+  setLang(localStorage.getItem('exg_lang') || 'en');
   updateWishBadge();
   renderFlashDeals();
   renderSuperDeals();
@@ -466,7 +468,7 @@ function renderFlashDeals() {
   document.getElementById('flashProducts').innerHTML = items.map(p => `
     <div class="flash-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -486,7 +488,7 @@ function renderSuperDeals() {
   document.getElementById('superDeals').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -506,7 +508,7 @@ function renderTrending() {
   document.getElementById('trendingProducts').innerHTML = items.map(p => `
     <div class="product-card small" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
       </div>
       <div class="product-info">
@@ -561,7 +563,7 @@ function productCardHTML(p) {
   return `
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
