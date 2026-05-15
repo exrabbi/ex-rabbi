@@ -1895,6 +1895,22 @@ async function signInWithGoogle() {
   }
 }
 
+async function signInWithFacebook() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+    showToast(t('firebaseNotSetup')); return;
+  }
+  try {
+    const provider = new firebase.auth.FacebookAuthProvider();
+    await firebase.auth().signInWithRedirect(provider);
+  } catch (e) {
+    if (e.code === 'auth/operation-not-allowed') {
+      showToast(t('facebookNotEnabled'));
+    } else {
+      showToast(t('facebookLoginFailed'));
+    }
+  }
+}
+
 async function signInWithApple() {
   if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
     showToast(t('firebaseNotSetup')); return;
