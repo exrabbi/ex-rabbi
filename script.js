@@ -2758,6 +2758,16 @@ function openPayment() {
   const discRow = document.getElementById('payDiscountRow');
   if (discRow) discRow.style.display = 'none';
   applyTranslations();
+  // Update card method label to show supported networks when Moyasar is configured
+  try {
+    const _s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    const _cardLabelEl = document.getElementById('pmCardLabel');
+    if (_cardLabelEl) {
+      _cardLabelEl.textContent = _s.moyasarPubKey
+        ? '💳 mada / Visa / Mastercard'
+        : (t('cardName') || 'Credit Card');
+    }
+  } catch (_e) {}
   // Open modal
   document.getElementById('payOverlay').classList.add('open');
   document.getElementById('payModal').classList.add('open');
@@ -2855,15 +2865,22 @@ function processPayment() {
       setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
     }
   } else if (selectedPayMethod === 'card') {
-    const num = (document.getElementById('cardNumber').value || '').replace(/\s/g,'');
-    const exp = document.getElementById('cardExpiry').value || '';
-    const cvv = document.getElementById('cardCvv').value || '';
-    const name = document.getElementById('cardName').value || '';
-    if (num.length < 16 || !exp || cvv.length < 3 || !name) {
-      showToast(t('fillCardDetails')); return;
+    const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    const moyasarKey = s.moyasarPubKey || '';
+    if (!moyasarKey) {
+      showToast(t('cardNotSetup'));
+      setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+      return;
     }
-    showToast(t('cardNotSetup'));
-    setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+    // Moyasar payment integration
+    const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+    const sub = cartSubtotalBase() * lang.rate;
+    const del = sub >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const grandTotal = sub + del;
+    _initMoyasarPayment(moyasarKey, grandTotal).catch(e => {
+      showToast('❌ ' + (e.message || 'Payment error'));
+    });
+    return;
   } else if (selectedPayMethod === 'gpay') {
     showToast(t('gpayNotSetup'));
     setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
@@ -3679,3 +3696,253 @@ document.addEventListener('DOMContentLoaded', () => {
     _doFcmSubscribe();
   }
 });
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOYASAR PAYMENT INTEGRATION
+   Saudi Arabia payment gateway — supports mada, Visa, Mastercard
+   ═══════════════════════════════════════════════════════════════════ */
+
+/**
+ * Initialize Moyasar payment for the given amount (SAR).
+ * Uses Moyasar Hosted Payment Page approach:
+ *   1. Build callback URLs with order metadata
+ *   2. Redirect to Moyasar payment page  OR  use Moyasar.js inline form
+ *
+ * On return from Moyasar:
+ *   - success: URL contains ?status=paid&id=... → handled by _handleMoyasarCallback()
+ *   - failure: URL contains ?status=failed&message=...
+ */
+async function _initMoyasarPayment(publishableKey, amountSAR) {
+  // Amounts in Moyasar are in halalas (SAR × 100, integer)
+  const amountHalalas = Math.round(amountSAR * 100);
+
+  // Build order snapshot to pass through metadata
+  const langNow = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+  const orderId = 'ORD' + Date.now();
+  const orderItems = cart.map(i => {
+    const p = PRODUCTS.find(x => x.id === i.id);
+    return p ? {
+      id: i.id, name: p.names?.en || p.nameEn || 'Product',
+      price: p.price || 0, qty: i.qty || 1,
+      size: i.size || '', color: i.color || '',
+      image: p.image || '', cjVariantId: p.cjVariantId || '',
+    } : null;
+  }).filter(Boolean);
+
+  const metadata = {
+    orderId,
+    customerName: currentUser?.name || '',
+    customerEmail: currentUser?.email || '',
+    customerPhone: currentUser?.phone || savedLocation?.phone || '',
+    addressName: savedLocation?.name || currentUser?.name || '',
+    addressPhone: savedLocation?.phone || currentUser?.phone || '',
+    city: savedLocation?.city || '',
+    district: savedLocation?.district || '',
+    address: savedLocation?.address || savedLocation?.street || '',
+    country: 'SA',
+    zip: savedLocation?.zip || '',
+    items: JSON.stringify(orderItems).slice(0, 500), // Moyasar metadata has size limits
+  };
+
+  // Build callback URL — back to current page with result params
+  const callbackBase = window.location.href.split('?')[0];
+  const callbackUrl = callbackBase + '?moyasar_callback=1&order_id=' + orderId;
+
+  // Build the Moyasar payment URL (Hosted Payment Page)
+  // See: https://moyasar.com/docs/api/payments
+  const params = new URLSearchParams({
+    'publishable_api_key': publishableKey,
+    'amount': amountHalalas,
+    'currency': 'SAR',
+    'description': `EX GLOBAL Order ${orderId}`,
+    'callback_url': callbackUrl,
+    'source[type]': 'creditcard',
+    ...Object.fromEntries(
+      Object.entries(metadata).map(([k, v]) => [`metadata[${k}]`, v])
+    ),
+  });
+
+  // Save pending order to localStorage so we can recover it after redirect
+  try {
+    const pendingOrders = JSON.parse(localStorage.getItem('exg_pending_moyasar') || '{}');
+    pendingOrders[orderId] = {
+      orderId, amountSAR, amountHalalas, metadata,
+      items: orderItems, cartSnapshot: [...cart],
+      timestamp: Date.now(),
+    };
+    localStorage.setItem('exg_pending_moyasar', JSON.stringify(pendingOrders));
+  } catch (e) { /* non-fatal */ }
+
+  // Show loading state on button
+  const btn = document.getElementById('btnPayNow');
+  if (btn) {
+    btn.disabled = true;
+    const btnTxt = document.getElementById('payBtnText');
+    if (btnTxt) btnTxt.textContent = 'جارٍ التحويل... / Redirecting...';
+  }
+
+  // Redirect to Moyasar hosted payment page
+  const moyasarPayUrl = 'https://api.moyasar.com/v1/payments/initiate?' + params.toString();
+
+  // Small delay so user sees the loading state
+  setTimeout(() => {
+    window.location.href = moyasarPayUrl;
+  }, 400);
+}
+
+/**
+ * Handle Moyasar callback after returning from payment page.
+ * Called on page load when URL contains ?moyasar_callback=1
+ *
+ * Successful URL example:
+ *   index.html?moyasar_callback=1&order_id=ORD123&id=pay_xxx&status=paid
+ *
+ * Failed URL example:
+ *   index.html?moyasar_callback=1&order_id=ORD123&status=failed&message=...
+ */
+async function _handleMoyasarCallback() {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (!urlParams.get('moyasar_callback')) return;
+
+  const status = urlParams.get('status') || '';
+  const orderId = urlParams.get('order_id') || '';
+  const paymentId = urlParams.get('id') || '';
+  const errorMessage = urlParams.get('message') || '';
+
+  // Clean URL immediately to avoid re-processing on refresh
+  const cleanUrl = window.location.href.split('?')[0];
+  window.history.replaceState({}, '', cleanUrl);
+
+  if (status === 'paid' && orderId) {
+    // Payment successful!
+    try {
+      // Retrieve pending order snapshot
+      const pendingOrders = JSON.parse(localStorage.getItem('exg_pending_moyasar') || '{}');
+      const pending = pendingOrders[orderId];
+
+      // Build full order object
+      const fullOrder = {
+        id: orderId,
+        date: new Date().toISOString(),
+        paymentId,
+        paymentMethod: 'card',
+        paymentGateway: 'moyasar',
+        totalSAR: pending ? Math.round(pending.amountSAR) : 0,
+        customer: {
+          name: currentUser?.name || pending?.metadata?.customerName || '',
+          email: currentUser?.email || pending?.metadata?.customerEmail || '',
+          phone: currentUser?.phone || pending?.metadata?.customerPhone || '',
+        },
+        address: {
+          name: pending?.metadata?.addressName || '',
+          phone: pending?.metadata?.addressPhone || '',
+          city: pending?.metadata?.city || '',
+          district: pending?.metadata?.district || '',
+          address: pending?.metadata?.address || '',
+          country: 'SA',
+          zip: pending?.metadata?.zip || '',
+        },
+        items: pending?.items || [],
+        status: 'confirmed',
+      };
+
+      // Save order locally
+      _saveOrderRecord(pending?.cartSnapshot || [], fullOrder.totalSAR, 'card');
+
+      // Save to Firestore
+      await _saveOrderToFirestore(fullOrder);
+
+      // Clean up pending order
+      delete pendingOrders[orderId];
+      localStorage.setItem('exg_pending_moyasar', JSON.stringify(pendingOrders));
+
+      // Clear cart and show success
+      cart = []; _saveCart(); updateCartBadge();
+      const langFin = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
+      closePayment();
+      setTimeout(() => {
+        openCart();
+        showOrderConfirm(orderId, 'SAR ' + (fullOrder.totalSAR || 0));
+      }, 300);
+
+      showToast('✅ Payment successful! Order confirmed.', 5000);
+    } catch (e) {
+      console.error('Moyasar callback handling error:', e);
+      showToast('✅ Payment received — your order is being processed.', 6000);
+    }
+  } else if (status === 'failed' || status === 'cancelled') {
+    const msg = decodeURIComponent(errorMessage || 'Payment was not completed');
+    showToast('❌ ' + msg, 5000);
+    // Re-open payment modal so customer can retry
+    setTimeout(() => openPayment(), 800);
+  }
+}
+
+/**
+ * Save an order document to Firestore via REST API.
+ * Collection: notifications, docType: 'order'
+ * Uses the Firebase API key (public — same key used in index.html)
+ */
+async function _saveOrderToFirestore(orderData) {
+  const FIREBASE_API_KEY = 'AIzaSyCPSsxifbE92WqEa2VsGdSqaJIRTPkZiLQ';
+  const FIRESTORE_BASE = 'https://firestore.googleapis.com/v1/projects/exglobal21/databases/(default)/documents';
+  const docId = orderData.id || ('ORD' + Date.now());
+  const url = `${FIRESTORE_BASE}/notifications/${encodeURIComponent(docId)}?key=${FIREBASE_API_KEY}`;
+
+  // Convert JS value to Firestore value format
+  function toFsVal(v) {
+    if (v === null || v === undefined) return { nullValue: null };
+    if (typeof v === 'boolean') return { booleanValue: v };
+    if (typeof v === 'number') {
+      return Number.isInteger(v) ? { integerValue: String(v) } : { doubleValue: v };
+    }
+    if (typeof v === 'string') return { stringValue: v };
+    if (Array.isArray(v)) return { arrayValue: { values: v.map(toFsVal) } };
+    if (typeof v === 'object') {
+      const fields = {};
+      for (const [k, val] of Object.entries(v)) fields[k] = toFsVal(val);
+      return { mapValue: { fields } };
+    }
+    return { stringValue: String(v) };
+  }
+
+  const fullDoc = {
+    ...orderData,
+    docType: 'order',
+    createdAt: new Date().toISOString(),
+    source: 'website',
+  };
+
+  const fields = {};
+  for (const [k, v] of Object.entries(fullDoc)) fields[k] = toFsVal(v);
+
+  try {
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields }),
+    });
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      throw new Error(`Firestore write failed (${res.status}): ${errBody}`);
+    }
+    return true;
+  } catch (e) {
+    console.error('_saveOrderToFirestore error:', e);
+    throw e;
+  }
+}
+
+// Check for Moyasar callback on page load
+(function _checkMoyasarCallback() {
+  if (window.location.search.includes('moyasar_callback=1')) {
+    // Wait for page to fully init before processing callback
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(_handleMoyasarCallback, 500);
+      });
+    } else {
+      setTimeout(_handleMoyasarCallback, 500);
+    }
+  }
+})();

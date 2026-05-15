@@ -662,6 +662,133 @@ service cloud.firestore {
           <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (যেমন: unsigned_videos)"/>
         </div>
 
+        <!-- ══════════════════════════════════════════════════
+             🤖 API AUTOMATION SETTINGS
+             Payment gateway + Supplier + Courier configuration
+             ══════════════════════════════════════════════════ -->
+        <div class="setting-row" id="automationSection" style="border:1px solid #2a1050;border-radius:10px;padding:14px;background:#0e0720;margin-top:6px">
+          <!-- Collapsible header -->
+          <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="toggleAutomationSection()">
+            <div class="setting-label" style="color:#c084fc;font-size:14px;margin-bottom:0">
+              <i class="fas fa-robot" style="color:#a855f7"></i> 🤖 API Automation (Payment · Supplier · Courier)
+            </div>
+            <i id="automationToggleIcon" class="fas fa-chevron-down" style="color:#a855f7;transition:transform .25s"></i>
+          </div>
+          <div id="automationBody" style="display:none;margin-top:14px">
+            <div class="setting-desc" style="line-height:1.7;margin-bottom:12px;font-size:12px;color:#aaa">
+              <div style="color:#c084fc;font-weight:600;margin-bottom:4px">⚡ অর্ডার অটোমেশন সেটআপ করুন (ঐচ্ছিক):</div>
+              Payment webhook → Supplier Order (CJ Dropshipping) → Aramex Courier → Customer gets tracking number
+            </div>
+
+            <!-- Automation Worker URL -->
+            <div class="field-wrap" style="margin-bottom:10px">
+              <div class="field-label" style="color:#a78bfa">Automation Worker URL</div>
+              <div class="setting-desc">automation-worker.js deploy করার পর যে URL পাবেন (যেমন: https://ex-global-auto.yourname.workers.dev)</div>
+              <input type="url" id="setWorkerUrl2" class="adm-input" placeholder="https://ex-global-automation.yourname.workers.dev" style="font-size:12px"/>
+            </div>
+
+            <!-- Payment Gateway -->
+            <div class="field-wrap" style="margin-bottom:10px">
+              <div class="field-label" style="color:#a78bfa">Payment Gateway — পেমেন্ট গেটওয়ে</div>
+              <select id="setPaymentGateway" class="adm-select" onchange="onPayGatewayChange()">
+                <option value="whatsapp">WhatsApp Only (কোনো gateway নেই)</option>
+                <option value="moyasar">Moyasar (mada / Visa / Mastercard — Saudi Arabia)</option>
+                <option value="hyperpay">HyperPay (mada / Visa / Mastercard / STCPAY)</option>
+              </select>
+            </div>
+
+            <!-- Moyasar fields (shown when Moyasar selected) -->
+            <div id="moyasarFields" style="display:none;background:#160a30;border-radius:8px;padding:12px;margin-bottom:10px">
+              <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:600">
+                💳 Moyasar — moyasar.com → Dashboard → Settings → API Keys
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Moyasar Publishable Key (pk_live_...)</div>
+                <input type="text" id="setMoyasarPubKey" class="adm-input" placeholder="pk_live_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:11px"/>
+              </div>
+            </div>
+
+            <!-- HyperPay fields (shown when HyperPay selected) -->
+            <div id="hyperpayFields" style="display:none;background:#160a30;border-radius:8px;padding:12px;margin-bottom:10px">
+              <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:600">
+                💳 HyperPay — hyperpay.com → Dashboard → My Account
+              </div>
+              <div class="form-grid" style="gap:8px">
+                <div class="field-wrap">
+                  <div class="field-label">Entity ID</div>
+                  <input type="text" id="setHyperPayEntity" class="adm-input" placeholder="8ac7a4c97..." style="font-family:monospace;font-size:11px"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">Access Token (Bearer)</div>
+                  <input type="password" id="setHyperPayToken" class="adm-input" placeholder="OGFjN2E0Yy4u..." style="font-family:monospace;font-size:11px"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Supplier -->
+            <div class="field-wrap" style="margin-bottom:10px">
+              <div class="field-label" style="color:#a78bfa">Supplier — পণ্য সরবরাহকারী</div>
+              <select id="setSupplier" class="adm-select" onchange="onSupplierChange()">
+                <option value="manual">Manual / WhatsApp (নিজে অর্ডার করবেন)</option>
+                <option value="cj">CJ Dropshipping (স্বয়ংক্রিয় অর্ডার)</option>
+              </select>
+            </div>
+
+            <!-- CJ Dropshipping fields -->
+            <div id="cjFields" style="display:none;background:#160a30;border-radius:8px;padding:12px;margin-bottom:10px">
+              <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:600">
+                📦 CJ Dropshipping — app.cjdropshipping.com → Account → API
+              </div>
+              <div class="form-grid" style="gap:8px">
+                <div class="field-wrap">
+                  <div class="field-label">CJ Account Email</div>
+                  <input type="email" id="setCjEmail" class="adm-input" placeholder="your@email.com" style="font-size:12px"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">CJ API Key (Password)</div>
+                  <input type="password" id="setCjApiKey" class="adm-input" placeholder="CJ API key..." style="font-family:monospace;font-size:11px"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Courier -->
+            <div class="field-wrap" style="margin-bottom:10px">
+              <div class="field-label" style="color:#a78bfa">Courier — কুরিয়ার সার্ভিস</div>
+              <select id="setCourier" class="adm-select" onchange="onCourierChange()">
+                <option value="manual">Manual (নিজে শিপমেন্ট বুক করবেন)</option>
+                <option value="aramex">Aramex Saudi Arabia (স্বয়ংক্রিয় শিপমেন্ট)</option>
+                <option value="smsa">SMSA Express (শীঘ্রই আসছে)</option>
+              </select>
+            </div>
+
+            <!-- Aramex fields -->
+            <div id="aramexFields" style="display:none;background:#160a30;border-radius:8px;padding:12px;margin-bottom:10px">
+              <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:600">
+                🚚 Aramex — aramex.com → My Account → API Credentials
+              </div>
+              <div class="form-grid" style="gap:8px">
+                <div class="field-wrap">
+                  <div class="field-label">Account Number</div>
+                  <input type="text" id="setAramexAccount" class="adm-input" placeholder="12345678" style="font-family:monospace;font-size:12px"/>
+                </div>
+                <div class="field-wrap">
+                  <div class="field-label">Username</div>
+                  <input type="text" id="setAramexUser" class="adm-input" placeholder="aramex_username" style="font-size:12px"/>
+                </div>
+              </div>
+              <div class="field-wrap" style="margin-top:8px">
+                <div class="field-label">Password</div>
+                <input type="password" id="setAramexPass" class="adm-input" placeholder="Aramex password" style="font-size:12px"/>
+              </div>
+            </div>
+
+            <div style="font-size:11px;color:#666;margin-top:4px">
+              <i class="fas fa-circle-info" style="color:#7c3aed"></i>
+              Worker secrets (API keys) সরাসরি Cloudflare Worker → Settings → Variables-এ সেট করুন। এখানে শুধু public keys দিন।
+            </div>
+          </div>
+        </div>
+
         <!-- GITHUB PUBLISH TOKEN -->
         <div class="setting-row" style="border:1px solid #0a3a1a;border-radius:10px;padding:14px;background:#071a0d;margin-top:6px">
           <div class="setting-label" style="color:#4ade80;font-size:14px"><i class="fab fa-github"></i> 🚀 ওয়েবসাইটে Publish করুন</div>
@@ -2160,6 +2287,23 @@ function loadSettings() {
     if (el('setAiWorkerUrl')) el('setAiWorkerUrl').value = s.aiWorkerUrl || '';
     if (el('setVapidKey'))     el('setVapidKey').value     = s.vapidKey     || '';
     if (el('setFcmServerKey')) el('setFcmServerKey').value = localStorage.getItem('exg_fcm_server_key') || '';
+    // Automation settings
+    if (el('setWorkerUrl2'))      el('setWorkerUrl2').value      = localStorage.getItem('exg_worker_url2')       || '';
+    if (el('setPaymentGateway'))  el('setPaymentGateway').value  = localStorage.getItem('exg_payment_gateway')   || 'whatsapp';
+    if (el('setMoyasarPubKey'))   el('setMoyasarPubKey').value   = localStorage.getItem('exg_moyasar_pub')       || '';
+    if (el('setHyperPayEntity'))  el('setHyperPayEntity').value  = localStorage.getItem('exg_hyperpay_entity')   || '';
+    if (el('setHyperPayToken'))   el('setHyperPayToken').value   = localStorage.getItem('exg_hyperpay_token')    || '';
+    if (el('setSupplier'))        el('setSupplier').value        = localStorage.getItem('exg_supplier')          || 'manual';
+    if (el('setCjEmail'))         el('setCjEmail').value         = localStorage.getItem('exg_cj_email')          || '';
+    if (el('setCjApiKey'))        el('setCjApiKey').value        = localStorage.getItem('exg_cj_apikey')         || '';
+    if (el('setCourier'))         el('setCourier').value         = localStorage.getItem('exg_courier')           || 'manual';
+    if (el('setAramexAccount'))   el('setAramexAccount').value   = localStorage.getItem('exg_aramex_account')    || '';
+    if (el('setAramexUser'))      el('setAramexUser').value      = localStorage.getItem('exg_aramex_user')       || '';
+    if (el('setAramexPass'))      el('setAramexPass').value      = localStorage.getItem('exg_aramex_pass')       || '';
+    // Apply show/hide for conditional fields
+    if (el('setPaymentGateway'))  onPayGatewayChange();
+    if (el('setSupplier'))        onSupplierChange();
+    if (el('setCourier'))         onCourierChange();
     updatePublishStatus();
   }
 }
@@ -2189,9 +2333,70 @@ function saveSettings() {
   if (ghToken) localStorage.setItem('exg_github_token', ghToken); else localStorage.removeItem('exg_github_token');
   const cityVideo = document.getElementById('setCityVideo') ? document.getElementById('setCityVideo').value.trim() : '';
   if (cityVideo) localStorage.setItem('exg_city_video', cityVideo); else localStorage.removeItem('exg_city_video');
+  // ── Automation settings ──
+  const workerUrl2     = (document.getElementById('setWorkerUrl2')?.value     || '').trim();
+  const paymentGateway = (document.getElementById('setPaymentGateway')?.value || 'whatsapp');
+  const moyasarPub     = (document.getElementById('setMoyasarPubKey')?.value  || '').trim();
+  const hyperpayEntity = (document.getElementById('setHyperPayEntity')?.value || '').trim();
+  const hyperpayToken  = (document.getElementById('setHyperPayToken')?.value  || '').trim();
+  const supplier       = (document.getElementById('setSupplier')?.value       || 'manual');
+  const cjEmail        = (document.getElementById('setCjEmail')?.value        || '').trim();
+  const cjApiKey       = (document.getElementById('setCjApiKey')?.value       || '').trim();
+  const courier        = (document.getElementById('setCourier')?.value        || 'manual');
+  const aramexAccount  = (document.getElementById('setAramexAccount')?.value  || '').trim();
+  const aramexUser     = (document.getElementById('setAramexUser')?.value     || '').trim();
+  const aramexPass     = (document.getElementById('setAramexPass')?.value     || '').trim();
+  if (workerUrl2)     localStorage.setItem('exg_worker_url2',       workerUrl2);     else localStorage.removeItem('exg_worker_url2');
+  localStorage.setItem('exg_payment_gateway', paymentGateway);
+  if (moyasarPub)     localStorage.setItem('exg_moyasar_pub',       moyasarPub);     else localStorage.removeItem('exg_moyasar_pub');
+  if (hyperpayEntity) localStorage.setItem('exg_hyperpay_entity',   hyperpayEntity); else localStorage.removeItem('exg_hyperpay_entity');
+  if (hyperpayToken)  localStorage.setItem('exg_hyperpay_token',    hyperpayToken);  else localStorage.removeItem('exg_hyperpay_token');
+  localStorage.setItem('exg_supplier', supplier);
+  if (cjEmail)        localStorage.setItem('exg_cj_email',          cjEmail);        else localStorage.removeItem('exg_cj_email');
+  if (cjApiKey)       localStorage.setItem('exg_cj_apikey',         cjApiKey);       else localStorage.removeItem('exg_cj_apikey');
+  localStorage.setItem('exg_courier', courier);
+  if (aramexAccount)  localStorage.setItem('exg_aramex_account',    aramexAccount);  else localStorage.removeItem('exg_aramex_account');
+  if (aramexUser)     localStorage.setItem('exg_aramex_user',       aramexUser);     else localStorage.removeItem('exg_aramex_user');
+  if (aramexPass)     localStorage.setItem('exg_aramex_pass',       aramexPass);     else localStorage.removeItem('exg_aramex_pass');
+  // Update exg_settings for keys used in script.js
+  const sUpdated = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  sUpdated.moyasarPubKey = moyasarPub;
+  sUpdated.workerUrl2 = workerUrl2;
+  sUpdated.paymentGateway = paymentGateway;
+  localStorage.setItem('exg_settings', JSON.stringify(sUpdated));
   _markAdminEdit();
   updatePublishStatus();
   toast('✅ Settings saved!');
+}
+
+/* ── Automation section toggle & conditional field show/hide ── */
+function toggleAutomationSection() {
+  const body = document.getElementById('automationBody');
+  const icon = document.getElementById('automationToggleIcon');
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+  if (icon) icon.style.transform = isOpen ? '' : 'rotate(180deg)';
+}
+
+function onPayGatewayChange() {
+  const val = document.getElementById('setPaymentGateway')?.value || 'whatsapp';
+  const mFields = document.getElementById('moyasarFields');
+  const hFields = document.getElementById('hyperpayFields');
+  if (mFields) mFields.style.display = val === 'moyasar' ? 'block' : 'none';
+  if (hFields) hFields.style.display = val === 'hyperpay' ? 'block' : 'none';
+}
+
+function onSupplierChange() {
+  const val = document.getElementById('setSupplier')?.value || 'manual';
+  const f = document.getElementById('cjFields');
+  if (f) f.style.display = val === 'cj' ? 'block' : 'none';
+}
+
+function onCourierChange() {
+  const val = document.getElementById('setCourier')?.value || 'manual';
+  const f = document.getElementById('aramexFields');
+  if (f) f.style.display = val === 'aramex' ? 'block' : 'none';
 }
 
 function renderShareLinks() {
