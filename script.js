@@ -2752,10 +2752,50 @@ function openPayment() {
   const nudge = document.getElementById('payFreeNudge');
   if (nudge) {
     if (freeDelivery) {
-      nudge.innerHTML = `<span class="nudge-free">🎉 ${t('freeDeliveryActive')||'Free delivery applied!'}</span>`;
+      // Estimated delivery dates
+      const now = new Date();
+      const addD = (n) => { const d = new Date(now); d.setDate(d.getDate() + n); return d; };
+      const locMap = { ar: 'ar-SA', bn: 'bn-BD', hi: 'hi-IN' };
+      const loc = locMap[currentLang] || 'en-US';
+      const fmt = (d) => d.toLocaleDateString(loc, { month: 'short', day: 'numeric' });
+      const d0  = fmt(now);
+      const d1a = fmt(addD(2)), d1b = fmt(addD(3));
+      const d2a = fmt(addD(5)), d2b = fmt(addD(7));
+      const _T  = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      nudge.innerHTML = `
+        <div class="nudge-pill-free">
+          <i class="fas fa-truck"></i>
+          <span>${t('freeDeliveryActive') || 'Free Delivery Applied!'} 🎉</span>
+        </div>
+        <div class="del-timeline">
+          <div class="del-step">
+            <div class="del-circle"><i class="fas fa-bag-shopping"></i></div>
+            <div class="del-date">${d0}</div>
+            <div class="del-sub">${_T.trackOrdered || 'Ordered'}</div>
+          </div>
+          <div class="del-line"></div>
+          <div class="del-step">
+            <div class="del-circle"><i class="fas fa-truck"></i></div>
+            <div class="del-date">${d1a} – ${d1b}</div>
+            <div class="del-sub">${_T.delReady || 'Order Ready'}</div>
+          </div>
+          <div class="del-line"></div>
+          <div class="del-step">
+            <div class="del-circle del-circle-last"><i class="fas fa-box-open"></i></div>
+            <div class="del-date">${d2a} – ${d2b}</div>
+            <div class="del-sub">${_T.trackDelivered || 'Delivered'}</div>
+          </div>
+        </div>`;
     } else {
       const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
-      nudge.innerHTML = `<span class="nudge-add">🚚 ${t('addMoreFree')||'Add'} <strong>${fmtD(needed)}</strong> ${t('moreForFree')||'more for free delivery'}</span>`;
+      const pct = Math.min((subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100, 100);
+      nudge.innerHTML = `
+        <div class="nudge-add">
+          <div class="nudge-add-top">
+            <span>🚚 ${t('addMoreFree') || 'Add'} <strong>${fmtD(needed)}</strong> ${t('moreForFree') || 'more for free delivery'}</span>
+          </div>
+          <div class="nudge-prog-track"><div class="nudge-prog-fill" style="width:${pct}%"></div></div>
+        </div>`;
     }
   }
   // Reset coupon state
