@@ -233,6 +233,22 @@
     .cat-crop-zoom-row{display:flex;align-items:center;gap:10px;width:100%}
     .cat-crop-hint{font-size:11px;color:#444;text-align:center;line-height:1.5}
   </style>
+  <!-- Firebase for Notifications -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    (function(){
+      const cfg = {
+        apiKey:"AIzaSyCPSsxifbE92WqEa2VsGdSqaJIRTPkZiLQ",
+        authDomain:"exglobal21.firebaseapp.com",
+        projectId:"exglobal21",
+        storageBucket:"exglobal21.firebasestorage.app",
+        messagingSenderId:"461652919348",
+        appId:"1:461652919348:web:08b88b4ebc0bd893d73661"
+      };
+      try { firebase.initializeApp(cfg); } catch(e) {}
+    })();
+  </script>
 </head>
 <body>
 
@@ -274,6 +290,7 @@
     <button class="tab-btn" id="tab-btn-coupons" onclick="showTab('coupons')"><i class="fas fa-tag"></i> Coupons</button>
     <button class="tab-btn" id="tab-btn-promos" onclick="showTab('promos')"><i class="fas fa-wand-magic-sparkles"></i> Promos</button>
     <button class="tab-btn" id="tab-btn-reviews" onclick="showTab('reviews')"><i class="fas fa-star"></i> Reviews</button>
+    <button class="tab-btn" id="tab-btn-notifications" onclick="showTab('notifications')"><i class="fas fa-bell"></i> Notifications</button>
     <button class="tab-btn" id="tab-btn-settings" onclick="showTab('settings')"><i class="fas fa-gear"></i> Settings</button>
   </div>
 
@@ -506,6 +523,63 @@
     </div>
 
     <!-- SETTINGS -->
+    <!-- NOTIFICATIONS TAB -->
+    <div class="tab-panel" id="tab-notifications">
+      <div class="sec">
+        <div class="sec-title" style="margin-bottom:4px"><i class="fas fa-bell" style="color:#e91e8c"></i> Push Notification পাঠান</div>
+        <div style="font-size:12px;color:#666;margin-bottom:16px">লগইন করা সব ইউজারদের ফোনে সরাসরি নোটিফিকেশন যাবে</div>
+
+        <div class="setting-row" style="padding:0;border:none">
+          <div class="field-wrap" style="margin-bottom:10px">
+            <div class="field-label"><i class="fas fa-heading"></i> শিরোনাম (Title)</div>
+            <input type="text" id="notifTitle" class="adm-input" placeholder="যেমন: নতুন কালেকশন এসেছে! 🎉"/>
+          </div>
+          <div class="field-wrap" style="margin-bottom:10px">
+            <div class="field-label"><i class="fas fa-align-left"></i> বার্তা (Message)</div>
+            <textarea id="notifBody" class="adm-input" rows="3" style="resize:vertical" placeholder="যেমন: এখনই দেখুন — ডেলিভারি চার্জ ফ্রি!"></textarea>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="adm-btn" onclick="sendPushNotification()" id="sendNotifBtn">
+              <i class="fas fa-paper-plane"></i> সবার কাছে পাঠান
+            </button>
+            <button class="adm-btn gray" onclick="previewNotif()">
+              <i class="fas fa-eye"></i> Preview
+            </button>
+          </div>
+          <div id="notifSendStatus" style="margin-top:10px;font-size:12px;color:#888"></div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-title" style="margin-bottom:8px"><i class="fas fa-clock-rotate-left"></i> পাঠানো নোটিফিকেশন</div>
+        <div id="notifHistory" style="max-height:320px;overflow-y:auto">
+          <div style="color:#555;font-size:12px">লোড হচ্ছে...</div>
+        </div>
+      </div>
+
+      <div class="sec" style="border:1px solid #1a2e1a;border-radius:12px;padding:16px;background:#071a0d">
+        <div class="sec-title" style="color:#86efac;margin-bottom:8px"><i class="fas fa-users" style="color:#10b981"></i> সাবস্ক্রাইবার</div>
+        <div id="notifSubscriberCount" style="font-size:28px;font-weight:800;color:#4ade80">—</div>
+        <div style="font-size:12px;color:#4b7a54;margin-top:2px">জন নোটিফিকেশন চালু করেছেন</div>
+        <button class="adm-btn green" style="margin-top:10px" onclick="loadSubscriberCount()"><i class="fas fa-rotate"></i> Refresh</button>
+      </div>
+
+      <!-- Setup guide -->
+      <div class="sec" style="border:1px solid #1e3a5f;border-radius:12px;padding:16px;background:#071428">
+        <div class="sec-title" style="color:#60a5fa;margin-bottom:8px"><i class="fas fa-circle-info"></i> সেটআপ গাইড</div>
+        <div style="font-size:12px;color:#aaa;line-height:1.9">
+          <div style="color:#60a5fa;font-weight:600;margin-bottom:6px">প্রথমবার ব্যবহারের আগে Firebase-এ কিছু সেটআপ করতে হবে:</div>
+          1️⃣ <a href="https://console.firebase.google.com/project/exglobal21/firestore" target="_blank" style="color:#60a5fa">Firebase Console → Firestore</a> → <strong>Create database</strong> (Start in test mode)<br/>
+          2️⃣ <a href="https://console.firebase.google.com/project/exglobal21/settings/cloudmessaging" target="_blank" style="color:#60a5fa">Project Settings → Cloud Messaging</a><br/>
+          3️⃣ <strong>Web Push certificates</strong> → <strong>Generate key pair</strong> → VAPID key কপি করুন<br/>
+          4️⃣ <strong>Cloud Messaging API (Legacy)</strong> Enable করুন → <strong>Server key</strong> কপি করুন<br/>
+          5️⃣ Settings ট্যাবে গিয়ে দুটো key পেস্ট করুন → Save করুন ✅<br/>
+          <div style="color:#555;margin-top:6px">💡 এরপর থেকে যে ইউজার লগইন করবে, তার ফোনে নোটিফিকেশন পারমিশন চাওয়া হবে।</div>
+        </div>
+      </div>
+    </div>
+    <!-- END NOTIFICATIONS TAB -->
+
     <div class="tab-panel" id="tab-settings">
       <div class="sec">
         <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-sliders"></i> Site Settings</div>
@@ -608,6 +682,18 @@
           </div>
           <input type="url" id="setAiWorkerUrl" class="adm-input" placeholder="https://ex-rabbi-chat.your-name.workers.dev" style="font-size:12px"/>
           <div style="margin-top:8px;font-size:11px;color:#666">⚠️ Worker URL ছাড়া chatbot কাজ করবে না</div>
+        </div>
+
+        <!-- FCM / PUSH NOTIFICATION KEYS -->
+        <div class="setting-row" style="border:1px solid #2a1a0a;border-radius:10px;padding:14px;background:#140d02;margin-top:6px">
+          <div class="setting-label" style="color:#fbbf24;font-size:14px"><i class="fas fa-bell" style="color:#f59e0b"></i> 🔔 Push Notification Keys</div>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
+            <div style="color:#fbbf24;font-weight:600;margin-bottom:5px">Firebase Console → Project Settings → Cloud Messaging থেকে পাবেন:</div>
+            <strong>VAPID Key:</strong> Web Push certificates → Generate key pair<br/>
+            <strong>Server Key:</strong> Cloud Messaging API (Legacy) → Server key
+          </div>
+          <input type="text" id="setVapidKey" class="adm-input" placeholder="VAPID Key (Web Push certificate key pair)" style="font-size:11px;font-family:monospace;margin-bottom:7px"/>
+          <input type="password" id="setFcmServerKey" class="adm-input" placeholder="FCM Server Key (Legacy API key)" style="font-size:11px;font-family:monospace"/>
         </div>
 
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
@@ -2012,6 +2098,8 @@ function loadSettings() {
     if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
     if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
     if (el('setAiWorkerUrl')) el('setAiWorkerUrl').value = s.aiWorkerUrl || '';
+    if (el('setVapidKey'))     el('setVapidKey').value     = s.vapidKey     || '';
+    if (el('setFcmServerKey')) el('setFcmServerKey').value = localStorage.getItem('exg_fcm_server_key') || '';
     updatePublishStatus();
   }
 }
@@ -2024,8 +2112,12 @@ function saveSettings() {
     vatId:   (document.getElementById('setVatId')?.value || '').trim(),
     vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
     aiWorkerUrl: (document.getElementById('setAiWorkerUrl')?.value || '').trim(),
+    vapidKey:    (document.getElementById('setVapidKey')?.value    || '').trim(),
   };
   localStorage.setItem('exg_settings', JSON.stringify(s));
+  const fcmServerKey = (document.getElementById('setFcmServerKey')?.value || '').trim();
+  if (fcmServerKey) localStorage.setItem('exg_fcm_server_key', fcmServerKey);
+  else localStorage.removeItem('exg_fcm_server_key');
   const imgbbKey = document.getElementById('setImgBBKey').value.trim();
   if (imgbbKey) localStorage.setItem('exg_imgbb_key', imgbbKey);
   else localStorage.removeItem('exg_imgbb_key');
@@ -2864,6 +2956,143 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
   }, { passive:false });
   preview.addEventListener('touchend', () => { _catCropDrag.active = false; _catCropPinch.active = false; });
+});
+</script>
+
+<script>
+/* ===== NOTIFICATION FUNCTIONS ===== */
+
+async function sendPushNotification() {
+  const title = (document.getElementById('notifTitle')?.value || '').trim();
+  const body  = (document.getElementById('notifBody')?.value  || '').trim();
+  if (!title && !body) { toast('শিরোনাম বা বার্তা দিন।'); return; }
+
+  const serverKey = localStorage.getItem('exg_fcm_server_key') || '';
+  if (!serverKey) {
+    toast('⚠️ FCM Server Key সেট করুন — Settings ট্যাবে যান।');
+    return;
+  }
+
+  const statusEl = document.getElementById('notifSendStatus');
+  const btn = document.getElementById('sendNotifBtn');
+  if (statusEl) statusEl.textContent = '📡 সাবস্ক্রাইবারদের তথ্য নিচ্ছি...';
+  if (btn) btn.disabled = true;
+
+  try {
+    // 1. Fetch all FCM tokens from Firestore
+    const snap = await firebase.firestore().collection('fcm_tokens').get();
+    const tokens = [];
+    snap.forEach(doc => { const t = doc.data().token; if (t) tokens.push(t); });
+
+    if (tokens.length === 0) {
+      if (statusEl) statusEl.textContent = '⚠️ কোনো সাবস্ক্রাইবার নেই।';
+      if (btn) btn.disabled = false;
+      return;
+    }
+
+    if (statusEl) statusEl.textContent = `📨 ${tokens.length} জনের কাছে পাঠাচ্ছি...`;
+
+    // 2. Send FCM in batches of 500
+    let sent = 0, failed = 0;
+    const batchSize = 500;
+    for (let i = 0; i < tokens.length; i += batchSize) {
+      const batch = tokens.slice(i, i + batchSize);
+      const payload = {
+        notification: { title: title || 'EX GLOBAL', body: body || '', icon: '/logo.png' },
+        registration_ids: batch
+      };
+      const res = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: { 'Authorization': 'key=' + serverKey, 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      sent   += data.success || 0;
+      failed += data.failure || 0;
+    }
+
+    // 3. Save notification to Firestore (for in-app listeners)
+    await firebase.firestore().collection('notifications').add({
+      title, body,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      sentTo: tokens.length,
+      success: sent,
+      failed
+    });
+
+    // 4. Clear inputs
+    if (document.getElementById('notifTitle')) document.getElementById('notifTitle').value = '';
+    if (document.getElementById('notifBody'))  document.getElementById('notifBody').value  = '';
+
+    if (statusEl) statusEl.textContent = `✅ সফল: ${sent} জন | ❌ ব্যর্থ: ${failed} জন`;
+    toast(`🔔 Notification পাঠানো হয়েছে! (${sent} জন পেয়েছেন)`);
+    loadNotifHistory();
+
+  } catch(e) {
+    if (statusEl) statusEl.textContent = '❌ Error: ' + e.message;
+    console.error(e);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+function previewNotif() {
+  const title = document.getElementById('notifTitle')?.value || 'EX GLOBAL';
+  const body  = document.getElementById('notifBody')?.value  || '';
+  if (!('Notification' in window)) { toast('ব্রাউজারে Notification সাপোর্ট নেই।'); return; }
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body, icon: '/logo.png' });
+  } else {
+    Notification.requestPermission().then(p => {
+      if (p === 'granted') new Notification(title, { body, icon: '/logo.png' });
+    });
+  }
+}
+
+async function loadNotifHistory() {
+  const el = document.getElementById('notifHistory');
+  if (!el) return;
+  try {
+    const snap = await firebase.firestore().collection('notifications')
+      .orderBy('createdAt', 'desc').limit(20).get();
+    if (snap.empty) { el.innerHTML = '<div style="color:#555;font-size:12px">এখনো কোনো নোটিফিকেশন পাঠানো হয়নি।</div>'; return; }
+    el.innerHTML = snap.docs.map(doc => {
+      const d = doc.data();
+      const ts = d.createdAt?.toDate?.();
+      const timeStr = ts ? ts.toLocaleString('bn-BD') : '—';
+      return `<div style="border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:10px 12px;margin-bottom:8px;background:#111">
+        <div style="font-weight:700;font-size:13px;color:#eee;margin-bottom:2px">${d.title || ''}</div>
+        <div style="font-size:12px;color:#aaa;margin-bottom:6px">${d.body || ''}</div>
+        <div style="font-size:10px;color:#555">📅 ${timeStr} · ✅ ${d.success||0} · ❌ ${d.failed||0}</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div style="color:#e53935;font-size:12px">Firestore লোড করতে পারেনি। সেটআপ গাইড দেখুন।</div>';
+  }
+}
+
+async function loadSubscriberCount() {
+  const el = document.getElementById('notifSubscriberCount');
+  if (!el) return;
+  try {
+    const snap = await firebase.firestore().collection('fcm_tokens').get();
+    el.textContent = snap.size;
+  } catch(e) {
+    el.textContent = '—';
+  }
+}
+
+// Load notification data when tab is shown
+const _origShowTab = typeof showTab === 'function' ? showTab : null;
+document.addEventListener('DOMContentLoaded', () => {
+  const origShowTab = window.showTab;
+  window.showTab = function(tab) {
+    if (origShowTab) origShowTab(tab);
+    if (tab === 'notifications') {
+      loadNotifHistory();
+      loadSubscriberCount();
+    }
+  };
 });
 </script>
 </body>

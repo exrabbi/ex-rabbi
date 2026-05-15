@@ -94,6 +94,8 @@
   <!-- Firebase SDK (compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
@@ -1030,9 +1032,10 @@
           <span data-i18n="security">সিকিউরিটি</span>
           <i class="fas fa-chevron-right"></i>
         </div>
-        <div class="settings-item">
-          <i class="fas fa-bell"></i>
+        <div class="settings-item" onclick="requestNotifPermission()" id="notifSettingItem">
+          <i class="fas fa-bell" style="color:#e91e8c"></i>
           <span data-i18n="notifications">নোটিফিকেশন</span>
+          <span id="notifStatus" style="font-size:11px;color:#888;margin-left:auto;margin-right:6px"></span>
           <i class="fas fa-chevron-right"></i>
         </div>
         <div class="settings-item" onclick="toggleSound(document.getElementById('soundToggle'))">
