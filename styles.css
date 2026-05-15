@@ -2223,25 +2223,79 @@ img { max-width: 100%; display: block; }
 [data-theme="dark"] .del-circle { background: #333; }
 [data-theme="dark"] .del-line { background: #444; }
 
-/* Not-free nudge with progress bar */
+/* Not-free nudge — VIP dark card */
 .nudge-add {
-  background: #fff8e1; border-radius: 12px;
-  border: 1.5px solid #fde68a; padding: 10px 14px;
+  background: linear-gradient(135deg, #1a0a2e 0%, #16213e 100%);
+  border-radius: 18px; padding: 14px 16px;
+  border: 1px solid rgba(233,30,140,.25);
+  box-shadow: 0 4px 20px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.04);
+  position: relative; overflow: hidden;
+}
+.nudge-add::before {
+  content: '';
+  position: absolute; top: -24px; right: -24px;
+  width: 90px; height: 90px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.3) 0%, transparent 70%);
+  pointer-events: none;
 }
 .nudge-add-top {
-  font-size: 13px; font-weight: 600; color: #b45309;
-  margin-bottom: 8px; display: flex; align-items: center;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
 }
-.nudge-prog-track {
-  height: 6px; background: #fde68a; border-radius: 6px; overflow: hidden;
+.nudge-add-left { display: flex; align-items: center; gap: 10px; }
+.nudge-add-icon {
+  width: 36px; height: 36px; border-radius: 11px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(233,30,140,.4);
 }
-.nudge-prog-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #f59e0b, #d97706);
-  border-radius: 6px;
-  transition: width .5s cubic-bezier(.34,1.56,.64,1);
+.nudge-add-texts { display: flex; flex-direction: column; gap: 1px; }
+.nudge-add-title { font-size: 10px; color: rgba(255,255,255,.45); font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+.nudge-add-amount { font-size: 17px; font-weight: 900; color: #fff; letter-spacing: -.3px; }
+.nudge-add-amount span { color: #f9c400; }
+.nudge-free-badge {
+  background: rgba(233,30,140,.15); border: 1px solid rgba(233,30,140,.3);
+  border-radius: 20px; padding: 5px 10px;
+  font-size: 9.5px; font-weight: 800; color: #ff79b8;
+  letter-spacing: .5px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 4px;
 }
-[data-theme="dark"] .nudge-add { background: #2a1f00; border-color: #5a4000; }
+/* Truck track */
+.nudge-truck-wrap { position: relative; height: 34px; margin-bottom: 4px; }
+.nudge-truck-road {
+  position: absolute; bottom: 5px; left: 0; right: 0;
+  height: 6px; background: rgba(255,255,255,.08); border-radius: 6px;
+}
+.nudge-truck-fill {
+  height: 100%; border-radius: 6px;
+  background: linear-gradient(90deg, #e91e8c, #a855f7, #e91e8c);
+  background-size: 200% 100%;
+  animation: truckFillMove 2.2s linear infinite;
+  transition: width .65s cubic-bezier(.34,1.56,.64,1);
+  position: relative;
+}
+@keyframes truckFillMove { 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+.nudge-truck-fill::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.28) 50%, transparent 100%);
+  background-size: 200% 100%; animation: shimR 1.4s linear infinite;
+}
+@keyframes shimR { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+.nudge-truck-icon {
+  position: absolute; bottom: 0;
+  font-size: 23px; line-height: 1;
+  transform: translateX(-50%);
+  transition: left .65s cubic-bezier(.34,1.56,.64,1);
+  filter: drop-shadow(0 2px 8px rgba(233,30,140,.7));
+  pointer-events: none;
+}
+.nudge-truck-flag { position: absolute; bottom: 2px; right: 0; font-size: 16px; line-height: 1; }
+.nudge-prog-labels {
+  display: flex; justify-content: space-between;
+  font-size: 9.5px; color: rgba(255,255,255,.3); font-weight: 600; margin-top: 2px;
+}
+/* nudge-add already dark — no override needed */
 
 /* ===== PROFESSIONAL POLISH — v7 ===== */
 

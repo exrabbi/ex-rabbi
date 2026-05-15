@@ -2789,12 +2789,30 @@ function openPayment() {
     } else {
       const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
       const pct = Math.min((subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100, 100);
+      const truckLeft = Math.max(4, Math.min(pct, 88));
       nudge.innerHTML = `
         <div class="nudge-add">
           <div class="nudge-add-top">
-            <span>🚚 ${t('addMoreFree') || 'Add'} <strong>${fmtD(needed)}</strong> ${t('moreForFree') || 'more for free delivery'}</span>
+            <div class="nudge-add-left">
+              <div class="nudge-add-icon">🚚</div>
+              <div class="nudge-add-texts">
+                <span class="nudge-add-title">${t('addMoreFree') || 'Add more'}</span>
+                <span class="nudge-add-amount"><span>${fmtD(needed)}</span> ${t('moreForFree') || 'for free delivery'}</span>
+              </div>
+            </div>
+            <div class="nudge-free-badge"><i class="fas fa-gift"></i> FREE</div>
           </div>
-          <div class="nudge-prog-track"><div class="nudge-prog-fill" style="width:${pct}%"></div></div>
+          <div class="nudge-truck-wrap">
+            <div class="nudge-truck-road">
+              <div class="nudge-truck-fill" style="width:${pct}%"></div>
+            </div>
+            <span class="nudge-truck-icon" style="left:${truckLeft}%">🚛</span>
+            <span class="nudge-truck-flag">🏁</span>
+          </div>
+          <div class="nudge-prog-labels">
+            <span>SAR 0</span>
+            <span>SAR ${FREE_DELIVERY_THRESHOLD_SAR} ${t('freeDeliveryActive') || 'Free Delivery'}</span>
+          </div>
         </div>`;
     }
   }
