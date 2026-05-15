@@ -3504,6 +3504,58 @@ function getAiWorkerUrl() {
   try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiWorkerUrl || ''; } catch(e) { return ''; }
 }
 
+/* ── AI Usage tracking ── */
+function _aiGetUsage() {
+  const today = new Date().toISOString().slice(0, 10);
+  try {
+    const d = JSON.parse(localStorage.getItem('exg_ai_usage') || '{}');
+    if (d.date !== today) return { date: today, count: 0 };
+    return d;
+  } catch(e) { return { date: new Date().toISOString().slice(0, 10), count: 0 }; }
+}
+function _aiGetLimit() {
+  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 20; }
+  catch(e) { return 20; }
+}
+function _aiIncrUsage() {
+  const u = _aiGetUsage(); u.count++;
+  localStorage.setItem('exg_ai_usage', JSON.stringify(u));
+  _aiUpdateUsageBar();
+}
+function _aiUpdateUsageBar() {
+  const u = _aiGetUsage();
+  const limit = _aiGetLimit();
+  const count = u.count;
+  const pct   = Math.min(Math.round((count / limit) * 100), 100);
+  const _T    = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+
+  const textEl = document.getElementById('aiUsageText');
+  const pctEl  = document.getElementById('aiUsagePct');
+  const fillEl = document.getElementById('aiUsageFill');
+
+  if (textEl) {
+    const tpl = _T.aiUsageLabel || 'Today: {used}/{limit} messages';
+    textEl.textContent = tpl.replace('{used}', count).replace('{limit}', limit);
+  }
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (fillEl) {
+    fillEl.style.width = pct + '%';
+    fillEl.classList.toggle('warn', pct >= 70 && pct < 100);
+    fillEl.classList.toggle('full', pct >= 100);
+  }
+
+  const inp     = document.getElementById('aiChatInput');
+  const sendBtn = document.getElementById('aiChatSendBtn');
+  const isOver  = count >= limit;
+  if (inp) {
+    inp.disabled = isOver;
+    inp.placeholder = isOver
+      ? (_T.aiLimitReached || 'Daily limit reached. Try again tomorrow.')
+      : (_T.aiChatPlaceholder || 'Type your question...');
+  }
+  if (sendBtn) sendBtn.disabled = isOver;
+}
+
 function openAiChat() {
   const overlay = document.getElementById('aiChatOverlay');
   const panel   = document.getElementById('aiChatPanel');
@@ -3514,9 +3566,10 @@ function openAiChat() {
   document.body.style.overflow = 'hidden';
   const badge = document.getElementById('aiChatBadge');
   if (badge) badge.style.display = 'none';
-  const inp = document.getElementById('aiChatInput');
-  if (inp) setTimeout(() => inp.focus(), 300);
+  _aiUpdateUsageBar();
   if (aiChatHistory.length === 0) _aiRenderWelcome();
+  const inp = document.getElementById('aiChatInput');
+  if (inp && !inp.disabled) setTimeout(() => inp.focus(), 300);
 }
 
 function closeAiChat() {
@@ -3566,6 +3619,17 @@ async function sendAiMessage() {
   if (!inp) return;
   const text = inp.value.trim();
   if (!text) return;
+
+  // Check daily limit
+  const usage = _aiGetUsage();
+  const limit = _aiGetLimit();
+  if (usage.count >= limit) {
+    const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    _aiAppendMsg('assistant', _T.aiLimitReached || 'Daily AI message limit reached. Please try again tomorrow.');
+    inp.value = '';
+    return;
+  }
+
   const workerUrl = getAiWorkerUrl();
   if (!workerUrl) {
     showToast('AI chatbot not configured yet.');
@@ -3588,12 +3652,14 @@ async function sendAiMessage() {
     const reply = data?.content?.[0]?.text || 'Sorry, I could not respond. Please try again.';
     aiChatHistory.push({ role: 'assistant', content: reply });
     _aiAppendMsg('assistant', reply);
+    _aiIncrUsage(); // increment AFTER successful response
   } catch(e) {
     _aiRemoveTyping();
     _aiAppendMsg('assistant', 'Connection error. Please check your internet and try again.');
   } finally {
-    if (sendBtn) sendBtn.disabled = false;
-    inp.focus();
+    const u2 = _aiGetUsage();
+    if (sendBtn) sendBtn.disabled = u2.count >= limit;
+    if (u2.count < limit) inp.focus();
   }
 }
 
@@ -4113,6 +4179,89 @@ async function _saveOrderToFirestore(orderData) {
     throw e;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   DRAGGABLE AI FAB
+   ═══════════════════════════════════════════════════════════════════ */
+(function _initDraggableFab() {
+  document.addEventListener('DOMContentLoaded', () => {
+    const fab = document.getElementById('aiChatFab');
+    if (!fab) return;
+
+    const STORE_KEY = 'exg_ai_fab_pos';
+    const W = 54, H = 62, EDGE = 12;
+
+    // Restore saved position
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      if (saved) {
+        fab.style.left   = saved.left + 'px';
+        fab.style.top    = saved.top  + 'px';
+        fab.style.right  = 'auto';
+        fab.style.bottom = 'auto';
+      }
+    } catch(e) {}
+
+    let startX, startY, startLeft, startTop, dragged = false;
+
+    function clamp(val, min, max) { return Math.max(min, Math.min(max, val)); }
+
+    function onStart(e) {
+      const isTouch = e.touches;
+      const cx = isTouch ? e.touches[0].clientX : e.clientX;
+      const cy = isTouch ? e.touches[0].clientY : e.clientY;
+      const rect = fab.getBoundingClientRect();
+      startX = cx; startY = cy;
+      startLeft = rect.left; startTop = rect.top;
+      dragged = false;
+      fab.classList.add('dragging');
+      fab.style.left   = startLeft + 'px';
+      fab.style.top    = startTop  + 'px';
+      fab.style.right  = 'auto';
+      fab.style.bottom = 'auto';
+      document.addEventListener(isTouch ? 'touchmove' : 'mousemove', onMove, { passive: false });
+      document.addEventListener(isTouch ? 'touchend'  : 'mouseup',   onEnd,  { once: true });
+    }
+
+    function onMove(e) {
+      const isTouch = e.touches;
+      const cx = isTouch ? e.touches[0].clientX : e.clientX;
+      const cy = isTouch ? e.touches[0].clientY : e.clientY;
+      const dx = cx - startX, dy = cy - startY;
+      if (!dragged && Math.abs(dx) + Math.abs(dy) > 6) dragged = true;
+      if (!dragged) return;
+      if (isTouch) e.preventDefault();
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const newLeft = clamp(startLeft + dx, EDGE, vw - W - EDGE);
+      const newTop  = clamp(startTop  + dy, EDGE, vh - H - EDGE);
+      fab.style.left = newLeft + 'px';
+      fab.style.top  = newTop  + 'px';
+    }
+
+    function onEnd(e) {
+      const isTouch = e.changedTouches;
+      document.removeEventListener(isTouch ? 'touchmove' : 'mousemove', onMove);
+      fab.classList.remove('dragging');
+      if (!dragged) return; // was a tap — let onclick fire
+      // Snap to nearest edge
+      const rect = fab.getBoundingClientRect();
+      const vw = window.innerWidth;
+      const snapLeft = rect.left < vw / 2
+        ? EDGE
+        : vw - W - EDGE;
+      fab.style.left = snapLeft + 'px';
+      try {
+        localStorage.setItem(STORE_KEY, JSON.stringify({ left: snapLeft, top: rect.top }));
+      } catch(_) {}
+    }
+
+    fab.addEventListener('mousedown',  onStart);
+    fab.addEventListener('touchstart', onStart, { passive: true });
+
+    // Prevent click from firing after a drag
+    fab.addEventListener('click', e => { if (dragged) { dragged = false; e.stopImmediatePropagation(); } }, true);
+  });
+})();
 
 // Check for Moyasar callback on page load
 (function _checkMoyasarCallback() {
