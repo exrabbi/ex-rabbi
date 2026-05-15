@@ -3202,6 +3202,32 @@ function closeReviews() {
   document.body.style.overflow = '';
 }
 
+const REV_KEYWORDS = [
+  { label: 'Comfortable',  words: ['comfort','comfortable','مريح','आरामदायक','আরামদায়ক'] },
+  { label: 'Perfect Fit',  words: ['fit perfectly','perfect fit','مقاس مثالي','মাপ মিলেছে','আকার ঠিক'] },
+  { label: 'Excellent',    words: ['excellent','amazing','rائع','رائع','অসাধারণ','अद्भुत'] },
+  { label: 'Good Quality', words: ['quality','جودة','গুণমান','गुणवत्ता','কোয়ালিটি'] },
+  { label: 'Fast Delivery',words: ['delivery','days','توصيل','ডেলিভারি','डिलीवरी','দিনে'] },
+  { label: 'Recommended',  words: ['recommend','أنصح','অর্ডার করব','recommend'] },
+];
+
+const COUNTRY_FLAGS = {
+  'Saudi Arabia':'🇸🇦','Riyadh':'🇸🇦','Jeddah':'🇸🇦','Mecca':'🇸🇦','Medina':'🇸🇦',
+  'Dammam':'🇸🇦','Makkah':'🇸🇦','Al Qatif':'🇸🇦','KSA':'🇸🇦',
+  'UAE':'🇦🇪','Dubai':'🇦🇪','Abu Dhabi':'🇦🇪',
+  'Kuwait':'🇰🇼','Qatar':'🇶🇦','Oman':'🇴🇲','Bahrain':'🇧🇭',
+  'Egypt':'🇪🇬','Bangladesh':'🇧🇩','Algeria':'🇩🇿','Pakistan':'🇵🇰',
+  'India':'🇮🇳','Jordan':'🇯🇴','Morocco':'🇲🇦','Lebanon':'🇱🇧',
+};
+
+function _revCountry(c) {
+  if (!c) return '';
+  for (const [k,v] of Object.entries(COUNTRY_FLAGS)) {
+    if (c.toLowerCase().includes(k.toLowerCase())) return v;
+  }
+  return '🌍';
+}
+
 function renderRevSummary() {
   const all = getAllReviews();
   const total = all.length;
@@ -3209,7 +3235,7 @@ function renderRevSummary() {
   document.getElementById('revAvgScore').textContent = avg.toFixed(1);
   document.getElementById('revTotalCount').textContent = (total + 1248).toLocaleString();
   const starsEl = document.getElementById('revAvgStars');
-  starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#ddd'}">★</span>`).join('');
+  starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#e0e0e0'}">★</span>`).join('');
   const barsEl = document.getElementById('revBarsCol');
   const colors = ['','#e64a19','#f57c00','#ff8f00','#ffa000','#ffd700'];
   barsEl.innerHTML = [5,4,3,2,1].map(star => {
@@ -3220,9 +3246,24 @@ function renderRevSummary() {
   // Update entry strip count
   const ec = document.getElementById('revEntryCount');
   if (ec) ec.textContent = (total+1248).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+
+  // Keyword pills
+  const pillsEl = document.getElementById('revKeywordRow');
+  if (pillsEl) {
+    const pills = REV_KEYWORDS.map(kw => {
+      const cnt = all.filter(r => {
+        const txt = (typeof r.text === 'object') ? (r.text.en || '') : (r.text || '');
+        return kw.words.some(w => txt.toLowerCase().includes(w.toLowerCase()));
+      }).length;
+      return { label: kw.label, cnt };
+    }).filter(p => p.cnt > 0).sort((a,b) => b.cnt - a.cnt);
+    pillsEl.innerHTML = pills.map(p =>
+      `<button class="rev-kw-pill" onclick="filterRevByKeyword('${p.label}',this)">${p.label}(${p.cnt})</button>`
+    ).join('');
+  }
 }
 
-function renderRevList(filter) {
+function renderRevList(filter, keyword) {
   activeRevFilter = filter;
   const all = getAllReviews();
   let filtered = all;
@@ -3230,6 +3271,13 @@ function renderRevList(filter) {
   else if (filter === '4') filtered = all.filter(r=>r.rating===4);
   else if (filter === '3') filtered = all.filter(r=>r.rating<=3);
   else if (filter === 'photos') filtered = all.filter(r=>r.photos && r.photos.length>0);
+  if (keyword) {
+    const kw = REV_KEYWORDS.find(k=>k.label===keyword);
+    if (kw) filtered = filtered.filter(r=>{
+      const txt = (typeof r.text === 'object') ? (r.text.en || '') : (r.text || '');
+      return kw.words.some(w=>txt.toLowerCase().includes(w.toLowerCase()));
+    });
+  }
   const list = document.getElementById('revList');
   if (!filtered.length) {
     list.innerHTML = `<div class="rev-empty"><i class="fas fa-comment-slash"></i><p>${t('noReviews')}</p></div>`;
@@ -3237,23 +3285,31 @@ function renderRevList(filter) {
   }
   list.innerHTML = filtered.map(r => {
     const txt = (typeof r.text === 'object') ? (r.text[currentLang] || r.text.en) : r.text;
-    const stars = [1,2,3,4,5].map(i=>`<span style="color:${i<=r.rating?'#ffd700':'#ddd'}">★</span>`).join('');
-    const photos = (r.photos||[]).length ? `<div class="rev-card-photos">${r.photos.map(p=>`<img src="${p}" alt="" loading="lazy"/>`).join('')}</div>` : '';
-    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '';
+    const stars = [1,2,3,4,5].map(i=>`<i class="fa${i<=r.rating?'s':'r'} fa-star" style="color:${i<=r.rating?'#222':'#e0e0e0'};font-size:12px"></i>`).join('');
+    const photos = (r.photos||[]).length
+      ? `<div class="rev-card-photos">${r.photos.map(p=>`<img src="${p}" alt="" loading="lazy" onclick="event.stopPropagation()"/>`).join('')}</div>` : '';
+    const dateStr = r.date ? new Date(r.date).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}) : '';
+    const flag = _revCountry(r.country);
+    const helpful = JSON.parse(localStorage.getItem('exg_helpful_'+r.id)||'{"cnt":'+(r.helpful||0)+',"voted":false}');
     return `<div class="rev-card">
       <div class="rev-card-top">
-        <div class="rev-avatar" style="background:${r.grad||'#e91e8c'}">${r.initial||r.name[0]}</div>
-        <div class="rev-card-info">
-          <div class="rev-card-name">${r.name} <span class="rev-verified"><i class="fas fa-check-circle"></i> ${t('verifiedPurchase')}</span></div>
-          <div class="rev-card-meta">${dateStr}${r.country?' · '+r.country:''}</div>
+        <div class="rev-avatar-temu" style="background:${r.grad||'#e91e8c'}">${r.initial||r.name[0]}</div>
+        <div class="rev-temu-meta">
+          <div class="rev-temu-name">${r.name}${flag?' <span class="rev-flag">in ${flag}</span>':''}<span class="rev-temu-date"> on ${dateStr}</span></div>
+          <div class="rev-temu-stars">${stars}</div>
         </div>
-        <div class="rev-card-stars">${stars}</div>
       </div>
-      ${r.product?`<div class="rev-card-product"><i class="fas fa-box"></i> ${r.product}</div>`:''}
+      ${r.product?`<div class="rev-purchased"><span class="rev-purchased-lbl">${t('purchasedLabel')||'Purchased:'}</span> ${r.product}</div>`:''}
       <p class="rev-card-text">${txt}</p>
       ${photos}
-      <div class="rev-card-footer">
-        ${buildReactions(r.id, r.helpful||0)}
+      <div class="rev-temu-footer">
+        <button class="rev-temu-action" onclick="_revShare(${r.id})"><i class="fas fa-share-nodes"></i> ${t('shareAction')||'Share'}</button>
+        <span class="rev-pipe">|</span>
+        <button class="rev-temu-action rev-helpful-btn" id="revHelp${r.id}" onclick="_revHelpful(${r.id},this)">
+          <i class="${helpful.voted?'fas':'far'} fa-thumbs-up"></i> ${t('helpfulAction')||'Helpful'} ${helpful.cnt > 0?'('+helpful.cnt+')':''}
+        </button>
+        <span class="rev-pipe">|</span>
+        <button class="rev-temu-action rev-report-btn" onclick="_revReport(${r.id})"><i class="fas fa-flag"></i> ${t('reportAction')||'Report'}</button>
       </div>
     </div>`;
   }).join('');
@@ -3261,8 +3317,43 @@ function renderRevList(filter) {
 
 function filterReviewsBy(filter, el) {
   document.querySelectorAll('.rev-filter').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.rev-kw-pill').forEach(b=>b.classList.remove('active'));
   if (el) el.classList.add('active');
   renderRevList(filter);
+}
+
+function filterRevByKeyword(keyword, el) {
+  document.querySelectorAll('.rev-kw-pill').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.rev-filter').forEach(b=>b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderRevList('all', keyword);
+}
+
+function _revHelpful(id, btn) {
+  const key = 'exg_helpful_' + id;
+  const data = JSON.parse(localStorage.getItem(key) || '{"cnt":0,"voted":false}');
+  if (data.voted) return;
+  const rev = getAllReviews().find(r=>r.id===id);
+  data.cnt = (rev ? rev.helpful||0 : data.cnt) + 1;
+  data.voted = true;
+  localStorage.setItem(key, JSON.stringify(data));
+  if (btn) {
+    btn.innerHTML = `<i class="fas fa-thumbs-up"></i> ${t('helpfulAction')||'Helpful'} (${data.cnt})`;
+    btn.style.color = '#e91e8c';
+  }
+}
+
+function _revShare(id) {
+  if (navigator.share) {
+    navigator.share({ title: 'EX GLOBAL Review', url: location.href });
+  } else {
+    navigator.clipboard?.writeText(location.href);
+    showToast(t('linkCopied') || 'Link copied!');
+  }
+}
+
+function _revReport(id) {
+  showToast('Report submitted. Thank you.');
 }
 
 function openWriteReview() {

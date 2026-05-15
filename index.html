@@ -1441,13 +1441,21 @@
       <div class="rev-bars-col" id="revBarsCol"></div>
     </div>
 
+    <!-- Verified badge -->
+    <div class="rev-verified-banner">
+      <i class="fas fa-shield-halved"></i>
+      <span data-i18n="allVerified">All reviews are from verified purchases</span>
+    </div>
+
+    <!-- Keyword pills -->
+    <div class="rev-keyword-row" id="revKeywordRow"></div>
+
     <!-- Filters -->
     <div class="rev-filter-row" id="revFilterRow">
       <button class="rev-filter active" onclick="filterReviewsBy('all',this)" data-i18n="filterAll">All</button>
-      <button class="rev-filter" onclick="filterReviewsBy('5',this)">★★★★★</button>
-      <button class="rev-filter" onclick="filterReviewsBy('4',this)">★★★★</button>
-      <button class="rev-filter" onclick="filterReviewsBy('3',this)">★★★</button>
-      <button class="rev-filter" onclick="filterReviewsBy('photos',this)" data-i18n="filterPhotos">Photos</button>
+      <button class="rev-filter" onclick="filterReviewsBy('5',this)">5★</button>
+      <button class="rev-filter" onclick="filterReviewsBy('4',this)">4★</button>
+      <button class="rev-filter" onclick="filterReviewsBy('photos',this)" data-i18n="filterPhotos">With Photos</button>
     </div>
 
     <!-- Review cards list -->

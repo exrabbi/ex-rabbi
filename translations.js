@@ -166,6 +166,8 @@ const TRANSLATIONS = {
     waDeliveryAddress: 'ডেলিভারি ঠিকানা', waName: 'নাম', waPhone: 'ফোন', waCity: 'শহর', waAddress: 'ঠিকানা',
     aiChatPlaceholder: 'আপনার প্রশ্ন লিখুন...',
     aiChatTitle: 'EX GLOBAL সহকারী', aiChatOnline: 'অনলাইন',
+    allVerified: 'সব রিভিউ ভেরিফাইড ক্রয়ের', helpfulAction: 'সহায়ক', shareAction: 'শেয়ার', reportAction: 'রিপোর্ট',
+    purchasedLabel: 'কিনেছেন:', thisDevice: 'এই ডিভাইস',
     // Visual search
     vsEncrypted: 'সব তথ্য এনক্রিপ্টেড', vsTakePhoto: 'ছবি তুলুন',
     vsSelectAlbum: 'অ্যালবাম থেকে বেছে নিন', vsHistory: 'সার্চ ইতিহাস',
@@ -359,6 +361,8 @@ const TRANSLATIONS = {
     waDeliveryAddress: 'Delivery Address', waName: 'Name', waPhone: 'Phone', waCity: 'City', waAddress: 'Address',
     aiChatPlaceholder: 'Type your question...',
     aiChatTitle: 'EX GLOBAL Assistant', aiChatOnline: 'Online',
+    allVerified: 'All reviews are from verified purchases', helpfulAction: 'Helpful', shareAction: 'Share', reportAction: 'Report and block',
+    purchasedLabel: 'Purchased:',
     // Visual search
     vsEncrypted: 'All data will be encrypted', vsTakePhoto: 'Take photo',
     vsSelectAlbum: 'Select from album', vsHistory: 'Search history',
@@ -552,6 +556,8 @@ const TRANSLATIONS = {
     binanceAmount: 'المبلغ (USDT):',
     aiChatPlaceholder: 'اكتب سؤالك هنا...',
     aiChatTitle: 'مساعد EX GLOBAL', aiChatOnline: 'متصل',
+    allVerified: 'جميع التقييمات من مشتريات موثقة', helpfulAction: 'مفيد', shareAction: 'مشاركة', reportAction: 'إبلاغ وحظر',
+    purchasedLabel: 'اشترى:',
     // Visual search
     vsEncrypted: 'جميع البيانات مشفرة', vsTakePhoto: 'التقط صورة',
     vsSelectAlbum: 'اختر من الألبوم', vsHistory: 'سجل البحث',
@@ -730,6 +736,8 @@ const TRANSLATIONS = {
     waDeliveryAddress: 'डिलीवरी पता', waName: 'नाम', waPhone: 'फोन', waCity: 'शहर', waAddress: 'पता',
     aiChatPlaceholder: 'अपना सवाल लिखें...',
     aiChatTitle: 'EX GLOBAL सहायक', aiChatOnline: 'ऑनलाइन',
+    allVerified: 'सभी समीक्षाएँ सत्यापित खरीद से हैं', helpfulAction: 'उपयोगी', shareAction: 'शेयर करें', reportAction: 'रिपोर्ट करें',
+    purchasedLabel: 'खरीदा:',
     // Visual search
     vsEncrypted: 'सभी डेटा एन्क्रिप्टेड', vsTakePhoto: 'फोटो लें',
     vsSelectAlbum: 'एल्बम से चुनें', vsHistory: 'सर्च इतिहास',
