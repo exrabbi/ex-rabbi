@@ -2188,22 +2188,60 @@ img { max-width: 100%; display: block; }
 .ep-emoji.ep-active { background: #fce4ec; outline: 2px solid #e91e8c; }
 
 /* Free delivery nudge in payment modal */
-.pay-free-nudge {
-  margin: 0 0 10px; min-height: 0;
+.pay-free-nudge { margin: 0 0 12px; }
+
+/* Yellow pill — free delivery active */
+.nudge-pill-free {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: linear-gradient(135deg, #f9c400, #f5a500);
+  color: #1a1100;
+  border-radius: 50px; padding: 13px 22px;
+  font-size: 14px; font-weight: 800;
+  box-shadow: 0 4px 18px rgba(249,196,0,.4), 0 2px 6px rgba(0,0,0,.1);
+  margin-bottom: 16px;
 }
-.nudge-add, .nudge-free {
-  display: flex; align-items: center; gap: 6px;
-  padding: 10px 14px; border-radius: 12px;
-  font-size: 13px; font-weight: 600; line-height: 1.4;
+.nudge-pill-free i { font-size: 17px; }
+
+/* Delivery timeline */
+.del-timeline {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 0 4px 4px;
 }
+.del-step { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 0 0 auto; }
+.del-circle {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: #1a1a1a; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.2);
+}
+.del-circle-last { background: linear-gradient(135deg, #10b981, #059669); }
+.del-line { flex: 1; height: 2.5px; background: #1a1a1a; margin-top: 19px; min-width: 18px; border-radius: 2px; }
+.del-date { font-size: 10px; font-weight: 800; color: #222; text-align: center; max-width: 72px; }
+.del-sub  { font-size: 9.5px; color: #888; text-align: center; font-weight: 600; }
+[data-theme="dark"] .del-date { color: #ccc; }
+[data-theme="dark"] .del-circle { background: #333; }
+[data-theme="dark"] .del-line { background: #444; }
+
+/* Not-free nudge with progress bar */
 .nudge-add {
-  background: #fff8e1; color: #b45309;
-  border: 1.5px solid #fde68a;
+  background: #fff8e1; border-radius: 12px;
+  border: 1.5px solid #fde68a; padding: 10px 14px;
 }
-.nudge-free {
-  background: #ecfdf5; color: #065f46;
-  border: 1.5px solid #6ee7b7;
+.nudge-add-top {
+  font-size: 13px; font-weight: 600; color: #b45309;
+  margin-bottom: 8px; display: flex; align-items: center;
 }
+.nudge-prog-track {
+  height: 6px; background: #fde68a; border-radius: 6px; overflow: hidden;
+}
+.nudge-prog-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+  border-radius: 6px;
+  transition: width .5s cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="dark"] .nudge-add { background: #2a1f00; border-color: #5a4000; }
 
 /* ===== PROFESSIONAL POLISH — v7 ===== */
 
