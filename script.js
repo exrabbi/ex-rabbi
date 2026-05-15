@@ -162,33 +162,76 @@ let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 
 /* ===== PUBLISHED DATA SYNC ===== */
 async function loadPublishedData() {
+  // Try Firestore first — real-time sync across all devices
+  const fsOk = await _tryLoadFirestore();
+  if (fsOk) return;
+  // Fallback: static store-data.json (manual GitHub publish)
   try {
     const ctrl = new AbortController();
-    const tid = setTimeout(() => ctrl.abort(), 10000);
+    const tid = setTimeout(() => ctrl.abort(), 8000);
     const r = await fetch('data/store-data.json?t=' + Date.now(), { cache: 'no-store', signal: ctrl.signal });
     clearTimeout(tid);
     if (!r.ok) return;
     const d = await r.json();
     if (!d || !d.published_at) return;
-    // If admin made local edits AFTER the last publish, keep local data
     const publishedAt = new Date(d.published_at).getTime();
     const lastEdit = new Date(localStorage.getItem('exg_last_admin_edit') || 0).getTime();
     if (lastEdit > publishedAt) return;
-    const map = {
-      'exg_products_custom': d.products_custom,
-      'exg_products_added':  d.products_added,
-      'exg_products_deleted':d.products_deleted,
-      'exg_hero_slides':     d.hero_slides,
-      'exg_settings':        d.settings,
-      'exg_social_links':    d.social_links,
-      'exg_flash_pins':      d.flash_pins,
-      'exg_super_pins':      d.super_pins,
-      'exg_trend_pins':      d.trend_pins,
-      'exg_extra_coupons':   d.coupons,
-      'exg_city_video':      d.city_video,
-    };
-    Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
+    _applyConfigMap(d);
   } catch(e) {}
+}
+
+async function _tryLoadFirestore() {
+  try {
+    if (typeof firebase === 'undefined' || !firebase.apps?.length || typeof firebase.firestore !== 'function') return false;
+    const db = firebase.firestore();
+    const doc = await Promise.race([
+      db.collection('store_config').doc('main').get(),
+      new Promise((_, rej) => setTimeout(() => rej(new Error('fs-timeout')), 5000))
+    ]);
+    if (!doc.exists) return false;
+    const d = doc.data();
+    if (!d || !d.updated_at) return false;
+    _applyConfigMap(d);
+    // Real-time listener: notify customer when admin makes changes
+    let _firstSnap = true;
+    db.collection('store_config').doc('main').onSnapshot(snap => {
+      if (_firstSnap) { _firstSnap = false; return; }
+      if (!snap.exists) return;
+      _applyConfigMap(snap.data());
+      _showLiveUpdateBanner();
+    }, () => {});
+    return true;
+  } catch(e) { return false; }
+}
+
+function _applyConfigMap(d) {
+  const map = {
+    'exg_products_custom': d.products_custom,
+    'exg_products_added':  d.products_added,
+    'exg_products_deleted':d.products_deleted,
+    'exg_hero_slides':     d.hero_slides,
+    'exg_settings':        d.settings,
+    'exg_social_links':    d.social_links,
+    'exg_flash_pins':      d.flash_pins,
+    'exg_super_pins':      d.super_pins,
+    'exg_trend_pins':      d.trend_pins,
+    'exg_extra_coupons':   d.coupons,
+    'exg_city_video':      d.city_video,
+    'exg_cat_images':      d.cat_images,
+    'exg_custom_cats':     d.custom_cats,
+  };
+  Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
+}
+
+function _showLiveUpdateBanner() {
+  if (document.getElementById('liveUpdateBanner')) return;
+  const b = document.createElement('div');
+  b.id = 'liveUpdateBanner';
+  b.style.cssText = 'position:fixed;top:58px;left:0;right:0;z-index:99998;background:#e91e8c;color:#fff;text-align:center;padding:10px 16px;font-size:13px;font-weight:600;cursor:pointer;animation:fadeIn .3s';
+  b.innerHTML = '🔄 নতুন আপডেট এসেছে — ট্যাপ করে রিফ্রেশ করুন';
+  b.onclick = () => location.reload();
+  document.body.appendChild(b);
 }
 
 /* ===== ADMIN PRODUCT OVERRIDES ===== */
