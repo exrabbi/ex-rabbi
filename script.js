@@ -546,6 +546,14 @@ function renderProducts(searchTerm = '') {
   grid.innerHTML = visible.map(p => productCardHTML(p)).join('');
   document.getElementById('loadMoreBtn').style.display =
     visibleCount >= filtered.length ? 'none' : 'block';
+
+  const dots      = document.getElementById('autoLoadDots');
+  const loadText  = document.getElementById('autoLoadText');
+  const allDone   = document.getElementById('allLoadedMsg');
+  const allLoaded = visibleCount >= filtered.length;
+  if (dots)     dots.style.display     = allLoaded ? 'none' : 'flex';
+  if (loadText) loadText.style.display = allLoaded ? 'none' : 'block';
+  if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
 }
 
 function productCardHTML(p) {
@@ -1081,10 +1089,65 @@ function toggleWish(id, btn) {
   } else {
     wishlist.push(id);
     if (btn) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-heart"></i>'; }
+    _flyWishAnimation(id, btn);
     showToast(t('wishlisted'));
   }
   saveWishlist();
   updateWishBadge();
+}
+
+function _flyWishAnimation(id, srcBtn) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const wishBtn = document.getElementById('wishlistBtn');
+  if (!wishBtn) return;
+
+  const card   = srcBtn ? srcBtn.closest('.product-card') : null;
+  const imgEl  = card ? card.querySelector('img') : null;
+  const imgSrc = (imgEl && imgEl.src) ? imgEl.src : (p.image || '');
+  if (!imgSrc) return;
+
+  const startRect = srcBtn ? srcBtn.getBoundingClientRect() : { left: window.innerWidth/2, top: window.innerHeight/2, width: 0, height: 0 };
+  const endRect   = wishBtn.getBoundingClientRect();
+
+  const size   = 44;
+  const startX = startRect.left + startRect.width  / 2 - size / 2;
+  const startY = startRect.top  + startRect.height / 2 - size / 2;
+  const endX   = endRect.left   + endRect.width    / 2 - size / 2;
+  const endY   = endRect.top    + endRect.height   / 2 - size / 2;
+
+  // Pulse the heart button
+  if (srcBtn) { srcBtn.style.transform = 'scale(1.4)'; setTimeout(() => { srcBtn.style.transform = ''; }, 300); }
+
+  const fly = document.createElement('div');
+  fly.style.cssText = `position:fixed;width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;border:2.5px solid #e91e8c;box-shadow:0 0 16px rgba(233,30,140,.75);z-index:99999;pointer-events:none;left:${startX}px;top:${startY}px;will-change:transform,opacity`;
+  fly.innerHTML = `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:cover;border-radius:50%"/>`;
+  document.body.appendChild(fly);
+
+  const duration  = 580;
+  const arcHeight = Math.max(100, Math.abs(startY - endY) * 0.5);
+  const t0        = performance.now();
+
+  function ease(t) { return t < .5 ? 2*t*t : -1+(4-2*t)*t; }
+
+  function step(now) {
+    const raw = Math.min((now - t0) / duration, 1);
+    const ep  = ease(raw);
+    const x   = startX + (endX - startX) * ep;
+    const y   = startY + (endY - startY) * ep - arcHeight * Math.sin(Math.PI * raw);
+    const sc  = 1 - 0.6 * ep;
+    const op  = raw > 0.78 ? 1 - (raw - 0.78) / 0.22 : 1;
+    fly.style.left      = x  + 'px';
+    fly.style.top       = y  + 'px';
+    fly.style.transform = `scale(${sc})`;
+    fly.style.opacity   = op;
+    if (raw < 1) { requestAnimationFrame(step); return; }
+    fly.remove();
+    // Bounce the wishlist icon
+    wishBtn.style.transform = 'scale(1.45)';
+    setTimeout(() => { wishBtn.style.transform = ''; }, 220);
+  }
+  requestAnimationFrame(step);
 }
 
 function openWishlist() {
