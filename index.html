@@ -1034,7 +1034,7 @@
           <span class="settings-val" id="curLangLabel">বাংলা</span>
           <i class="fas fa-chevron-right"></i>
         </div>
-        <div class="settings-item">
+        <div class="settings-item" onclick="openAccountSecurity()">
           <i class="fas fa-shield-alt"></i>
           <span data-i18n="security">সিকিউরিটি</span>
           <i class="fas fa-chevron-right"></i>
@@ -1591,6 +1591,111 @@
     <span class="ai-chat-fab-badge" id="aiChatBadge" style="display:none">1</span>
   </button>
 
+  <!-- ===== ACCOUNT SECURITY PANEL ===== -->
+  <div class="page-overlay" id="secOverlay" onclick="closeAccountSecurity()"></div>
+  <aside class="page-panel" id="secPanel">
+    <div class="page-head">
+      <button class="page-back" onclick="closeAccountSecurity()"><i class="fas fa-arrow-left"></i></button>
+      <span class="page-title" data-i18n="securityTitle">Account Security</span>
+      <div style="width:36px"></div>
+    </div>
+    <div class="page-body sec-body">
+
+      <!-- Protected banner -->
+      <div class="sec-protected-banner">
+        <div class="sec-shield-wrap"><i class="fas fa-shield-halved"></i></div>
+        <div class="sec-protected-text">
+          <div class="sec-protected-title" data-i18n="accountProtected">Your account is protected</div>
+          <div class="sec-protected-sub" data-i18n="accountProtectedSub">Keep your information secure</div>
+        </div>
+      </div>
+
+      <!-- Account information -->
+      <div class="sec-section">
+        <div class="sec-section-title" data-i18n="accountInfo">Account Information</div>
+        <div class="sec-row">
+          <div class="sec-row-icon"><i class="fas fa-mobile-screen"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label" data-i18n="phoneNumber">Phone Number</div>
+            <div class="sec-row-val" id="secPhoneVal"></div>
+          </div>
+          <button class="sec-action-btn" id="secPhoneBtn" onclick="secPhoneEdit()"><span></span></button>
+        </div>
+        <div class="sec-row">
+          <div class="sec-row-icon"><i class="fas fa-envelope"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label" data-i18n="emailLabel">Email</div>
+            <div class="sec-row-val" id="secEmailVal">—</div>
+          </div>
+          <button class="sec-action-btn" id="secEmailBtn" onclick="secEmailEdit()"><span data-i18n="edit">Edit</span></button>
+        </div>
+        <div class="sec-row">
+          <div class="sec-row-icon"><i class="fas fa-key"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label" data-i18n="passwordLabel">Password</div>
+            <div class="sec-row-val" id="secPasswordVal"></div>
+          </div>
+          <button class="sec-action-btn" id="secPasswordBtn" onclick="secPasswordEdit()"><span></span></button>
+        </div>
+      </div>
+
+      <!-- 2FA -->
+      <div class="sec-section">
+        <div class="sec-section-title" data-i18n="twoFactorAuth">Two-Factor Authentication</div>
+        <div class="sec-row">
+          <div class="sec-row-icon sec-icon-purple"><i class="fas fa-lock"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label" data-i18n="twoFactor">2FA Verification</div>
+            <div class="sec-row-val" id="sec2FAVal"></div>
+          </div>
+          <button class="sec-action-btn" id="sec2FABtn" onclick="sec2FAToggle()"><span id="sec2FABtnText"></span></button>
+        </div>
+      </div>
+
+      <!-- Third-party accounts -->
+      <div class="sec-section">
+        <div class="sec-section-title" data-i18n="thirdPartyAccounts">Third-party Accounts</div>
+        <div class="sec-row">
+          <div class="sec-row-icon sec-icon-red"><i class="fab fa-google"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label">Google</div>
+            <div class="sec-row-val" id="secGoogleVal"></div>
+          </div>
+          <button class="sec-action-btn" id="secGoogleBtn" onclick="secGoogleLink()"><span id="secGoogleBtnText"></span></button>
+        </div>
+        <div class="sec-row">
+          <div class="sec-row-icon sec-icon-blue"><i class="fab fa-facebook-f"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label">Facebook</div>
+            <div class="sec-row-val" id="secFbVal"></div>
+          </div>
+          <button class="sec-action-btn" id="secFbBtn" onclick="secFbLink()"><span id="secFbBtnText"></span></button>
+        </div>
+      </div>
+
+      <!-- Activity & danger zone -->
+      <div class="sec-section">
+        <div class="sec-row sec-row-nav" onclick="openSignInActivity()">
+          <div class="sec-row-icon sec-icon-gray"><i class="fas fa-clock-rotate-left"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label" data-i18n="signInActivity">Sign-in Activity</div>
+            <div class="sec-row-val" data-i18n="recentLogins">View recent logins</div>
+          </div>
+          <i class="fas fa-chevron-right sec-chev"></i>
+        </div>
+        <div class="sec-row sec-row-nav" onclick="confirmDeleteAccount()">
+          <div class="sec-row-icon sec-icon-danger"><i class="fas fa-trash-can"></i></div>
+          <div class="sec-row-body">
+            <div class="sec-row-label sec-danger-label" data-i18n="deleteAccount">Delete Account</div>
+            <div class="sec-row-val" data-i18n="deleteAccountSub">Permanently remove your account</div>
+          </div>
+          <i class="fas fa-chevron-right sec-chev"></i>
+        </div>
+      </div>
+
+    </div>
+  </aside>
+
   <!-- ===== TRACK ORDER PANEL ===== -->
   <div class="page-overlay" id="trackOverlay" onclick="closeTrackPanel()"></div>
   <aside class="page-panel" id="trackPanel">
@@ -1643,8 +1748,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=49"></script>
-  <script src="products.js?v=49"></script>
-  <script src="script.js?v=49"></script>
+  <script src="translations.js?v=50"></script>
+  <script src="products.js?v=50"></script>
+  <script src="script.js?v=50"></script>
 </body>
 </html>

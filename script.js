@@ -4318,6 +4318,166 @@ async function _saveOrderToFirestore(orderData) {
   });
 })();
 
+// ===== ACCOUNT SECURITY PANEL =====
+function openAccountSecurity() {
+  document.getElementById('secOverlay').classList.add('open');
+  document.getElementById('secPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _secRefresh();
+  applyTranslations();
+}
+
+function closeAccountSecurity() {
+  document.getElementById('secOverlay').classList.remove('open');
+  document.getElementById('secPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _secRefresh() {
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  const sec  = JSON.parse(localStorage.getItem('exg_security') || '{}');
+
+  // Phone
+  const phone = sec.phone || (user && user.phone) || '';
+  document.getElementById('secPhoneVal').textContent = phone || t('notAdded');
+  const phoneBtnSpan = document.getElementById('secPhoneBtn').querySelector('span');
+  phoneBtnSpan.textContent = t(phone ? 'edit' : 'add');
+
+  // Email
+  const email = (user && user.email) || '';
+  document.getElementById('secEmailVal').textContent = email || '—';
+
+  // Password
+  const hasPass = !!sec.hasPassword;
+  document.getElementById('secPasswordVal').textContent = t(hasPass ? 'passwordSet' : 'notSet');
+  const passBtnSpan = document.getElementById('secPasswordBtn').querySelector('span');
+  passBtnSpan.textContent = t(hasPass ? 'change' : 'add');
+
+  // 2FA
+  const twoFA = !!sec.twoFA;
+  document.getElementById('sec2FAVal').textContent = t(twoFA ? 'twoFactorOn' : 'twoFactorOff');
+  document.getElementById('sec2FABtnText').textContent = t(twoFA ? 'turnOff' : 'turnOn');
+
+  // Google
+  const googleLinked = !!sec.googleLinked || !!(user && user.provider === 'google');
+  document.getElementById('secGoogleVal').textContent = t(googleLinked ? 'linked' : 'notLinked');
+  document.getElementById('secGoogleBtnText').textContent = t(googleLinked ? 'linked' : 'link');
+  document.getElementById('secGoogleBtn').classList.toggle('linked', googleLinked);
+
+  // Facebook
+  const fbLinked = !!sec.fbLinked || !!(user && user.provider === 'facebook');
+  document.getElementById('secFbVal').textContent = t(fbLinked ? 'linked' : 'notLinked');
+  document.getElementById('secFbBtnText').textContent = t(fbLinked ? 'linked' : 'link');
+  document.getElementById('secFbBtn').classList.toggle('linked', fbLinked);
+}
+
+function secPhoneEdit() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const current = sec.phone || '';
+  const val = prompt(t('enterPhone'), current);
+  if (val === null) return;
+  const clean = val.trim();
+  if (clean && !/^\+?[\d\s\-]{7,16}$/.test(clean)) { showToast('❌ ' + t('invalidPhone')); return; }
+  sec.phone = clean;
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast('✓ ' + t('phoneAdded'));
+}
+
+function secEmailEdit() {
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  const current = (user && user.email) || '';
+  const val = prompt(t('enterNewEmail'), current);
+  if (val === null) return;
+  const clean = val.trim();
+  if (clean && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { showToast('❌ ' + t('enterValidEmail')); return; }
+  if (user) { user.email = clean; localStorage.setItem('exglobal_user', JSON.stringify(user)); }
+  _secRefresh();
+  showToast('✓ ' + t('emailUpdated'));
+}
+
+function secPasswordEdit() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const val = prompt(t('enterNewPassword'));
+  if (val === null) return;
+  if (val.length < 6) { showToast('❌ ' + t('passwordTooShort')); return; }
+  sec.hasPassword = true;
+  sec.passwordAt = Date.now();
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast('✓ ' + t('passwordChanged'));
+}
+
+function sec2FAToggle() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  sec.twoFA = !sec.twoFA;
+  localStorage.setItem('exg_security', JSON.stringify(sec));
+  _secRefresh();
+  showToast(t(sec.twoFA ? 'twoFactorEnabled' : 'twoFactorDisabled'));
+}
+
+function secGoogleLink() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  if (sec.googleLinked || (user && user.provider === 'google')) return;
+  closeAccountSecurity();
+  setTimeout(openAuth, 300);
+}
+
+function secFbLink() {
+  const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
+  const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+  if (sec.fbLinked || (user && user.provider === 'facebook')) return;
+  closeAccountSecurity();
+  setTimeout(openAuth, 300);
+}
+
+function openSignInActivity() {
+  const history = JSON.parse(localStorage.getItem('exg_signin_history') || '[]');
+  const user    = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
+
+  // Build list (always show current session at top)
+  const rows = [];
+  if (user) {
+    rows.push({ device: navigator.platform || 'This Device', ts: Date.now(), current: true });
+  }
+  rows.push(...history.slice(0, 4));
+
+  const sheet = document.createElement('div');
+  sheet.className = 'sec-activity-sheet';
+  sheet.innerHTML = `
+    <div class="sec-activity-bg" onclick="this.parentElement.remove()"></div>
+    <div class="sec-activity-card">
+      <div class="sec-activity-handle"></div>
+      <div class="sec-activity-title">${t('signInActivity')}</div>
+      ${rows.length ? rows.map(r => `
+        <div class="sec-act-item">
+          <div class="sec-act-dot ${r.current ? 'current' : 'old'}"></div>
+          <div class="sec-act-info">
+            <div class="sec-act-device">${r.device}${r.current ? ' (' + t('thisDevice') + ')' : ''}</div>
+            <div class="sec-act-time">${new Date(r.ts).toLocaleString()}</div>
+          </div>
+        </div>`).join('') : `<p style="color:#aaa;font-size:13px">${t('noSignInHistory')}</p>`}
+      <button class="sec-act-close-btn" onclick="this.closest('.sec-activity-sheet').remove()">${t('close') || 'Close'}</button>
+    </div>`;
+  document.body.appendChild(sheet);
+  requestAnimationFrame(() => sheet.classList.add('open'));
+}
+
+function confirmDeleteAccount() {
+  if (!confirm(t('confirmDeleteAccount'))) return;
+  localStorage.clear();
+  showToast(t('accountDeleted'));
+  setTimeout(() => location.reload(), 1500);
+}
+
+// Log sign-in event to history
+function _logSignIn(device) {
+  const history = JSON.parse(localStorage.getItem('exg_signin_history') || '[]');
+  history.unshift({ device: device || navigator.platform || 'Web Browser', ts: Date.now() });
+  localStorage.setItem('exg_signin_history', JSON.stringify(history.slice(0, 10)));
+}
+
 // Check for Moyasar callback on page load
 (function _checkMoyasarCallback() {
   if (window.location.search.includes('moyasar_callback=1')) {
