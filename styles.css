@@ -1944,6 +1944,39 @@ img { max-width: 100%; display: block; }
 .bnc-success-sub { font-size: 12px; color: #888; text-align: center; line-height: 1.6; margin-top: 4px; }
 
 /* Card form */
+/* VIP card mockup */
+.card-mockup {
+  width: 100%; height: 178px; border-radius: 18px;
+  background: linear-gradient(140deg,#8ca5b8 0%,#c8d8e5 30%,#b8cad6 55%,#8fa8be 100%);
+  position: relative; overflow: hidden; margin-bottom: 18px;
+  box-shadow: 0 10px 32px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.12);
+}
+.cm-shimmer {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 28% 30%,rgba(255,255,255,.48) 0%,transparent 62%);
+  pointer-events: none;
+}
+.cm-top {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 18px 20px 0;
+}
+.cm-number {
+  position: absolute; bottom: 48px; left: 22px;
+  font-size: 17px; font-weight: 700; color: rgba(255,255,255,.92);
+  letter-spacing: 2.5px; font-family: 'Courier New', Courier, monospace;
+  text-shadow: 0 1px 4px rgba(0,0,0,.35);
+}
+.cm-brand {
+  position: absolute; bottom: 14px; right: 18px;
+  display: flex; align-items: center;
+}
+.cm-brand-visa {
+  font-size: 24px; font-weight: 900; font-style: italic;
+  font-family: Georgia,'Times New Roman',serif;
+  color: rgba(255,255,255,.95); text-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+.cm-brand-generic { color: rgba(255,255,255,.5); font-size: 28px; }
+/* Card form */
 .card-form-wrap {
   background: #fff; border-radius: 14px;
   padding: 16px; margin-top: 4px;
@@ -1971,12 +2004,12 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: center;
   border-radius: 5px; font-weight: 900;
 }
-.cti-visa { background: #1a1f71; color: #fff; font-size: 11px; letter-spacing: .8px; padding: 4px 8px; }
+.cti-visa { background: none; color: #1a1f71; font-size: 18px; font-weight: 900; font-style: italic; font-family: Georgia,'Times New Roman',serif; letter-spacing: .5px; }
 .cti-mc { background: transparent; }
-.cti-amex { background: #007bc1; color: #fff; font-size: 9px; letter-spacing: .5px; padding: 4px 6px; }
-.cti-disc { background: linear-gradient(135deg,#f76f20,#e8540c); color: #fff; font-size: 9px; padding: 4px 7px; }
-.cti-mada { background: linear-gradient(135deg,#009b4e,#00c862); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 7px; border-radius: 5px; }
-.cti-generic { color: #aaa; font-size: 20px; }
+.cti-amex { background: #016fd0; color: #fff; font-size: 8px; letter-spacing: .3px; padding: 3px 5px; border-radius: 4px; flex-direction: column; line-height: 1.2; }
+.cti-disc { background: none; color: #f76f20; font-size: 10px; font-weight: 900; }
+.cti-mada { background: #0072bc; color: #fff; font-size: 10px; font-weight: 800; padding: 3px 6px; border-radius: 4px; }
+.cti-generic { color: #ccc; font-size: 20px; }
 .card-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 /* Pay button */

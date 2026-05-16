@@ -1279,6 +1279,30 @@
 
       <!-- Card form -->
       <div id="cardForm" style="display:none">
+        <!-- 3D card mockup -->
+        <div class="card-mockup" id="cardMockup">
+          <div class="cm-shimmer"></div>
+          <div class="cm-top">
+            <div class="cm-chip">
+              <svg viewBox="0 0 44 34" width="42" height="32">
+                <rect width="44" height="34" rx="5" fill="#c9a84c"/>
+                <rect x="0" y="11" width="44" height="12" fill="#b8922d" opacity=".55"/>
+                <rect x="15" y="0" width="14" height="34" fill="#b8922d" opacity=".55"/>
+                <rect x="13" y="9" width="18" height="16" rx="2" fill="none" stroke="#b8922d" stroke-width="1.5"/>
+                <circle cx="22" cy="17" r="3" fill="#b8922d" opacity=".7"/>
+              </svg>
+            </div>
+            <div class="cm-nfc">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M4.93 4.93A10 10 0 0 0 2 12a10 10 0 0 0 2.93 7.07" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M7.76 7.76A6 6 0 0 0 6 12a6 6 0 0 0 1.76 4.24" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
+                <path d="M10.59 10.59A2 2 0 0 0 10 12a2 2 0 0 0 .59 1.41" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="cm-number" id="cmNumber">•••• •••• •••• ••••</div>
+          <div class="cm-brand" id="cmBrand"></div>
+        </div>
         <div class="card-form-wrap">
           <div class="card-field">
             <label data-i18n="cardNumber">Card Number</label>
@@ -1824,8 +1848,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=73"></script>
-  <script src="products.js?v=73"></script>
-  <script src="script.js?v=73"></script>
+  <script src="translations.js?v=74"></script>
+  <script src="products.js?v=74"></script>
+  <script src="script.js?v=74"></script>
 </body>
 </html>
