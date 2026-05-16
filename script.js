@@ -1038,90 +1038,34 @@ function flyCartAdd(e, id) {
 }
 
 function _playCartSound() {
+  if (!_soundOn) return;
   try {
-    if (window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      const phrases = {
-        bn: 'আপনার প্রোডাক্টটি এড হয়েছে',
-        en: 'Your product has been added to cart',
-        ar: 'تمت إضافة منتجك إلى السلة بنجاح',
-        hi: 'आपका उत्पाद कार्ट में जोड़ा गया'
-      };
-      const langMap = { bn: 'bn', en: 'en-US', ar: 'ar', hi: 'hi-IN' };
-      const text = phrases[currentLang] || phrases.en;
-      const targetLang = langMap[currentLang] || 'en-US';
-
-      function _speak(voices) {
-        const utt = new SpeechSynthesisUtterance(text);
-        utt.lang = targetLang;
-        utt.rate = 0.88;   // slightly slower — clearer pronunciation
-        utt.pitch = 1.15;  // slightly higher — friendly & warm
-        utt.volume = 1;
-
-        // Priority: 1) female local voice, 2) any local voice, 3) best English female
-        const female = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]) && /female|woman|zira|samantha|victoria|monika|karen|veena|google/i.test(v.name));
-        const anyLocal = voices.find(v => v.lang.startsWith(targetLang.split('-')[0]));
-        const engFemale = voices.find(v => v.lang.startsWith('en') && /female|samantha|zira|google|karen/i.test(v.name));
-        const anyEng = voices.find(v => v.lang.startsWith('en'));
-
-        utt.voice = female || anyLocal || engFemale || anyEng || null;
-        window.speechSynthesis.speak(utt);
-      }
-
-      // Voices may load async on first call
-      const loaded = window.speechSynthesis.getVoices();
-      if (loaded.length) {
-        _speak(loaded);
-      } else {
-        window.speechSynthesis.onvoiceschanged = () => {
-          _speak(window.speechSynthesis.getVoices());
-          window.speechSynthesis.onvoiceschanged = null;
-        };
-        // Trigger voice load on some browsers
-        window.speechSynthesis.speak(new SpeechSynthesisUtterance(''));
-        window.speechSynthesis.cancel();
-        setTimeout(() => _speak(window.speechSynthesis.getVoices()), 120);
-      }
-      return;
-    }
-  } catch(e) {}
-  // Fallback beep if SpeechSynthesis unavailable
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _getAudioCtx();
     const now = ctx.currentTime;
-    // Layer 1: warm "plop" thud
-    const o1 = ctx.createOscillator();
-    const g1 = ctx.createGain();
-    o1.type = 'sine';
-    o1.frequency.setValueAtTime(520, now);
-    o1.frequency.exponentialRampToValueAtTime(180, now + 0.18);
-    g1.gain.setValueAtTime(0, now);
-    g1.gain.linearRampToValueAtTime(0.28, now + 0.015);
-    g1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-    o1.connect(g1); g1.connect(ctx.destination);
-    o1.start(now); o1.stop(now + 0.35);
-    // Layer 2: high bright "ding"
-    const o2 = ctx.createOscillator();
-    const g2 = ctx.createGain();
-    o2.type = 'triangle';
-    o2.frequency.setValueAtTime(1100, now);
-    o2.frequency.exponentialRampToValueAtTime(700, now + 0.12);
-    g2.gain.setValueAtTime(0, now);
-    g2.gain.linearRampToValueAtTime(0.14, now + 0.01);
-    g2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-    o2.connect(g2); g2.connect(ctx.destination);
-    o2.start(now); o2.stop(now + 0.25);
-    // Layer 3: tiny sparkle
-    const o3 = ctx.createOscillator();
-    const g3 = ctx.createGain();
-    o3.type = 'sine';
-    o3.frequency.setValueAtTime(2200, now + 0.02);
-    o3.frequency.exponentialRampToValueAtTime(1400, now + 0.1);
-    g3.gain.setValueAtTime(0, now + 0.02);
-    g3.gain.linearRampToValueAtTime(0.07, now + 0.04);
-    g3.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-    o3.connect(g3); g3.connect(ctx.destination);
-    o3.start(now + 0.02); o3.stop(now + 0.2);
+
+    function vipNote(freq, type, vol, start, dur) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, start);
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(vol, start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.start(start); osc.stop(start + dur + 0.05);
+    }
+
+    // VIP luxury bell arpeggio — C5 → E5 → G5 → C6 (major chord rising)
+    vipNote(523,  'sine',     0.30, now,        0.55);  // C5 bell hit
+    vipNote(1046, 'triangle', 0.12, now,        0.50);  // C6 overtone shimmer
+    vipNote(659,  'sine',     0.26, now + 0.11, 0.50);  // E5
+    vipNote(1319, 'triangle', 0.09, now + 0.11, 0.42);  // E6 shimmer
+    vipNote(784,  'sine',     0.22, now + 0.22, 0.48);  // G5
+    vipNote(1047, 'sine',     0.28, now + 0.34, 0.65);  // C6 — crown note, longer ring
+    vipNote(2093, 'triangle', 0.07, now + 0.34, 0.55);  // C7 sparkle on crown
+    vipNote(2637, 'sine',     0.04, now + 0.38, 0.40);  // E7 ultra sparkle
+    // Soft bass "thud" for luxury weight
+    vipNote(130,  'sine',     0.18, now,        0.22);
   } catch(e) {}
 }
 
