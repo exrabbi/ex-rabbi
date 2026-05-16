@@ -1663,34 +1663,41 @@ img { max-width: 100%; display: block; }
 }
 .pay-modal.open { transform: translateY(0); }
 .pay-head {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 14px; background: #1a1a1a;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px; background: #1a1a1a;
   position: sticky; top: 0; z-index: 2;
   border-radius: 20px 20px 0 0;
 }
 .pay-head-close {
   background: none; border: none; cursor: pointer;
-  color: #888; font-size: 15px; padding: 4px 6px; flex-shrink: 0;
-  line-height: 1;
+  color: #888; font-size: 16px; padding: 4px 6px; line-height: 1;
 }
 .pay-head-close:hover { color: #fff; }
-.pay-head-secure {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12.5px; font-weight: 700; color: #fff; flex: 1;
-  white-space: nowrap;
+.pay-head-title { font-size: 16px; font-weight: 700; color: #fff; }
+
+/* ── Pay safe & secure footer bar ── */
+.pay-safe-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  background: #1a1a1a; border-radius: 12px;
+  padding: 11px 14px; margin-top: 10px; gap: 10px;
 }
-.pay-head-secure i { color: #4ade80; font-size: 14px; }
-.pay-head-badges { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.phb {
+.pay-safe-left {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 12px; font-weight: 700; color: #fff; white-space: nowrap;
+}
+.pay-safe-left i { color: #4ade80; font-size: 14px; }
+.pay-safe-icons { display: flex; align-items: center; gap: 5px; }
+.psb {
   display: flex; align-items: center; justify-content: center;
-  height: 22px; border-radius: 5px; padding: 0 5px;
+  height: 22px; border-radius: 5px; padding: 0 6px;
   font-size: 10px; font-weight: 800;
 }
-.phb-apple { background: #333; color: #fff; gap: 2px; font-size: 11px; padding: 0 6px; }
-.phb-pp { background: #fff; color: #003087; font-size: 14px; padding: 0 5px; }
-.phb-visa { background: #1a1f71; color: #fff; letter-spacing: .5px; }
-.phb-mc { background: transparent; color: #fff; font-size: 19px; padding: 0 1px; }
-.phb-amex { background: #007bc1; color: #fff; font-size: 8px; letter-spacing: .3px; }
+.psb-apple { background: #333; color: #fff; gap: 2px; font-size: 11px; }
+.psb-pp { background: #fff; color: #003087; font-size: 15px; }
+.psb-visa { background: #1a1f71; color: #fff; letter-spacing: .5px; }
+.psb-mc { background: transparent; padding: 0; }
+.psb-amex { background: #007bc1; color: #fff; font-size: 8px; letter-spacing: .4px; }
+[data-theme="dark"] .pay-safe-bar { background: #111; }
 .pay-body { padding: 14px 14px 24px; }
 
 /* Order summary */
@@ -3039,6 +3046,7 @@ html, body { transition: background .35s, color .35s; }
 /* Payment modal */
 [data-theme="dark"] .pay-modal { background: #111; }
 [data-theme="dark"] .pay-head { background: #111; }
+[data-theme="dark"] .pay-head-title { color: #eee; }
 [data-theme="dark"] .pay-body { background: #111; }
 [data-theme="dark"] .pay-summary { background: #1a1a1a; border-color: rgba(255,255,255,.06); }
 [data-theme="dark"] .pay-summary-row { color: #aaa; border-bottom-color: rgba(255,255,255,.06); }
