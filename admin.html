@@ -388,6 +388,17 @@
         <button class="adm-btn" onclick="saveCatImages()" style="margin-top:14px;width:100%;justify-content:center"><i class="fas fa-save"></i> Save Category Images</button>
       </div>
 
+      <!-- COLLECTION TILES EDITOR -->
+      <div class="sec">
+        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-layer-group" style="color:#e91e8c"></i> Shop by Collection — Tiles</div>
+        <div style="font-size:11px;color:#888;margin-bottom:14px">Homepage-এর "Shop by Collection" সেকশনের টাইলগুলো এখানে এডিট করুন। ছবি আপলোড করুন, নাম ও সাবটাইটেল লিখুন।</div>
+        <div id="colTilesGrid" style="display:flex;flex-direction:column;gap:10px"></div>
+        <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+          <button class="adm-btn" onclick="addColTileSlot()" style="flex:1;justify-content:center;background:#1a1030;border-color:#7c3aed;color:#a78bfa"><i class="fas fa-plus"></i> আরো স্লট যোগ করুন</button>
+          <button class="adm-btn" onclick="saveColTiles()" style="flex:1;justify-content:center"><i class="fas fa-save"></i> Save Tiles</button>
+        </div>
+      </div>
+
       <!-- HERO SLIDES EDITOR -->
       <div class="sec">
         <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-images"></i> Hero Slides (5 slides)</div>
@@ -1159,7 +1170,7 @@ function showTab(tab) {
   else if (tab === 'orders') renderOrders();
   else if (tab === 'customers') renderCustomers();
   else if (tab === 'coupons') renderCoupons();
-  else if (tab === 'promos') { showHeroSlide(0); loadFeaturedPins(); }
+  else if (tab === 'promos') { showHeroSlide(0); loadFeaturedPins(); loadColTiles(); }
   else if (tab === 'reviews') renderReviews();
   else if (tab === 'settings') { renderShareLinks(); loadSettings(); loadSocialLinks(); }
 }
@@ -2266,6 +2277,146 @@ function saveCatImages() {
 
   _markAdminEdit();
   toast('✅ Category images saved!');
+}
+
+/* ===== COLLECTION TILES ===== */
+const COL_TILE_DEFAULTS = [
+  { img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=220&fit=crop&q=80', name:"Women's Fashion", sub:'Elegant styles for every occasion', cat:'women' },
+  { img:'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=300&h=220&fit=crop&q=80', name:"Men's Fashion",   sub:'Dress to impress',                  cat:'men'   },
+  { img:'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&h=220&fit=crop&q=80', name:"Kids' Fashion",  sub:'Cute & comfortable',               cat:'kids'  },
+  { img:'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&h=220&fit=crop&q=80', name:'Accessories',   sub:'Complete your look',               cat:'jewelry'},
+  { img:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=220&fit=crop&q=80', name:'Bags & Shoes',   sub:'Step up your style',               cat:'bags'  },
+  { img:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=220&fit=crop&q=80', name:'Beauty & Care', sub:'Glow inside out',                  cat:'beauty'},
+];
+const COL_CAT_OPTS = [
+  {v:'all',l:'All'},
+  {v:'women',l:'Women'},
+  {v:'men',l:'Men'},
+  {v:'kids',l:'Kids'},
+  {v:'beauty',l:'Beauty'},
+  {v:'shoes',l:'Shoes'},
+  {v:'bags',l:'Bags'},
+  {v:'jewelry',l:'Jewelry'},
+  {v:'home',l:'Home'},
+  {v:'electronics',l:'Electronics'},
+  {v:'sports',l:'Sports'},
+];
+
+function loadColTiles() {
+  const saved = JSON.parse(localStorage.getItem('exg_col_tiles') || 'null');
+  const tiles = saved || [...COL_TILE_DEFAULTS, ...Array(6).fill(null).map(() => ({img:'',name:'',sub:'',cat:'all'}))];
+  const grid = document.getElementById('colTilesGrid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  tiles.forEach((t, i) => _renderColTileRow(t, i));
+}
+
+function _renderColTileRow(t, i) {
+  const grid = document.getElementById('colTilesGrid');
+  const catOptions = COL_CAT_OPTS.map(o =>
+    `<option value="${o.v}" ${(t && t.cat === o.v) ? 'selected' : ''}>${o.l}</option>`
+  ).join('');
+  const imgSrc = t && t.img ? t.img : '';
+  const row = document.createElement('div');
+  row.id = `colTileRow_${i}`;
+  row.style.cssText = 'background:#111;border:1px solid #222;border-radius:12px;padding:12px;display:flex;gap:10px;align-items:flex-start';
+  row.innerHTML = `
+    <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:6px">
+      <div id="colTilePreview_${i}" style="width:72px;height:60px;border-radius:8px;background:#1a1a1a;border:2px dashed #333;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative" onclick="uploadColTileImg(${i})">
+        ${imgSrc ? `<img src="${imgSrc}" id="colTileImg_${i}" style="width:100%;height:100%;object-fit:cover">` : `<div id="colTileImg_${i}" style="text-align:center;font-size:9px;color:#555"><i class="fas fa-image" style="font-size:18px;display:block;margin-bottom:3px"></i>ছবি নেই</div>`}
+        <div style="position:absolute;bottom:2px;right:2px;background:#e91e8c;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>
+      </div>
+      <div id="colTileStatus_${i}" style="font-size:9px;color:#4ade80;min-height:12px;text-align:center"></div>
+      <input type="text" id="colTileUrl_${i}" placeholder="বা URL দিন" value="${imgSrc}" class="adm-input" style="font-size:9px;padding:4px 6px;width:100%;display:none" oninput="_colTileUrlChange(${i},this.value)">
+      <button onclick="document.getElementById('colTileUrl_${i}').style.display=document.getElementById('colTileUrl_${i}').style.display==='none'?'block':'none'" style="font-size:9px;background:none;border:none;color:#555;cursor:pointer;padding:0">🔗 URL</button>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:7px">
+      <div style="font-size:10px;color:#7c6fff;font-weight:700;text-transform:uppercase;letter-spacing:.5px">Tile ${i + 1}</div>
+      <input type="text" id="colTileName_${i}" class="adm-input" placeholder="নাম (যেমন: Women's Fashion)" value="${t ? t.name : ''}" style="font-size:12px">
+      <input type="text" id="colTileSub_${i}" class="adm-input" placeholder="সাবটাইটেল (যেমন: Elegant styles)" value="${t ? t.sub : ''}" style="font-size:11px">
+      <select id="colTileCat_${i}" class="adm-input" style="font-size:11px">${catOptions}</select>
+    </div>
+    <button onclick="removeColTileRow(${i})" style="background:none;border:none;color:#555;cursor:pointer;font-size:14px;padding:0;line-height:1" title="Remove"><i class="fas fa-times"></i></button>
+  `;
+  grid.appendChild(row);
+}
+
+function addColTileSlot() {
+  const grid = document.getElementById('colTilesGrid');
+  const i = grid.children.length;
+  _renderColTileRow({ img: '', name: '', sub: '', cat: 'all' }, i);
+}
+
+function removeColTileRow(i) {
+  const row = document.getElementById(`colTileRow_${i}`);
+  if (row) row.remove();
+  // re-index remaining rows
+  const grid = document.getElementById('colTilesGrid');
+  [...grid.children].forEach((el, idx) => {
+    el.id = `colTileRow_${idx}`;
+    el.querySelectorAll('[id]').forEach(child => {
+      child.id = child.id.replace(/_\d+$/, `_${idx}`);
+    });
+    // fix onclick attributes
+    el.querySelectorAll('[onclick]').forEach(child => {
+      child.setAttribute('onclick', child.getAttribute('onclick').replace(/\d+(?=\))/g, idx));
+    });
+  });
+}
+
+function uploadColTileImg(i) {
+  const input = document.createElement('input');
+  input.type = 'file'; input.accept = 'image/*';
+  input.onchange = async e => {
+    const file = e.target.files[0]; if (!file) return;
+    const statusEl = document.getElementById(`colTileStatus_${i}`);
+    if (statusEl) statusEl.textContent = '⏳ আপলোড...';
+    try {
+      const url = await uploadImage(file);
+      _colTileSetImg(i, url);
+      if (statusEl) statusEl.textContent = '✅ হয়েছে!';
+      setTimeout(() => { if (statusEl) statusEl.textContent = ''; }, 2000);
+    } catch(err) {
+      if (statusEl) statusEl.textContent = '❌ ব্যর্থ';
+      toast('❌ ' + (err.message || 'আপলোড হয়নি'));
+    }
+  };
+  input.click();
+}
+
+function _colTileUrlChange(i, url) {
+  _colTileSetImg(i, url);
+}
+
+function _colTileSetImg(i, url) {
+  const preview = document.getElementById(`colTilePreview_${i}`);
+  if (!preview) return;
+  let img = document.getElementById(`colTileImg_${i}`);
+  if (url) {
+    if (!img || img.tagName !== 'IMG') {
+      preview.innerHTML = `<img src="${url}" id="colTileImg_${i}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:2px;right:2px;background:#e91e8c;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>`;
+    } else {
+      img.src = url;
+    }
+  }
+  const urlInput = document.getElementById(`colTileUrl_${i}`);
+  if (urlInput) urlInput.value = url;
+}
+
+function saveColTiles() {
+  const grid = document.getElementById('colTilesGrid');
+  const tiles = [];
+  [...grid.children].forEach((_, i) => {
+    const img = (document.getElementById(`colTileUrl_${i}`)?.value || '') ||
+                (document.getElementById(`colTileImg_${i}`)?.src || '');
+    const name = document.getElementById(`colTileName_${i}`)?.value || '';
+    const sub  = document.getElementById(`colTileSub_${i}`)?.value || '';
+    const cat  = document.getElementById(`colTileCat_${i}`)?.value || 'all';
+    tiles.push({ img: img.startsWith('data:') ? '' : img, name, sub, cat });
+  });
+  localStorage.setItem('exg_col_tiles', JSON.stringify(tiles));
+  _markAdminEdit();
+  toast('✅ Collection tiles saved!');
 }
 
 /* ===== SETTINGS ===== */

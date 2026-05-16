@@ -349,8 +349,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyAnnouncement();
   _loadCityVideo();
   _applyCatImages();
+  _applyColTiles();
   initColScroll();
 });
+
+/* ===== COLLECTION TILES — apply saved admin data ===== */
+function _applyColTiles() {
+  const saved = JSON.parse(localStorage.getItem('exg_col_tiles') || 'null');
+  if (!saved) return;
+  const container = document.getElementById('colShowcaseScroll');
+  if (!container) return;
+  // filter out empty tiles
+  const tiles = saved.filter(t => t.img || t.name);
+  if (!tiles.length) return;
+  container.innerHTML = tiles.map(t => `
+    <div class="col-showcase-tile" onclick="filterCategory('${t.cat || 'all'}')">
+      <div class="col-tile-img" style="background-image:url('${t.img}')"></div>
+      <div class="col-tile-name">${t.name}</div>
+      <div class="col-tile-sub">${t.sub}</div>
+    </div>
+  `).join('');
+}
 
 /* ===== COLLECTION SHOWCASE AUTO-SCROLL ===== */
 function initColScroll() {
