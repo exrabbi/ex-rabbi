@@ -1132,9 +1132,18 @@
   <div class="pay-overlay" id="payOverlay" onclick="closePayment()"></div>
   <div class="pay-modal" id="payModal">
     <div class="pay-head">
-      <button class="icon-btn" onclick="closePayment()" style="color:#333"><i class="fas fa-times"></i></button>
-      <span>💳 <span data-i18n="payModalTitle">Payment</span></span>
-      <div style="width:32px"></div>
+      <button class="pay-head-close" onclick="closePayment()"><i class="fas fa-times"></i></button>
+      <div class="pay-head-secure">
+        <i class="fas fa-shield-halved"></i>
+        <span>Pay safe &amp; secure</span>
+      </div>
+      <div class="pay-head-badges">
+        <span class="phb phb-apple"><i class="fab fa-apple"></i> Pay</span>
+        <span class="phb phb-pp"><i class="fab fa-paypal"></i></span>
+        <span class="phb phb-visa">VISA</span>
+        <span class="phb phb-mc"><i class="fab fa-cc-mastercard"></i></span>
+        <span class="phb phb-amex">AM EX</span>
+      </div>
     </div>
     <div class="pay-body">
 
@@ -1794,8 +1803,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=61"></script>
-  <script src="products.js?v=61"></script>
-  <script src="script.js?v=61"></script>
+  <script src="translations.js?v=62"></script>
+  <script src="products.js?v=62"></script>
+  <script src="script.js?v=62"></script>
 </body>
 </html>
