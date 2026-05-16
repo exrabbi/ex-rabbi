@@ -2358,12 +2358,75 @@ function closeSettings() {
 
 /* ===== LOCATION / ADDRESS SYSTEM ===== */
 let savedLocation = JSON.parse(localStorage.getItem('shopbd_location') || 'null');
-let locMap = null, locMarker = null;
+let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
   document.getElementById('locModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  setTimeout(_initLocMap, 350);
+}
+
+function _initLocMap() {
+  if (!window.L) return;
+  if (locMap) { locMap.invalidateSize(); return; }
+  const defaultLat = savedLocation?.lat || 24.7136;
+  const defaultLng = savedLocation?.lng || 46.6753;
+  locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
+    .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
+  // Reverse geocode on map stop moving
+  locMap.on('moveend', () => {
+    const c = locMap.getCenter();
+    _locReverseGeocode(c.lat, c.lng);
+  });
+  // Initial reverse geocode
+  _locReverseGeocode(defaultLat, defaultLng);
+}
+
+function _locReverseGeocode(lat, lng) {
+  const addrEl = document.getElementById('locAddrText');
+  if (addrEl) addrEl.textContent = 'Finding address…';
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
+    .then(r => r.json())
+    .then(data => {
+      const a = data.address || {};
+      const parts = [
+        a.house_number, a.road,
+        a.suburb || a.neighbourhood,
+        a.city || a.town || a.village || a.county,
+        a.country
+      ].filter(Boolean);
+      _locCurrentAddr = parts.join(', ') || data.display_name || '';
+      _locCurrLat = lat; _locCurrLng = lng;
+      _locCurrData = a;
+      if (addrEl) addrEl.textContent = _locCurrentAddr;
+    })
+    .catch(() => { if (addrEl) addrEl.textContent = 'Could not detect address'; });
+}
+
+let _locCurrLat = null, _locCurrLng = null, _locCurrData = {};
+
+function _locConfirmMap() {
+  if (!_locCurrentAddr) { showToast('Move the map to select your address'); return; }
+  const a = _locCurrData;
+  if (!savedLocation) savedLocation = {};
+  savedLocation.lat = _locCurrLat;
+  savedLocation.lng = _locCurrLng;
+  savedLocation.address = _locCurrentAddr;
+  savedLocation.city = a.city || a.town || a.village || a.county || '';
+  savedLocation.area = a.suburb || a.neighbourhood || a.district || '';
+  localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
+  refreshMeAddress();
+  closeLocation();
+  showToast('✅ Address saved!');
+}
+
+function _locShowManual() {
+  const mf = document.getElementById('locManualForm');
+  if (!mf) return;
+  mf.style.display = 'flex';
+  mf.style.flexDirection = 'column';
   if (savedLocation) {
     document.getElementById('locName').value = savedLocation.name || '';
     document.getElementById('locPhone').value = savedLocation.phone || '';
@@ -2371,77 +2434,58 @@ function openLocation() {
     document.getElementById('locArea').value = savedLocation.area || '';
     document.getElementById('locAddress').value = savedLocation.address || '';
   }
-  // Init map after modal is visible
-  setTimeout(initLocMap, 300);
+}
+function _locHideManual() {
+  document.getElementById('locManualForm').style.display = 'none';
 }
 
-function initLocMap() {
-  if (!window.L) return;
-  if (locMap) { locMap.invalidateSize(); return; }
-  // Default center: Saudi Arabia
-  const defaultLat = 24.7136, defaultLng = 46.6753;
-  locMap = L.map('locMap', { zoomControl: true, attributionControl: false }).setView([defaultLat, defaultLng], 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19
-  }).addTo(locMap);
-  locMap.on('click', function(e) {
-    placeMapMarker(e.latlng.lat, e.latlng.lng);
-  });
-  // If saved coords, restore
-  if (savedLocation && savedLocation.lat) {
-    placeMapMarker(savedLocation.lat, savedLocation.lng, false);
-    locMap.setView([savedLocation.lat, savedLocation.lng], 15);
-  }
+function _locSearchDebounce(val) {
+  clearTimeout(_locSearchTimer);
+  if (!val.trim()) { document.getElementById('locSearchDrop').style.display = 'none'; return; }
+  _locSearchTimer = setTimeout(() => _locDoSearch(val), 500);
 }
 
-function placeMapMarker(lat, lng, doReverseGeocode) {
-  if (locMarker) locMarker.remove();
-  locMarker = L.marker([lat, lng], {
-    icon: L.divIcon({ className: '', html: '<div style="font-size:28px;line-height:1">📍</div>', iconAnchor: [14, 28] })
-  }).addTo(locMap);
-  if (doReverseGeocode !== false) reverseGeocode(lat, lng);
-}
-
-function reverseGeocode(lat, lng) {
-  const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`;
-  fetch(url, { headers: { 'Accept-Language': 'en' } })
+function _locDoSearch(query) {
+  if (!query) query = document.getElementById('locSearchInput').value;
+  if (!query.trim()) return;
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&accept-language=en`)
     .then(r => r.json())
-    .then(data => {
-      const addr = data.address || {};
-      const city = addr.city || addr.town || addr.village || addr.county || '';
-      const area = addr.suburb || addr.neighbourhood || addr.district || addr.state_district || '';
-      const road = addr.road || '';
-      const house = addr.house_number || '';
-      const detail = [house, road].filter(Boolean).join(', ') || data.display_name.split(',').slice(0,3).join(',');
-      if (city) document.getElementById('locCity').value = city;
-      if (area) document.getElementById('locArea').value = area;
-      if (detail) document.getElementById('locAddress').value = detail;
-      showToast(t('locationFound'));
+    .then(results => {
+      const drop = document.getElementById('locSearchDrop');
+      if (!results.length) { drop.style.display = 'none'; return; }
+      drop.innerHTML = results.map(r => `
+        <div class="loc-search-item" onclick="_locSelectResult(${r.lat},${r.lon})">
+          <i class="fas fa-location-dot"></i>
+          <span>${r.display_name}</span>
+        </div>`).join('');
+      drop.style.display = 'block';
     })
-    .catch(() => showToast(t('locationError')));
+    .catch(() => {});
+}
+
+function _locSelectResult(lat, lng) {
+  document.getElementById('locSearchDrop').style.display = 'none';
+  document.getElementById('locSearchInput').value = '';
+  if (locMap) locMap.setView([lat, lng], 16);
 }
 
 function useMyLocation() {
-  if (!navigator.geolocation) { showToast(t('noGps')); return; }
+  if (!navigator.geolocation) { showToast('GPS not available'); return; }
   const btn = document.getElementById('locGpsBtn');
   btn.classList.add('loading');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ...';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating…';
   navigator.geolocation.getCurrentPosition(
     pos => {
       btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">' + (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].gpsBtn || 'GPS Location') + '</span>';
+      btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
       const { latitude: lat, longitude: lng } = pos.coords;
-      if (!locMap) initLocMap();
-      locMap.setView([lat, lng], 16);
-      placeMapMarker(lat, lng);
-      // save coords for restore
-      if (!savedLocation) savedLocation = {};
-      savedLocation.lat = lat; savedLocation.lng = lng;
+      if (!locMap) { _initLocMap(); return; }
+      locMap.setView([lat, lng], 17);
     },
-    err => {
+    () => {
       btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">' + (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang].gpsBtn || 'GPS Location') + '</span>';
-      showToast(t('enableGps'));
+      btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
+      showToast('Enable location permission');
     },
     { enableHighAccuracy: true, timeout: 10000 }
   );
@@ -2450,6 +2494,8 @@ function useMyLocation() {
 function closeLocation() {
   document.getElementById('locOverlay').classList.remove('open');
   document.getElementById('locModal').classList.remove('open');
+  document.getElementById('locManualForm').style.display = 'none';
+  document.getElementById('locSearchDrop').style.display = 'none';
   document.body.style.overflow = '';
 }
 

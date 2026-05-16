@@ -1453,50 +1453,160 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== LOCATION MODAL ===== */
-.loc-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,.5); z-index: 200;
-}
+/* ===== VIP ADDRESS MAP MODAL ===== */
+.loc-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: 200; }
 .loc-overlay.open { display: block; }
 .loc-modal {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: #fff; z-index: 201;
-  border-radius: 20px 20px 0 0;
+  position: fixed; inset: 0; background: #f5f5f5;
+  z-index: 201; display: flex; flex-direction: column;
   transform: translateY(100%);
   transition: transform .35s cubic-bezier(.4,0,.2,1);
   max-width: 600px; margin: 0 auto;
-  max-height: 90vh; overflow-y: auto;
 }
 .loc-modal.open { transform: translateY(0); }
-.loc-head {
+
+/* Header */
+.loc-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; background: #fff;
+  box-shadow: 0 1px 6px rgba(0,0,0,.1); z-index: 10;
+}
+.loc-back-btn {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #222; flex-shrink: 0;
+  background: #f5f5f5;
+}
+.loc-search-wrap {
+  flex: 1; display: flex; align-items: center;
+  background: #f0f0f0; border-radius: 24px;
+  padding: 0 14px 0 16px; gap: 8px;
+}
+.loc-search-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 14px; color: #222; padding: 10px 0;
+}
+.loc-search-input::placeholder { color: #aaa; }
+.loc-search-icon { color: #fff; background: #111; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+
+/* Search dropdown */
+.loc-search-drop {
+  position: absolute; top: 60px; left: 0; right: 0;
+  background: #fff; z-index: 300; max-height: 240px; overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+}
+.loc-search-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 12px 16px; border-bottom: 1px solid #f0f0f0; cursor: pointer;
+}
+.loc-search-item:active { background: #f8f8f8; }
+.loc-search-item i { color: #e91e8c; margin-top: 2px; font-size: 14px; flex-shrink: 0; }
+.loc-search-item span { font-size: 13px; color: #333; line-height: 1.4; }
+
+/* Map */
+.loc-map-wrap {
+  flex: 1; position: relative; overflow: hidden;
+}
+#locMap { width: 100%; height: 100%; }
+
+/* Fixed center pin */
+.loc-pin-wrap {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -100%);
+  z-index: 500; pointer-events: none;
+  display: flex; flex-direction: column; align-items: center;
+}
+.loc-pin-icon {
+  font-size: 40px; color: #e05c00;
+  filter: drop-shadow(0 3px 6px rgba(224,92,0,.4));
+  line-height: 1;
+}
+.loc-pin-shadow {
+  width: 12px; height: 6px; border-radius: 50%;
+  background: rgba(0,0,0,.25); margin-top: -4px;
+}
+
+/* Hint toast on map */
+.loc-map-toast {
+  position: absolute; top: 12px; left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,.72); color: #fff;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 20px;
+  display: flex; align-items: center; gap: 8px;
+  white-space: nowrap; z-index: 500;
+}
+.loc-map-toast button { color: rgba(255,255,255,.7); font-size: 13px; }
+
+/* Locate me button */
+.loc-locate-btn {
+  position: absolute; bottom: 16px; right: 16px;
+  background: #fff; color: #333;
+  font-size: 13px; font-weight: 700;
+  padding: 9px 16px; border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.2);
+  display: flex; align-items: center; gap: 6px;
+  z-index: 500;
+}
+.loc-locate-btn i { color: #e91e8c; }
+.loc-locate-btn.loading { opacity: .6; pointer-events: none; }
+
+/* Bottom card */
+.loc-bottom-card {
+  background: #fff; padding: 16px;
+  box-shadow: 0 -2px 16px rgba(0,0,0,.1); z-index: 10;
+}
+.loc-addr-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 4px 0 14px;
+}
+.loc-addr-dot { color: #e05c00; font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.loc-addr-text {
+  font-size: 13px; color: #222; line-height: 1.5;
+  font-weight: 600; flex: 1;
+}
+.loc-confirm-btn {
+  width: 100%; background: #e05c00; color: #fff;
+  padding: 15px; border-radius: 30px;
+  font-size: 16px; font-weight: 800;
+  transition: opacity .2s; margin-bottom: 10px;
+}
+.loc-confirm-btn:active { opacity: .85; }
+.loc-manual-btn {
+  width: 100%; text-align: center;
+  font-size: 14px; color: #333; font-weight: 600;
+  padding: 6px; display: flex; align-items: center; justify-content: center; gap: 4px;
+}
+
+/* Manual form overlay */
+.loc-manual-form {
+  position: absolute; inset: 0; background: #fff; z-index: 20;
+  overflow-y: auto; display: flex; flex-direction: column;
+}
+.loc-mf-head {
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 16px; border-bottom: 1px solid #eee;
   font-size: 16px; font-weight: 700; color: #111;
   position: sticky; top: 0; background: #fff; z-index: 2;
 }
+.loc-mf-head button { font-size: 18px; color: #333; }
 .loc-body { padding: 16px; }
 .loc-field { margin-bottom: 14px; }
-.loc-field label {
-  display: block; font-size: 13px; font-weight: 700;
-  color: #333; margin-bottom: 6px;
-}
+.loc-field label { display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px; }
 .loc-field input, .loc-field textarea {
   width: 100%; padding: 12px 14px;
   border: 1.5px solid #e0e0e0; border-radius: 10px;
   font-size: 14px; font-family: inherit; outline: none;
   transition: border-color .2s;
 }
-.loc-field input:focus, .loc-field textarea:focus {
-  border-color: #e91e8c;
-}
+.loc-field input:focus, .loc-field textarea:focus { border-color: #e91e8c; }
 .loc-field textarea { resize: none; }
 .loc-save-btn {
   width: 100%; background: #e91e8c; color: #fff;
   padding: 14px; border-radius: 12px;
   font-size: 15px; font-weight: 700;
   display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-top: 6px;
-  transition: background .2s;
+  gap: 8px; margin-top: 6px; transition: background .2s;
 }
 .loc-save-btn:active { background: #c2185b; }
 
@@ -1626,25 +1736,6 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== MAP LOCATION PICKER ===== */
-.loc-gps-btn {
-  width: 100%; background: #1a73e8; color: #fff;
-  padding: 12px; border-radius: 10px;
-  font-size: 14px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-bottom: 12px;
-  transition: background .2s;
-}
-.loc-gps-btn:active { background: #1558b0; }
-.loc-gps-btn.loading { background: #888; pointer-events: none; }
-.loc-map-wrap {
-  border-radius: 12px; overflow: hidden;
-  margin-bottom: 14px; border: 2px solid #e0e0e0;
-}
-#locMap { height: 200px; width: 100%; }
-.loc-map-hint {
-  background: #f8f8f8; text-align: center;
-  font-size: 12px; color: #888; padding: 6px;
-}
 
 /* ===== PAYMENT MODAL ===== */
 .pay-overlay {
