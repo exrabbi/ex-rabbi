@@ -3828,6 +3828,11 @@ function markHelpful(btn) {
 
   let deferredPrompt = null;
 
+  function showDrawerInstall(show) {
+    const item = document.getElementById('drawerInstallItem');
+    if (item) item.style.display = show ? '' : 'none';
+  }
+
   function showBanner() {
     // Don't show if dismissed within the last 7 days
     const dismissed = parseInt(localStorage.getItem('pwa_dismissed') || '0');
@@ -3839,14 +3844,32 @@ function markHelpful(btn) {
   window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     deferredPrompt = e;
+    showDrawerInstall(true);
     setTimeout(showBanner, 3000);
   });
 
   window.addEventListener('appinstalled', () => {
     deferredPrompt = null;
+    showDrawerInstall(false);
     const banner = document.getElementById('pwaBanner');
     if (banner) banner.classList.remove('show');
   });
+
+  // Global function called from drawer menu
+  window.installPWA = async function() {
+    if (!deferredPrompt) {
+      showToast('অ্যাপ ইতিমধ্যে ইন্সটল করা আছে অথবা আপনার ব্রাউজার সাপোর্ট করে না।');
+      return;
+    }
+    closeDrawer();
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    showDrawerInstall(false);
+    if (outcome === 'accepted') {
+      showToast('🎉 EX GLOBAL অ্যাপ ইন্সটল হয়ে গেছে!');
+    }
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     const installBtn = document.getElementById('pwaInstallBtn');
