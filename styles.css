@@ -301,14 +301,23 @@ img { max-width: 100%; display: block; }
   text-decoration: none; display: flex; align-items: center; gap: 3px;
 }
 .col-showcase-scroll {
-  display: flex; gap: 10px;
-  overflow-x: auto; scroll-snap-type: x mandatory;
-  padding-bottom: 8px; -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  overflow: hidden;
+  padding-bottom: 8px;
 }
-.col-showcase-scroll::-webkit-scrollbar { display: none; }
+@keyframes colScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.col-showcase-track {
+  display: flex; gap: 10px; width: max-content;
+  animation: colScroll 22s linear infinite;
+}
+.col-showcase-scroll:hover .col-showcase-track,
+.col-showcase-scroll:active .col-showcase-track {
+  animation-play-state: paused;
+}
 .col-showcase-tile {
-  flex: 0 0 130px; scroll-snap-align: start; cursor: pointer;
+  flex: 0 0 145px; cursor: pointer;
   border-radius: 14px; overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,.10);
   transition: transform .18s, box-shadow .18s;
@@ -316,7 +325,7 @@ img { max-width: 100%; display: block; }
 }
 .col-showcase-tile:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,.15); }
 .col-tile-img {
-  width: 130px; height: 100px;
+  width: 145px; height: 105px;
   background-size: cover; background-position: center;
 }
 .col-tile-name {
