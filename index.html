@@ -97,6 +97,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <!-- Prevent Bengali flash: hide until JS applies correct language -->
+  <script>document.documentElement.style.opacity='0';</script>
 </head>
 <body>
 <!-- Announcement Banner (controlled from Admin Panel) -->
@@ -135,12 +137,12 @@
     </div>
 
     <nav class="cat-tabs">
-      <button class="cat-tab active" data-cat="all" data-i18n="tabAll">সব</button>
-      <button class="cat-tab" data-cat="women" data-i18n="tabWomen">মহিলা</button>
-      <button class="cat-tab" data-cat="kids" data-i18n="tabKids">শিশু</button>
-      <button class="cat-tab" data-cat="men" data-i18n="tabMen">পুরুষ</button>
-      <button class="cat-tab" data-cat="beauty" data-i18n="tabBeauty">বিউটি</button>
-      <button class="cat-tab" data-cat="home" data-i18n="tabHome">হোম</button>
+      <button class="cat-tab active" data-cat="all" data-i18n="tabAll">All</button>
+      <button class="cat-tab" data-cat="women" data-i18n="tabWomen">Women</button>
+      <button class="cat-tab" data-cat="kids" data-i18n="tabKids">Kids</button>
+      <button class="cat-tab" data-cat="men" data-i18n="tabMen">Men</button>
+      <button class="cat-tab" data-cat="beauty" data-i18n="tabBeauty">Beauty</button>
+      <button class="cat-tab" data-cat="home" data-i18n="tabHome">Home</button>
     </nav>
   </header>
 
@@ -158,20 +160,20 @@
       <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
     </div>
     <ul class="drawer-menu">
-      <li><a href="#" onclick="closeDrawer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return false;"><i class="fas fa-user"></i> <span data-i18n="myAccount">আমার অ্যাকাউন্ট</span></a></li>
-      <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-box"></i> <span data-i18n="myOrders">আমার অর্ডার</span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openWishlist,200);return false;"><i class="fas fa-heart" style="color:#e91e8c"></i> <span data-i18n="wishlistMenu">উইশলিস্ট</span> <span id="drawerWishCount" style="background:#e91e8c;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;display:none"></span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return false;"><i class="fas fa-user"></i> <span data-i18n="myAccount">My Account</span></a></li>
+      <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-box"></i> <span data-i18n="myOrders">My Orders</span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openWishlist,200);return false;"><i class="fas fa-heart" style="color:#e91e8c"></i> <span data-i18n="wishlistMenu">Wishlist</span> <span id="drawerWishCount" style="background:#e91e8c;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;display:none"></span></a></li>
       <li><a href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;"><i class="fas fa-tag" style="color:#8b2be2"></i> <span data-i18n="coupon">কুপন</span></a></li>
       <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;"><i class="fas fa-gear" style="color:#64748b"></i> <span data-i18n="settings">সেটিংস</span></a></li>
-      <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">সাপোর্ট</span></a></li>
-      <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">সাইন আউট</span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;"><i class="fas fa-gear" style="color:#64748b"></i> <span data-i18n="settings">Settings</span></a></li>
+      <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">Support</span></a></li>
+      <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">Sign Out</span></a></li>
       <li style="border-top:1px solid rgba(128,128,128,.15);margin-top:6px;padding-top:6px"><a href="store2.html"><i class="fas fa-store" style="color:#00c4b4"></i> EX STYLE Store</a></li>
       <li><a href="store3.html"><i class="fas fa-gem" style="color:#c9a227"></i> EX LUXE Store</a></li>
     </ul>
     <div class="drawer-footer" id="drawerFooter">
-      <button class="btn-outline" onclick="closeDrawer();openAuth();" data-i18n="login">লগইন করুন</button>
-      <button class="btn-primary" onclick="closeDrawer();openAuth();" data-i18n="register">রেজিস্ট্রেশন</button>
+      <button class="btn-outline" onclick="closeDrawer();openAuth();" data-i18n="login">Login</button>
+      <button class="btn-primary" onclick="closeDrawer();openAuth();" data-i18n="register">Register</button>
     </div>
   </aside>
 
@@ -234,7 +236,7 @@
     <section class="cat-arch-section">
       <div class="cat-arch-heading">
         <span class="cat-arch-line"></span>
-        <h2 class="cat-arch-title" data-i18n="categories">ক্যাটাগরি</h2>
+        <h2 class="cat-arch-title" data-i18n="categories">Categories</h2>
         <span class="cat-arch-line"></span>
       </div>
       <div class="cat-arch-grid">
@@ -247,7 +249,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catWomen">মহিলা</span>
+          <span data-i18n="catWomen">Women</span>
         </div>
         <div class="cat-arch-card" data-cat="men" onclick="filterCategory('men')">
           <div class="cat-arch-wrap">
@@ -258,7 +260,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catMen">পুরুষ</span>
+          <span data-i18n="catMen">Men</span>
         </div>
         <div class="cat-arch-card" data-cat="kids" onclick="filterCategory('kids')">
           <div class="cat-arch-wrap">
@@ -269,7 +271,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catKids">শিশু</span>
+          <span data-i18n="catKids">Kids</span>
         </div>
         <div class="cat-arch-card" data-cat="beauty" onclick="filterCategory('beauty')">
           <div class="cat-arch-wrap">
@@ -280,7 +282,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catBeauty">বিউটি</span>
+          <span data-i18n="catBeauty">Beauty</span>
         </div>
         <div class="cat-arch-card" data-cat="shoes" onclick="filterCategory('shoes')">
           <div class="cat-arch-wrap">
@@ -291,7 +293,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catShoes">জুতা</span>
+          <span data-i18n="catShoes">Shoes</span>
         </div>
         <div class="cat-arch-card" data-cat="bags" onclick="filterCategory('bags')">
           <div class="cat-arch-wrap">
@@ -302,7 +304,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catBags">ব্যাগ</span>
+          <span data-i18n="catBags">Bags</span>
         </div>
         <div class="cat-arch-card" data-cat="jewelry" onclick="filterCategory('jewelry')">
           <div class="cat-arch-wrap">
@@ -313,7 +315,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catJewelry">গহনা</span>
+          <span data-i18n="catJewelry">Jewelry</span>
         </div>
         <div class="cat-arch-card" data-cat="home" onclick="filterCategory('home')">
           <div class="cat-arch-wrap">
@@ -324,7 +326,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catHome">হোম</span>
+          <span data-i18n="catHome">Home</span>
         </div>
         <div class="cat-arch-card" data-cat="electronics" onclick="filterCategory('electronics')">
           <div class="cat-arch-wrap">
@@ -335,7 +337,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catElectronics">ইলেকট্রনিক্স</span>
+          <span data-i18n="catElectronics">Electronics</span>
         </div>
         <div class="cat-arch-card" data-cat="sports" onclick="filterCategory('sports')">
           <div class="cat-arch-wrap">
@@ -346,7 +348,7 @@
               </div>
             </div>
           </div>
-          <span data-i18n="catSports">স্পোর্টস</span>
+          <span data-i18n="catSports">Sports</span>
         </div>
         <!-- Custom category slots 1-10 (hidden by default, shown when admin sets name+image) -->
         <div class="cat-arch-card cat-custom-slot" data-cat="custom1" style="display:none" onclick="filterCategory('custom1')">
@@ -396,12 +398,12 @@
     <div class="flash-deals-banner">
       <div class="flash-left">
         <i class="fas fa-bolt"></i>
-        <span data-i18n="flashDeal">ফ্ল্যাশ ডিল</span>
+        <span data-i18n="flashDeal">Flash Deal</span>
         <div class="countdown">
           <span id="hours">05</span>:<span id="minutes">30</span>:<span id="seconds">00</span>
         </div>
       </div>
-      <a href="#" class="flash-more"><span data-i18n="seeAll">সব দেখুন</span> <i class="fas fa-chevron-right"></i></a>
+      <a href="#" class="flash-more"><span data-i18n="seeAll">See All</span> <i class="fas fa-chevron-right"></i></a>
     </div>
     <div class="flash-products" id="flashProducts"></div>
 
@@ -409,15 +411,15 @@
     <div class="two-col-banner">
       <div class="two-col-card">
         <div class="two-col-head">
-          <span class="two-col-title" data-i18n="superDeals">⚡ সুপার ডিল</span>
-          <a href="#" class="two-col-more"><span data-i18n="more">আরও</span> <i class="fas fa-chevron-right"></i></a>
+          <span class="two-col-title" data-i18n="superDeals">⚡ Super Deals</span>
+          <a href="#" class="two-col-more"><span data-i18n="more">More</span> <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="superDeals"></div>
       </div>
       <div class="two-col-card">
         <div class="two-col-head">
-          <span class="two-col-title" data-i18n="trending">🔥 ট্রেন্ডিং</span>
-          <a href="#" class="two-col-more"><span data-i18n="more">আরও</span> <i class="fas fa-chevron-right"></i></a>
+          <span class="two-col-title" data-i18n="trending">🔥 Trending</span>
+          <a href="#" class="two-col-more"><span data-i18n="more">More</span> <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="trendingProducts"></div>
       </div>
@@ -466,12 +468,12 @@
     <!-- PRODUCTS GRID -->
     <section class="section" id="productsSection">
       <div class="products-header">
-        <h2 class="section-title" data-i18n="allProducts">সব পণ্য</h2>
+        <h2 class="section-title" data-i18n="allProducts">All Products</h2>
         <div class="sort-row">
-          <button class="sort-btn active" data-sort="default" data-i18n="sortDefault">ডিফল্ট</button>
-          <button class="sort-btn" data-sort="low" data-i18n="sortLow">কম দাম</button>
-          <button class="sort-btn" data-sort="high" data-i18n="sortHigh">বেশি দাম</button>
-          <button class="sort-btn" data-sort="popular" data-i18n="sortPopular">জনপ্রিয়</button>
+          <button class="sort-btn active" data-sort="default" data-i18n="sortDefault">Default</button>
+          <button class="sort-btn" data-sort="low" data-i18n="sortLow">Low Price</button>
+          <button class="sort-btn" data-sort="high" data-i18n="sortHigh">High Price</button>
+          <button class="sort-btn" data-sort="popular" data-i18n="sortPopular">Popular</button>
         </div>
       </div>
       <div class="products-grid" id="productsGrid"></div>
@@ -740,7 +742,7 @@
         </div>
       </div>
       <div class="cc-title" data-i18n="orderConfirmed">Order Confirmed!</div>
-      <div class="cc-sub" data-i18n="orderConfirmedSub">আপনার অর্ডার পেয়েছি 🎉</div>
+      <div class="cc-sub" data-i18n="orderConfirmedSub">Your order has been received 🎉</div>
       <div class="cc-id" id="ccOrderId"></div>
       <div class="cc-total" id="ccOrderTotal"></div>
       <!-- Mini tracking timeline -->
@@ -1789,8 +1791,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=56"></script>
-  <script src="products.js?v=56"></script>
-  <script src="script.js?v=56"></script>
+  <script src="translations.js?v=57"></script>
+  <script src="products.js?v=57"></script>
+  <script src="script.js?v=57"></script>
 </body>
 </html>

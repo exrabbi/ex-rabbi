@@ -316,6 +316,11 @@ function setLang(lang) {
   const ec = document.getElementById('revEntryCount');
   const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
   if (ec) ec.textContent = (stored.length + 4871).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+  // Reveal page after translations applied (removes opacity:0 set in <head>)
+  if (document.documentElement.style.opacity === '0') {
+    document.documentElement.style.transition = 'opacity .18s';
+    document.documentElement.style.opacity = '1';
+  }
 }
 
 /* ===== INIT ===== */
