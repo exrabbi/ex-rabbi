@@ -315,7 +315,7 @@ function setLang(lang) {
   // refresh reviews entry strip count
   const ec = document.getElementById('revEntryCount');
   const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
-  if (ec) ec.textContent = (stored.length + 1253).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+  if (ec) ec.textContent = (stored.length + 4871).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
 }
 
 /* ===== INIT ===== */
@@ -3221,7 +3221,157 @@ const SEED_REVIEWS = [
   { id:20, name:'Sara Al-Amri', initial:'S', grad:'linear-gradient(135deg,#e91e8c,#7c3aed)', rating:5, date:'2025-03-17', country:'Riyadh',
     product:'Winter Coat — Camel L',
     text:{ bn:'কোটটা পেয়ে প্রথম দেখাতেই প্রেমে পড়ে গেছি! কাপড় অনেক গরম ও ভারী মানের, বাইরে গেলে ঠান্ডা একদম লাগে না। রঙ ছবির চেয়েও সুন্দর বাস্তবে। ডেলিভারি মাত্র ২ দিনে এসেছে। অন্য রঙেও নেবো শীঘ্রই! ❤️', en:'Fell in love at first sight! Fabric is very warm and heavy quality, no cold feeling outside at all. Color is even more beautiful in person than the photo. Delivery in just 2 days. Will get another color soon! ❤️', ar:'وقعت في حبه من النظرة الأولى! القماش دافئ جداً وثقيل الجودة، لا تشعر بالبرد خارجاً. اللون أجمل في الواقع من الصورة. التوصيل خلال يومين فقط. سأطلب لوناً آخر قريباً! ❤️' },
-    photos:['https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1548624313-0396c75e4b1a?w=120&h=120&fit=crop&q=80'], helpful:138 }
+    photos:['https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1548624313-0396c75e4b1a?w=120&h=120&fit=crop&q=80'], helpful:138 },
+
+  { id:21, name:'Rania Mansour', initial:'R', grad:'linear-gradient(135deg,#0d9488,#2563eb)', rating:5, date:'2025-03-14', country:'UAE',
+    product:"Women's Satin Blouse — Ivory M",
+    text:{ bn:'ব্লাউজের কাপড় সিল্কের মতো মসৃণ! অফিসে পরি, মিটিংয়ে সবাই প্রশংসা করে। ঘামলেও অস্বস্তি হয় না। মেশিনে ধুয়েছি একবার, রঙ একটুও যায়নি। EX GLOBAL এর পণ্য এখন আমার প্রথম পছন্দ।', en:"Fabric is smooth like silk! Wear it to office, everyone compliments me in meetings. Comfortable even when warm. Machine washed once, color didn't fade at all. EX GLOBAL is now my first choice.", ar:'القماش ناعم كالحرير! أرتديه للعمل والجميع يثنون علي في الاجتماعات. مريح حتى عند الحرارة. غسلته بالغسالة مرة، لم يبهت اللون أبداً. EX GLOBAL أصبح خياري الأول.' },
+    photos:['https://images.unsplash.com/photo-1485518882345-15568b007407?w=120&h=120&fit=crop&q=80'], helpful:71 },
+
+  { id:22, name:'Bilal Chaudhry', initial:'B', grad:'linear-gradient(135deg,#7c3aed,#2563eb)', rating:4, date:'2025-03-11', country:'Pakistan',
+    product:"Men's Casual Sneaker — White 41",
+    text:{ bn:'জুতার ডিজাইন অনেক সুন্দর, পরতে আরামদায়ক। ফোম সোল নরম, সারাদিন হাঁটলেও পা ব্যথা হয় না। সাইজ একটু ছোট মনে হয়েছে, পরের বার হাফ নম্বর বড় নেবো। তারপরেও ৪ স্টার দিচ্ছি কারণ বিল্ড কোয়ালিটি ভালো।', en:'Great shoe design, very comfortable to wear. Foam sole is soft, no foot pain after walking all day. Size runs slightly small, will go half size up next time. Still 4 stars for the good build quality.', ar:'تصميم الحذاء رائع ومريح جداً. النعل الإسفنجي ناعم، لا يؤلم القدم بعد المشي طوال اليوم. المقاس صغير قليلاً، سآخذ نصف مقاس أكبر في المرة القادمة. لا يزال 4 نجوم لجودة البناء الجيدة.' },
+    photos:['https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=120&h=120&fit=crop&q=80'], helpful:48 },
+
+  { id:23, name:'Dalila Benhadj', initial:'D', grad:'linear-gradient(135deg,#be185d,#f59e0b)', rating:5, date:'2025-03-08', country:'Morocco',
+    product:'Gold Jewelry Set — Necklace+Earring',
+    text:{ bn:'জুয়েলারি সেটটা দেখে বিশ্বাসই হচ্ছিল না এত কম দামে! সোনার মতো চকচক করছে, অনুষ্ঠানে পরেছিলাম সবাই ভেবেছে আসল সোনা। মরিচা ধরেনি এখনো। আমার মা, বোনদের জন্যও অর্ডার দিয়েছি।', en:"Couldn't believe the price for this jewelry set! Shines like real gold, wore it to a wedding and everyone thought it was real gold. No rust yet. Ordered for my mom and sisters too.", ar:'لم أصدق السعر لهذه المجموعة! تلمع كالذهب الحقيقي، ارتديتها في حفل زفاف والجميع ظنه ذهباً حقيقياً. لا صدأ حتى الآن. طلبت لأمي وأخواتي أيضاً.' },
+    photos:['https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1601121141461-9d6647bef0a1?w=120&h=120&fit=crop&q=80'], helpful:103 },
+
+  { id:24, name:'Khaled Ibrahim', initial:'K', grad:'linear-gradient(135deg,#059669,#10b981)', rating:5, date:'2025-03-05', country:'Egypt',
+    product:"Men's Thobe — White Premium XL",
+    text:{ bn:'থোবটা জুমার নামাজে পরেছিলাম, অনেক সুন্দর লেগেছে। কাপড় হালকা তবে মজবুত। সেলাই নিখুঁত, কোনো ফাঁকা জায়গা নেই। রঙ একদম ধবধবে সাদা। ডেলিভারি পেয়েছি মাত্র ৩ দিনে। আবার নেবো ইনশাআল্লাহ।', en:'Wore the thobe for Friday prayer, looked really beautiful. Fabric is light yet sturdy. Stitching is flawless, no loose threads. Color is brilliant white. Got delivery in just 3 days. Will order again inshAllah.', ar:'ارتديت الثوب لصلاة الجمعة، بدا رائعاً. القماش خفيف لكنه متين. الخياطة مثالية، لا خيوط مفككة. اللون أبيض ناصع. استلمته خلال 3 أيام فقط. سأطلب مرة أخرى إن شاء الله.' },
+    photos:['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&q=80'], helpful:88 },
+
+  { id:25, name:'Meera Pillai', initial:'M', grad:'linear-gradient(135deg,#f43f5e,#a855f7)', rating:5, date:'2025-03-01', country:'India',
+    product:'Saree — Silk Maroon 5.5m',
+    text:{ bn:'শাড়িটা দেখে অবাক হয়ে গেলাম! রঙ একদম গভীর মেরুন, জরির কাজ সূক্ষ্ম। বিয়েতে পরেছিলাম, ফটোগ্রাফার বললেন শাড়ি অসাধারণ হয়েছে। ৫ স্টার দিতে পারছি, কারণ আরো বেশি দেওয়া যায় না 😍', en:"Stunned by this saree! Deep maroon color, delicate zari work. Wore it to a wedding and the photographer said the saree looked stunning. 5 stars because I can't give more 😍", ar:'ذهلت من هذه الساري! لون أحمر عميق وأعمال زري رقيقة. ارتديتها في حفل زفاف والمصور قال إنها كانت رائعة. 5 نجوم لأنني لا أستطيع إعطاء أكثر 😍' },
+    photos:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=120&h=120&fit=crop&q=80'], helpful:129 },
+
+  { id:26, name:'Yasser Al-Dossari', initial:'Y', grad:'linear-gradient(135deg,#1d4ed8,#0891b2)', rating:3, date:'2025-02-26', country:'Bahrain',
+    product:'Sports Jacket — Grey L',
+    text:{ bn:'জ্যাকেট ঠিকঠাক আছে, কিন্তু আমার প্রত্যাশা ছিল একটু বেশি। কাপড় একটু পাতলা মনে হয়েছে, তবে ফিটিং ভালো। ডেলিভারি ৫ দিন লেগেছে যেটা একটু বেশি। দামের তুলনায় মোটামুটি মান পেয়েছি।', en:'Jacket is okay but I expected a bit more. Fabric feels a bit thin, though the fit is good. Delivery took 5 days which is a bit slow. Got decent quality for the price.', ar:'الجاكيت مقبول لكنني توقعت أكثر. القماش يبدو رقيقاً قليلاً رغم أن المقاس جيد. التوصيل استغرق 5 أيام وهو بطيء نوعاً ما. جودة مقبولة مقابل السعر.' },
+    photos:[], helpful:31 },
+
+  { id:27, name:'Hana Khatib', initial:'H', grad:'linear-gradient(135deg,#ec4899,#f97316)', rating:5, date:'2025-02-22', country:'Jordan',
+    product:"Girls' Abaya Set — Navy 10Y",
+    text:{ bn:'মেয়ের জন্য আবায়া সেট নিয়েছিলাম, দেখে মন ভরে গেছে! কাপড় নরম, ছোটদের ত্বকে কোনো সমস্যা করেনি। ডিজাইন খুব সুন্দর, মেয়ে পরতে ভালোবাসে। স্কুলে মেয়ের টিচারও প্রশংসা করেছেন!', en:"Bought abaya set for my daughter and I'm absolutely delighted! Soft fabric, no skin irritation for kids. Beautiful design, she loves wearing it. Even her teacher at school complimented it!", ar:'اشتريت مجموعة العباءة لابنتي وأنا سعيدة جداً! قماش ناعم، لا تهيج للجلد للأطفال. تصميم جميل وهي تحب ارتداءها. حتى معلمتها في المدرسة أثنت عليها!' },
+    photos:['https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=120&h=120&fit=crop&q=80'], helpful:77 },
+
+  { id:28, name:'Sameer Qureshi', initial:'S', grad:'linear-gradient(135deg,#7c3aed,#e91e8c)', rating:5, date:'2025-02-19', country:'Saudi Arabia',
+    product:'Leather Wallet — Brown Slim',
+    text:{ bn:'ওয়ালেটটা হাতে নিয়ে বুঝলাম কোয়ালিটি কতটা ভালো! চামড়া নরম, সেলাই মজবুত। ৬টা কার্ড স্লট, টাকার জায়গা প্রশস্ত। পুরুষদের জন্য পারফেক্ট গিফট। স্বামীকে দিয়েছিলাম, সে প্রতিদিন ব্যবহার করছেন।', en:'Picked up the wallet and immediately felt the quality! Soft leather, strong stitching. 6 card slots, spacious bill section. Perfect gift for men. Gave it to my husband and he uses it every day.', ar:'أمسكت المحفظة وشعرت فوراً بالجودة! جلد ناعم وخياطة متينة. 6 فتحات للبطاقات وقسم أوراق نقدية واسع. هدية مثالية للرجال. أعطيتها لزوجي ويستخدمها كل يوم.' },
+    photos:['https://images.unsplash.com/photo-1627123424574-724758594785?w=120&h=120&fit=crop&q=80'], helpful:62 },
+
+  { id:29, name:'Lina Hadid', initial:'L', grad:'linear-gradient(135deg,#0f766e,#7c3aed)', rating:4, date:'2025-02-15', country:'Lebanon',
+    product:'Casual Jumpsuit — Olive Green S',
+    text:{ bn:'জাম্পসুটটা সুন্দর কিন্তু ছবির চেয়ে একটু ভিন্ন শেড এসেছে। তারপরেও পরতে দারুণ লাগছে, কাপড় আরামদায়ক। ফিটিং পারফেক্ট, কোমরের বেল্ট দিয়ে আরো সুন্দর দেখাচ্ছে। সব মিলিয়ে ৪ স্টার।', en:'Jumpsuit is nice but the shade came slightly different from the photo. Still looks great to wear, fabric is comfortable. Perfect fitting, looks even better with the waist belt. Overall 4 stars.', ar:'البذلة جميلة لكن اللون جاء مختلفاً قليلاً عن الصورة. ومع ذلك تبدو رائعة عند الارتداء والقماش مريح. المقاس مثالي وتبدو أجمل مع حزام الخصر. 4 نجوم بشكل عام.' },
+    photos:['https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&h=120&fit=crop&q=80'], helpful:55 },
+
+  { id:30, name:'Farrukh Tashkentov', initial:'F', grad:'linear-gradient(135deg,#2563eb,#22c55e)', rating:5, date:'2025-02-11', country:'Saudi Arabia',
+    product:'Backpack — 30L Black Waterproof',
+    text:{ bn:'ব্যাকপ্যাকটা অবিশ্বাস্য! ৩০ লিটার কিন্তু ওজন অনেক হালকা। ওয়াটারপ্রুফ কভার কাজ করে, বৃষ্টিতে ভেজেনি। ল্যাপটপ কম্পার্টমেন্ট পারফেক্ট, USB চার্জিং পোর্টও আছে। ট্রাভেল ও অফিস দুটোতেই পারফেক্ট। 🎒', en:'Backpack is unbelievable! 30L but very lightweight. Waterproof cover actually works, stayed dry in rain. Laptop compartment is perfect, has USB charging port too. Perfect for both travel and office. 🎒', ar:'الحقيبة لا تصدق! 30 لتر لكنها خفيفة جداً. الغطاء المقاوم للماء يعمل فعلاً، بقيت جافة في المطر. حقيبة الكمبيوتر مثالية وتحتوي على منفذ USB للشحن. مثالية للسفر والعمل. 🎒' },
+    photos:['https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1622560480605-d83c853bc5c3?w=120&h=120&fit=crop&q=80'], helpful:114 },
+
+  { id:31, name:'Aisha Mokhtar', initial:'A', grad:'linear-gradient(135deg,#be185d,#0891b2)', rating:5, date:'2025-02-07', country:'Kuwait',
+    product:'Abaya — Embroidered Black M',
+    text:{ bn:'এই আবায়ার এমব্রয়ডারি কাজ দেখে চোখ ধাঁধিয়ে গেছে! হাতের কাজের মতো সূক্ষ্ম। রমজানে পরেছিলাম, মসজিদে সবাই কোথা থেকে কিনেছি জিজ্ঞেস করেছে। প্যাকেজিং ছিল লাক্সারি বক্সে। হাজার হাজার মেয়ে এটা দেখে কিনবে। ⭐⭐⭐⭐⭐', en:'The embroidery on this abaya is breathtaking! Intricate as handwork. Wore it during Ramadan and everyone at the mosque asked where I bought it. Packaging came in a luxury box. Thousands of women will want this after seeing it. ⭐⭐⭐⭐⭐', ar:'التطريز على هذه العباءة خلاب! دقيق كالعمل اليدوي. ارتديتها في رمضان وسألني الجميع في المسجد عن مكان شرائها. التغليف جاء في صندوق فاخر. آلاف النساء سيردنها بعد رؤيتها. ⭐⭐⭐⭐⭐' },
+    photos:['https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=120&h=120&fit=crop&q=80'], helpful:201 },
+
+  { id:32, name:'Tarek Zaki', initial:'T', grad:'linear-gradient(135deg,#f59e0b,#ef4444)', rating:5, date:'2025-02-03', country:'Cairo',
+    product:"Men's Watch — Stainless Steel Gold",
+    text:{ bn:'ঘড়িটা দেখতে একদম রোলেক্সের মতো! কিন্তু দাম অনেক কম। ব্যান্ড মজবুত, ডায়াল পরিষ্কার। ওয়াটার রেজিস্ট্যান্ট, হাত ধোওয়ার সময় সমস্যা নেই। অফিসে বসরাও প্রশংসা করেছেন। ১ মাস ব্যবহার হয়েছে, কোনো সমস্যা নেই।', en:'Watch looks exactly like a Rolex! But the price is so much lower. Band is sturdy, dial is clean. Water resistant, no issue washing hands. Even my boss complimented it. Used for 1 month, zero issues.', ar:'الساعة تبدو مثل رولكس تماماً! لكن السعر أقل بكثير. الحزام متين والوجه نظيف. مقاوم للماء ولا مشكلة عند غسل اليدين. حتى مديري أثنى عليها. استخدمتها شهراً كاملاً، لا أي مشكلة.' },
+    photos:['https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=120&h=120&fit=crop&q=80'], helpful:95 },
+
+  { id:33, name:'Siti Rahma', initial:'S', grad:'linear-gradient(135deg,#10b981,#f43f5e)', rating:5, date:'2025-01-30', country:'Indonesia',
+    product:'Modest Dress — Pastel Blue L',
+    text:{ bn:'ড্রেসটা একদম পরীর মতো! পাস্টেল রঙ এতটাই সুন্দর যে দেখে মন ভালো হয়ে যায়। কাপড় ব্রিদেবল, গরমেও আরাম। ফুলহাতা তবে গরম লাগে না। বিয়েতে পরেছিলাম, ১০০+ লাইক পড়েছে ইনস্টাতে!', en:'Dress looks absolutely magical! The pastel color is so beautiful it lifts my mood. Fabric is breathable, comfortable even in heat. Long sleeves but not hot. Wore to a wedding and got 100+ likes on Instagram!', ar:'الفستان يبدو سحرياً! اللون الباستيل جميل جداً ويرفع معنوياتي. القماش يتنفس ومريح حتى في الحرارة. أكمام طويلة لكن ليست ساخنة. ارتديته في حفل زفاف وحصلت على 100+ إعجاب على إنستغرام!' },
+    photos:['https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=120&h=120&fit=crop&q=80'], helpful:158 },
+
+  { id:34, name:'Mustafa Kemal', initial:'M', grad:'linear-gradient(135deg,#1d4ed8,#7c3aed)', rating:4, date:'2025-01-27', country:'Turkey',
+    product:"Men's Formal Trousers — Navy 32",
+    text:{ bn:'ট্রাউজার্সের কাটিং একদম প্রফেশনাল। কাপড়ে আয়রন ভালো থাকে, অফিসে সারাদিন স্মার্ট দেখায়। হালকা ক্রিজ ছিল শুরুতে, স্টিম দেওয়ার পর ঠিক হয়ে গেছে। একটু ছোট কমার দরকার ছিল, তাই ৪ স্টার।', en:'Trouser cut is very professional. Fabric holds the iron well, looks smart all day at the office. Had a slight crease initially, fixed with steam. Needed slight hemming which is why 4 stars.', ar:'قصة البنطلون احترافية جداً. القماش يحتفظ بالكي جيداً ويبدو أنيقاً طوال اليوم في العمل. كان فيه تجعد طفيف في البداية أصلحته بالبخار. يحتاج تقصير طفيف، لذا 4 نجوم.' },
+    photos:[], helpful:44 },
+
+  { id:35, name:'Rasha Nouri', initial:'R', grad:'linear-gradient(135deg,#a855f7,#f43f5e)', rating:5, date:'2025-01-23', country:'Iraq',
+    product:'Handbag — Designer Pink Mini',
+    text:{ bn:'এই মিনি ব্যাগটা আমার সবচেয়ে প্রিয় জিনিস হয়ে গেছে! পিংক কালার একদম ভাইব্রেন্ট, চেইন মজবুত। বাইরে বেরোলে সবাই কোথা থেকে কিনেছি জিজ্ঞেস করে। ভেতরে কয়েকটা পকেট আছে। একটু ছোট হওয়াই এর সৌন্দর্য!', en:'This mini bag has become my most prized possession! Pink color is so vibrant, chain is sturdy. Everyone asks where I bought it when I go out. Has a few pockets inside. The smallness is exactly what makes it beautiful!', ar:'أصبحت هذه الحقيبة الصغيرة أثمن ما لدي! اللون الوردي زاهٍ جداً والسلسلة متينة. الجميع يسألني أين اشتريتها عند الخروج. فيها جيوب داخلية. صغرها هو بالضبط ما يجعلها جميلة!' },
+    photos:['https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=120&h=120&fit=crop&q=80'], helpful:87 },
+
+  { id:36, name:'Deepak Nair', initial:'D', grad:'linear-gradient(135deg,#f97316,#a855f7)', rating:5, date:'2025-01-19', country:'India',
+    product:'Kids Cricket Set — Full Kit',
+    text:{ bn:'ছেলের জন্মদিনে এই ক্রিকেট কিট দিয়েছিলাম, সে এখন প্রতিদিন খেলছে! ব্যাট মজবুত, বল ভারসাম্যপূর্ণ। সব গিয়ার একসাথে পেয়ে সে অনেক খুশি। ডেলিভারি ছিল ৩ দিনে। সুন্দর প্যাকেজিং।', en="Gave this cricket kit for my son's birthday and he plays every day now! Bat is sturdy, ball is balanced. He was so happy to get all gear together. Delivery in 3 days. Beautiful packaging.", ar:'أعطيت هذه المجموعة الكريكت لابني في عيد ميلاده ويلعب الآن كل يوم! المضرب متين والكرة متوازنة. كان سعيداً جداً بالحصول على كل الأدوات معاً. التوصيل خلال 3 أيام. تغليف جميل.' },
+    photos:['https://images.unsplash.com/photo-1531415074968-036ba1b575da?w=120&h=120&fit=crop&q=80'], helpful:53 },
+
+  { id:37, name:'Wafa Al-Sabah', initial:'W', grad:'linear-gradient(135deg,#0891b2,#22c55e)', rating:5, date:'2025-01-15', country:'Kuwait',
+    product:'Perfume — Oud Intense 100ml',
+    text:{ bn:'আউড পারফিউম এত দিন ধরে চলে! সকালে লাগিয়ে রাত পর্যন্ত সুগন্ধ থাকে। খলিজি স্টাইলের আউড, একটু মিষ্টি ও গভীর। বোতলের ডিজাইন রাজকীয়। গিফট করার জন্য বাক্সটা একদম পারফেক্ট। আমার সবচেয়ে প্রিয় পারফিউম হয়ে গেছে।', en:'This oud perfume lasts so long! Applied in the morning and the scent stays till night. Khaleeji-style oud, slightly sweet and deep. Bottle design is royal. Box is perfect for gifting. Has become my favorite perfume.', ar:'هذا العطر يدوم طويلاً جداً! وضعته صباحاً والرائحة تبقى حتى الليل. عود بأسلوب خليجي، حلو قليلاً وعميق. تصميم الزجاجة ملكي. الصندوق مثالي للإهداء. أصبح عطري المفضل.' },
+    photos:['https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=120&h=120&fit=crop&q=80'], helpful:142 },
+
+  { id:38, name:'Ibrahim Çelik', initial:'I', grad:'linear-gradient(135deg,#dc2626,#f97316)', rating:3, date:'2025-01-11', country:'Turkey',
+    product:"Men's Polo Shirt — Red XL",
+    text:{ bn:'শার্টটা দেখতে সুন্দর কিন্তু সাইজ চার্টে যা লেখা ছিল তার চেয়ে ছোট এসেছে। XL নিয়েছিলাম, কিন্তু L এর মতো ফিট করেছে। কাপড়ের মান ঠিক আছে। কাস্টমার সার্ভিসে যোগাযোগ করেছি, সাহায্য করেছে।', en:'Shirt looks nice but came smaller than the size chart indicated. Ordered XL but fits like an L. Fabric quality is fine. Contacted customer service and they helped. Will order again in XXL.', ar:'القميص يبدو جميلاً لكنه جاء أصغر مما يوضحه مخطط المقاسات. طلبت XL لكنه يلائم كـ L. جودة القماش مقبولة. تواصلت مع خدمة العملاء وساعدوني. سأطلب مجدداً بمقاس XXL.' },
+    photos:[], helpful:29 },
+
+  { id:39, name:'Noha Sami', initial:'N', grad:'linear-gradient(135deg,#7c3aed,#0891b2)', rating:5, date:'2025-01-07', country:'Egypt',
+    product:'Face Serum Set — Vitamin C+E',
+    text:{ bn:'এই সিরাম সেট ব্যবহার করার ২ সপ্তাহ পর আমার ত্বক উজ্জ্বল হয়ে গেছে! ডার্ক স্পট কমে গেছে, স্কিন হাইড্রেটেড থাকছে। ভিটামিন সি সিরাম সকালে, ভিটামিন ই রাতে — পারফেক্ট রুটিন। আমার বান্ধবীরাও অর্ডার দিয়েছে।', en:'After 2 weeks of using this serum set, my skin has become glowing! Dark spots reduced, skin stays hydrated. Vitamin C serum in the morning, Vitamin E at night — perfect routine. My friends have all ordered too.', ar:'بعد أسبوعين من استخدام مجموعة السيروم، أصبح بشرتي مشرقة! تقلصت البقع الداكنة والبشرة تبقى مرطبة. سيروم فيتامين C صباحاً وفيتامين E ليلاً، روتين مثالي. صديقاتي جميعهن طلبن أيضاً.' },
+    photos:['https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=120&h=120&fit=crop&q=80'], helpful:176 },
+
+  { id:40, name:'Akira Yamamoto', initial:'A', grad:'linear-gradient(135deg,#e91e8c,#f59e0b)', rating:5, date:'2025-01-03', country:'Saudi Arabia',
+    product:'Anime Hoodie — Oversized Black',
+    text:{ bn:'হুডিটা একদম ওভারসাইজড পারফেক্ট! কাপড় ভারী ও উষ্ণ, ফ্লিস লাইনিং আছে। প্রিন্ট রঙিন ও শার্প, ধুলেও উঠছে না। পকেট গভীর। শীতে বাসায় এবং বাইরে দুটোতেই পারফেক্ট। আরো কয়েকটা ডিজাইন নেবো!', en:'Hoodie is perfectly oversized! Fabric is heavy and warm, has fleece lining. Print is colorful and sharp, not coming off after washing. Deep pockets. Perfect for both indoor and outdoor in winter. Will get more designs!', ar:'الهودي مقاسه الكبير مثالي! القماش ثقيل ودافئ ومبطن بالفليس. الطباعة ملونة وحادة ولا تنزل بعد الغسيل. جيوب عميقة. مثالي للداخل والخارج في الشتاء. سآخذ تصاميم أخرى!' },
+    photos:['https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=120&h=120&fit=crop&q=80'], helpful:93 },
+
+  { id:41, name:'Amna Al-Rashidi', initial:'A', grad:'linear-gradient(135deg,#14b8a6,#a855f7)', rating:5, date:'2024-12-30', country:'Oman',
+    product:'Bridal Hijab Set — Gold Embroidered',
+    text:{ bn:'বিয়ের দিন এই হিজাব পরেছিলাম। গোল্ড এমব্রয়ডারি এতটাই সুন্দর যে ফটোগ্রাফার বললেন এটা ছাড়া ফটো অসম্পূর্ণ! কাপড় শিফন, হালকা ও দোদুল্যমান। প্যাকেজিং গিফট বক্সে এসেছে। বিয়ের দিনকে স্মরণীয় করে দিয়েছে।', en:'Wore this hijab on my wedding day. The gold embroidery is so beautiful that the photographer said the photos would be incomplete without it! Chiffon fabric, light and flowing. Packaging came in a gift box. Made my wedding day unforgettable.', ar:'ارتديت هذا الحجاب في يوم زفافي. التطريز الذهبي جميل جداً لدرجة أن المصور قال إن الصور ستكون ناقصة بدونه! قماش شيفون خفيف ومتدفق. التغليف جاء في صندوق هدايا. جعل يوم زفافي لا يُنسى.' },
+    photos:['https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=120&h=120&fit=crop&q=80'], helpful:189 },
+
+  { id:42, name:'Tariq Memon', initial:'T', grad:'linear-gradient(135deg,#0f766e,#f97316)', rating:5, date:'2024-12-27', country:'Pakistan',
+    product:'Football Jersey — PSG #10',
+    text:{ bn:'জার্সিটা একদম অফিশিয়াল লুকের মতো! কাপড় হালকা ও ব্রিদেবল। মাঠে খেলার সময় ঘাম শোষণ করে ভালো। প্রিন্ট শার্প, ধুলেও ফিকে হয়নি। দামে এরকম জার্সি আশা করিনি। বন্ধুদেরও গিফট দিয়েছি।', en:'Jersey looks exactly like the official one! Fabric is light and breathable. Absorbs sweat well during playing. Print is sharp, did not fade after washing. Did not expect such quality at this price. Gifted to friends too.', ar:'الجيرسي يبدو مثل الرسمي تماماً! القماش خفيف ويتنفس. يمتص العرق جيداً خلال اللعب. الطباعة حادة ولم تبهت بعد الغسيل. لم أتوقع هذه الجودة بهذا السعر. أهديت لأصدقاء أيضاً.' },
+    photos:['https://images.unsplash.com/photo-1576820022036-f0ceab21ce71?w=120&h=120&fit=crop&q=80'], helpful:108 },
+
+  { id:43, name:'Ghada Mansouri', initial:'G', grad:'linear-gradient(135deg,#db2777,#0891b2)', rating:5, date:'2024-12-23', country:'UAE',
+    product:'Luxury Scarf — Cashmere Beige',
+    text:{ bn:'ক্যাশমেরে স্কার্ফটা হাতে নিয়ে মনে হলো বাতাস ধরেছি! এত নরম ও মোলায়েম যে কথায় প্রকাশ করা যাবে না। শীতে গলায় জড়িয়ে বেরোলে আলাদা ক্লাস দেখায়। রঙও টাইমলেস বেইজ। বারবার নেবো।', en:"Touching the cashmere scarf felt like holding air! So soft and silky, words can't describe it. Wearing it around the neck in winter looks incredibly classy. Timeless beige color. Will buy again and again.", ar:'لمس وشاح الكشمير شعرت كأنني أمسك الهواء! ناعم وحريري جداً لدرجة لا توصفها الكلمات. ارتداؤه حول الرقبة في الشتاء يبدو أنيقاً بشكل لا يصدق. لون بيج كلاسيكي. سأشتريه مراراً.' },
+    photos:['https://images.unsplash.com/photo-1520903920243-00d872a2d1c9?w=120&h=120&fit=crop&q=80'], helpful:127 },
+
+  { id:44, name:'Younes Belhaj', initial:'Y', grad:'linear-gradient(135deg,#7c3aed,#f59e0b)', rating:4, date:'2024-12-19', country:'Algeria',
+    product:'Sunglasses — Aviator Gold',
+    text:{ bn:'চশমা দেখতে অসাধারণ সুন্দর! পরলে রেট্রো ভাইব আসে। UV প্রোটেকশন আছে, রোদে চোখ আরামদায়ক। শুধু কেসটা একটু সাধারণ ছিল। তারপরেও দামের তুলনায় ভালো কেনাকাটা হয়েছে।', en:'Sunglasses look absolutely amazing! Gives a retro vibe when worn. Has UV protection, eyes comfortable in sun. Only the case was a bit basic. Still a good purchase for the price.', ar:'النظارات الشمسية تبدو رائعة! تعطي طابعاً كلاسيكياً عند الارتداء. لها حماية من الأشعة فوق البنفسجية والعيون مريحة في الشمس. فقط الحافظة كانت بسيطة قليلاً. ومع ذلك شراء جيد مقابل السعر.' },
+    photos:['https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=120&h=120&fit=crop&q=80'], helpful:61 },
+
+  { id:45, name:'Faten Khalil', initial:'F', grad:'linear-gradient(135deg,#0891b2,#a855f7)', rating:5, date:'2024-12-15', country:'Tunisia',
+    product:"Women's Sneaker — White Chunky 38",
+    text:{ bn:'এই স্নিকার পরে রাস্তায় বেরোলে মনে হয় ক্লাউড এ হাঁটছি! সোল এত মোটা আর নরম। ডিজাইন ট্রেন্ডি, যেকোনো আউটফিটের সাথে মানায়। ৩ মাস হলো পরছি, একটুও বিবর্ণ হয়নি।', en:'Walking in these sneakers feels like walking on clouds! Such thick and soft sole. Design is trendy, goes with any outfit. Been wearing for 3 months, not faded at all.', ar:'المشي بهذه الأحذية يشعرك وكأنك تمشي على الغيوم! نعل سميك وناعم جداً. التصميم عصري ويلائم أي ملابس. أرتديها منذ 3 أشهر ولم تبهت أبداً.' },
+    photos:['https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=120&fit=crop&q=80'], helpful:149 },
+
+  { id:46, name:'Hamad Al-Thani', initial:'H', grad:'linear-gradient(135deg,#1d4ed8,#dc2626)', rating:5, date:'2024-12-11', country:'Qatar',
+    product:'Premium Luggage Set — 3pcs Navy',
+    text:{ bn:'লাগেজ সেট তিনটা মিলিয়ে একটা কমপ্লিট সেট! মাঝারিটা কেবিন ব্যাগেজে যায়, বড়টায় অনেক কিছু ধরে। চাকা স্মুথ, সব দিকে ঘোরে। লক সিস্টেম মজবুত। দুবাই ট্রিপে নিয়ে গিয়েছিলাম, দারুণ অভিজ্ঞতা।', en:'Luggage set of 3 forms a complete set! The medium fits in cabin baggage, the large holds everything. Wheels are smooth, rotate all directions. Lock system is sturdy. Took to Dubai trip, excellent experience.', ar:'مجموعة الأمتعة الثلاثة تشكل مجموعة كاملة! الوسطى تناسب أمتعة المقصورة والكبيرة تسع الكثير. العجلات سلسة وتدور بجميع الاتجاهات. نظام القفل متين. أخذتها في رحلة دبي، تجربة رائعة.' },
+    photos:['https://images.unsplash.com/photo-1565026057447-bc90a3dceb87?w=120&h=120&fit=crop&q=80'], helpful:116 },
+
+  { id:47, name:'Roshan Kumari', initial:'R', grad:'linear-gradient(135deg,#f43f5e,#f59e0b)', rating:5, date:'2024-12-07', country:'India',
+    product:'Kids Dress — Lehenga Pink 8Y',
+    text:{ bn:'মেয়ের লেহেঙ্গা পেয়ে সে এতটাই খুশি যে পরেই ঘুমিয়ে পড়েছে 😂 কাপড় ঝকঝকে, কারুকাজ সুন্দর। বিয়েতে পরিয়েছিলাম, একশো ছবি তোলা হয়েছে! প্যাকেজিং ছিল অনেক সুন্দর। এত কম দামে এরকম পোশাক ভাবাই যায় না।', en='My daughter was so happy with the lehenga she fell asleep wearing it 😂 Fabric is glittery, beautiful craftsmanship. Wore it to a wedding and 100 photos were taken! Packaging was very beautiful. Cannot imagine such a dress at this price.', ar:'ابنتي كانت سعيدة جداً باللهنغا لدرجة أنها نامت وهي ترتديها 😂 القماش لامع والحرفية جميلة. ارتدتها في حفل زفاف والتقطوا 100 صورة! التغليف كان جميلاً جداً. لا أتخيل مثل هذا الفستان بهذا السعر.' },
+    photos:['https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?w=120&h=120&fit=crop&q=80'], helpful:172 },
+
+  { id:48, name:'Ahmad Fayez', initial:'A', grad:'linear-gradient(135deg,#059669,#7c3aed)', rating:5, date:'2024-12-03', country:'Saudi Arabia',
+    product:'Prayer Mat — Premium Velvet',
+    text:{ bn:'জায়নামাজটা অনেক নরম ও আরামদায়ক। নামাজে মনোযোগ আসে বেশি। ভেলভেটের মান উচ্চমানের, রঙ গাঢ় ও সুন্দর। রোলআপ করে সহজে বহন করা যায়। রমজানে উপহার দিয়েছিলাম পরিবারকে, সবাই খুব খুশি হয়েছে।', en:'Prayer mat is very soft and comfortable. Helps focus more during prayer. Velvet quality is premium, color is deep and beautiful. Easy to roll up and carry. Gifted to family during Ramadan, everyone was very happy.', ar:'السجادة ناعمة ومريحة جداً. تساعد على التركيز أكثر أثناء الصلاة. جودة المخمل ممتازة واللون غامق وجميل. سهل اللف والحمل. أهديتها للعائلة في رمضان والجميع كان سعيداً جداً.' },
+    photos:['https://images.unsplash.com/photo-1585421514738-01798e348b17?w=120&h=120&fit=crop&q=80'], helpful:134 },
+
+  { id:49, name:'Elena Petrov', initial:'E', grad:'linear-gradient(135deg,#3b82f6,#e91e8c)', rating:5, date:'2024-11-29', country:'Saudi Arabia',
+    product:'Gym Set — Sports Bra+Legging Black',
+    text:{ bn:'জিম সেটটা সত্যিই পারফেক্ট! স্পোর্টস ব্রার সাপোর্ট অনেক ভালো, ওয়ার্কআউটে অস্বস্তি হয় না। লেগিং হাই-ওয়েস্ট, পেট টাইট রাখে। স্কোয়াট প্রুফ টেস্ট করেছি — পাশ! দামে এরকম সেট ভাবাই যায় না। 💪', en='Gym set is truly perfect! Sports bra support is excellent, no discomfort during workout. Leggings are high-waist, keeps the tummy in check. Squat proof tested — passed! Cannot imagine such a set at this price. 💪', ar='مجموعة الجيم مثالية حقاً! دعم حمالة الصدر الرياضية ممتاز، لا إزعاج أثناء التمرين. الليغنز عالي الخصر ويضبط البطن. اختبرت مقاومة القرفصاء وناجح! لا أتخيل مثل هذه المجموعة بهذا السعر. 💪' },
+    photos:['https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=120&h=120&fit=crop&q=80','https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=120&h=120&fit=crop&q=80'], helpful:161 },
+
+  { id:50, name:'Karima Bensalem', initial:'K', grad:'linear-gradient(135deg,#f97316,#0891b2)', rating:5, date:'2024-11-25', country:'Morocco',
+    product:'Moroccan Kaftan — Embroidered Blue',
+    text:{ bn:'কাফতানটা দেখে মনে হলো মরক্কো থেকে আনা! এমব্রয়ডারি হাতের কাজের মতো সূক্ষ্ম। কাপড় ভারী ও দামি মনের হয়। বিয়েতে পরে দেশীয় ঐতিহ্য ধরে রেখেছিলাম। প্রত্যেকে ছবি তুলতে চেয়েছে আমার সাথে!', en='The kaftan looks like it was brought from Morocco itself! Embroidery is as intricate as handwork. Fabric is heavy and feels expensive. Wore it to a wedding maintaining cultural heritage. Everyone wanted to take photos with me!', ar='الكفتان يبدو كأنه جُلب من المغرب نفسه! التطريز دقيق كالعمل اليدوي. القماش ثقيل ويشعر بالفخامة. ارتديته في حفل زفاف محتفظاً بالتراث الثقافي. الجميع أراد التقاط الصور معي!' },
+    photos:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=120&h=120&fit=crop&q=80'], helpful:145 }
 ];
 
 function getAllReviews() {
@@ -3275,7 +3425,7 @@ function renderRevSummary() {
   const total = all.length;
   const avg = total ? (all.reduce((s,r)=>s+r.rating,0)/total) : 0;
   document.getElementById('revAvgScore').textContent = avg.toFixed(1);
-  document.getElementById('revTotalCount').textContent = (total + 1248).toLocaleString();
+  document.getElementById('revTotalCount').textContent = (total + 4871).toLocaleString();
   const starsEl = document.getElementById('revAvgStars');
   starsEl.innerHTML = [1,2,3,4,5].map(i=>`<span style="color:${i<=Math.round(avg)?'#ffd700':'#e0e0e0'}">★</span>`).join('');
   const barsEl = document.getElementById('revBarsCol');
