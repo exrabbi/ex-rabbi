@@ -1953,9 +1953,20 @@ img { max-width: 100%; display: block; }
 .card-field input:focus { border-color: #e91e8c; }
 .card-input-wrap { position: relative; }
 .card-type-icon {
-  position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-  font-size: 22px; pointer-events: none;
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  pointer-events: none; display: flex; align-items: center;
 }
+/* Card type indicator badges */
+.cti {
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 5px; font-weight: 900;
+}
+.cti-visa { background: #1a1f71; color: #fff; font-size: 11px; letter-spacing: .8px; padding: 4px 8px; }
+.cti-mc { background: transparent; }
+.cti-amex { background: #007bc1; color: #fff; font-size: 9px; letter-spacing: .5px; padding: 4px 6px; }
+.cti-disc { background: linear-gradient(135deg,#f76f20,#e8540c); color: #fff; font-size: 9px; padding: 4px 7px; }
+.cti-mada { background: linear-gradient(135deg,#009b4e,#00c862); color: #fff; font-size: 10px; font-weight: 800; padding: 4px 7px; border-radius: 5px; }
+.cti-generic { color: #aaa; font-size: 20px; }
 .card-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 /* Pay button */

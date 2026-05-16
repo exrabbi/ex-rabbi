@@ -3127,10 +3127,23 @@ function formatCard(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 16);
   el.value = v.replace(/(.{4})/g, '$1 ').trim();
   const icon = document.getElementById('cardTypeIcon');
-  if (v.startsWith('4')) icon.textContent = '💳';
-  else if (v.startsWith('5')) icon.textContent = '🟠';
-  else if (v.startsWith('37')) icon.textContent = '💚';
-  else icon.textContent = '';
+  if (!icon) return;
+  // Detect card type
+  let html = '';
+  if (/^4/.test(v)) {
+    html = '<div class="cti cti-visa">VISA</div>';
+  } else if (/^(5[1-5]|2[2-7])/.test(v)) {
+    html = '<div class="cti cti-mc"><svg width="34" height="22" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg></div>';
+  } else if (/^3[47]/.test(v)) {
+    html = '<div class="cti cti-amex">AMEX</div>';
+  } else if (/^(6011|622|64|65)/.test(v)) {
+    html = '<div class="cti cti-disc">DISC</div>';
+  } else if (/^(4(00861|01066|01[1-9]|013)|5(0(77[0-3]|78[3-9]|79[0-9]|800|801|803|804|8[19]|82[0-6]|893|894|895|96|97)|68)|6(002|104|105))/.test(v) || /^(9(682|683|684|685|686|687|688|689|69))/.test(v)) {
+    html = '<div class="cti cti-mada">mada</div>';
+  } else if (v.length > 0) {
+    html = '<div class="cti cti-generic"><i class="fas fa-credit-card"></i></div>';
+  }
+  icon.innerHTML = html;
 }
 function formatExpiry(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 4);
