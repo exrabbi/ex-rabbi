@@ -1963,15 +1963,16 @@ function _showCouponSuggestions() {
   const box = document.getElementById('couponSuggestBox');
   if (!box) return;
   const all = _allCoupons();
-  const available = Object.entries(all).filter(([code, c]) => !(c.oneTime && isCouponUsed(code)));
+  // All coupons are one-time use — filter out already used ones
+  const available = Object.entries(all).filter(([code]) => !isCouponUsed(code));
   if (!available.length) { box.style.display = 'none'; return; }
-  box.innerHTML = `<div class="coupon-suggest-hd"><i class="fas fa-ticket"></i> Available Vouchers</div>` +
+  box.innerHTML = `<div class="coupon-suggest-hd"><i class="fas fa-gift"></i>&nbsp; AVAILABLE VOUCHERS</div>` +
     available.map(([code, c]) => `
       <div class="coupon-suggest-item" onclick="_applySuggestedCoupon('${code}')">
         <div class="csi-icon"><i class="fas fa-tag"></i></div>
         <div class="csi-info">
           <div class="csi-code">${code}</div>
-          <div class="csi-desc">${c.oneTime ? 'One-time use' : 'Unlimited'} · Tap to apply</div>
+          <div class="csi-desc">One-time use &nbsp;·&nbsp; Tap to apply</div>
         </div>
         <div class="csi-pct">-${c.pct}%</div>
       </div>`).join('');
@@ -1999,7 +2000,7 @@ function applyCoupon() {
     refreshPaymentSummary();
     return;
   }
-  if (coupon.oneTime && isCouponUsed(code)) {
+  if (isCouponUsed(code)) {
     msg.textContent = t('couponUsed') || '❌ Already used';
     msg.className = 'pay-coupon-msg error';
     appliedCoupon = null;
