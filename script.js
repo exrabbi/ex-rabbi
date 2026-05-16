@@ -2054,29 +2054,25 @@ function refreshPaymentSummary() {
 
 /* ===== WHATSAPP CHECKOUT ===== */
 function whatsappCheckout() {
+  // WhatsApp orders disabled — use codCheckout instead
+  codCheckout();
+}
+
+function codCheckout() {
   if (cart.length === 0) return;
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
-  const lines = cart.map(item => {
-    const p = PRODUCTS.find(p => p.id === item.id);
-    return `• ${getName(p)} x${item.qty} = ${fmt(p.price * item.qty)}`;
-  });
   const subtotalBase = cartSubtotalBase();
   const subtotalDisp = subtotalBase * lang.rate;
   const discountAmt = appliedCoupon ? subtotalDisp * (appliedCoupon.pct / 100) : 0;
   const freeDelivery = (subtotalDisp - discountAmt) >= FREE_DELIVERY_THRESHOLD_SAR;
   const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
   const grandDisp = subtotalDisp - discountAmt + deliveryDisp;
-  const fmtD = (v) => lang.currency + Math.round(v).toLocaleString();
-  let couponLine = appliedCoupon ? `\n🏷️ Coupon (${appliedCoupon.code}): -${fmtD(discountAmt)}` : '';
-  const locText = typeof getLocationText === 'function' ? getLocationText() : '';
-  const msg = `🛒 *${t('myCart')}*\n\n${lines.join('\n')}${couponLine}\n\n*${t('totalLabel')} ${fmtD(grandDisp)}*${locText}`;
   if (appliedCoupon) markCouponUsed(appliedCoupon.code);
-  const newOrd = _saveOrderRecord(cart, grandDisp, 'whatsapp');
-  window.open(`https://wa.me/${getWANumber()}?text=${encodeURIComponent(msg)}`, '_blank');
+  const newOrd = _saveOrderRecord(cart, grandDisp, 'cod');
   cart = []; _saveCart(); updateCartBadge();
   closePayment();
   openCart();
-  showOrderConfirm(newOrd?.id, (lang.currency || 'SAR ') + Math.round(grandDisp * (lang.rate || 1)).toLocaleString());
+  showOrderConfirm(newOrd?.id, (lang.currency || 'SAR ') + Math.round(grandDisp).toLocaleString());
 }
 
 /* ===== BOTTOM NAV ===== */
@@ -3007,14 +3003,14 @@ function processPayment() {
       showToast(t('paypalOpening'));
     } else {
       showToast(t('paypalNotSetup'));
-      setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+      setTimeout(() => { closePayment(); codCheckout(); }, 1500);
     }
   } else if (selectedPayMethod === 'card') {
     const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
     const moyasarKey = s.moyasarPubKey || '';
     if (!moyasarKey) {
       showToast(t('cardNotSetup'));
-      setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+      setTimeout(() => { closePayment(); codCheckout(); }, 1500);
       return;
     }
     // Moyasar payment integration
@@ -3028,7 +3024,7 @@ function processPayment() {
     return;
   } else if (selectedPayMethod === 'gpay') {
     showToast(t('gpayNotSetup'));
-    setTimeout(() => { closePayment(); whatsappCheckout(); }, 1500);
+    setTimeout(() => { closePayment(); codCheckout(); }, 1500);
   } else if (selectedPayMethod === 'binance') {
     const ref = (document.getElementById('binanceRefInput')?.value || '').trim();
     if (ref.length < 6) { showToast('⚠️ Enter your Binance reference number'); return; }
