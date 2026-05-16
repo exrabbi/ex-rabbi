@@ -1191,78 +1191,82 @@
       </div>
 
       <!-- Payment Methods -->
-      <div class="pay-methods-title" data-i18n="choosePayMethod">Choose Payment Method</div>
+      <div class="pay-methods-title" data-i18n="choosePayMethod">Payment methods</div>
 
-      <!-- WhatsApp (Cash on Delivery) -->
-      <div class="pay-method-card active" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
-        <div class="pay-method-left">
-          <div class="pay-method-icon" style="background:#25d366">
-            <i class="fab fa-whatsapp"></i>
+      <!-- Card -->
+      <div class="pay-method-card active" id="pmCard" onclick="selectPayMethod('card')">
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-card-icon">
+              <i class="fas fa-credit-card"></i>
+            </div>
+            <span class="pm-name" id="pmCardLabel" data-i18n="cardName">Card</span>
           </div>
-          <div class="pay-method-info">
-            <div class="pay-method-name" data-i18n="waOrderName">WhatsApp Order</div>
-            <div class="pay-method-sub" data-i18n="waOrderSub">Cash on Delivery</div>
+          <div class="pm-card-logos">
+            <span class="pcl pcl-mada">mada</span>
+            <span class="pcl pcl-visa">VISA</span>
+            <span class="pcl pcl-mc"><svg width="26" height="16" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg></span>
+            <span class="pcl pcl-amex">AMEX</span>
+            <span class="pcl pcl-disc">DISC</span>
           </div>
+          <div class="pm-protect"><i class="fas fa-shield-halved"></i> We protect your card information</div>
         </div>
-        <div class="pay-method-check" id="checkWhatsapp"><i class="fas fa-check-circle"></i></div>
-      </div>
-
-      <!-- PayPal / Card -->
-      <div class="pay-method-card" id="pmPaypal" onclick="selectPayMethod('paypal')">
-        <div class="pay-method-left">
-          <div class="pay-method-icon" style="background:#003087">
-            <i class="fab fa-paypal"></i>
-          </div>
-          <div class="pay-method-info">
-            <div class="pay-method-name">PayPal</div>
-            <div class="pay-method-sub">Visa, Mastercard, PayPal</div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkPaypal"><i class="fas fa-check-circle"></i></div>
-      </div>
-
-      <!-- Card Direct -->
-      <div class="pay-method-card" id="pmCard" onclick="selectPayMethod('card')">
-        <div class="pay-method-left">
-          <div class="pay-method-icon pay-icon-cards">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/800px-Visa_Inc._logo.svg.png" alt="Visa" />
-          </div>
-          <div class="pay-method-info">
-            <div class="pay-method-name" id="pmCardLabel" data-i18n="cardName">Credit / Debit Card</div>
-            <div class="pay-method-sub">Visa · Mastercard · Mada</div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkCard"><i class="fas fa-check-circle"></i></div>
+        <div class="pay-method-check" id="checkCard" style="display:none"><i class="fas fa-check-circle"></i></div>
       </div>
 
       <!-- Google Pay -->
       <div class="pay-method-card" id="pmGpay" onclick="selectPayMethod('gpay')">
-        <div class="pay-method-left">
-          <div class="pay-method-icon" style="background:#fff;border:1.5px solid #e8e8e8">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Google_Pay_Logo.svg/800px-Google_Pay_Logo.svg.png" alt="Google Pay" style="height:20px;width:auto" />
-          </div>
-          <div class="pay-method-info">
-            <div class="pay-method-name">Google Pay</div>
-            <div class="pay-method-sub" data-i18n="gpaySub">Fast & Secure</div>
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-gpay-logo">
+              <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC04">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span>&nbsp;<span style="color:#555;font-weight:700">Pay</span>
+            </div>
           </div>
         </div>
-        <div class="pay-method-check" id="checkGpay"><i class="fas fa-check-circle"></i></div>
+        <div class="pay-method-check" id="checkGpay" style="display:none"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- PayPal -->
+      <div class="pay-method-card" id="pmPaypal" onclick="selectPayMethod('paypal')">
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-paypal-logo"><i class="fab fa-paypal"></i> PayPal</div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkPaypal" style="display:none"><i class="fas fa-check-circle"></i></div>
+      </div>
+
+      <!-- WhatsApp (Cash on Delivery) -->
+      <div class="pay-method-card" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-wa-icon"><i class="fab fa-whatsapp"></i></div>
+            <div>
+              <div class="pm-name" data-i18n="waOrderName">WhatsApp Order</div>
+              <div class="pm-sub" data-i18n="waOrderSub">Cash on Delivery</div>
+            </div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkWhatsapp" style="display:none"><i class="fas fa-check-circle"></i></div>
       </div>
 
       <!-- Binance Pay -->
       <div class="pay-method-card" id="pmBinance" onclick="selectPayMethod('binance')">
-        <div class="pay-method-left">
-          <div class="pay-method-icon" style="background:linear-gradient(135deg,#F3BA2F,#F0A500)">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="#1a1a1a">
-              <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
-            </svg>
-          </div>
-          <div class="pay-method-info">
-            <div class="pay-method-name">Binance Pay</div>
-            <div class="pay-method-sub" data-i18n="binanceSub">USDT · BNB · Crypto</div>
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-bnb-icon"><i class="fas fa-coins"></i></div>
+            <div>
+              <div class="pm-name">Binance Pay</div>
+              <div class="pm-sub" data-i18n="binanceSub">USDT · BNB · Crypto</div>
+            </div>
           </div>
         </div>
-        <div class="pay-method-check" id="checkBinance"><i class="fas fa-check-circle"></i></div>
+        <div class="pay-method-check" id="checkBinance" style="display:none"><i class="fas fa-check-circle"></i></div>
       </div>
 
 
@@ -1816,8 +1820,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=66"></script>
-  <script src="products.js?v=66"></script>
-  <script src="script.js?v=66"></script>
+  <script src="translations.js?v=67"></script>
+  <script src="products.js?v=67"></script>
+  <script src="script.js?v=67"></script>
 </body>
 </html>
