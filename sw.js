@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v24';
+const CACHE = 'exglobal-v25';
 
 self.addEventListener('install', e => {
   // Use dynamic scope so it works on both exglobal.online and exrabbi.github.io/ex-rabbi/
@@ -32,8 +32,12 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const base = self.registration.scope;
 
-  // Navigation (opening the app) — always serve index.html from network
+  // Navigation (opening the app) — serve index.html, but pass admin.html through directly
   if (e.request.mode === 'navigate') {
+    const reqUrl = new URL(e.request.url);
+    if (reqUrl.pathname.includes('admin')) {
+      return; // let admin.html load normally, no SW interference
+    }
     e.respondWith(
       fetch(base + 'index.html')
         .then(res => {
