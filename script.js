@@ -3804,9 +3804,24 @@ function markHelpful(btn) {
   }
 }
 
+/* ===== SPLASH SCREEN ===== */
+(function initSplash() {
+  function hideSplash() {
+    const s = document.getElementById('exSplash');
+    if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 600); }
+  }
+  // Hide after 1.6s min (animation completes) or when page is ready
+  const t = setTimeout(hideSplash, 1600);
+  window.addEventListener('load', () => {
+    if (document.readyState === 'complete') {
+      clearTimeout(t);
+      setTimeout(hideSplash, 900);
+    }
+  });
+})();
+
 /* ===== PWA INSTALL ===== */
 (function initPWA() {
-  // Register service worker
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
