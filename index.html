@@ -430,35 +430,69 @@
         <a href="#" class="col-showcase-viewall" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;"><span data-i18n="viewAll">View all</span> <i class="fas fa-chevron-right"></i></a>
       </div>
       <div class="col-showcase-scroll">
-        <div class="col-showcase-tile" onclick="filterCategory('women')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catWomen">Women's Fashion</div>
-          <div class="col-tile-sub" data-i18n="catWomenSub">Elegant styles for every occasion</div>
-        </div>
-        <div class="col-showcase-tile" onclick="filterCategory('men')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catMen">Men's Fashion</div>
-          <div class="col-tile-sub" data-i18n="catMenSub">Dress to impress</div>
-        </div>
-        <div class="col-showcase-tile" onclick="filterCategory('kids')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catKids">Kids' Fashion</div>
-          <div class="col-tile-sub" data-i18n="catKidsSub">Cute &amp; comfortable</div>
-        </div>
-        <div class="col-showcase-tile" onclick="filterCategory('jewelry')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catAccessories">Accessories</div>
-          <div class="col-tile-sub" data-i18n="catAccessoriesSub">Complete your look</div>
-        </div>
-        <div class="col-showcase-tile" onclick="filterCategory('bags')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catBags">Bags &amp; Shoes</div>
-          <div class="col-tile-sub" data-i18n="catBagsSub">Step up your style</div>
-        </div>
-        <div class="col-showcase-tile" onclick="filterCategory('beauty')">
-          <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=220&fit=crop&q=80')"></div>
-          <div class="col-tile-name" data-i18n="catBeauty">Beauty &amp; Care</div>
-          <div class="col-tile-sub" data-i18n="catBeautySub">Glow inside out</div>
+        <div class="col-showcase-track">
+          <!-- set 1 -->
+          <div class="col-showcase-tile" onclick="filterCategory('women')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catWomen">Women's Fashion</div>
+            <div class="col-tile-sub" data-i18n="catWomenSub">Elegant styles for every occasion</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('men')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catMen">Men's Fashion</div>
+            <div class="col-tile-sub" data-i18n="catMenSub">Dress to impress</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('kids')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catKids">Kids' Fashion</div>
+            <div class="col-tile-sub" data-i18n="catKidsSub">Cute &amp; comfortable</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('jewelry')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catAccessories">Accessories</div>
+            <div class="col-tile-sub" data-i18n="catAccessoriesSub">Complete your look</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('bags')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catBags">Bags &amp; Shoes</div>
+            <div class="col-tile-sub" data-i18n="catBagsSub">Step up your style</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('beauty')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catBeauty">Beauty &amp; Care</div>
+            <div class="col-tile-sub" data-i18n="catBeautySub">Glow inside out</div>
+          </div>
+          <!-- set 2 — duplicate for seamless loop -->
+          <div class="col-showcase-tile" onclick="filterCategory('women')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catWomen">Women's Fashion</div>
+            <div class="col-tile-sub" data-i18n="catWomenSub">Elegant styles for every occasion</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('men')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catMen">Men's Fashion</div>
+            <div class="col-tile-sub" data-i18n="catMenSub">Dress to impress</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('kids')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catKids">Kids' Fashion</div>
+            <div class="col-tile-sub" data-i18n="catKidsSub">Cute &amp; comfortable</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('jewelry')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catAccessories">Accessories</div>
+            <div class="col-tile-sub" data-i18n="catAccessoriesSub">Complete your look</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('bags')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catBags">Bags &amp; Shoes</div>
+            <div class="col-tile-sub" data-i18n="catBagsSub">Step up your style</div>
+          </div>
+          <div class="col-showcase-tile" onclick="filterCategory('beauty')">
+            <div class="col-tile-img" style="background-image:url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=300&h=220&fit=crop&q=80')"></div>
+            <div class="col-tile-name" data-i18n="catBeauty">Beauty &amp; Care</div>
+            <div class="col-tile-sub" data-i18n="catBeautySub">Glow inside out</div>
+          </div>
         </div>
       </div>
     </div>
@@ -1789,8 +1823,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=52"></script>
-  <script src="products.js?v=52"></script>
-  <script src="script.js?v=52"></script>
+  <script src="translations.js?v=53"></script>
+  <script src="products.js?v=53"></script>
+  <script src="script.js?v=53"></script>
 </body>
 </html>
