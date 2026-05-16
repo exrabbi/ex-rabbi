@@ -3122,24 +3122,39 @@ function renderPayPalButtons() {
 function formatCard(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 16);
   el.value = v.replace(/(.{4})/g, '$1 ').trim();
+
+  // Update card mockup number display
+  const cmNum = document.getElementById('cmNumber');
+  if (cmNum) {
+    const padded = (v + '').padEnd(16, '•');
+    cmNum.textContent = padded.replace(/(.{4})/g, '$1 ').trim();
+  }
+
   const icon = document.getElementById('cardTypeIcon');
-  if (!icon) return;
-  // Detect card type
-  let html = '';
+  const cmBrand = document.getElementById('cmBrand');
+  let html = '', brandHtml = '';
+
   if (/^4/.test(v)) {
     html = '<div class="cti cti-visa">VISA</div>';
+    brandHtml = '<div class="cm-brand-visa">VISA</div>';
   } else if (/^(5[1-5]|2[2-7])/.test(v)) {
     html = '<div class="cti cti-mc"><svg width="34" height="22" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg></div>';
+    brandHtml = '<svg width="52" height="34" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg>';
   } else if (/^3[47]/.test(v)) {
-    html = '<div class="cti cti-amex">AMEX</div>';
+    html = '<div class="cti cti-amex"><span>AMERICAN</span><span>EXPRESS</span></div>';
+    brandHtml = '<div style="color:rgba(255,255,255,.9);font-size:10px;font-weight:900;background:#016fd0;padding:3px 7px;border-radius:5px;line-height:1.3;text-align:center"><div>AMERICAN</div><div>EXPRESS</div></div>';
   } else if (/^(6011|622|64|65)/.test(v)) {
-    html = '<div class="cti cti-disc">DISC</div>';
+    html = '<div class="cti cti-disc">DISCOVER</div>';
+    brandHtml = '<div style="color:rgba(255,255,255,.9);font-size:13px;font-weight:900">DISCOVER</div>';
   } else if (/^(4(00861|01066|01[1-9]|013)|5(0(77[0-3]|78[3-9]|79[0-9]|800|801|803|804|8[19]|82[0-6]|893|894|895|96|97)|68)|6(002|104|105))/.test(v) || /^(9(682|683|684|685|686|687|688|689|69))/.test(v)) {
     html = '<div class="cti cti-mada">mada</div>';
+    brandHtml = '<div style="color:#fff;font-size:14px;font-weight:900;background:#0072bc;padding:3px 8px;border-radius:5px">mada</div>';
   } else if (v.length > 0) {
     html = '<div class="cti cti-generic"><i class="fas fa-credit-card"></i></div>';
   }
-  icon.innerHTML = html;
+
+  if (icon) icon.innerHTML = html;
+  if (cmBrand) cmBrand.innerHTML = brandHtml;
 }
 function formatExpiry(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 4);
