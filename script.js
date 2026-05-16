@@ -316,21 +316,22 @@ function setLang(lang) {
   const ec = document.getElementById('revEntryCount');
   const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
   if (ec) ec.textContent = (stored.length + 4871).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
-  // Reveal page after translations applied (removes opacity:0 set in <head>)
-  if (document.documentElement.style.opacity === '0') {
-    document.documentElement.style.transition = 'opacity .18s';
-    document.documentElement.style.opacity = '1';
-  }
+}
+
+function _revealPage() {
+  document.documentElement.style.transition = 'opacity .18s';
+  document.documentElement.style.opacity = '1';
 }
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', async () => {
-  await loadPublishedData(); // sync published data before rendering
+  try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery charge, free delivery threshold)
   try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   applyTheme(currentTheme);
   setLang(localStorage.getItem('exg_lang') || 'en');
+  _revealPage(); // remove opacity:0 set in <head>
   updateWishBadge();
   renderFlashDeals();
   renderSuperDeals();
