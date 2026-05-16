@@ -682,7 +682,7 @@ function productCardHTML(p) {
         ${p.stock === 0 ? `<div class="stock-badge out">${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low">${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok">${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
       <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
-        ${p.stock === 0 ? t('outOfStock') : t('addToCart')}
+        ${p.stock === 0 ? `<i class="fas fa-times-circle" style="margin-right:5px;opacity:.7"></i>${t('outOfStock')}` : `<i class="fas fa-bag-shopping" style="margin-right:5px;font-size:11px"></i>${t('addToCart')}`}
       </button>
     </div>
   `;
@@ -1704,7 +1704,7 @@ function openModal(id) {
       <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
         <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? t('outOfStock') : t('addToCart')}</button>
+      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? `<i class="fas fa-times-circle" style="margin-right:6px;opacity:.7"></i>${t('outOfStock')}` : `<i class="fas fa-bag-shopping" style="margin-right:7px"></i>${t('addToCart')}`}</button>
     </div>
     ${_deliveryEstHTML()}
   `;

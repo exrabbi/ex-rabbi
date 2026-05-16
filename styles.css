@@ -564,35 +564,47 @@ img { max-width: 100%; display: block; }
   100% { background-position: 0% 50%; }
 }
 @keyframes vipGloss {
-  0%   { left: -80%; opacity: 0; }
-  10%  { opacity: 1; }
-  40%  { left: 130%; }
+  0%   { left: -85%; opacity: 0; }
+  8%   { opacity: 1; }
+  42%  { left: 130%; }
   100% { left: 130%; opacity: 0; }
 }
+@keyframes vipPulse {
+  0%,100% { box-shadow: 0 4px 18px rgba(233,30,140,.50), 0 1px 6px rgba(148,21,245,.25); }
+  50%      { box-shadow: 0 6px 26px rgba(233,30,140,.75), 0 2px 10px rgba(148,21,245,.45); }
+}
 .add-cart-btn {
-  display: block; width: calc(100% - 16px);
-  margin: 0 8px 8px; padding: 9px;
-  background: linear-gradient(135deg, #ff0d9a 0%, #e91e8c 45%, #9415f5 100%);
-  background-size: 220% 220%;
-  animation: vipShimmer 3s ease infinite;
-  color: #fff; font-weight: 800; font-size: 12.5px;
-  border-radius: 22px; text-align: center;
-  box-shadow: 0 4px 18px rgba(233,30,140,.50), 0 1px 6px rgba(148,21,245,.25);
-  letter-spacing: .35px;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  width: calc(100% - 16px);
+  margin: 0 8px 10px; padding: 10px 8px;
+  background: linear-gradient(135deg, #ff0d9a 0%, #d4008c 35%, #9415f5 100%);
+  background-size: 250% 250%;
+  animation: vipShimmer 3s ease infinite, vipPulse 2.4s ease-in-out infinite;
+  color: #fff; font-weight: 900; font-size: 12.5px;
+  border-radius: 50px; text-align: center;
+  letter-spacing: .5px; text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0,0,0,.22);
   position: relative; overflow: hidden;
   transition: transform .15s, box-shadow .15s;
+  border: 1.5px solid rgba(255,255,255,.22);
+}
+.add-cart-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 60%);
+  border-radius: inherit; pointer-events: none;
 }
 .add-cart-btn::after {
   content: '';
-  position: absolute; top: 0; left: -80%;
-  width: 55%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,.3), transparent);
-  transform: skewX(-18deg);
-  animation: vipGloss 3.5s ease-in-out infinite 0.8s;
+  position: absolute; top: 0; left: -85%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.38), transparent);
+  transform: skewX(-16deg);
+  animation: vipGloss 3.2s ease-in-out infinite 1s;
   pointer-events: none;
 }
-.add-cart-btn:active { transform: scale(.96); box-shadow: 0 2px 10px rgba(233,30,140,.35); }
-.add-cart-btn:not(.disabled):hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(233,30,140,.60); }
+.add-cart-btn:active { transform: scale(.95); }
+.add-cart-btn:not(.disabled):hover { transform: translateY(-1px) scale(1.01); }
 
 /* Flash card */
 .flash-card {
@@ -1087,9 +1099,12 @@ img { max-width: 100%; display: block; }
 
 .modal-actions { padding: 10px 16px 0; display: flex; gap: 10px; }
 .btn-wishlist {
-  width: 48px; height: 48px; border: 2px solid #e91e8c;
+  width: 52px; height: 52px;
+  border: 2px solid #e91e8c;
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
-  font-size: 18px; color: #e91e8c; flex-shrink: 0; transition: all .2s;
+  font-size: 20px; color: #e91e8c; flex-shrink: 0; transition: all .22s;
+  box-shadow: 0 2px 12px rgba(233,30,140,.18);
+  background: rgba(233,30,140,.05);
 }
 .btn-wishlist.active, .btn-wishlist:hover {
   background: linear-gradient(135deg,#e91e8c,#9415f5);
@@ -1097,28 +1112,37 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 4px 16px rgba(233,30,140,.45);
 }
 .btn-add-cart {
-  flex: 1; padding: 14px;
-  background: linear-gradient(135deg, #ff0d9a 0%, #e91e8c 45%, #9415f5 100%);
-  background-size: 220% 220%;
-  animation: vipShimmer 3s ease infinite;
+  flex: 1; padding: 15px;
+  background: linear-gradient(135deg, #ff0d9a 0%, #d4008c 35%, #9415f5 100%);
+  background-size: 250% 250%;
+  animation: vipShimmer 3s ease infinite, vipPulse 2.4s ease-in-out infinite;
   color: #fff;
-  font-size: 16px; font-weight: 800; border-radius: 28px;
-  box-shadow: 0 6px 24px rgba(233,30,140,.50), 0 2px 8px rgba(148,21,245,.25);
-  letter-spacing: .4px;
+  font-size: 16px; font-weight: 900; border-radius: 50px;
+  box-shadow: 0 6px 24px rgba(233,30,140,.55), 0 2px 8px rgba(148,21,245,.28);
+  letter-spacing: .5px; text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0,0,0,.2);
   position: relative; overflow: hidden;
   transition: transform .15s, box-shadow .15s;
+  border: 1.5px solid rgba(255,255,255,.22);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-add-cart::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 60%);
+  border-radius: inherit; pointer-events: none;
 }
 .btn-add-cart::after {
   content: '';
-  position: absolute; top: 0; left: -80%;
-  width: 55%; height: 100%;
-  background: linear-gradient(120deg, transparent, rgba(255,255,255,.28), transparent);
-  transform: skewX(-18deg);
-  animation: vipGloss 3.5s ease-in-out infinite 0.8s;
+  position: absolute; top: 0; left: -85%;
+  width: 50%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.38), transparent);
+  transform: skewX(-16deg);
+  animation: vipGloss 3.2s ease-in-out infinite 0.8s;
   pointer-events: none;
 }
-.btn-add-cart:active { transform: scale(.97); }
-.btn-add-cart:hover { transform: translateY(-1px); box-shadow: 0 8px 28px rgba(233,30,140,.60); }
+.btn-add-cart:active { transform: scale(.96); }
+.btn-add-cart:hover { transform: translateY(-1px) scale(1.01); box-shadow: 0 10px 32px rgba(233,30,140,.65); }
 
 /* ===== DELIVERY ESTIMATE TIMELINE ===== */
 .del-est { margin: 14px 16px 6px; background: #f8fffe; border: 1.5px solid #d1fae5; border-radius: 14px; padding: 14px 16px; }
