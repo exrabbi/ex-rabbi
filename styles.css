@@ -1790,6 +1790,8 @@ img { max-width: 100%; display: block; }
 .pcl-mc { background: transparent; padding: 0; height: auto; }
 .pcl-amex { background: #007bc1; color: #fff; }
 .pcl-disc { background: linear-gradient(135deg,#f76f20,#e8540c); color: #fff; }
+.pcl-diners { background: #004a97; color: #fff; }
+.pcl-jcb { background: linear-gradient(90deg,#003087 40%,#009f6b 40%,#009f6b 60%,#cc0000 60%); color: #fff; }
 /* Protect text */
 .pm-protect {
   font-size: 11px; color: #16a34a; margin-top: 8px;
