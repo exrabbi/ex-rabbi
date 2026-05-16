@@ -1994,21 +1994,21 @@ function applyCoupon() {
   document.getElementById('couponSuggestBox').style.display = 'none';
   const coupon = _allCoupons()[code];
   if (!coupon) {
-    msg.textContent = t('couponInvalid') || '❌ Invalid coupon code';
+    msg.innerHTML = '<i class="fas fa-circle-xmark"></i> ' + (t('couponInvalid') || 'Invalid coupon code');
     msg.className = 'pay-coupon-msg error';
     appliedCoupon = null;
     refreshPaymentSummary();
     return;
   }
   if (isCouponUsed(code)) {
-    msg.textContent = t('couponUsed') || '❌ Already used';
+    msg.innerHTML = '<i class="fas fa-circle-xmark"></i> ' + (t('couponUsed') || 'Already used');
     msg.className = 'pay-coupon-msg error';
     appliedCoupon = null;
     refreshPaymentSummary();
     return;
   }
   appliedCoupon = { code, pct: coupon.pct };
-  msg.textContent = '✅ ' + (t('couponApplied') || 'Coupon applied!') + ' -' + coupon.pct + '%';
+  msg.innerHTML = '<i class="fas fa-circle-check"></i> ' + (t('couponApplied') || 'Coupon applied!') + ' &nbsp;—&nbsp; <strong>-' + coupon.pct + '%</strong>';
   msg.className = 'pay-coupon-msg success';
   refreshPaymentSummary();
 }

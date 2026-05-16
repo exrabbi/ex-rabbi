@@ -3115,10 +3115,22 @@ html, body { transition: background .35s, color .35s; }
 .pay-coupon-btn:active { opacity: .8; }
 .pay-coupon-msg {
   font-size: 12px; font-weight: 700;
-  padding: 5px 4px 2px; min-height: 20px;
+  padding: 6px 0 2px; min-height: 20px;
 }
-.pay-coupon-msg.success { color: #0a8f4a; }
-.pay-coupon-msg.error { color: #e53935; }
+.pay-coupon-msg.success {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: linear-gradient(135deg,#065f46,#059669,#10b981);
+  color: #fff; font-size: 13px; font-weight: 800;
+  padding: 8px 16px; border-radius: 30px;
+  box-shadow: 0 3px 14px rgba(5,150,105,.35);
+  letter-spacing: .3px;
+}
+.pay-coupon-msg.error {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg,#991b1b,#dc2626);
+  color: #fff; font-size: 12px; font-weight: 700;
+  padding: 7px 14px; border-radius: 30px;
+}
 .pay-discount-row { color: #0a8f4a; }
 
 /* ── Coupon suggestions VIP ── */
