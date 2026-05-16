@@ -889,29 +889,19 @@ function renderCart() {
   if (progBox) {
     if (freeDelivery) {
       progBox.innerHTML = `
-        <div class="ndg-free-pill" style="margin:0 0 10px">
-          <div class="ndg-icon-circle"><i class="fas fa-truck-fast"></i></div>
-          <span>${t('freeDeliveryActive').replace(/🎉/g,'')}</span>
-          <div class="ndg-check"><i class="fas fa-check"></i></div>
+        <div class="del-free-strip">
+          <i class="fas fa-truck-fast"></i>
+          <span>${t('freeDeliveryActive').replace(/🎉/g,'').trim()}</span>
+          <i class="fas fa-check-circle" style="margin-left:auto"></i>
         </div>`;
     } else {
       progBox.innerHTML = `
-        <div class="ndg-vip" style="margin:0 0 10px">
-          <div class="ndg-top">
-            <div class="ndg-left">
-              <div class="ndg-icon"><i class="fas fa-truck-fast"></i></div>
-              <div class="ndg-texts">
-                <span class="ndg-label">${t('addMoreFree') || 'Add'}</span>
-                <span class="ndg-amount">${fmtD(needed)}</span>
-                <span class="ndg-sub">${t('moreForFree') || 'more for free delivery'}</span>
-              </div>
-            </div>
-            <div class="ndg-badge"><i class="fas fa-gift"></i> FREE</div>
+        <div class="del-mini">
+          <div class="del-mini-row">
+            <i class="fas fa-truck"></i>
+            <span>${t('addMoreFree') || 'Add'} <b>${fmtD(needed)}</b> ${t('moreForFree') || 'more for free delivery'}</span>
           </div>
-          <div class="ndg-bar-track">
-            <div class="ndg-bar-fill" style="width:${pct}%"></div>
-          </div>
-          <div class="ndg-labels"><span>SAR 0</span><span>★ SAR ${FREE_DELIVERY_THRESHOLD_SAR} FREE</span></div>
+          <div class="del-mini-track"><div class="del-mini-fill" style="width:${pct}%"></div></div>
         </div>`;
     }
   }
