@@ -2820,10 +2820,10 @@ function openPayment() {
       const d2a = fmt(addD(5)), d2b = fmt(addD(7));
       const _T  = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
       nudge.innerHTML = `
-        <div class="del-free-strip" style="margin-bottom:12px">
-          <i class="fas fa-truck-fast"></i>
-          <span>${t('freeDeliveryActive') || 'Free Delivery Applied!'}</span>
-          <i class="fas fa-check-circle" style="margin-left:auto"></i>
+        <div class="ndg-free-pill" style="margin-bottom:12px">
+          <div class="ndg-icon-circle"><i class="fas fa-truck-fast"></i></div>
+          <span>${t('freeDeliveryActive') || 'Free delivery applied!'}</span>
+          <div class="ndg-check"><i class="fas fa-check"></i></div>
         </div>
         <div class="del-timeline">
           <div class="del-step">
