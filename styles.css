@@ -3,86 +3,156 @@
   position: fixed; inset: 0; z-index: 999999;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 0;
-  transition: opacity .5s ease, visibility .5s ease;
   overflow: hidden;
+  transition: opacity .8s ease, visibility .8s ease;
 }
 #exSplash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
+/* Animated gradient background */
 .exs-bg {
   position: absolute; inset: 0;
-  background: radial-gradient(ellipse at 50% 35%, #1a0030 0%, #0d0d0d 70%);
+  background: #0d0d0d;
+  animation: exsBgShift 4s ease-in-out infinite alternate;
 }
-.exs-glow {
-  position: absolute; top: 20%; left: 50%;
-  transform: translateX(-50%);
-  width: 280px; height: 280px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(233,30,140,.28) 0%, transparent 70%);
-  pointer-events: none;
+@keyframes exsBgShift {
+  0%   { background: radial-gradient(ellipse at 30% 40%, #280040 0%, #0d0005 60%, #0d0d0d 100%); }
+  50%  { background: radial-gradient(ellipse at 70% 30%, #3a0020 0%, #05000d 60%, #0d0d0d 100%); }
+  100% { background: radial-gradient(ellipse at 50% 65%, #001040 0%, #0d0005 60%, #0d0d0d 100%); }
 }
+
+/* Floating particles container */
+.exs-particles { position: absolute; inset: 0; pointer-events: none; z-index: 0; }
+.exs-particle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: particleRise linear infinite;
+}
+@keyframes particleRise {
+  0%   { transform: translateY(0) scale(1);    opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: .5; }
+  100% { transform: translateY(-110vh) scale(.3); opacity: 0; }
+}
+
+/* Expanding pulse rings */
+.exs-rings { position: absolute; top: 42%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
+.exs-ring {
+  position: absolute; border-radius: 50%; top: 50%; left: 50%;
+  transform: translate(-50%,-50%) scale(0);
+  border: 1.5px solid rgba(233,30,140,.7);
+  opacity: 0;
+}
+.exs-ring-1 { width: 220px; height: 220px; animation: ringPulse 2.2s ease-out 1.2s infinite; }
+.exs-ring-2 { width: 320px; height: 320px; animation: ringPulse 2.2s ease-out 1.8s infinite; }
+.exs-ring-3 { width: 420px; height: 420px; animation: ringPulse 2.2s ease-out 2.4s infinite; }
+@keyframes ringPulse {
+  0%   { transform: translate(-50%,-50%) scale(.4); opacity: .9; }
+  100% { transform: translate(-50%,-50%) scale(1);  opacity: 0;  }
+}
+
+/* Logo */
 .exs-logo-wrap {
-  position: relative; z-index: 1;
-  width: 140px; height: 140px;
-  border-radius: 32px;
+  position: relative; z-index: 2;
+  width: 148px; height: 148px;
+  border-radius: 36px;
   background: #fff;
   display: flex; align-items: center; justify-content: center;
-  box-shadow:
-    0 0 0 1px rgba(233,30,140,.25),
-    0 20px 60px rgba(233,30,140,.35),
-    0 8px 24px rgba(0,0,0,.6);
-  animation: splashLogoIn .7s cubic-bezier(.34,1.56,.64,1) both;
-}
-.exs-logo {
-  width: 110px; height: 110px;
-  object-fit: contain;
-}
-.exs-brand {
-  position: relative; z-index: 1;
-  margin-top: 22px;
-  font-family: 'Segoe UI', Arial, sans-serif;
-  font-size: 26px; font-weight: 800;
-  letter-spacing: 6px;
-  color: #fff;
-  text-transform: uppercase;
-  animation: splashFadeUp .6s ease .35s both;
-}
-.exs-tagline {
-  position: relative; z-index: 1;
-  margin-top: 6px;
-  font-size: 12px; font-weight: 400;
-  letter-spacing: 3px;
-  color: rgba(233,30,140,.85);
-  text-transform: uppercase;
-  animation: splashFadeUp .6s ease .5s both;
-}
-.exs-loader {
-  position: relative; z-index: 1;
-  margin-top: 40px;
-  width: 120px; height: 3px;
-  background: rgba(255,255,255,.1);
-  border-radius: 2px;
   overflow: hidden;
-  animation: splashFadeUp .4s ease .6s both;
+  animation: logoEntrance .9s cubic-bezier(.34,1.56,.64,1) .2s both, logoPulse 2.4s ease-in-out 2s infinite;
+  box-shadow: 0 0 0 0 rgba(233,30,140,.5), 0 28px 72px rgba(233,30,140,.45), 0 8px 28px rgba(0,0,0,.8);
+}
+@keyframes logoEntrance {
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; filter: blur(10px); }
+  60%  { transform: scale(1.12) rotate(4deg); filter: blur(0); }
+  100% { transform: scale(1) rotate(0deg);   opacity: 1; }
+}
+@keyframes logoPulse {
+  0%,100% { box-shadow: 0 0 0 0   rgba(233,30,140,.5), 0 28px 72px rgba(233,30,140,.4), 0 8px 28px rgba(0,0,0,.8); }
+  50%     { box-shadow: 0 0 0 22px rgba(233,30,140,0),  0 28px 72px rgba(233,30,140,.6), 0 8px 28px rgba(0,0,0,.8); }
+}
+
+/* Shine sweep across logo */
+.exs-logo-shine {
+  position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(115deg, transparent 25%, rgba(255,255,255,.85) 50%, transparent 75%);
+  transform: translateX(-150%);
+  animation: logoShine 1s ease .9s both;
+}
+@keyframes logoShine { to { transform: translateX(200%); } }
+.exs-logo { width: 118px; height: 118px; object-fit: contain; position: relative; z-index: 2; }
+
+/* VIP crown label */
+.exs-crown {
+  position: relative; z-index: 2;
+  margin-top: 18px;
+  font-size: 10px; font-weight: 700; letter-spacing: 5px;
+  color: #d4a017;
+  text-shadow: 0 0 12px rgba(212,160,23,.7), 0 0 28px rgba(212,160,23,.4);
+  opacity: 0;
+  animation: fadeSlideUp .5s ease 1.6s both;
+}
+
+/* Brand letters — split by JS */
+.exs-brand {
+  position: relative; z-index: 2;
+  margin-top: 6px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  font-size: 30px; font-weight: 900;
+  letter-spacing: 8px;
+  display: flex; gap: 1px;
+}
+.exs-brand span {
+  display: inline-block;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(22px) scale(.7);
+  filter: blur(6px);
+  animation: letterIn .45s cubic-bezier(.34,1.56,.64,1) both;
+  text-shadow: 0 0 20px rgba(233,30,140,.6);
+}
+.exs-brand .exs-space { width: 12px; }
+@keyframes letterIn {
+  0%   { opacity: 0; transform: translateY(22px) scale(.7); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0) scale(1);    filter: blur(0); }
+}
+
+/* Tagline */
+.exs-tagline {
+  position: relative; z-index: 2;
+  margin-top: 10px;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  color: rgba(233,30,140,.9);
+  opacity: 0;
+  animation: fadeSlideUp .6s ease 2.8s both;
+}
+@keyframes fadeSlideUp {
+  0%   { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Bottom progress bar */
+.exs-loader {
+  position: absolute; bottom: 44px; left: 48px; right: 48px;
+  height: 2px; border-radius: 2px;
+  background: rgba(255,255,255,.08);
+  overflow: hidden; z-index: 2;
+  opacity: 0;
+  animation: fadeSlideUp .4s ease .8s both;
 }
 .exs-bar {
   height: 100%;
-  background: linear-gradient(90deg, #e91e8c, #9b1dea);
+  background: linear-gradient(90deg, #e91e8c, #9b1dea, #e91e8c);
+  background-size: 200% 100%;
   border-radius: 2px;
-  animation: splashLoad 4.2s ease .5s both;
-}
-@keyframes splashLogoIn {
-  0%   { transform: scale(.6) translateY(20px); opacity: 0; }
-  100% { transform: scale(1) translateY(0);     opacity: 1; }
-}
-@keyframes splashFadeUp {
-  0%   { transform: translateY(16px); opacity: 0; }
-  100% { transform: translateY(0);    opacity: 1; }
+  animation: splashLoad 4.2s ease .5s both, barShimmer 1.2s linear 1s infinite;
 }
 @keyframes splashLoad {
-  0%   { width: 0; }
-  60%  { width: 80%; }
+  0%   { width: 0%; }
+  70%  { width: 85%; }
   100% { width: 100%; }
+}
+@keyframes barShimmer {
+  0%   { background-position: 0% 0%; }
+  100% { background-position: 200% 0%; }
 }
 
 /* ===== RESET & BASE ===== */
