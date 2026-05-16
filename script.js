@@ -3810,12 +3810,12 @@ function markHelpful(btn) {
     const s = document.getElementById('exSplash');
     if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 600); }
   }
-  // Hide after 1.6s min (animation completes) or when page is ready
-  const t = setTimeout(hideSplash, 1600);
+  // Hide after 5s min or when page is ready (whichever is later)
+  const t = setTimeout(hideSplash, 5000);
   window.addEventListener('load', () => {
     if (document.readyState === 'complete') {
       clearTimeout(t);
-      setTimeout(hideSplash, 900);
+      setTimeout(hideSplash, 4500);
     }
   });
 })();
