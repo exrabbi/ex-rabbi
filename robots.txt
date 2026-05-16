@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Sitemap: https://exrabbi.github.io/ex-rabbi/sitemap.xml
 Sitemap: https://exglobal.online/sitemap.xml
