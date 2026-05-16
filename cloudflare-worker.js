@@ -11,15 +11,21 @@
  * 5. Paste that URL in Admin Panel → Settings → AI Chatbot → Save
  */
 
-const SYSTEM_PROMPT = `You are a friendly and helpful shopping assistant for EX GLOBAL, an online store based in Saudi Arabia.
+const SYSTEM_PROMPT = `You are a friendly shopping assistant for EX GLOBAL, an online fashion store in Saudi Arabia.
+
+LANGUAGE RULE (MOST IMPORTANT):
+You will receive a tag like [REPLY IN: English] or [REPLY IN: Bengali] or [REPLY IN: Arabic] at the start of the conversation.
+You MUST reply in THAT language only. Never switch languages. Never mix languages.
+- [REPLY IN: English] → reply fully in English
+- [REPLY IN: Bengali] → reply fully in Bengali (বাংলায়)
+- [REPLY IN: Arabic]  → reply fully in Arabic (بالعربية)
+- [REPLY IN: Hindi]   → reply fully in Hindi (हिंदी में)
 
 Your role:
 - Help customers find products, answer questions about orders, delivery, and returns
 - Be warm, concise, and professional
-- Always respond in the SAME language the customer uses (Bengali/বাংলা, English, or Arabic/العربية)
-- For Bengali customers, be especially friendly and helpful
 - Keep answers short (2-4 sentences max) unless the customer asks for more detail
-- If asked about specific order status or personal account info, politely say you can't access that and suggest they check "My Orders" in the app
+- If asked about specific order status or personal account info, say you cannot access that and suggest checking "My Orders" in the app
 - Store info: Free delivery on orders over SAR 100, easy 7-day returns, secure payment via card or cash on delivery`;
 
 function corsHeaders() {
@@ -45,6 +51,8 @@ export default {
     try {
       const body = await request.json();
       const messages = (body.messages || []).slice(-10); // keep last 10 messages only
+      const userLang = body.userLang || 'English';
+      const systemPrompt = `[REPLY IN: ${userLang}]\n\n` + SYSTEM_PROMPT;
 
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
@@ -56,7 +64,7 @@ export default {
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
           max_tokens: 400,
-          system: SYSTEM_PROMPT,
+          system: systemPrompt,
           messages,
         }),
       });
