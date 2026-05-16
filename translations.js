@@ -168,12 +168,6 @@ const TRANSLATIONS = {
     aiChatTitle: 'EX GLOBAL সহকারী', aiChatOnline: 'অনলাইন',
     allVerified: 'সব রিভিউ ভেরিফাইড ক্রয়ের', helpfulAction: 'সহায়ক', shareAction: 'শেয়ার', reportAction: 'রিপোর্ট',
     purchasedLabel: 'কিনেছেন:', thisDevice: 'এই ডিভাইস',
-    // Visual search
-    vsEncrypted: 'সব তথ্য এনক্রিপ্টেড', vsTakePhoto: 'ছবি তুলুন',
-    vsSelectAlbum: 'অ্যালবাম থেকে বেছে নিন', vsHistory: 'সার্চ ইতিহাস',
-    cancel: 'বাতিল', vsAnalyzing: 'ছবি বিশ্লেষণ হচ্ছে...',
-    vsResultLabel: 'ভিজুয়াল ম্যাচ', vsResultSub: 'মিলে যাওয়া পণ্য',
-    vsNoHistory: 'কোনো ভিজুয়াল সার্চ নেই',
     // Account security
     securityTitle: 'অ্যাকাউন্ট নিরাপত্তা',
     accountProtected: 'আপনার অ্যাকাউন্ট সুরক্ষিত', accountProtectedSub: 'আপনার তথ্য নিরাপদ রাখুন',
@@ -363,12 +357,6 @@ const TRANSLATIONS = {
     aiChatTitle: 'EX GLOBAL Assistant', aiChatOnline: 'Online',
     allVerified: 'All reviews are from verified purchases', helpfulAction: 'Helpful', shareAction: 'Share', reportAction: 'Report and block',
     purchasedLabel: 'Purchased:',
-    // Visual search
-    vsEncrypted: 'All data will be encrypted', vsTakePhoto: 'Take photo',
-    vsSelectAlbum: 'Select from album', vsHistory: 'Search history',
-    cancel: 'Cancel', vsAnalyzing: 'Analyzing image...',
-    vsResultLabel: 'Visual Match', vsResultSub: 'similar products found',
-    vsNoHistory: 'No visual search history',
     // Account security
     securityTitle: 'Account Security',
     accountProtected: 'Your account is protected', accountProtectedSub: 'Keep your information secure',
@@ -558,12 +546,6 @@ const TRANSLATIONS = {
     aiChatTitle: 'مساعد EX GLOBAL', aiChatOnline: 'متصل',
     allVerified: 'جميع التقييمات من مشتريات موثقة', helpfulAction: 'مفيد', shareAction: 'مشاركة', reportAction: 'إبلاغ وحظر',
     purchasedLabel: 'اشترى:',
-    // Visual search
-    vsEncrypted: 'جميع البيانات مشفرة', vsTakePhoto: 'التقط صورة',
-    vsSelectAlbum: 'اختر من الألبوم', vsHistory: 'سجل البحث',
-    cancel: 'إلغاء', vsAnalyzing: 'جارٍ تحليل الصورة...',
-    vsResultLabel: 'تطابق بصري', vsResultSub: 'منتجات مطابقة',
-    vsNoHistory: 'لا يوجد سجل بحث بصري',
     // Account security
     securityTitle: 'أمان الحساب',
     accountProtected: 'حسابك محمي', accountProtectedSub: 'حافظ على أمان معلوماتك',
@@ -738,12 +720,6 @@ const TRANSLATIONS = {
     aiChatTitle: 'EX GLOBAL सहायक', aiChatOnline: 'ऑनलाइन',
     allVerified: 'सभी समीक्षाएँ सत्यापित खरीद से हैं', helpfulAction: 'उपयोगी', shareAction: 'शेयर करें', reportAction: 'रिपोर्ट करें',
     purchasedLabel: 'खरीदा:',
-    // Visual search
-    vsEncrypted: 'सभी डेटा एन्क्रिप्टेड', vsTakePhoto: 'फोटो लें',
-    vsSelectAlbum: 'एल्बम से चुनें', vsHistory: 'सर्च इतिहास',
-    cancel: 'रद्द करें', vsAnalyzing: 'छवि विश्लेषण हो रहा है...',
-    vsResultLabel: 'विजुअल मैच', vsResultSub: 'मिलते-जुलते उत्पाद मिले',
-    vsNoHistory: 'कोई विजुअल सर्च इतिहास नहीं',
     // Account security
     securityTitle: 'अकाउंट सुरक्षा',
     accountProtected: 'आपका अकाउंट सुरक्षित है', accountProtectedSub: 'अपनी जानकारी सुरक्षित रखें',
