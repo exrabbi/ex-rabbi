@@ -218,6 +218,7 @@ function _applyConfigMap(d) {
     'exg_trend_pins':      d.trend_pins,
     'exg_extra_coupons':   d.coupons,
     'exg_city_video':      d.city_video,
+    'exg_trend_content':   d.trend_content,
     'exg_cat_images':      d.cat_images,
     'exg_custom_cats':     d.custom_cats,
   };
@@ -2106,6 +2107,39 @@ function codCheckout() {
 }
 
 /* ===== BOTTOM NAV ===== */
+function openTrendContent() {
+  const data = JSON.parse(localStorage.getItem('exg_trend_content') || 'null');
+  if (!data || !data.url) return; // nothing configured
+
+  // Build modal
+  let existing = document.getElementById('trendModal');
+  if (existing) existing.remove();
+
+  const isVideo = data.type === 'video';
+  const isYouTube = isVideo && (data.url.includes('youtu') || data.url.includes('youtube'));
+  let mediaHtml = '';
+  if (isYouTube) {
+    const vid = data.url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+    const embedId = vid ? vid[1] : '';
+    mediaHtml = `<iframe src="https://www.youtube.com/embed/${embedId}?autoplay=1&playsinline=1" frameborder="0" allowfullscreen allow="autoplay" style="width:100%;aspect-ratio:9/16;max-height:72vh;border-radius:16px"></iframe>`;
+  } else if (isVideo) {
+    mediaHtml = `<video src="${data.url}" controls autoplay playsinline style="width:100%;max-height:72vh;border-radius:16px;background:#000"></video>`;
+  } else {
+    mediaHtml = `<img src="${data.url}" style="width:100%;max-height:80vh;object-fit:contain;border-radius:16px"/>`;
+  }
+
+  const modal = document.createElement('div');
+  modal.id = 'trendModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.88);padding:16px';
+  modal.innerHTML = `
+    <div style="width:100%;max-width:420px;position:relative">
+      <button onclick="document.getElementById('trendModal').remove()" style="position:absolute;top:-14px;right:-8px;z-index:1;width:36px;height:36px;border-radius:50%;background:#222;color:#fff;font-size:18px;display:flex;align-items:center;justify-content:center;border:2px solid #444">✕</button>
+      ${mediaHtml}
+    </div>`;
+  modal.onclick = e => { if (e.target === modal) modal.remove(); };
+  document.body.appendChild(modal);
+}
+
 function setBottomActive(el) {
   if (el.classList.contains('active')) return;
   document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
