@@ -97,8 +97,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <!-- Prevent Bengali flash: hide until JS applies correct language -->
-  <script>document.documentElement.style.opacity='0';</script>
+  <!-- Prevent Bengali flash; hard timeout ensures page never stays blank -->
+  <script>
+    document.documentElement.style.opacity='0';
+    setTimeout(function(){document.documentElement.style.opacity='1';},2500);
+  </script>
 </head>
 <body>
 <!-- Announcement Banner (controlled from Admin Panel) -->
@@ -1791,8 +1794,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=57"></script>
-  <script src="products.js?v=57"></script>
-  <script src="script.js?v=57"></script>
+  <script src="translations.js?v=58"></script>
+  <script src="products.js?v=58"></script>
+  <script src="script.js?v=58"></script>
 </body>
 </html>
