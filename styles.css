@@ -301,23 +301,14 @@ img { max-width: 100%; display: block; }
   text-decoration: none; display: flex; align-items: center; gap: 3px;
 }
 .col-showcase-scroll {
-  overflow: hidden;
-  padding-bottom: 8px;
+  display: flex; gap: 10px;
+  overflow-x: scroll; scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; padding-bottom: 8px;
 }
-@keyframes colScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.col-showcase-track {
-  display: flex; gap: 10px; width: max-content;
-  animation: colScroll 22s linear infinite;
-}
-.col-showcase-scroll:hover .col-showcase-track,
-.col-showcase-scroll:active .col-showcase-track {
-  animation-play-state: paused;
-}
+.col-showcase-scroll::-webkit-scrollbar { display: none; }
 .col-showcase-tile {
-  flex: 0 0 145px; cursor: pointer;
+  flex: 0 0 145px; scroll-snap-align: start; cursor: pointer;
   border-radius: 14px; overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,.10);
   transition: transform .18s, box-shadow .18s;

@@ -349,7 +349,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyAnnouncement();
   _loadCityVideo();
   _applyCatImages();
+  initColScroll();
 });
+
+/* ===== COLLECTION SHOWCASE AUTO-SCROLL ===== */
+function initColScroll() {
+  const el = document.getElementById('colShowcaseScroll');
+  if (!el) return;
+  // clone tiles for seamless infinite loop
+  [...el.children].forEach(tile => el.appendChild(tile.cloneNode(true)));
+  const half = () => el.scrollWidth / 2;
+  let pos = 0, paused = false;
+  el.addEventListener('mouseenter', () => paused = true);
+  el.addEventListener('mouseleave', () => paused = false);
+  el.addEventListener('touchstart', () => paused = true, { passive: true });
+  el.addEventListener('touchend', () => { setTimeout(() => paused = false, 900); }, { passive: true });
+  (function tick() {
+    if (!paused) {
+      pos += 0.5;
+      if (pos >= half()) pos = 0;
+      el.scrollLeft = pos;
+    }
+    requestAnimationFrame(tick);
+  })();
+}
 
 /* ===== CATEGORY IMAGES OVERRIDE ===== */
 function _applyCatImages() {
