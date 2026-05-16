@@ -521,144 +521,94 @@ img { max-width: 100%; display: block; }
 
 /* ===== PREMIUM BOTTOM NAV ===== */
 /* ===== VIP FLOATING BOTTOM NAV ===== */
-/* ── BOTTOM NAVIGATION (VIP) ── */
+/* ── BOTTOM NAVIGATION ── */
 .bottom-nav {
   position: fixed;
-  bottom: 14px; left: 12px; right: 12px;
-  height: 70px;
-  background: rgba(255,255,255,.97);
-  backdrop-filter: blur(30px) saturate(200%);
-  -webkit-backdrop-filter: blur(30px) saturate(200%);
+  bottom: 0; left: 0; right: 0;
+  height: 62px;
+  background: #fff;
   display: flex; align-items: center;
   z-index: 100;
-  border-radius: 28px;
-  padding: 0 8px;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
   overflow: visible;
-  box-shadow:
-    0 24px 64px rgba(155,0,200,.18),
-    0 8px 28px rgba(233,30,140,.12),
-    0 2px 8px rgba(0,0,0,.06),
-    inset 0 1.5px 0 rgba(255,255,255,.95);
 }
-/* Gradient border ring */
-.bottom-nav::before {
-  content: '';
-  position: absolute; inset: -1.5px;
-  border-radius: 29.5px;
-  background: linear-gradient(135deg, #ff69b4 0%, #9b1dea 50%, #ff1097 100%);
-  z-index: -1;
-  opacity: .45;
-  pointer-events: none;
-}
+.bottom-nav::before { display: none; }
+
 /* ── Tab buttons ── */
 .bot-btn {
   flex: 1;
   position: relative;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 4px;
-  height: 64px;
-  border-radius: 20px;
-  color: #b8b8b8;
-  font-size: 9px; font-weight: 600;
-  letter-spacing: .3px;
-  transition: color .25s;
+  gap: 3px;
+  height: 62px;
+  color: #aaa;
+  font-size: 10px; font-weight: 600;
+  transition: color .2s;
   overflow: visible;
 }
 .bot-btn::before { display: none !important; }
 .bot-btn::after  { display: none !important; }
 
-/* Icon wrapper — small rounded square that lights up when active */
 .bot-icon-wrap {
   position: relative;
   display: flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px;
-  border-radius: 12px;
+  width: 28px; height: 28px;
   background: transparent;
-  transition: all .36s cubic-bezier(.34,1.56,.64,1);
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
 }
 .bot-icon-wrap::before, .bot-icon-wrap::after { display: none; }
 
 .bot-btn i {
-  font-size: 19px;
-  color: #c0c0c0;
-  position: relative; z-index: 1;
-  transition: all .3s cubic-bezier(.34,1.56,.64,1);
+  font-size: 22px;
+  color: #bbb;
+  transition: color .2s, font-size .2s;
 }
 .bot-btn span {
-  position: relative; z-index: 1;
-  transition: all .25s;
-  line-height: 1;
+  font-size: 10px; font-weight: 600;
+  line-height: 1; color: #aaa;
+  transition: color .2s;
 }
 
-/* ── Active: icon inside gradient rounded square ── */
-.bot-btn.active .bot-icon-wrap {
-  background: linear-gradient(145deg, #ff1097 0%, #c500e9 48%, #7100d4 100%);
-  border-radius: 13px;
-  width: 42px; height: 42px;
-  transform: translateY(-2px) scale(1.04);
-  box-shadow:
-    0 10px 28px rgba(233,30,140,.45),
-    0 4px 12px rgba(113,0,212,.3),
-    inset 0 1.5px 0 rgba(255,255,255,.25);
-}
-.bot-btn.active i {
-  color: #fff;
-  font-size: 20px;
-  filter: drop-shadow(0 2px 6px rgba(255,255,255,.4));
-}
-.bot-btn.active span { color: #d800c8; font-weight: 800; font-size: 9.5px; }
+/* ── Active state ── just colored icon + label, no box ── */
+.bot-btn.active i    { color: #e91e8c; font-size: 24px; }
+.bot-btn.active span { color: #e91e8c; font-weight: 700; }
+.bot-btn.active .bot-icon-wrap { transform: translateY(-2px); }
 
-/* Tap ripple for inactive */
-.bot-btn:not(.active):active .bot-icon-wrap {
-  background: rgba(233,30,140,.08);
-  transform: scale(.91);
-}
+/* Tap feedback */
+.bot-btn:not(.active):active .bot-icon-wrap { transform: scale(.88); }
 
-/* ── CENTER button (Trend) ── raised circle ── */
-.bot-center-btn { flex: 1.2; }
+/* ── CENTER button (Trend) ── raised circle above nav ── */
+.bot-center-btn { flex: 1.1; }
 
 .bot-center-btn .bot-icon-wrap {
-  width: 56px !important; height: 56px !important;
+  width: 52px !important; height: 52px !important;
   border-radius: 50% !important;
-  margin-top: -32px;
+  margin-top: -30px;
   background: linear-gradient(145deg, #ff1097 0%, #cc00e5 45%, #6c00d4 100%) !important;
-  box-shadow:
-    0 14px 38px rgba(233,30,140,.62),
-    0 5px 16px rgba(108,0,212,.42),
-    inset 0 2px 0 rgba(255,255,255,.28),
-    inset 0 -1px 0 rgba(0,0,0,.18) !important;
+  box-shadow: 0 8px 24px rgba(233,30,140,.55), 0 3px 10px rgba(108,0,212,.35), inset 0 1.5px 0 rgba(255,255,255,.25) !important;
   transform: none !important;
 }
-.bot-center-btn.active .bot-icon-wrap {
-  transform: scale(1.1) translateY(-4px) !important;
-  box-shadow:
-    0 18px 48px rgba(233,30,140,.72),
-    0 7px 22px rgba(108,0,212,.5),
-    inset 0 2px 0 rgba(255,255,255,.3) !important;
-}
-.bot-center-btn i { font-size: 23px !important; color: #fff !important; filter: drop-shadow(0 2px 8px rgba(255,255,255,.5)) !important; }
-.bot-center-btn span { color: #cc00c8 !important; font-weight: 800 !important; font-size: 9px; margin-top: 6px; }
+.bot-center-btn i { font-size: 22px !important; color: #fff !important; }
+.bot-center-btn span { color: #cc00c8 !important; font-weight: 700 !important; margin-top: 4px; }
+.bot-center-btn.active .bot-icon-wrap { transform: scale(1.08) translateY(-3px) !important; }
 .bot-center-btn.active span { color: #e91e8c !important; }
-
-/* Sparkle on center button */
 .bot-center-btn .bot-icon-wrap::before {
   content: '✦'; display: flex !important;
-  position: absolute; top: -8px; right: -2px;
-  font-size: 9px; color: #ffd700;
-  opacity: 1; pointer-events: none;
+  position: absolute; top: -7px; right: -1px;
+  font-size: 8px; color: #ffd700;
   animation: sparkleA 1.6s ease-in-out infinite;
 }
 .bot-center-btn .bot-icon-wrap::after {
   content: '✦'; display: flex !important;
-  position: absolute; bottom: -5px; left: -1px;
-  font-size: 7px; color: #ff90d0;
-  opacity: 1; pointer-events: none;
+  position: absolute; bottom: -4px; left: 0;
+  font-size: 6px; color: #ff90d0;
   animation: sparkleB 2.1s ease-in-out infinite .5s;
 }
 @keyframes sparkleA {
   0%,100% { transform: scale(1) rotate(0deg); opacity: 1; }
-  50%      { transform: scale(2.2) rotate(45deg); opacity: 0; }
+  50%      { transform: scale(2) rotate(45deg); opacity: 0; }
 }
 @keyframes sparkleB {
   0%,100% { transform: scale(1.5) rotate(20deg); opacity: .7; }
@@ -668,14 +618,13 @@ img { max-width: 100%; display: block; }
 /* Cart badge */
 .bot-nav-badge {
   position: absolute;
-  top: -5px; right: -6px;
-  min-width: 17px; height: 17px;
-  background: linear-gradient(135deg, #e91e8c, #f43f5e);
-  color: #fff; font-size: 9.5px; font-weight: 800;
+  top: -4px; right: -7px;
+  min-width: 18px; height: 18px;
+  background: #ff6b00;
+  color: #fff; font-size: 10px; font-weight: 800;
   border-radius: 9px;
   display: flex; align-items: center; justify-content: center;
   padding: 0 4px; border: 2px solid #fff;
-  box-shadow: 0 2px 8px rgba(233,30,140,.5);
   line-height: 1;
   animation: badgePop .3s cubic-bezier(.34,1.56,.64,1);
 }
@@ -3123,13 +3072,15 @@ html, body { transition: background .35s, color .35s; }
 
 /* Bottom nav */
 [data-theme="dark"] .bottom-nav {
-  background: rgba(14,14,14,.97);
-  box-shadow: 0 24px 64px rgba(0,0,0,.6), 0 8px 28px rgba(0,0,0,.38), inset 0 1.5px 0 rgba(255,255,255,.05);
+  background: #111;
+  border-top-color: #222;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.4);
 }
-[data-theme="dark"] .bot-btn { color: #505050; }
-[data-theme="dark"] .bot-btn i { color: #505050; }
+[data-theme="dark"] .bot-btn i { color: #444; }
+[data-theme="dark"] .bot-btn span { color: #444; }
+[data-theme="dark"] .bot-btn.active i { color: #e91e8c; }
 [data-theme="dark"] .bot-btn.active span { color: #e91e8c; }
-[data-theme="dark"] .bot-nav-badge { border-color: #0e0e0e; }
+[data-theme="dark"] .bot-nav-badge { border-color: #111; }
 
 /* Drawer */
 [data-theme="dark"] .drawer { background: #111; }
