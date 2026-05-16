@@ -1158,12 +1158,14 @@
       <div class="pay-coupon-row">
         <div class="pay-coupon-wrap">
           <i class="fas fa-tag pay-coupon-icon"></i>
-          <input type="text" id="couponInput" class="pay-coupon-input" placeholder="Coupon code" data-i18n-placeholder="couponPlaceholder" maxlength="20" />
+          <input type="text" id="couponInput" class="pay-coupon-input" placeholder="Coupon code" data-i18n-placeholder="couponPlaceholder" maxlength="20" onfocus="_showCouponSuggestions()" />
           <button class="pay-coupon-btn" id="couponApplyBtn" onclick="applyCoupon()">
             <span data-i18n="applyCoupon">Apply</span>
           </button>
         </div>
         <div class="pay-coupon-msg" id="couponMsg"></div>
+        <!-- Available vouchers -->
+        <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
       </div>
 
       <!-- Order Summary -->
@@ -1820,8 +1822,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=69"></script>
-  <script src="products.js?v=69"></script>
-  <script src="script.js?v=69"></script>
+  <script src="translations.js?v=70"></script>
+  <script src="products.js?v=70"></script>
+  <script src="script.js?v=70"></script>
 </body>
 </html>

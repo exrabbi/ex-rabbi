@@ -1950,12 +1950,48 @@ function copyCouponCode(code) {
   showToast('✅ ' + code + ' ' + (t('copied') || 'Copied!'));
 }
 
+function _allCoupons() {
+  const map = Object.assign({}, COUPONS);
+  try {
+    const extra = JSON.parse(localStorage.getItem('exg_extra_coupons') || '[]');
+    extra.forEach(c => { if (c.code) map[c.code.toUpperCase()] = { pct: c.pct, oneTime: !!c.oneTime }; });
+  } catch(e) {}
+  return map;
+}
+
+function _showCouponSuggestions() {
+  const box = document.getElementById('couponSuggestBox');
+  if (!box) return;
+  const all = _allCoupons();
+  const available = Object.entries(all).filter(([code, c]) => !(c.oneTime && isCouponUsed(code)));
+  if (!available.length) { box.style.display = 'none'; return; }
+  box.innerHTML = `<div class="coupon-suggest-hd"><i class="fas fa-ticket"></i> Available Vouchers</div>` +
+    available.map(([code, c]) => `
+      <div class="coupon-suggest-item" onclick="_applySuggestedCoupon('${code}')">
+        <div class="csi-icon"><i class="fas fa-tag"></i></div>
+        <div class="csi-info">
+          <div class="csi-code">${code}</div>
+          <div class="csi-desc">${c.oneTime ? 'One-time use' : 'Unlimited'} · Tap to apply</div>
+        </div>
+        <div class="csi-pct">-${c.pct}%</div>
+      </div>`).join('');
+  box.style.display = 'block';
+}
+
+function _applySuggestedCoupon(code) {
+  const input = document.getElementById('couponInput');
+  if (input) { input.value = code; }
+  document.getElementById('couponSuggestBox').style.display = 'none';
+  applyCoupon();
+}
+
 function applyCoupon() {
   const input = document.getElementById('couponInput');
   const msg = document.getElementById('couponMsg');
   const code = (input.value || '').trim().toUpperCase();
   if (!code) return;
-  const coupon = COUPONS[code];
+  document.getElementById('couponSuggestBox').style.display = 'none';
+  const coupon = _allCoupons()[code];
   if (!coupon) {
     msg.textContent = t('couponInvalid') || '❌ Invalid coupon code';
     msg.className = 'pay-coupon-msg error';
