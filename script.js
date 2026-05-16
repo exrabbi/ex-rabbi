@@ -4122,7 +4122,7 @@ async function sendAiMessage() {
     const resp = await fetch(workerUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: aiChatHistory })
+      body: JSON.stringify({ messages: aiChatHistory, userLang: _aiDetectLang(text) })
     });
     const data = await resp.json();
     _aiRemoveTyping();
@@ -4138,6 +4138,13 @@ async function sendAiMessage() {
     if (sendBtn) sendBtn.disabled = u2.count >= limit;
     if (u2.count < limit) inp.focus();
   }
+}
+
+function _aiDetectLang(text) {
+  if (/[ঀ-৿]/.test(text)) return 'Bengali';
+  if (/[؀-ۿ]/.test(text)) return 'Arabic';
+  if (/[ऀ-ॿ]/.test(text)) return 'Hindi';
+  return 'English';
 }
 
 function aiChatKeydown(e) {
