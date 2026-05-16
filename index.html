@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=80" />
+  <link rel="stylesheet" href="styles.css?v=81" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1491,46 +1491,76 @@
     </div>
   </div>
 
-  <div class="loc-overlay" id="locOverlay" onclick="closeLocation()"></div>
+  <div class="loc-overlay" id="locOverlay"></div>
   <div class="loc-modal" id="locModal">
-    <div class="loc-head">
-      <button class="icon-btn" onclick="closeLocation()" style="color:#333"><i class="fas fa-times"></i></button>
-      <span>📍 <span data-i18n="deliveryAddress">ডেলিভারি ঠিকানা</span></span>
-      <div style="width:32px"></div>
+    <!-- Header: back + search -->
+    <div class="loc-header">
+      <button class="loc-back-btn" onclick="closeLocation()"><i class="fas fa-chevron-left"></i></button>
+      <div class="loc-search-wrap">
+        <input type="text" class="loc-search-input" id="locSearchInput"
+          placeholder="Search, e.g. Olaya street, Riyadh"
+          oninput="_locSearchDebounce(this.value)" autocomplete="off" />
+        <button class="loc-search-icon"><i class="fas fa-magnifying-glass"></i></button>
+      </div>
     </div>
-    <div class="loc-body">
-      <!-- Map GPS Button -->
-      <button class="loc-gps-btn" id="locGpsBtn" onclick="useMyLocation()">
-        <i class="fas fa-location-arrow"></i> <span data-i18n="gpsBtn">GPS থেকে লোকেশন নিন</span>
+    <!-- Search dropdown -->
+    <div class="loc-search-drop" id="locSearchDrop" style="display:none"></div>
+    <!-- Map with fixed center pin -->
+    <div class="loc-map-wrap" id="locMapWrap">
+      <div id="locMap"></div>
+      <div class="loc-pin-wrap" id="locPinWrap">
+        <div class="loc-pin-icon"><i class="fas fa-location-dot"></i></div>
+        <div class="loc-pin-shadow"></div>
+      </div>
+      <div class="loc-map-toast" id="locMapToast">
+        <span>Move the map to find your address</span>
+        <button onclick="document.getElementById('locMapToast').style.display='none'"><i class="fas fa-xmark"></i></button>
+      </div>
+      <button class="loc-locate-btn" id="locGpsBtn" onclick="useMyLocation()">
+        <i class="fas fa-location-crosshairs"></i> Locate me
       </button>
-      <!-- Interactive Map -->
-      <div class="loc-map-wrap">
-        <div id="locMap"></div>
-        <div class="loc-map-hint" data-i18n="mapHint">মানচিত্রে ট্যাপ করে লোকেশন বেছে নিন</div>
+    </div>
+    <!-- Bottom card -->
+    <div class="loc-bottom-card">
+      <div class="loc-addr-row">
+        <div class="loc-addr-dot"><i class="fas fa-location-dot"></i></div>
+        <p class="loc-addr-text" id="locAddrText">Finding location…</p>
       </div>
-      <div class="loc-field">
-        <label data-i18n="fullName">পূর্ণ নাম</label>
-        <input type="text" id="locName" data-i18n-placeholder="namePh" placeholder="আপনার নাম লিখুন" />
+      <button class="loc-confirm-btn" onclick="_locConfirmMap()">Confirm address</button>
+      <button class="loc-manual-btn" onclick="_locShowManual()">Enter address manually <i class="fas fa-chevron-right"></i></button>
+    </div>
+    <!-- Manual entry (hidden by default) -->
+    <div class="loc-manual-form" id="locManualForm" style="display:none">
+      <div class="loc-mf-head">
+        <button onclick="_locHideManual()"><i class="fas fa-chevron-left"></i></button>
+        <span>Enter address manually</span>
+        <div></div>
       </div>
-      <div class="loc-field">
-        <label data-i18n="phoneLbl">ফোন নম্বর</label>
-        <input type="tel" id="locPhone" data-i18n-placeholder="phonePh" placeholder="+966 XXX XXX XXXX" />
+      <div class="loc-body">
+        <div class="loc-field">
+          <label data-i18n="fullName">Full name</label>
+          <input type="text" id="locName" placeholder="Your name" />
+        </div>
+        <div class="loc-field">
+          <label data-i18n="phoneLbl">Phone number</label>
+          <input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" />
+        </div>
+        <div class="loc-field">
+          <label data-i18n="cityLbl">City</label>
+          <input type="text" id="locCity" placeholder="e.g. Riyadh, Jeddah…" />
+        </div>
+        <div class="loc-field">
+          <label data-i18n="areaLbl">Area</label>
+          <input type="text" id="locArea" placeholder="Area name" />
+        </div>
+        <div class="loc-field">
+          <label data-i18n="addressLbl">Street / Detail</label>
+          <textarea id="locAddress" rows="3" placeholder="Street name, building, flat…"></textarea>
+        </div>
+        <button class="loc-save-btn" onclick="saveLocation()">
+          <i class="fas fa-check"></i> Save address
+        </button>
       </div>
-      <div class="loc-field">
-        <label data-i18n="cityLbl">শহর / City</label>
-        <input type="text" id="locCity" data-i18n-placeholder="cityPh" placeholder="যেমন: Riyadh, Jeddah..." />
-      </div>
-      <div class="loc-field">
-        <label data-i18n="areaLbl">এলাকা / Area</label>
-        <input type="text" id="locArea" data-i18n-placeholder="areaPh" placeholder="এলাকার নাম লিখুন" />
-      </div>
-      <div class="loc-field">
-        <label data-i18n="addressLbl">বিস্তারিত ঠিকানা</label>
-        <textarea id="locAddress" rows="3" data-i18n-placeholder="addressPh" placeholder="রাস্তার নাম, বাড়ি নম্বর, ফ্ল্যাট..."></textarea>
-      </div>
-      <button class="loc-save-btn" onclick="saveLocation()">
-        <i class="fas fa-check"></i> <span data-i18n="saveAddress">ঠিকানা সেভ করুন</span>
-      </button>
     </div>
   </div>
 
@@ -1868,8 +1898,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=80"></script>
-  <script src="products.js?v=80"></script>
-  <script src="script.js?v=80"></script>
+  <script src="translations.js?v=81"></script>
+  <script src="products.js?v=81"></script>
+  <script src="script.js?v=81"></script>
 </body>
 </html>
