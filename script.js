@@ -333,6 +333,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setLang(localStorage.getItem('exg_lang') || 'en');
   _revealPage(); // remove opacity:0 set in <head>
   updateWishBadge();
+  updateCartBadge();
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
