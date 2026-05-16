@@ -3808,7 +3808,7 @@ function markHelpful(btn) {
 (function initPWA() {
   // Register service worker
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/ex-rabbi/sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
   }
 
   let deferredPrompt = null;

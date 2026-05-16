@@ -4,8 +4,11 @@
   <meta charset="utf-8">
   <title>EX GLOBAL</title>
   <script>
-    // Redirect any 404 back to the main app (handles PWA deep links on GitHub Pages)
-    window.location.replace('/ex-rabbi/');
+    // Works for both exglobal.online/ and exrabbi.github.io/ex-rabbi/
+    var base = location.href.indexOf('/ex-rabbi/') !== -1
+      ? '/ex-rabbi/'
+      : '/';
+    window.location.replace(base);
   </script>
 </head>
 <body></body>

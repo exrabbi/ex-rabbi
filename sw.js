@@ -1,13 +1,15 @@
-const CACHE = 'exglobal-v23';
-const CORE = [
-  '/ex-rabbi/',
-  '/ex-rabbi/index.html',
-  '/ex-rabbi/favicon.png',
-  '/ex-rabbi/icon-192.png',
-  '/ex-rabbi/icon-512.png',
-];
+const CACHE = 'exglobal-v24';
 
 self.addEventListener('install', e => {
+  // Use dynamic scope so it works on both exglobal.online and exrabbi.github.io/ex-rabbi/
+  const base = self.registration.scope;
+  const CORE = [
+    base,
+    base + 'index.html',
+    base + 'favicon.png',
+    base + 'icon-192.png',
+    base + 'icon-512.png',
+  ];
   e.waitUntil(
     caches.open(CACHE)
       .then(c => Promise.allSettled(CORE.map(url => c.add(url))))
@@ -28,22 +30,23 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
+  const base = self.registration.scope;
 
-  // Navigation requests (opening the app) — always go to index.html
+  // Navigation (opening the app) — always serve index.html from network
   if (e.request.mode === 'navigate') {
     e.respondWith(
-      fetch('/ex-rabbi/index.html')
+      fetch(base + 'index.html')
         .then(res => {
           const c = res.clone();
-          caches.open(CACHE).then(cache => cache.put('/ex-rabbi/', c));
+          caches.open(CACHE).then(cache => cache.put(base + 'index.html', c));
           return res;
         })
-        .catch(() => caches.match('/ex-rabbi/index.html').then(r => r || caches.match('/ex-rabbi/')))
+        .catch(() => caches.match(base + 'index.html').then(r => r || caches.match(base)))
     );
     return;
   }
 
-  // JS / CSS — always network-first so updates reach the installed app
+  // JS / CSS — always network-first so updates reach the installed app instantly
   if (
     url.pathname.endsWith('.js') ||
     url.pathname.endsWith('.css') ||
