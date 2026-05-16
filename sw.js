@@ -1,5 +1,5 @@
-const CACHE = 'exglobal-v22';
-const STATIC = [
+const CACHE = 'exglobal-v23';
+const CORE = [
   '/ex-rabbi/',
   '/ex-rabbi/index.html',
   '/ex-rabbi/favicon.png',
@@ -10,7 +10,7 @@ const STATIC = [
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE)
-      .then(c => Promise.allSettled(STATIC.map(url => c.add(url))))
+      .then(c => Promise.allSettled(CORE.map(url => c.add(url))))
       .then(() => self.skipWaiting())
   );
 });
@@ -18,7 +18,9 @@ self.addEventListener('install', e => {
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(
+        keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+      ))
       .then(() => self.clients.claim())
   );
 });
@@ -27,10 +29,22 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
   const url = new URL(e.request.url);
 
-  // Always network-first for HTML, JS, CSS — guarantees fresh code in the installed app
+  // Navigation requests (opening the app) — always go to index.html
+  if (e.request.mode === 'navigate') {
+    e.respondWith(
+      fetch('/ex-rabbi/index.html')
+        .then(res => {
+          const c = res.clone();
+          caches.open(CACHE).then(cache => cache.put('/ex-rabbi/', c));
+          return res;
+        })
+        .catch(() => caches.match('/ex-rabbi/index.html').then(r => r || caches.match('/ex-rabbi/')))
+    );
+    return;
+  }
+
+  // JS / CSS — always network-first so updates reach the installed app
   if (
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('/') ||
     url.pathname.endsWith('.js') ||
     url.pathname.endsWith('.css') ||
     url.search.includes('v=')
@@ -47,7 +61,7 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Cache-first for images/fonts/icons
+  // Images / fonts — cache-first
   e.respondWith(
     caches.match(e.request).then(cached => {
       if (cached) return cached;

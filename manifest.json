@@ -2,7 +2,7 @@
   "name": "EX GLOBAL",
   "short_name": "EX GLOBAL",
   "description": "Online Shopping Saudi Arabia – Fashion, Electronics & More",
-  "start_url": "/ex-rabbi/?source=pwa",
+  "start_url": "/ex-rabbi/",
   "display": "standalone",
   "background_color": "#0d0d0d",
   "theme_color": "#e91e8c",
