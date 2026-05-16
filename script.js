@@ -852,6 +852,8 @@ function renderCart() {
     const p = PRODUCTS.find(p => p.id === item.id);
     if (!p) return '';
     const variant = [item.size, item.color].filter(Boolean).join(' · ');
+    const hasDiscount = p.originalPrice && p.originalPrice > p.price;
+    const discPct = hasDiscount ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
     return `
       <div class="cart-item">
         <div class="cart-item-img"><img src="${p.image}" alt="" loading="lazy" /></div>
@@ -867,7 +869,11 @@ function renderCart() {
               <span class="qty-num">${item.qty}</span>
               <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
             </div>
-            <span class="cart-item-line-total">${fmt(p.price * item.qty)}</span>
+            <div class="cart-item-price-col">
+              ${hasDiscount ? `<span class="cart-item-original">${fmt(p.originalPrice * item.qty)}</span>` : ''}
+              <span class="cart-item-line-total">${fmt(p.price * item.qty)}</span>
+              ${hasDiscount ? `<span class="cart-item-disc-badge">-${discPct}%</span>` : ''}
+            </div>
           </div>
         </div>
       </div>`;
@@ -878,7 +884,13 @@ function renderCart() {
     const p = PRODUCTS.find(p => p.id === i.id);
     return s + (p ? p.price * i.qty : 0);
   }, 0);
+  const originalBase = cart.reduce((s, i) => {
+    const p = PRODUCTS.find(p => p.id === i.id);
+    return s + (p ? (p.originalPrice || p.price) * i.qty : 0);
+  }, 0);
   const subtotalDisp = subtotalBase * lang.rate;
+  const originalDisp = originalBase * lang.rate;
+  const discountDisp = originalDisp - subtotalDisp;
   const freeDelivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR;
   const deliveryDisp = freeDelivery ? 0 : DELIVERY_SAR;
   const fmtD = v => lang.currency + Math.round(v).toLocaleString();
@@ -908,6 +920,10 @@ function renderCart() {
   }
 
   // Summary values
+  const origEl = document.getElementById('cartOriginalTotal');
+  const discEl = document.getElementById('cartDiscountDisp');
+  if (origEl) origEl.textContent = fmtD(originalDisp);
+  if (discEl) discEl.textContent = '-' + fmtD(discountDisp);
   const sd = document.getElementById('cartSubtotalDisp');
   const dv = document.getElementById('cartDeliveryDisp');
   const tot = document.getElementById('cartTotal');
@@ -2018,6 +2034,19 @@ function refreshPaymentSummary() {
   const subtotalBase = cartSubtotalBase();
   const subtotalDisp = subtotalBase * lang.rate;
   const fmtD = (v) => lang.currency + Math.round(v).toLocaleString();
+
+  // Product-level discount (originalPrice vs actual price)
+  const originalBase = cart.reduce((s, i) => {
+    const p = PRODUCTS.find(p => p.id === i.id);
+    return s + (p ? (p.originalPrice || p.price) * i.qty : 0);
+  }, 0);
+  const originalDisp = originalBase * lang.rate;
+  const itemDiscountDisp = originalDisp - subtotalDisp;
+  const origEl = document.getElementById('payOriginalTotal');
+  const itemDiscEl = document.getElementById('payItemDiscount');
+  if (origEl) origEl.textContent = fmtD(originalDisp);
+  if (itemDiscEl) itemDiscEl.textContent = '-' + fmtD(itemDiscountDisp);
+
   const discountAmt = appliedCoupon ? subtotalDisp * (appliedCoupon.pct / 100) : 0;
   const discountedSub = subtotalDisp - discountAmt;
   const freeDelivery = discountedSub >= FREE_DELIVERY_THRESHOLD_SAR;

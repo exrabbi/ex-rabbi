@@ -89,7 +89,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=78" />
+  <link rel="stylesheet" href="styles.css?v=79" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -775,6 +775,14 @@
       <!-- Summary -->
       <div class="cart-summary">
         <div class="cart-srow">
+          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> Items total</span>
+          <span class="cart-srow-val cart-original-total" id="cartOriginalTotal"></span>
+        </div>
+        <div class="cart-srow">
+          <span class="cart-srow-label" style="color:#e05c00"><i class="fas fa-tag"></i> Discounts</span>
+          <span class="cart-srow-val cart-discount-val" id="cartDiscountDisp"></span>
+        </div>
+        <div class="cart-srow">
           <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="orderSubtotal">Subtotal</span></span>
           <span class="cart-srow-val" id="cartSubtotalDisp"></span>
         </div>
@@ -1174,6 +1182,14 @@
       <div class="pay-summary">
         <div class="pay-summary-row">
           <span data-i18n="orderSubtotal">Order Subtotal</span>
+          <span id="payOriginalTotal" class="pay-original-total">0</span>
+        </div>
+        <div class="pay-summary-row" id="payItemDiscountRow">
+          <span style="color:#e05c00"><i class="fas fa-tag"></i> Discounts</span>
+          <span id="payItemDiscount" style="color:#e05c00">-0</span>
+        </div>
+        <div class="pay-summary-row">
+          <span data-i18n="orderSubtotal">Subtotal</span>
           <span id="paySubtotal">0</span>
         </div>
         <div class="pay-summary-row pay-discount-row" id="payDiscountRow" style="display:none">
@@ -1850,8 +1866,8 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=78"></script>
-  <script src="products.js?v=78"></script>
-  <script src="script.js?v=78"></script>
+  <script src="translations.js?v=79"></script>
+  <script src="products.js?v=79"></script>
+  <script src="script.js?v=79"></script>
 </body>
 </html>

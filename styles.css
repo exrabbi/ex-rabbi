@@ -2734,9 +2734,25 @@ body {
 .cart-item-bottom {
   display: flex; align-items: center; justify-content: space-between;
 }
+.cart-item-price-col {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 1px;
+}
+.cart-item-original {
+  font-size: 11px; color: #aaa; text-decoration: line-through; font-weight: 600;
+}
 .cart-item-line-total {
   font-size: 15px; font-weight: 800; color: #e91e8c;
 }
+.cart-item-disc-badge {
+  font-size: 10px; font-weight: 800; color: #e05c00;
+  background: #fff3e0; border-radius: 4px; padding: 1px 5px;
+  letter-spacing: .2px;
+}
+/* Cart summary discount rows */
+.cart-original-total { text-decoration: line-through; color: #aaa; font-weight: 600; }
+.cart-discount-val { color: #e05c00; font-weight: 800; }
+/* Payment summary original total */
+.pay-original-total { text-decoration: line-through; color: #aaa; font-size: 12px; }
 
 /* ===== SCROLL TO TOP ===== */
 .scroll-top-btn {
