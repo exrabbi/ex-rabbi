@@ -521,6 +521,45 @@
         </div>
       </div>
 
+      <!-- TREND BUTTON CONTENT -->
+      <div class="sec">
+        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-bolt-lightning" style="color:#a855f7"></i> ⚡ Trend Button — ছবি বা ভিডিও</div>
+        <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">নিচের বাটনে ক্লিক করলে কাস্টমার এখানে সেট করা ছবি বা ভিডিও দেখবে। যেকোনো প্রমো, অফার বা হাইলাইট দেখানো যাবে।</div>
+
+        <!-- TYPE SELECTOR -->
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <button class="adm-btn" id="trendTypeImg" onclick="setTrendType('image')" style="flex:1;justify-content:center"><i class="fas fa-image"></i> ছবি</button>
+          <button class="adm-btn gray" id="trendTypeVid" onclick="setTrendType('video')" style="flex:1;justify-content:center"><i class="fas fa-video"></i> ভিডিও</button>
+        </div>
+
+        <!-- IMAGE MODE -->
+        <div id="trendImageWrap">
+          <div class="field-wrap">
+            <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> ছবির URL</div>
+            <input type="url" id="trendImgUrl" class="adm-input" placeholder="https://..." oninput="previewTrendImg(this.value)"/>
+            <button class="adm-btn" onclick="pickImage('trendImgUrl','trendImgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px"><i class="fas fa-camera"></i> ফোন থেকে ছবি আপলোড</button>
+          </div>
+          <div id="trendImgPreview" style="display:none;width:100%;border-radius:10px;overflow:hidden;margin-top:8px;background:#111;border:1px solid #222">
+            <img id="trendImgPreviewEl" style="width:100%;max-height:220px;object-fit:cover"/>
+          </div>
+        </div>
+
+        <!-- VIDEO MODE -->
+        <div id="trendVideoWrap" style="display:none">
+          <div class="field-wrap">
+            <div class="field-label"><i class="fas fa-video" style="color:#7c3aed"></i> ভিডিও URL (YouTube / Cloudinary)</div>
+            <input type="url" id="trendVidUrl" class="adm-input" placeholder="https://youtu.be/... অথবা Cloudinary MP4"/>
+            <button class="adm-btn" onclick="pickTrendVideo()" style="width:100%;justify-content:center;margin-top:7px;background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড</button>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="adm-btn" onclick="saveTrendContent()" style="flex:1;justify-content:center"><i class="fas fa-save"></i> সেভ করুন</button>
+          <button class="adm-btn gray" onclick="clearTrendContent()" style="flex:1;justify-content:center"><i class="fas fa-trash"></i> মুছে দিন</button>
+        </div>
+        <div id="trendSaveMsg" style="display:none;margin-top:10px;padding:8px 12px;border-radius:8px;background:#0a2a0a;color:#4ade80;font-size:12px;font-weight:600"><i class="fas fa-check"></i> সেভ হয়ে গেছে! Publish করুন।</div>
+      </div>
+
     </div>
 
     <!-- REVIEWS -->
@@ -1170,7 +1209,7 @@ function showTab(tab) {
   else if (tab === 'orders') renderOrders();
   else if (tab === 'customers') renderCustomers();
   else if (tab === 'coupons') renderCoupons();
-  else if (tab === 'promos') { showHeroSlide(0); loadFeaturedPins(); loadColTiles(); }
+  else if (tab === 'promos') { showHeroSlide(0); loadFeaturedPins(); loadColTiles(); _loadTrendContentForm(); }
   else if (tab === 'reviews') renderReviews();
   else if (tab === 'settings') { renderShareLinks(); loadSettings(); loadSocialLinks(); }
 }
@@ -2078,6 +2117,7 @@ async function _doFirestoreSync() {
       trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
       coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
       city_video:       localStorage.getItem('exg_city_video') || '',
+      trend_content:    JSON.parse(localStorage.getItem('exg_trend_content')    || 'null'),
       cat_images:       JSON.parse(localStorage.getItem('exg_cat_images')       || '{}'),
       custom_cats:      JSON.parse(localStorage.getItem('exg_custom_cats')      || '{}'),
       updated_at:       firebase.firestore.FieldValue.serverTimestamp(),
@@ -2420,6 +2460,68 @@ function saveColTiles() {
 }
 
 /* ===== SETTINGS ===== */
+/* ===== TREND BUTTON CONTENT ===== */
+let _trendType = 'image';
+function setTrendType(type) {
+  _trendType = type;
+  document.getElementById('trendImageWrap').style.display = type === 'image' ? '' : 'none';
+  document.getElementById('trendVideoWrap').style.display = type === 'video' ? '' : 'none';
+  document.getElementById('trendTypeImg').className = type === 'image' ? 'adm-btn' : 'adm-btn gray';
+  document.getElementById('trendTypeVid').className = type === 'video' ? 'adm-btn' : 'adm-btn gray';
+}
+function previewTrendImg(url) {
+  const wrap = document.getElementById('trendImgPreview');
+  const el   = document.getElementById('trendImgPreviewEl');
+  if (url) { wrap.style.display = ''; el.src = url; }
+  else     { wrap.style.display = 'none'; }
+}
+function pickTrendVideo() {
+  const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  if (!s.cloudinaryCloud || !s.cloudinaryPreset) {
+    alert('Settings → Cloudinary Cloud Name & Upload Preset সেট করুন।');
+    return;
+  }
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'video/*';
+  inp.onchange = async () => {
+    const file = inp.files[0]; if (!file) return;
+    const btn = document.getElementById('trendVideoWrap').querySelector('.adm-btn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading…';
+    const fd = new FormData(); fd.append('file', file); fd.append('upload_preset', s.cloudinaryPreset);
+    const r = await fetch(`https://api.cloudinary.com/v1_1/${s.cloudinaryCloud}/video/upload`, { method: 'POST', body: fd });
+    const d = await r.json();
+    document.getElementById('trendVidUrl').value = d.secure_url || '';
+    btn.innerHTML = '<i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড';
+  };
+  inp.click();
+}
+function saveTrendContent() {
+  const type = _trendType;
+  const url  = type === 'image'
+    ? document.getElementById('trendImgUrl').value.trim()
+    : document.getElementById('trendVidUrl').value.trim();
+  if (!url) { alert('URL দিন অথবা ছবি/ভিডিও আপলোড করুন।'); return; }
+  const obj = { type, url };
+  localStorage.setItem('exg_trend_content', JSON.stringify(obj));
+  localStorage.setItem('exg_last_admin_edit', new Date().toISOString());
+  const msg = document.getElementById('trendSaveMsg');
+  if (msg) { msg.style.display = ''; setTimeout(() => { msg.style.display = 'none'; }, 4000); }
+}
+function clearTrendContent() {
+  if (!confirm('Trend button-এর কন্টেন্ট মুছে দেবেন?')) return;
+  localStorage.removeItem('exg_trend_content');
+  document.getElementById('trendImgUrl').value = '';
+  document.getElementById('trendVidUrl').value = '';
+  previewTrendImg('');
+}
+function _loadTrendContentForm() {
+  const d = JSON.parse(localStorage.getItem('exg_trend_content') || 'null');
+  if (!d) return;
+  setTrendType(d.type || 'image');
+  if (d.type === 'image') { document.getElementById('trendImgUrl').value = d.url || ''; previewTrendImg(d.url); }
+  else { document.getElementById('trendVidUrl').value = d.url || ''; }
+}
+
 function loadSettings() {
   const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
   const el = id => document.getElementById(id);
