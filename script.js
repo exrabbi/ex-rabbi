@@ -2205,16 +2205,38 @@ function refreshMeAddress() {
   if (!addrCard || !addRow) return;
   if (savedLocation && (savedLocation.name || savedLocation.city)) {
     addrCard.style.display = 'block';
-    addRow.style.display = 'none';
-    const nr = document.getElementById('meAddrNameRow');
-    const l1 = document.getElementById('meAddrLine1');
-    const l2 = document.getElementById('meAddrLine2');
-    if (nr) nr.textContent = [savedLocation.name, savedLocation.phone].filter(Boolean).join(', ');
-    if (l1) l1.textContent = [savedLocation.city, savedLocation.area, 'Saudi Arabia'].filter(Boolean).join(', ');
-    if (l2) l2.textContent = savedLocation.address || '';
+    addRow.style.display   = 'none';
+    const name  = (savedLocation.name  || '').trim();
+    const phone = (savedLocation.phone || '').trim();
+    const city  = (savedLocation.city  || '').trim();
+    const area  = (savedLocation.area  || '').trim();
+    const type  = savedLocation.type || 'home';
+    const label = (savedLocation.label || '').trim();
+    const extra = [savedLocation.apt, savedLocation.building, savedLocation.directions]
+                    .map(s => (s || '').trim()).filter(Boolean).join(' · ');
+    const typeIcon  = type === 'work' ? 'fa-briefcase' : type === 'other' ? 'fa-location-dot' : 'fa-house';
+    const typeLabel = label || (type === 'work' ? 'Work' : type === 'other' ? 'Other' : 'Home');
+    const addrLine  = [area, city, 'Saudi Arabia'].filter(Boolean).join(', ');
+    const namePhone = [name, phone].filter(Boolean).join(' · ');
+    addrCard.innerHTML = `
+      <div class="me-addr-card-inner">
+        <div class="me-addr-icon-box"><i class="fas ${typeIcon}"></i></div>
+        <div class="me-addr-info">
+          <div class="me-addr-top-row">
+            <span class="me-addr-name">${namePhone}</span>
+            <span class="me-addr-type-tag">${typeLabel}</span>
+          </div>
+          <div class="me-addr-line1">${addrLine}</div>
+          ${extra ? `<div class="me-addr-extra">${extra}</div>` : ''}
+        </div>
+        <div class="me-addr-actions">
+          <button class="me-addr-edit-btn" onclick="openLocation()" title="Edit"><i class="fas fa-pen"></i></button>
+          <button class="me-addr-del-btn" onclick="_deleteAddress()" title="Delete"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>`;
   } else {
     addrCard.style.display = 'none';
-    addRow.style.display = 'flex';
+    addRow.style.display   = 'flex';
   }
 }
 
@@ -2510,11 +2532,14 @@ function _locReverseGeocode(lat, lng) {
 let _locAddrType = 'home', _locTagSelected = '';
 
 function _locOpenDetails() {
+  const addrEl = document.getElementById('locAddrText');
   if (_locGeocoding) {
-    showToast('Please wait, finding address…'); return;
+    if (addrEl) { addrEl.textContent = 'Getting address… please wait ⏳'; addrEl.classList.add('loc-addr-hint'); setTimeout(()=>addrEl.classList.remove('loc-addr-hint'),1800); }
+    return;
   }
   if (!_locCurrentAddr) {
-    showToast('Move the map to your location or use search'); return;
+    if (addrEl) { addrEl.classList.add('loc-addr-shake'); setTimeout(()=>addrEl.classList.remove('loc-addr-shake'),500); }
+    return;
   }
   const det = document.getElementById('locDetails');
   if (!det) return;

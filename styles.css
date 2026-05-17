@@ -249,6 +249,14 @@
   0%   { background-position: 0% 0%; }
   100% { background-position: 200% 0%; }
 }
+@keyframes locAddrShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-5px); }
+  50%     { transform: translateX(5px); }
+  80%     { transform: translateX(-3px); }
+}
+.loc-addr-shake { animation: locAddrShake .45s ease; color: #e53935 !important; }
+.loc-addr-hint  { color: #e91e8c !important; font-style: italic; }
 
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -499,31 +507,21 @@ img { max-width: 100%; display: block; }
 /* ===== FLASH DEALS ===== */
 .flash-deals-banner {
   display: flex; align-items: center; justify-content: space-between;
-  background: linear-gradient(135deg, #1c0208 0%, #3e0418 50%, #1f0812 100%);
+  background: linear-gradient(135deg, #e91e8c 0%, #9b1dea 100%);
   color: #fff; padding: 11px 14px; margin: 6px 10px; border-radius: 14px;
-  border: 1px solid rgba(212,160,23,.28);
-  box-shadow: 0 4px 24px rgba(233,30,140,.22), 0 2px 10px rgba(0,0,0,.5);
+  border: none;
+  box-shadow: 0 6px 24px rgba(233,30,140,.35), 0 2px 8px rgba(0,0,0,.2);
   position: relative; overflow: hidden;
-}
-.flash-deals-banner::before {
-  content: '';
-  position: absolute; inset: 0; pointer-events: none;
-  background: linear-gradient(115deg, transparent 28%, rgba(212,160,23,.09) 50%, transparent 72%);
-  animation: flashSweep 4s ease-in-out 2s infinite;
-}
-@keyframes flashSweep {
-  0%,100% { transform: translateX(-200%); }
-  50%     { transform: translateX(220%); }
 }
 .flash-left {
   display: flex; align-items: center; gap: 10px;
 }
 .flash-icon-box {
-  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
-  background: linear-gradient(135deg, #e91e8c, #d4a017);
+  background: rgba(255,255,255,.2); border-radius: 10px;
+  width: 38px; height: 38px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
   font-size: 18px;
-  box-shadow: 0 2px 14px rgba(233,30,140,.55);
+  box-shadow: 0 2px 10px rgba(0,0,0,.15);
   animation: boltPulse 1.6s ease-in-out infinite;
 }
 @keyframes boltPulse {
@@ -532,20 +530,20 @@ img { max-width: 100%; display: block; }
 }
 .flash-info { display: flex; flex-direction: column; gap: 1px; }
 .flash-title { font-size: 15px; font-weight: 800; color: #fff; line-height: 1.1; }
-.flash-ends  { font-size: 9.5px; font-weight: 700; letter-spacing: 1px; color: rgba(212,160,23,.8); text-transform: uppercase; }
+.flash-ends  { font-size: 9.5px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.8); text-transform: uppercase; }
 .countdown { display: flex; align-items: center; gap: 3px; }
 .cd-block {
-  background: rgba(212,160,23,.14);
-  border: 1px solid rgba(212,160,23,.38);
+  background: rgba(0,0,0,.2);
+  border: 1px solid rgba(255,255,255,.3);
   border-radius: 7px; padding: 3px 6px; min-width: 34px;
   display: flex; flex-direction: column; align-items: center;
 }
-.cd-block span { font-size: 16px; font-weight: 800; color: #f5e2a5; line-height: 1.1; }
-.cd-block small { font-size: 7.5px; font-weight: 700; letter-spacing: 1px; color: rgba(212,160,23,.72); margin-top: 1px; }
-.cd-sep { font-size: 15px; font-weight: 800; color: #d4a017; padding-bottom: 8px; }
+.cd-block span { font-size: 16px; font-weight: 800; color: #fff; line-height: 1.1; }
+.cd-block small { font-size: 7.5px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,.75); margin-top: 1px; }
+.cd-sep { font-size: 15px; font-weight: 800; color: rgba(255,255,255,.8); padding-bottom: 8px; }
 .flash-more {
-  font-size: 11.5px; font-weight: 700; color: #d4a017;
-  background: rgba(212,160,23,.14); border: 1px solid rgba(212,160,23,.38);
+  font-size: 12px; font-weight: 700; color: #fff;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.3);
   border-radius: 8px; padding: 6px 10px;
   display: flex; align-items: center; gap: 4px; white-space: nowrap; flex-shrink: 0;
 }
@@ -1566,26 +1564,34 @@ img { max-width: 100%; display: block; }
 
 /* ---- Address card ---- */
 .me-addr-card {
-  background: #f7f7f9; margin: 0 16px 14px;
-  border-radius: 12px; padding: 14px 16px;
-  border: 1px solid #eee;
+  background: linear-gradient(135deg, #fff5fc 0%, #fff 100%);
+  margin: 0 16px 14px; border-radius: 14px; padding: 14px;
+  border: 1px solid rgba(233,30,140,.14);
+  box-shadow: 0 2px 10px rgba(233,30,140,.08);
 }
-.me-addr-card-inner { display: flex; align-items: flex-start; gap: 10px; }
+.me-addr-card-inner { display: flex; align-items: center; gap: 12px; }
+.me-addr-icon-box {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, #e91e8c, #9b1dea);
+  display: flex; align-items: center; justify-content: center;
+}
+.me-addr-icon-box i { color: #fff; font-size: 18px; }
 .me-addr-info { flex: 1; min-width: 0; }
-.me-addr-name-row { font-size: 14px; font-weight: 800; color: #111; margin-bottom: 4px; }
-.me-addr-line { font-size: 13px; color: #555; line-height: 1.5; }
+.me-addr-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 4px; }
+.me-addr-name { font-size: 13px; font-weight: 800; color: #111; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.me-addr-type-tag { font-size: 9px; font-weight: 700; letter-spacing: .5px; background: rgba(233,30,140,.1); color: #e91e8c; border-radius: 4px; padding: 2px 6px; white-space: nowrap; flex-shrink: 0; }
+.me-addr-line1 { font-size: 12px; color: #555; line-height: 1.5; }
+.me-addr-extra { font-size: 11px; color: #888; line-height: 1.4; margin-top: 2px; }
 .me-addr-actions { display: flex; flex-direction: column; gap: 6px; flex-shrink: 0; }
 .me-addr-edit-btn, .me-addr-del-btn {
   width: 32px; height: 32px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 13px; transition: all .15s;
+  font-size: 13px; transition: all .15s; cursor: pointer; border: none;
 }
 .me-addr-edit-btn { background: #f0f0f0; color: #555; }
 .me-addr-edit-btn:active { background: #e0e0e0; }
 .me-addr-del-btn { background: #fff0f0; color: #e53935; }
 .me-addr-del-btn:active { background: #ffd5d5; }
-[data-theme="dark"] .me-addr-edit-btn { background: #2a2a2a; color: #aaa; }
-[data-theme="dark"] .me-addr-del-btn { background: #3a1a1a; color: #ef5350; }
 .me-add-addr-row {
   display: flex; align-items: center; gap: 10px;
   padding: 14px 18px; font-size: 14px; font-weight: 600; color: #e91e8c;
@@ -3495,7 +3501,6 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .flash-card,
 [data-theme="dark"] .review-card,
 [data-theme="dark"] .me-card-block,
-[data-theme="dark"] .me-addr-card,
 [data-theme="dark"] .me-orders-empty,
 [data-theme="dark"] .addr-form-card {
   background: #1a1a1a;
@@ -3535,6 +3540,7 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .flash-banner {
   background: linear-gradient(135deg, #1a0a0f 0%, #0d0d1a 100%);
 }
+[data-theme="dark"] .flash-deals-banner { background: linear-gradient(135deg, #a01060 0%, #6b0daa 100%); }
 [data-theme="dark"] .flash-card { background: #1e1e1e; }
 [data-theme="dark"] .flash-name { color: #ddd; }
 
@@ -3577,7 +3583,11 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .me-block-header { color: #888; }
 [data-theme="dark"] .me-list-item { border-bottom-color: rgba(255,255,255,.05); }
 [data-theme="dark"] .me-list-item span { color: #ccc; }
-[data-theme="dark"] .me-addr-name-row, [data-theme="dark"] .me-addr-line { color: #bbb; }
+[data-theme="dark"] .me-addr-card { background: linear-gradient(135deg, #1f0a14 0%, #1a1a1a 100%); border-color: rgba(233,30,140,.2); }
+[data-theme="dark"] .me-addr-name { color: #eee; }
+[data-theme="dark"] .me-addr-line1, [data-theme="dark"] .me-addr-extra { color: #aaa; }
+[data-theme="dark"] .me-addr-edit-btn { background: #2a2a2a; color: #aaa; }
+[data-theme="dark"] .me-addr-del-btn { background: #3a1a1a; color: #ef5350; }
 
 /* Wishlist panel */
 [data-theme="dark"] .wish-panel { background: #0d0d0d; }
