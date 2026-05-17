@@ -4618,9 +4618,11 @@ async function sendAiMessage() {
 
 function _aiDetectLang(text) {
   if (/[ঀ-৿]/.test(text)) return 'Bengali';
-  if (/[؀-ۿ]/.test(text)) return 'Arabic';
+  if (/[؀-ۿݐ-ݿࢠ-ࣿ]/.test(text)) return 'Arabic';
   if (/[ऀ-ॿ]/.test(text)) return 'Hindi';
-  return 'English';
+  // For short/ambiguous messages fall back to the app's active language
+  const appLangMap = { bn: 'Bengali', en: 'English', ar: 'Arabic', hi: 'Hindi' };
+  return appLangMap[currentLang] || 'English';
 }
 
 function aiChatKeydown(e) {
