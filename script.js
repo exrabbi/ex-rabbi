@@ -2391,18 +2391,32 @@ function closeSettings() {
 let savedLocation = JSON.parse(localStorage.getItem('exglobal_location') || 'null');
 let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
 let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
-let _locGeocodeTimer = null;
+let _locGeocodeTimer = null, _locGeocoding = false;
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
   document.getElementById('locModal').classList.add('open');
   document.body.style.overflow = 'hidden';
+  // Reset step 2 and manual form on open
+  const det = document.getElementById('locDetails');
+  if (det) det.style.display = 'none';
+  const mf = document.getElementById('locManualForm');
+  if (mf) mf.style.display = 'none';
   setTimeout(_initLocMap, 350);
 }
 
 function _initLocMap() {
   if (!window.L) { showToast('Map loading, please wait…'); setTimeout(_initLocMap, 800); return; }
-  if (locMap) { locMap.invalidateSize(); return; }
+  if (locMap) {
+    locMap.invalidateSize();
+    // Re-center to saved location if coordinates differ significantly
+    if (savedLocation?.lat) {
+      const c = locMap.getCenter();
+      const dist = Math.abs(c.lat - savedLocation.lat) + Math.abs(c.lng - savedLocation.lng);
+      if (dist > 0.01) locMap.setView([savedLocation.lat, savedLocation.lng], 16);
+    }
+    return;
+  }
   const defaultLat = savedLocation?.lat || 24.7136;
   const defaultLng = savedLocation?.lng || 46.6753;
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
@@ -2410,7 +2424,6 @@ function _initLocMap() {
     .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
 
-  // Animate pin while dragging
   locMap.on('movestart', () => {
     const pin = document.getElementById('locPinWrap');
     if (pin) pin.style.transform = 'translate(-50%,-110%) scale(1.18)';
@@ -2428,12 +2441,16 @@ function _initLocMap() {
 
 function _locReverseGeocode(lat, lng) {
   clearTimeout(_locGeocodeTimer);
+  _locGeocoding = true;
+  _locCurrentAddr = '';
+  _locCurrData = {};
   const addrEl = document.getElementById('locAddrText');
   if (addrEl) addrEl.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#e91e8c;margin-right:6px"></i>Finding address…';
   _locGeocodeTimer = setTimeout(() => {
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
       .then(r => r.json())
       .then(data => {
+        _locGeocoding = false;
         const a = data.address || {};
         const parts = [
           a.house_number, a.road,
@@ -2444,91 +2461,59 @@ function _locReverseGeocode(lat, lng) {
         _locCurrentAddr = parts.join(', ') || data.display_name || '';
         _locCurrLat = lat; _locCurrLng = lng;
         _locCurrData = a;
-        if (addrEl) addrEl.textContent = _locCurrentAddr;
+        if (addrEl) addrEl.textContent = _locCurrentAddr || 'Address found';
       })
       .catch(() => {
+        _locGeocoding = false;
+        _locCurrentAddr = '';
         if (addrEl) addrEl.textContent = 'Could not detect address. Try searching.';
       });
   }, 300);
 }
 
-function _locConfirmMap() {
-  const addrEl = document.getElementById('locAddrText');
-  const currentText = addrEl ? addrEl.textContent : '';
-  if (currentText.includes('Finding') || currentText.includes('spinner')) {
-    showToast('Please wait, finding address…'); return;
-  }
-  if (!_locCurrentAddr && !currentText.includes('address')) {
-    showToast('Move the map to select your address'); return;
-  }
-  const addr = _locCurrentAddr || currentText;
-  const a = _locCurrData;
-  if (!savedLocation) savedLocation = {};
-  savedLocation.lat = _locCurrLat;
-  savedLocation.lng = _locCurrLng;
-  savedLocation.address = addr;
-  savedLocation.city = a.city || a.town || a.village || a.county || '';
-  savedLocation.area = a.suburb || a.neighbourhood || a.district || '';
-  localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
-  refreshMeAddress();
-  closeLocation();
-  showToast('✅ Address saved!');
-}
-
 let _locAddrType = 'home', _locTagSelected = '';
 
 function _locOpenDetails() {
-  const addrEl = document.getElementById('locAddrText');
-  const txt = addrEl ? addrEl.textContent : '';
-  if (txt.includes('Finding') || txt.includes('spinner')) {
+  if (_locGeocoding) {
     showToast('Please wait, finding address…'); return;
   }
-  // Populate step 2
+  if (!_locCurrentAddr) {
+    showToast('Move the map to your location or use search'); return;
+  }
   const det = document.getElementById('locDetails');
   if (!det) return;
-  document.getElementById('locDetAddrText').textContent = _locCurrentAddr || txt;
-  // Pre-fill building from geocode
+
+  // Populate address card
+  document.getElementById('locDetAddrText').textContent = _locCurrentAddr;
+
+  // Pre-fill fields
   const a = _locCurrData;
   const building = [a.house_number, a.road].filter(Boolean).join(', ');
-  document.getElementById('locBuilding').value = building || '';
+  document.getElementById('locBuilding').value = building || savedLocation?.building || '';
   document.getElementById('locApt').value = savedLocation?.apt || '';
   document.getElementById('locDirections').value = savedLocation?.directions || '';
   document.getElementById('locName').value = savedLocation?.name || '';
   document.getElementById('locPhone').value = savedLocation?.phone || '';
+
+  // Set type buttons using data-type attribute
   _locAddrType = savedLocation?.type || 'home';
-  // Set type buttons
   document.querySelectorAll('.loc-type-btn').forEach(b => {
-    b.classList.toggle('active', b.onclick.toString().includes(_locAddrType));
+    b.classList.toggle('active', b.dataset.type === _locAddrType);
   });
-  // Receiver display
-  _locUpdateReceiverDisplay();
-  // Tags
+
   _locRenderTags();
   det.style.display = 'flex';
-  det.style.flexDirection = 'column';
 }
 
 function _locBackToMap() {
-  document.getElementById('locDetails').style.display = 'none';
+  const det = document.getElementById('locDetails');
+  if (det) det.style.display = 'none';
 }
 
 function _locSetType(btn, type) {
   _locAddrType = type;
   document.querySelectorAll('.loc-type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-}
-
-function _locEditReceiver() {
-  const re = document.getElementById('locRecEdit');
-  re.style.display = re.style.display === 'none' ? 'block' : 'none';
-  if (re.style.display === 'block') document.getElementById('locName').focus();
-}
-
-function _locUpdateReceiverDisplay() {
-  const name = (document.getElementById('locName') && document.getElementById('locName').value) || savedLocation?.name || '';
-  const phone = (document.getElementById('locPhone') && document.getElementById('locPhone').value) || savedLocation?.phone || '';
-  const val = document.getElementById('locDetRecVal');
-  if (val) val.textContent = (name || phone) ? [name, phone].filter(Boolean).join(', ') : 'Tap to add name & phone';
 }
 
 function _locRenderTags() {
@@ -2577,8 +2562,11 @@ function _locSaveManual() {
   const city = document.getElementById('locCityM').value.trim();
   const area = document.getElementById('locAreaM').value.trim();
   const address = document.getElementById('locAddressM').value.trim();
-  if (!name || !phone || !city || !address) { showToast(t('fillAllFields')); return; }
-  savedLocation = { name, phone, city, area, address, lat: _locCurrLat, lng: _locCurrLng };
+  if (!name) { showToast('Please enter full name'); document.getElementById('locNameM').focus(); return; }
+  if (!phone) { showToast('Please enter phone number'); document.getElementById('locPhoneM').focus(); return; }
+  if (!city) { showToast('Please enter city'); document.getElementById('locCityM').focus(); return; }
+  if (!address) { showToast('Please enter street / address detail'); document.getElementById('locAddressM').focus(); return; }
+  savedLocation = { name, phone, city, area, address, type: _locAddrType, lat: _locCurrLat, lng: _locCurrLng };
   localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
   refreshMeAddress(); closeLocation(); showToast('✅ Address saved!');
 }
@@ -2647,14 +2635,29 @@ function closeLocation() {
   document.getElementById('locModal').classList.remove('open');
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
-  document.getElementById('locManualForm').style.display = 'none';
-  document.getElementById('locSearchDrop').style.display = 'none';
+  const mf = document.getElementById('locManualForm');
+  if (mf) mf.style.display = 'none';
+  const drop = document.getElementById('locSearchDrop');
+  if (drop) drop.style.display = 'none';
+  const input = document.getElementById('locSearchInput');
+  if (input) input.value = '';
   document.body.style.overflow = '';
+  _locGeocoding = false;
 }
 
 function saveLocation() {
   const name = (document.getElementById('locName').value || '').trim();
   const phone = (document.getElementById('locPhone').value || '').trim();
+  if (!name) {
+    showToast('Please enter your full name');
+    document.getElementById('locName').focus();
+    return;
+  }
+  if (!phone) {
+    showToast('Please enter your phone number');
+    document.getElementById('locPhone').focus();
+    return;
+  }
   const apt = (document.getElementById('locApt').value || '').trim();
   const building = (document.getElementById('locBuilding').value || '').trim();
   const directions = (document.getElementById('locDirections').value || '').trim();
@@ -2662,7 +2665,6 @@ function saveLocation() {
   const city = a.city || a.town || a.village || a.county || savedLocation?.city || '';
   const area = a.suburb || a.neighbourhood || a.district || savedLocation?.area || '';
   const address = _locCurrentAddr || savedLocation?.address || '';
-  // Save tag label if selected
   if (_locTagSelected) {
     const labels = JSON.parse(localStorage.getItem('exg_addr_labels') || '[]');
     if (!labels.includes(_locTagSelected)) { labels.push(_locTagSelected); localStorage.setItem('exg_addr_labels', JSON.stringify(labels)); }
