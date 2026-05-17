@@ -1210,25 +1210,101 @@ img { max-width: 100%; display: block; }
 .modal-stock.ok  { background: #e8f5e9; color: #2e7d32; }
 .modal-divider { height: 1px; background: #f0f0f0; margin: 12px 0; }
 .modal-desc { font-size: 13px; color: #555; line-height: 1.7; white-space: pre-line; }
-.modal-section-title { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 8px; }
-.size-options, .color-options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.size-opt {
-  padding: 5px 14px; border: 1.5px solid #ddd;
-  border-radius: 6px; font-size: 13px; cursor: pointer; transition: all .2s;
+.modal-section-title {
+  font-size: 13px; font-weight: 800; color: #1a1a1a; margin-bottom: 10px; margin-top: 4px;
+  display: flex; align-items: center; gap: 7px;
 }
-.size-opt.active, .size-opt:hover { border-color: #e91e8c; color: #e91e8c; background: #fce4ec; }
+.modal-section-title::before {
+  content: ''; display: inline-block; flex-shrink: 0;
+  width: 3px; height: 13px; border-radius: 2px;
+  background: linear-gradient(180deg, #e91e8c, #9b1dea);
+}
+.size-options { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.color-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.size-opt {
+  padding: 8px 18px; min-width: 48px; text-align: center;
+  border: 1.5px solid #e5e5e5; background: #f8f8f8;
+  border-radius: 30px; font-size: 13px; font-weight: 600; color: #444;
+  cursor: pointer; transition: all .22s cubic-bezier(.34,1.5,.64,1);
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
+}
+.size-opt:hover {
+  border-color: #e91e8c; color: #e91e8c; background: #fce4ec;
+  transform: translateY(-1px); box-shadow: 0 4px 12px rgba(233,30,140,.22);
+}
+.size-opt.active {
+  background: linear-gradient(135deg, #e91e8c, #9b1dea);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 5px 18px rgba(233,30,140,.48);
+  transform: translateY(-2px) scale(1.04);
+}
 .color-opt {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 3px solid transparent; cursor: pointer;
-  transition: all .2s; position: relative;
-  box-shadow: 0 2px 6px rgba(0,0,0,.18);
-  outline: 3px solid transparent; outline-offset: 2px;
+  width: 42px; height: 42px; border-radius: 50%;
+  border: 2.5px solid transparent; cursor: pointer;
+  transition: all .22s cubic-bezier(.34,1.5,.64,1); position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,.22);
 }
 .color-opt.active {
-  outline-color: #e91e8c;
-  box-shadow: 0 0 0 2px #fff, 0 0 0 4px #e91e8c, 0 4px 12px rgba(233,30,140,.35);
+  box-shadow: 0 0 0 2.5px #fff, 0 0 0 5px #e91e8c, 0 5px 18px rgba(233,30,140,.42);
+  transform: scale(1.18);
 }
-.color-opt:hover { transform: scale(1.12); }
+.color-opt:hover { transform: scale(1.13); box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+
+/* Product page coupon pill */
+.pd-coupon-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #f0fdf4; border: 1.5px dashed #86efac;
+  border-radius: 10px; padding: 10px 14px;
+  cursor: pointer; margin: 4px 0 10px;
+}
+.pd-coupon-icon {
+  width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #10b981, #059669);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px;
+}
+.pd-coupon-text { flex: 1; font-size: 13px; font-weight: 600; color: #065f46; }
+
+/* Product coupon bottom sheet */
+.pd-coupon-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 5500;
+  opacity: 0; visibility: hidden; transition: all .3s;
+}
+.pd-coupon-overlay.open { opacity: 1; visibility: visible; }
+.pd-coupon-sheet {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #fff; border-radius: 22px 22px 0 0;
+  z-index: 5501; max-height: 75vh; overflow-y: auto;
+  transform: translateY(100%); transition: transform .35s cubic-bezier(.32,1.1,.7,1);
+  padding-bottom: calc(env(safe-area-inset-bottom) + 16px);
+}
+.pd-coupon-sheet.open { transform: translateY(0); }
+.pd-cs-handle { width: 40px; height: 4px; border-radius: 2px; background: #e0e0e0; margin: 12px auto 0; }
+.pd-cs-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px 8px; }
+.pd-cs-title { font-size: 16px; font-weight: 800; color: #111; }
+.pd-cs-close { background: #f5f5f5; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; color: #666; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.pd-cs-card { margin: 6px 16px 12px; border: 1.5px solid #f0f0f0; border-radius: 14px; overflow: hidden; }
+.pd-cs-card-top { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: linear-gradient(135deg, #fef3f2, #fff); }
+.pd-cs-pct-badge {
+  width: 44px; height: 44px; border-radius: 12px; flex-shrink: 0;
+  background: linear-gradient(135deg, #e91e8c, #9b1dea);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff;
+}
+.pd-cs-pct-num { font-size: 16px; font-weight: 900; line-height: 1; }
+.pd-cs-pct-off { font-size: 8px; font-weight: 700; letter-spacing: .5px; }
+.pd-cs-info { flex: 1; }
+.pd-cs-head-title { font-size: 15px; font-weight: 800; color: #111; }
+.pd-cs-head-sub { font-size: 11px; color: #888; margin-top: 2px; }
+.pd-cs-code-row {
+  display: flex; align-items: center; gap: 10px;
+  background: #f9fafb; border-top: 1.5px dashed #e5e7eb; padding: 10px 16px;
+}
+.pd-cs-code-lbl { font-size: 12px; color: #666; }
+.pd-cs-code { font-size: 15px; font-weight: 900; color: #111; flex: 1; letter-spacing: 1.5px; }
+.pd-cs-copy-btn { background: #e91e8c; border: none; color: #fff; font-size: 11px; font-weight: 700; border-radius: 8px; padding: 5px 12px; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+.pd-cs-terms { padding: 10px 16px 14px; border-top: 1px solid #f5f5f5; }
+.pd-cs-terms p { font-size: 11.5px; color: #777; line-height: 1.9; padding-left: 10px; position: relative; }
+.pd-cs-terms p::before { content: '•'; color: #e91e8c; position: absolute; left: 0; }
 /* Quantity selector row */
 .modal-qty-row {
   display: flex; align-items: center; gap: 10px;
@@ -3851,9 +3927,26 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .modal-price { color: #e91e8c; }
 [data-theme="dark"] .modal-orig { color: #555; }
 [data-theme="dark"] .size-label, [data-theme="dark"] .color-label { color: #aaa; }
-[data-theme="dark"] .size-btn { background: #222; color: #ccc; border-color: #333; }
-[data-theme="dark"] .size-btn.active { background: #e91e8c; color: #fff; border-color: #e91e8c; }
-[data-theme="dark"] .modal-section-title { color: #aaa; }
+[data-theme="dark"] .size-btn,
+[data-theme="dark"] .size-opt { background: #2a2a2a; color: #ccc; border-color: #3a3a3a; }
+[data-theme="dark"] .size-btn.active,
+[data-theme="dark"] .size-opt.active { background: linear-gradient(135deg,#e91e8c,#9b1dea); color: #fff; border-color: transparent; box-shadow: 0 5px 18px rgba(233,30,140,.4); }
+[data-theme="dark"] .size-opt:hover { background: #2d1420; border-color: #e91e8c; color: #e91e8c; }
+[data-theme="dark"] .color-opt.active { box-shadow: 0 0 0 2.5px #1a1a1a, 0 0 0 5px #e91e8c, 0 5px 18px rgba(233,30,140,.4); }
+[data-theme="dark"] .modal-section-title { color: #ddd; }
+[data-theme="dark"] .modal-section-title::before { background: linear-gradient(180deg,#e91e8c,#9b1dea); }
+[data-theme="dark"] .pd-coupon-row { background: #0a2010; border-color: #166534; }
+[data-theme="dark"] .pd-coupon-text { color: #6ee7b7; }
+[data-theme="dark"] .pd-coupon-sheet { background: #1a1a1a; }
+[data-theme="dark"] .pd-cs-title { color: #eee; }
+[data-theme="dark"] .pd-cs-card { border-color: #2a2a2a; }
+[data-theme="dark"] .pd-cs-card-top { background: linear-gradient(135deg,#1f0a0a,#1a1a1a); }
+[data-theme="dark"] .pd-cs-head-title { color: #eee; }
+[data-theme="dark"] .pd-cs-code-row { background: #222; border-color: #333; }
+[data-theme="dark"] .pd-cs-code { color: #eee; }
+[data-theme="dark"] .pd-cs-code-lbl { color: #888; }
+[data-theme="dark"] .pd-cs-terms { border-color: #2a2a2a; }
+[data-theme="dark"] .pd-cs-terms p { color: #888; }
 [data-theme="dark"] .modal-sheet { background: #111; }
 
 /* Payment modal */

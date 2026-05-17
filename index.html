@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=107" />
+  <link rel="stylesheet" href="styles.css?v=108" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -2041,10 +2041,21 @@
     <p class="site-footer-copy">© 2025 EX GLOBAL. All rights reserved.</p>
   </footer>
 
+  <!-- Product Coupon Sheet -->
+  <div class="pd-coupon-overlay" id="pdCouponOverlay" onclick="closePdCoupons()"></div>
+  <div class="pd-coupon-sheet" id="pdCouponSheet">
+    <div class="pd-cs-handle"></div>
+    <div class="pd-cs-header">
+      <span class="pd-cs-title">Available Coupons</span>
+      <button class="pd-cs-close" onclick="closePdCoupons()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div id="pdCouponList"></div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=110"></script>
+  <script src="script.js?v=111"></script>
 </body>
 </html>
