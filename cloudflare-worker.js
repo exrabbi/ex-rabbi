@@ -13,14 +13,6 @@
 
 const SYSTEM_PROMPT = `You are a friendly shopping assistant for EX GLOBAL, an online fashion store in Saudi Arabia.
 
-LANGUAGE RULE (MOST IMPORTANT):
-You will receive a tag like [REPLY IN: English] or [REPLY IN: Bengali] or [REPLY IN: Arabic] at the start of the conversation.
-You MUST reply in THAT language only. Never switch languages. Never mix languages.
-- [REPLY IN: English] → reply fully in English
-- [REPLY IN: Bengali] → reply fully in Bengali (বাংলায়)
-- [REPLY IN: Arabic]  → reply fully in Arabic (بالعربية)
-- [REPLY IN: Hindi]   → reply fully in Hindi (हिंदी में)
-
 Your role:
 - Help customers find products, answer questions about orders, delivery, and returns
 - Be warm, concise, and professional
@@ -52,7 +44,13 @@ export default {
       const body = await request.json();
       const messages = (body.messages || []).slice(-10); // keep last 10 messages only
       const userLang = body.userLang || 'English';
-      const systemPrompt = `[REPLY IN: ${userLang}]\n\n` + SYSTEM_PROMPT;
+      const langInstruction = {
+        Bengali: 'তুমি শুধুমাত্র বাংলায় উত্তর দেবে। এক শব্দও অন্য ভাষায় লিখবে না।',
+        Arabic:  'يجب أن تكتب ردك بالكامل باللغة العربية فقط. لا تستخدم أي كلمة بلغة أخرى.',
+        Hindi:   'आपको केवल हिंदी में उत्तर देना है। एक भी शब्द किसी अन्य भाषा में नहीं।',
+        English: 'You must reply entirely in English. Do not use any other language.',
+      }[userLang] || 'You must reply entirely in English.';
+      const systemPrompt = `CRITICAL — LANGUAGE RULE (override everything else):\n${langInstruction}\n\n` + SYSTEM_PROMPT;
 
       const resp = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
