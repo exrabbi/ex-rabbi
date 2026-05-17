@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=92" />
+  <link rel="stylesheet" href="styles.css?v=93" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -104,15 +104,28 @@
   <!-- Prevent Bengali flash; hard timeout ensures page never stays blank -->
   <script>
     document.documentElement.style.opacity='0';
-    setTimeout(function(){document.documentElement.style.opacity='1';},1500);
+    setTimeout(function(){document.documentElement.style.opacity='1';},2500);
   </script>
 </head>
 <body>
 
-<!-- ===== SPLASH SCREEN ===== -->
+<!-- ===== VIP SPLASH SCREEN ===== -->
 <div id="exSplash">
-  <img src="icon-512.png" alt="EX GLOBAL" class="exs-logo" />
-  <div class="exs-brand">EX GLOBAL</div>
+  <div class="exs-bg"></div>
+  <div class="exs-particles" id="exsParticles"></div>
+  <div class="exs-rings">
+    <div class="exs-ring exs-ring-1"></div>
+    <div class="exs-ring exs-ring-2"></div>
+    <div class="exs-ring exs-ring-3"></div>
+  </div>
+  <div class="exs-logo-wrap">
+    <div class="exs-logo-shine"></div>
+    <img src="icon-512.png" alt="EX GLOBAL" class="exs-logo" />
+  </div>
+  <div class="exs-crown">✦ VIP ✦</div>
+  <div class="exs-brand" id="exsBrand"></div>
+  <div class="exs-tagline">— Fashion · Saudi Arabia —</div>
+  <div class="exs-loader"><div class="exs-bar"></div></div>
 </div>
 
 <!-- Announcement Banner (controlled from Admin Panel) -->
@@ -1896,6 +1909,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=93"></script>
+  <script src="script.js?v=94"></script>
 </body>
 </html>
