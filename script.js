@@ -952,7 +952,41 @@ function renderCart() {
       vatRow.style.display = 'none';
     }
   }
-  // Remove any old address warning if still in DOM
+  // Delivery address strip — always show in cart footer
+  let addrStrip = document.getElementById('cartAddrStrip');
+  if (!addrStrip) {
+    addrStrip = document.createElement('div');
+    addrStrip.id = 'cartAddrStrip';
+    footer.insertBefore(addrStrip, footer.firstChild);
+  }
+  if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
+    addrStrip.className = 'cart-addr-strip cart-addr-strip--missing';
+    addrStrip.innerHTML = `
+      <div class="cas-left">
+        <i class="fas fa-location-dot cas-icon"></i>
+        <div>
+          <p class="cas-label">Delivery address required</p>
+          <p class="cas-sub">Add your address to place order</p>
+        </div>
+      </div>
+      <button class="cas-add-btn" onclick="closeCart();setTimeout(openLocation,300)">
+        Add <i class="fas fa-chevron-right"></i>
+      </button>`;
+  } else {
+    addrStrip.className = 'cart-addr-strip cart-addr-strip--set';
+    addrStrip.innerHTML = `
+      <div class="cas-left">
+        <i class="fas fa-circle-check cas-icon"></i>
+        <div>
+          <p class="cas-label">${savedLocation.name} · ${savedLocation.phone}</p>
+          <p class="cas-sub">${[savedLocation.city, savedLocation.area].filter(Boolean).join(', ')}</p>
+        </div>
+      </div>
+      <button class="cas-change-btn" onclick="closeCart();setTimeout(openLocation,300)">
+        Change
+      </button>`;
+  }
+  // Remove old-style warning if still present
   const _oldWarn = document.getElementById('cartAddrWarn');
   if (_oldWarn) _oldWarn.remove();
   if (footer) footer.style.display = 'block';
@@ -2016,6 +2050,13 @@ function whatsappCheckout() {
 }
 
 function codCheckout() {
+  // Re-validate location before placing order
+  if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
+    showToast('📍 Please add a delivery address first');
+    closePayment();
+    setTimeout(openLocation, 400);
+    return;
+  }
   if (cart.length === 0) return;
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
   const subtotalBase = cartSubtotalBase();
@@ -3032,10 +3073,10 @@ function openPayment() {
     setTimeout(openAuth, 400);
     return;
   }
-  // Block if no delivery address
-  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
-    showToast(t('locationRequired') || '📍 Please add a delivery address');
+  // Block if no delivery address (name + phone + city all required)
+  if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
     closeCart();
+    showToast('📍 ' + (t('locationRequired') || 'Add delivery address to continue'));
     setTimeout(openLocation, 400);
     return;
   }
