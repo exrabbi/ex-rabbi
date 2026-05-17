@@ -4107,22 +4107,26 @@ function markHelpful(btn) {
     });
   }
 
-  // ── Floating particles ──
+  // ── Floating gold particles (circles + diamonds) ──
   const pContainer = document.getElementById('exsParticles');
   if (pContainer) {
-    const colors = ['#e91e8c','#d4a017','#9b1dea','#ff69b4','#ffd700','#fff'];
-    for (let i = 0; i < 30; i++) {
+    const golds = ['#d4a017','#f0c040','#e8b520','#ffd700','rgba(255,215,0,.75)','rgba(212,160,23,.55)'];
+    for (let i = 0; i < 26; i++) {
       const p = document.createElement('div');
       p.className = 'exs-particle';
-      const size = Math.random() * 5 + 2;
+      const isDiamond = Math.random() > .5;
+      const size = isDiamond ? Math.random() * 4 + 3 : Math.random() * 3 + 2;
+      const color = golds[Math.floor(Math.random() * golds.length)];
       p.style.cssText = [
         `width:${size}px`, `height:${size}px`,
         `left:${Math.random() * 100}%`,
-        `top:${Math.random() * 100 + 60}%`,
-        `background:${colors[Math.floor(Math.random() * colors.length)]}`,
-        `opacity:${Math.random() * .6 + .2}`,
-        `animation-duration:${Math.random() * 5 + 4}s`,
-        `animation-delay:${Math.random() * 4}s`,
+        `top:${Math.random() * 80 + 55}%`,
+        `background:${color}`,
+        isDiamond ? 'border-radius:1px;transform:rotate(45deg)' : 'border-radius:50%',
+        `opacity:${Math.random() * .5 + .25}`,
+        `animation-duration:${Math.random() * 6 + 5}s`,
+        `animation-delay:${Math.random() * 5}s`,
+        `box-shadow:0 0 ${Math.ceil(size * 2)}px ${color}`,
       ].join(';');
       pContainer.appendChild(p);
     }
