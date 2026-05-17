@@ -652,6 +652,7 @@ const _CAT_STRIPS = [
   { cat:'kids',        icon:'👶', key:'catKids',       color:'#fff3e0' },
   { cat:'bags',        icon:'👜', key:'catBags',       color:'#efebe9' },
   { cat:'jewelry',     icon:'💍', key:'catJewelry',    color:'#fff8e1' },
+  { cat:'pets',        icon:'🐾', key:'catPets',       color:'#e8f5e9' },
 ];
 function renderCategoryStrips() {
   const container = document.getElementById('catShowcaseStrips');
@@ -1816,11 +1817,14 @@ function openModal(id) {
 function _openProductVideo(videoId) {
   const overlay = document.createElement('div');
   overlay.className = 'video-overlay';
+  const isLocal = videoId.match(/\.(mp4|webm|mov)(\?|$)/i);
+  const innerHtml = isLocal
+    ? `<video controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;border-radius:12px"><source src="${videoId}"/></video>`
+    : `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
   overlay.innerHTML = `
     <div class="video-container">
       <button class="video-close" onclick="this.closest('.video-overlay').remove()"><i class="fas fa-xmark"></i></button>
-      <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
-        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      ${innerHtml}
     </div>`;
   overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
   document.body.appendChild(overlay);

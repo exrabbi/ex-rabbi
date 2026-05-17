@@ -623,5 +623,41 @@ const PRODUCTS = [
     colors: ["#212121","#1565c0","#e91e8c","#4caf50"], sizes: ["One Size"],
     tag: "hot",
     names: { bn: "অ্যাডজাস্টেবল ডাম্বেল সেট - ২০kg", en: "Adjustable Dumbbell Set - 20kg", ar: "مجموعة دمبل قابلة للتعديل - 20 كجم", hi: "एडजस्टेबल डम्बल सेट - 20kg" }
+  },
+  {
+    id: 61, category: "pets", price: 79, originalPrice: 149, discount: 47,
+    image: "products/pet-belt/red.jpg",
+    rating: 4.9, ratingCount: 8765, sold: "42K+", stock: 200,
+    colors: ["#f44336","#00bcd4","#e91e8c","#212121","#4caf50","#2196f3","#607d3b"],
+    colorImages: [
+      "products/pet-belt/red.jpg",
+      "products/pet-belt/cyan.jpg",
+      "products/pet-belt/pink.jpg",
+      "products/pet-belt/black.jpg",
+      "products/pet-belt/green.jpg",
+      "products/pet-belt/blue.jpg",
+      "products/pet-belt/army.jpg"
+    ],
+    colorNames: ["Red","Cyan","Pink","Black","Bright Green","Blue","Army Green"],
+    sizes: ["Small","Medium","Large","X-Large"],
+    tag: "bestseller",
+    video: "products/pet-belt/video1.mp4",
+    extraImages: [
+      "products/pet-belt/red2.jpg",
+      "products/pet-belt/lifestyle1.jpg",
+      "products/pet-belt/lifestyle2.jpg",
+      "products/pet-belt/lifestyle3.jpg",
+      "products/pet-belt/lifestyle4.jpg",
+      "products/pet-belt/lifestyle5.jpg",
+      "products/pet-belt/lifestyle6.jpg",
+      "products/pet-belt/lifestyle7.jpg",
+      "products/pet-belt/lifestyle8.jpg"
+    ],
+    names: {
+      bn: "পোষা প্রাণীর গাড়ি সিট বেল্ট হার্নেস - ৭ রঙে পাওয়া যায়",
+      en: "Adjustable Pet Car Seat Belt Safety Harness - 7 Colors",
+      ar: "حزام أمان سيارة للحيوانات الأليفة قابل للتعديل - 7 ألوان",
+      hi: "पालतू जानवरों के लिए कार सीट बेल्ट हार्नेस - 7 रंग"
+    }
   }
 ];
