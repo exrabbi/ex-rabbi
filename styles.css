@@ -2292,6 +2292,40 @@ img { max-width: 100%; display: block; }
   padding: 14px 16px 20px; background: #fff;
   box-shadow: 0 -2px 12px rgba(0,0,0,.08);
 }
+.loc-save-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ff0d9a 0%, #d4008c 40%, #9415f5 100%);
+  background-size: 220% 220%;
+  animation: vipShimmer 3s ease infinite, vipPulse 2.4s ease-in-out infinite;
+  color: #fff; padding: 16px; border-radius: 50px;
+  font-size: 16px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  box-shadow: 0 6px 24px rgba(233,30,140,.5), 0 2px 8px rgba(148,21,245,.25);
+  position: relative; overflow: hidden;
+  border: 1.5px solid rgba(255,255,255,.22);
+  transition: transform .15s, box-shadow .15s;
+  text-shadow: 0 1px 6px rgba(0,0,0,.2);
+}
+.loc-save-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.loc-save-btn::after {
+  content: ''; position: absolute; top: 0; left: -80%;
+  width: 45%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,.35), transparent);
+  transform: skewX(-16deg);
+  animation: vipGloss 3.2s ease-in-out infinite 1s;
+  pointer-events: none;
+}
+.loc-save-btn i {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,.2); border: 1px solid rgba(255,255,255,.35);
+  font-size: 12px; flex-shrink: 0;
+}
+.loc-save-btn:active { transform: scale(.97); box-shadow: 0 3px 12px rgba(233,30,140,.35); }
 
 /* Manual form overlay */
 /* ===== AUTH MODAL ===== */
