@@ -673,7 +673,6 @@ function productCardHTML(p) {
         <div class="product-prices">
           <span class="price-current">${fmt(p.price)}</span>
           <span class="price-original">${fmt(p.originalPrice)}</span>
-          ${VAT_RATE > 0 ? `<span class="price-vat-badge"><i class="fas fa-receipt"></i>${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
@@ -1653,7 +1652,6 @@ function openModal(id) {
         <span class="modal-price-current">${fmt(p.price)}</span>
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
-        ${VAT_RATE > 0 ? `<span class="modal-vat-badge"><i class="fas fa-receipt"></i> ${(t('vatIncl')||'incl.{r}%VAT').replace('{r}',VAT_RATE)}</span>` : ''}
       </div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
