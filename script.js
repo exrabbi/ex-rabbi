@@ -316,6 +316,7 @@ function setLang(lang) {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
+  renderCategoryStrips();
   const si = document.getElementById('searchInput');
   renderProducts(si ? si.value : '');
   renderCart();
@@ -364,6 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
+  renderCategoryStrips();
   renderProducts();
   startHeroSlider();
   // Deep link: auto-open product from URL ?p=ID
@@ -636,6 +638,58 @@ function renderTrending() {
       </div>
     </div>
   `).join('');
+}
+
+/* ===== RENDER CATEGORY STRIPS ===== */
+const _CAT_STRIPS = [
+  { cat:'women',       icon:'👗', key:'catWomen',      color:'#fce4ec' },
+  { cat:'men',         icon:'👔', key:'catMen',        color:'#e3f2fd' },
+  { cat:'electronics', icon:'📱', key:'catElectronics',color:'#e8eaf6' },
+  { cat:'beauty',      icon:'💄', key:'catBeauty',     color:'#fce4ec' },
+  { cat:'shoes',       icon:'👠', key:'catShoes',      color:'#fff8e1' },
+  { cat:'sports',      icon:'🏋️', key:'catSports',    color:'#e8f5e9' },
+  { cat:'home',        icon:'🏠', key:'catHome',       color:'#f3e5f5' },
+  { cat:'kids',        icon:'👶', key:'catKids',       color:'#fff3e0' },
+  { cat:'bags',        icon:'👜', key:'catBags',       color:'#efebe9' },
+  { cat:'jewelry',     icon:'💍', key:'catJewelry',    color:'#fff8e1' },
+];
+function renderCategoryStrips() {
+  const container = document.getElementById('catShowcaseStrips');
+  if (!container) return;
+  container.innerHTML = _CAT_STRIPS.map(cfg => {
+    const prods = PRODUCTS.filter(p => p.category === cfg.cat).slice(0, 5);
+    if (!prods.length) return '';
+    const label = t(cfg.key) || cfg.key;
+    return `<div class="cat-strip" style="--cs-bg:${cfg.color}">
+      <div class="cat-strip-head">
+        <div class="cat-strip-title-row">
+          <span class="cat-strip-icon">${cfg.icon}</span>
+          <span class="cat-strip-title">${label}</span>
+        </div>
+        <button class="cat-strip-seeall" onclick="filterCategory('${cfg.cat}');document.querySelector('.tab-btn[data-tab=\\'products\\']')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">
+          ${t('seeAll')||'See All'} <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+      <div class="cat-strip-scroll">
+        ${prods.map(p => `
+          <div class="cat-strip-card" onclick="openModal(${p.id})">
+            <div class="cat-strip-img-wrap">
+              <img src="${p.image}" loading="lazy" alt="" onerror="this.src='https://picsum.photos/seed/p${p.id}/300/300'" />
+              <span class="cat-strip-disc">-${p.discount}%</span>
+              ${p.video ? `<div class="cat-strip-play"><i class="fas fa-play"></i></div>` : ''}
+            </div>
+            <div class="cat-strip-info">
+              <p class="cat-strip-name">${getName(p)}</p>
+              <div class="cat-strip-price">${fmt(p.price)}</div>
+              <div class="cat-strip-stars">★ ${p.rating} <span>(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span></div>
+            </div>
+          </div>`).join('')}
+        <div class="cat-strip-more" onclick="filterCategory('${cfg.cat}');document.querySelector('.tab-btn[data-tab=\\'products\\']')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">
+          <i class="fas fa-grip"></i><span>${t('seeAll')||'See All'}</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 /* ===== RENDER PRODUCTS ===== */
@@ -1724,6 +1778,9 @@ function openModal(id) {
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
         <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
       </div>
+      ${p.video ? `<button class="modal-video-btn" onclick="_openProductVideo('${p.video}')">
+        <i class="fas fa-play-circle"></i> <span data-i18n="watchVideo">Watch Video</span>
+      </button>` : ''}
       <!-- Share link bar -->
       <div class="modal-link-bar">
         <i class="fas fa-link modal-link-icon"></i>
@@ -1755,6 +1812,18 @@ function openModal(id) {
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+function _openProductVideo(videoId) {
+  const overlay = document.createElement('div');
+  overlay.className = 'video-overlay';
+  overlay.innerHTML = `
+    <div class="video-container">
+      <button class="video-close" onclick="this.closest('.video-overlay').remove()"><i class="fas fa-xmark"></i></button>
+      <iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
+        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>`;
+  overlay.onclick = e => { if (e.target === overlay) overlay.remove(); };
+  document.body.appendChild(overlay);
 }
 function _deliveryEstHTML() {
   const now = new Date();
