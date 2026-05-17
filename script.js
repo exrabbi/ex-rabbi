@@ -2615,61 +2615,134 @@ function _locSaveManual() {
 
 function _locSearchDebounce(val) {
   clearTimeout(_locSearchTimer);
-  if (!val.trim()) { document.getElementById('locSearchDrop').style.display = 'none'; return; }
-  _locSearchTimer = setTimeout(() => _locDoSearch(val), 500);
+  const drop = document.getElementById('locSearchDrop');
+  if (!val.trim()) { if (drop) drop.style.display = 'none'; return; }
+  // Show loading immediately
+  if (drop) {
+    drop.innerHTML = `<div class="loc-search-loading"><i class="fas fa-spinner fa-spin"></i> Searching…</div>`;
+    drop.style.display = 'block';
+  }
+  _locSearchTimer = setTimeout(() => _locDoSearch(val), 400);
 }
 
 function _locDoSearch(query) {
-  if (!query) query = document.getElementById('locSearchInput').value;
-  if (!query.trim()) return;
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&accept-language=en`)
-    .then(r => r.json())
+  if (!query) query = (document.getElementById('locSearchInput') || {}).value || '';
+  const q = query.trim();
+  if (!q) return;
+  const drop = document.getElementById('locSearchDrop');
+  if (!drop) return;
+
+  // Bias towards current map center for relevance
+  const bias = `&viewbox=${_locCurrLng - 1},${_locCurrLat + 1},${_locCurrLng + 1},${_locCurrLat - 1}&bounded=0`;
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=6&accept-language=ar,en${bias}`, {
+    headers: { 'Accept-Language': 'en' }
+  })
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(results => {
-      const drop = document.getElementById('locSearchDrop');
-      if (!results.length) { drop.style.display = 'none'; return; }
-      drop.innerHTML = results.map(r => `
-        <div class="loc-search-item" onclick="_locSelectResult(${r.lat},${r.lon})">
+      if (!results || !results.length) {
+        drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-search"></i> No results for "${q}"<br><small>Try a city name or street</small></div>`;
+        drop.style.display = 'block';
+        return;
+      }
+      drop.innerHTML = results.map(r => {
+        const parts = (r.display_name || '').split(',');
+        const main = parts.slice(0, 2).join(',').trim();
+        const sub  = parts.slice(2, 4).join(',').trim();
+        return `<div class="loc-search-item" onclick="_locSelectResult(${r.lat},${r.lon},\`${(r.display_name||'').replace(/`/g,"'").substring(0,100)}\`)">
           <i class="fas fa-location-dot"></i>
-          <span>${r.display_name}</span>
-        </div>`).join('');
+          <div class="loc-search-text">
+            <span class="loc-search-main">${main}</span>
+            ${sub ? `<span class="loc-search-sub">${sub}</span>` : ''}
+          </div>
+        </div>`;
+      }).join('');
       drop.style.display = 'block';
     })
-    .catch(() => {});
+    .catch(() => {
+      drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-wifi-slash"></i> Network error — try again</div>`;
+      drop.style.display = 'block';
+    });
 }
 
-function _locSelectResult(lat, lng) {
-  document.getElementById('locSearchDrop').style.display = 'none';
-  document.getElementById('locSearchInput').value = '';
-  if (locMap) locMap.setView([lat, lng], 16);
+function _locSelectResult(lat, lng, displayName) {
+  const drop = document.getElementById('locSearchDrop');
+  if (drop) drop.style.display = 'none';
+  const inp = document.getElementById('locSearchInput');
+  if (inp) inp.value = '';
+
+  lat = parseFloat(lat); lng = parseFloat(lng);
+  _locCurrLat = lat; _locCurrLng = lng;
+
+  // Immediately update address text
+  if (displayName) {
+    _locCurrentAddr = displayName;
+    const addrEl = document.getElementById('locAddrText');
+    if (addrEl) addrEl.textContent = displayName;
+  }
+
+  if (locMap) {
+    locMap.flyTo([lat, lng], 17, { duration: 1.2 });
+  } else {
+    _initLocMap();
+    setTimeout(() => { if (locMap) locMap.setView([lat, lng], 17); }, 700);
+  }
 }
 
 function useMyLocation() {
-  if (!navigator.geolocation) { showToast('GPS not available'); return; }
   const btn = document.getElementById('locGpsBtn');
   btn.classList.add('loading');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating…';
+
+  const _resetBtn = () => {
+    btn.classList.remove('loading');
+    btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
+  };
+
+  const _setPos = (lat, lng, zoom) => {
+    _locCurrLat = lat; _locCurrLng = lng;
+    if (!locMap) {
+      _initLocMap();
+      setTimeout(() => { if (locMap) locMap.flyTo([lat, lng], zoom || 17, { duration: 1.2 }); }, 700);
+    } else {
+      locMap.flyTo([lat, lng], zoom || 17, { duration: 1.2 });
+    }
+  };
+
+  if (!navigator.geolocation) {
+    _resetBtn();
+    _locFallbackIP();
+    return;
+  }
+
   navigator.geolocation.getCurrentPosition(
     pos => {
-      btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
-      const { latitude: lat, longitude: lng } = pos.coords;
-      _locCurrLat = lat; _locCurrLng = lng;
-      if (!locMap) {
-        // Map not ready yet — init and then center
-        _initLocMap();
-        setTimeout(() => { if (locMap) locMap.setView([lat, lng], 17); }, 600);
-        return;
-      }
-      locMap.setView([lat, lng], 17);
+      _resetBtn();
+      _setPos(pos.coords.latitude, pos.coords.longitude, 17);
     },
-    err => {
-      btn.classList.remove('loading');
-      btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
-      if (err.code === 1) showToast('⚠️ Allow location access in browser settings');
-      else showToast('Could not get your location. Try searching.');
+    () => {
+      _resetBtn();
+      // GPS denied/failed → silently fall back to IP
+      _locFallbackIP();
     },
-    { enableHighAccuracy: true, timeout: 12000 }
+    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
   );
+}
+
+function _locFallbackIP() {
+  // Try IP-based geolocation silently
+  fetch('https://ipapi.co/json/')
+    .then(r => r.json())
+    .then(d => {
+      if (d && d.latitude && d.longitude) {
+        const lat = parseFloat(d.latitude);
+        const lng = parseFloat(d.longitude);
+        _locCurrLat = lat; _locCurrLng = lng;
+        if (locMap) locMap.flyTo([lat, lng], 14, { duration: 1.5 });
+        else { _initLocMap(); setTimeout(() => { if (locMap) locMap.setView([lat, lng], 14); }, 700); }
+      }
+    })
+    .catch(() => {});
 }
 
 function closeLocation() {
