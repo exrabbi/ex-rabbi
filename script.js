@@ -5406,6 +5406,15 @@ const VSP_TRENDING = [
 ];
 
 function openVspPanel() {
+  // clean up old broken truncated-dataUrl history entries
+  try {
+    const h = JSON.parse(localStorage.getItem('exg_search_history') || '[]');
+    const cleaned = h.map(x => ({
+      term: x.term,
+      image: (x.image && !x.image.startsWith('color:') && !x.image.startsWith('data:')) ? '' : x.image
+    }));
+    localStorage.setItem('exg_search_history', JSON.stringify(cleaned));
+  } catch(e) {}
   document.getElementById('vspOverlay').classList.add('open');
   document.getElementById('vspPanel').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -5458,7 +5467,11 @@ function _vspSearch(q) {
 
   const res = document.getElementById('vspResults');
   if (!matches.length) {
-    res.innerHTML = `<div class="vsp-no-result"><i class="fas fa-search"></i><p>No products found for "${q}"</p></div>`;
+    res.innerHTML = `<div class="vsp-no-result">
+      <div class="vsp-no-result-icon"><i class="fas fa-box-open"></i></div>
+      <p class="vsp-no-result-title">Product Not Available</p>
+      <p class="vsp-no-result-sub">No products match "<strong>${q}</strong>" in our store</p>
+    </div>`;
     return;
   }
   res.innerHTML = matches.map(p => `
@@ -5504,14 +5517,21 @@ function _vspRenderRecent() {
   if (!section || !list) return;
   if (!h.length) { section.style.display = 'none'; return; }
   section.style.display = 'block';
-  list.innerHTML = h.map(item => `
-    <div class="vsp-recent-card" onclick="_vspDoTerm('${item.term.replace(/'/g,"\\'")}')">
-      ${item.image
-        ? `<img src="${item.image}" class="vsp-recent-img" loading="lazy" onerror="this.classList.add('vsp-recent-placeholder');this.innerHTML='<i class=\'fas fa-search\'></i>'" />`
-        : `<div class="vsp-recent-img vsp-recent-placeholder"><i class="fas fa-search"></i></div>`}
+  list.innerHTML = h.map(item => {
+    let thumb;
+    if (item.image && item.image.startsWith('color:')) {
+      const hex = item.image.slice(6);
+      thumb = `<div class="vsp-recent-img vsp-recent-swatch" style="background:${hex}"></div>`;
+    } else if (item.image && item.image.startsWith('data:')) {
+      thumb = `<img src="${item.image}" class="vsp-recent-img" loading="lazy" onerror="this.outerHTML='<div class=\\'vsp-recent-img vsp-recent-placeholder\\'><i class=\\'fas fa-search\\'></i></div>'" />`;
+    } else {
+      thumb = `<div class="vsp-recent-img vsp-recent-placeholder"><i class="fas fa-search"></i></div>`;
+    }
+    return `<div class="vsp-recent-card" onclick="_vspDoTerm('${item.term.replace(/'/g,"\\'")}')">
+      ${thumb}
       <span class="vsp-recent-term">${item.term}</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function _vspDoTerm(term) {
@@ -5638,7 +5658,8 @@ function _exvProcessImage(dataUrl) {
     else if (r > 180 && b > 140 && g < 100) colorName = 'pink';
     else colorName = 'beige';
     closeVision();
-    _vspSaveHistory(colorName, dataUrl.slice(0, 200));
+    const hexColor = '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+    _vspSaveHistory(colorName, 'color:' + hexColor);
     openVspPanel();
     setTimeout(() => _vspDoTerm(colorName), 150);
   };
