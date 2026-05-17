@@ -1276,6 +1276,8 @@ img { max-width: 100%; display: block; }
   box-shadow: 0 5px 18px rgba(233,30,140,.48);
   transform: translateY(-2px) scale(1.04);
 }
+.color-label-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0; }
+.color-selected-label { font-size: 12px; color: #888; font-weight: 600; }
 .color-opt {
   width: 42px; height: 42px; border-radius: 50%;
   border: 2.5px solid transparent; cursor: pointer;
@@ -1287,6 +1289,25 @@ img { max-width: 100%; display: block; }
   transform: scale(1.18);
 }
 .color-opt:hover { transform: scale(1.13); box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+/* Image thumbnail color selector (AliExpress style) */
+.color-img-opt {
+  width: 60px; height: 60px; border-radius: 10px; overflow: hidden;
+  border: 2px solid #e5e5e5; cursor: pointer; flex-shrink: 0;
+  transition: all .2s cubic-bezier(.34,1.5,.64,1);
+  position: relative;
+}
+.color-img-opt img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.color-img-opt.active {
+  border-color: #e91e8c; border-width: 2.5px;
+  box-shadow: 0 3px 14px rgba(233,30,140,.38);
+  transform: scale(1.06);
+}
+.color-img-opt.active::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(233,30,140,.08); border-radius: inherit;
+  pointer-events: none;
+}
+.color-img-opt:hover { transform: scale(1.04); }
 
 /* Product page coupon pill */
 .pd-coupon-row {
@@ -2066,6 +2087,23 @@ img { max-width: 100%; display: block; }
 @keyframes pinBob {
   0%,100% { transform: translateY(0); }
   50%      { transform: translateY(-5px); }
+}
+/* Blue GPS "you are here" dot */
+.loc-user-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #1a73e8;
+  border: 2.5px solid #fff;
+  box-shadow: 0 1px 6px rgba(26,115,232,.5);
+  position: relative; z-index: 1;
+}
+.loc-user-dot-ring {
+  position: absolute; inset: -6px; border-radius: 50%;
+  background: rgba(26,115,232,.18);
+  animation: gpsDotPulse 2s ease-in-out infinite;
+}
+@keyframes gpsDotPulse {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.55); opacity: 0; }
 }
 .loc-pin-shadow {
   width: 14px; height: 6px; border-radius: 50%;

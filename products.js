@@ -88,6 +88,13 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
     rating: 4.6, ratingCount: 2100, sold: "9K+", stock: 1,
     colors: ["#ffffff","#212121","#f44336","#1565c0"], sizes: ["38","39","40","41","42","43","44"], tag: "bestseller",
+    colorImages: [
+      "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&q=80",
+      "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=120&q=80",
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=120&q=80",
+      "https://images.unsplash.com/photo-1514989940723-e8e51635b782?w=120&q=80"
+    ],
+    colorNames: ["White","Black","Red","Blue"],
     names: { bn: "ক্যাজুয়াল স্নিকার - কমফোর্ট কালেকশন", en: "Casual Sneaker - Comfort Collection", ar: "حذاء سنيكر كاجوال - كولكشن مريح", hi: "कैज़ुअल स्नीकर - कम्फर्ट कलेक्शन" }
   },
   {
@@ -95,6 +102,12 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&q=80",
     rating: 4.5, ratingCount: 900, sold: "4K+", stock: 9,
     colors: ["#212121","#795548","#ffd700"], sizes: ["36","37","38","39","40"], tag: "new",
+    colorImages: [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=120&q=80",
+      "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=120&q=80",
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=120&q=80"
+    ],
+    colorNames: ["Black","Brown","Gold"],
     names: { bn: "হিল স্যান্ডেল - পার্টি ওয়্যার", en: "Heel Sandal - Party Wear", ar: "صندل بكعب - ملابس الحفلات", hi: "हील सैंडल - पार्टी वेयर" }
   },
   {
@@ -102,6 +115,12 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=400&q=80",
     rating: 4.8, ratingCount: 1600, sold: "6K+", stock: 2,
     colors: ["#795548","#212121","#c2185b"], sizes: ["One Size"], tag: "hot",
+    colorImages: [
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=120&q=80",
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=120&q=80",
+      "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=120&q=80"
+    ],
+    colorNames: ["Brown","Black","Pink"],
     names: { bn: "লেদার টোট ব্যাগ - ওয়ার্কপ্লেস এসেনশিয়াল", en: "Leather Tote Bag - Workplace Essential", ar: "حقيبة توت جلدية - أساسيات العمل", hi: "लेदर टोट बैग - वर्कप्लेस एसेंशियल" }
   },
   {

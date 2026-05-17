@@ -1684,9 +1684,15 @@ function openModal(id) {
       <div class="size-options">
         ${p.sizes.map(s => `<div class="size-opt ${s===selectedSize?'active':''}" onclick="selectSize('${s}',this)">${s}</div>`).join('')}
       </div>
-      <p class="modal-section-title">${t('colorSelect')}</p>
+      <div class="color-label-row">
+        <p class="modal-section-title">${t('colorSelect')}</p>
+        <span class="color-selected-label" id="colorSelectedLabel">${p.colorNames ? p.colorNames[0] || '' : ''}</span>
+      </div>
       <div class="color-options">
-        ${p.colors.map((c,i) => `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this)"></div>`).join('')}
+        ${p.colors.map((c,i) => p.colorImages && p.colorImages[i]
+          ? `<div class="color-img-opt ${i===0?'active':''}" onclick="selectColor('${c}',this,${p.id},${i})" data-img="${p.colorImages[i]}" data-name="${p.colorNames?.[i]||''}"><img src="${p.colorImages[i]}" alt="" loading="lazy" /></div>`
+          : `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this,${p.id},-1)"></div>`
+        ).join('')}
       </div>
       <div class="modal-divider"></div>
       ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
@@ -1809,10 +1815,19 @@ function selectSize(size, el) {
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
 }
-function selectColor(color, el) {
+function selectColor(color, el, productId, imgIdx) {
   selectedColor = color;
-  document.querySelectorAll('.color-opt').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.color-opt, .color-img-opt').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
+  // Update color name label
+  const nameEl = document.getElementById('colorSelectedLabel');
+  if (nameEl) nameEl.textContent = el.dataset.name || '';
+  // If image thumbnail selected, update the main modal product image
+  if (imgIdx >= 0) {
+    const imgSrc = el.dataset.img;
+    const mainImg = document.getElementById('modalMainImg');
+    if (mainImg && imgSrc) mainImg.src = imgSrc;
+  }
 }
 function modalToggleWish(id) {
   const btn = document.getElementById('modalWishBtn');
@@ -2519,7 +2534,22 @@ function _initLocMap() {
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
   locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
     .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd' }).addTo(locMap);
+  // Use standard OSM tiles for Arabic (shows native Arabic labels in Saudi Arabia)
+  // Use CartoDB Voyager for other languages (cleaner look with transliterated names)
+  const tileUrl = currentLang === 'ar'
+    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+  const tileOpts = currentLang === 'ar'
+    ? { maxZoom: 19 }
+    : { maxZoom: 19, subdomains: 'abcd' };
+  L.tileLayer(tileUrl, tileOpts).addTo(locMap);
+  // Silently try GPS to place blue dot (does not move map)
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => _locShowUserDot(pos.coords.latitude, pos.coords.longitude),
+      () => {}, { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 }
+    );
+  }
 
   locMap.on('movestart', () => {
     const pin = document.getElementById('locPinWrap');
@@ -2534,6 +2564,22 @@ function _initLocMap() {
   });
 
   _locReverseGeocode(defaultLat, defaultLng);
+}
+
+let _locUserDot = null;
+function _locShowUserDot(lat, lng) {
+  if (!window.L) return;
+  const dotIcon = L.divIcon({
+    className: '',
+    html: '<div class="loc-user-dot"><div class="loc-user-dot-ring"></div></div>',
+    iconSize: [20, 20], iconAnchor: [10, 10]
+  });
+  const addDot = () => {
+    if (!locMap) return;
+    if (_locUserDot) locMap.removeLayer(_locUserDot);
+    _locUserDot = L.marker([lat, lng], { icon: dotIcon, zIndexOffset: -50, interactive: false }).addTo(locMap);
+  };
+  if (locMap) addDot(); else setTimeout(addDot, 800);
 }
 
 let _locNearbyAddrs = [];
@@ -2789,6 +2835,7 @@ function useMyLocation() {
   navigator.geolocation.getCurrentPosition(
     pos => {
       _resetBtn();
+      _locShowUserDot(pos.coords.latitude, pos.coords.longitude);
       _setPos(pos.coords.latitude, pos.coords.longitude, 17);
     },
     () => {
