@@ -2390,8 +2390,10 @@ function closeSettings() {
 }
 
 /* ===== LOCATION / ADDRESS SYSTEM ===== */
-let savedLocation = JSON.parse(localStorage.getItem('shopbd_location') || 'null');
+let savedLocation = JSON.parse(localStorage.getItem('exglobal_location') || 'null');
 let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
+let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
+let _locGeocodeTimer = null;
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
@@ -2401,52 +2403,72 @@ function openLocation() {
 }
 
 function _initLocMap() {
-  if (!window.L) return;
+  if (!window.L) { showToast('Map loading, please wait…'); setTimeout(_initLocMap, 800); return; }
   if (locMap) { locMap.invalidateSize(); return; }
   const defaultLat = savedLocation?.lat || 24.7136;
   const defaultLng = savedLocation?.lng || 46.6753;
+  _locCurrLat = defaultLat; _locCurrLng = defaultLng;
   locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
     .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
-  // Reverse geocode on map stop moving
+
+  // Animate pin while dragging
+  locMap.on('movestart', () => {
+    const pin = document.getElementById('locPinWrap');
+    if (pin) pin.style.transform = 'translate(-50%,-110%) scale(1.18)';
+  });
   locMap.on('moveend', () => {
+    const pin = document.getElementById('locPinWrap');
+    if (pin) pin.style.transform = 'translate(-50%,-100%)';
     const c = locMap.getCenter();
+    _locCurrLat = c.lat; _locCurrLng = c.lng;
     _locReverseGeocode(c.lat, c.lng);
   });
-  // Initial reverse geocode
+
   _locReverseGeocode(defaultLat, defaultLng);
 }
 
 function _locReverseGeocode(lat, lng) {
+  clearTimeout(_locGeocodeTimer);
   const addrEl = document.getElementById('locAddrText');
-  if (addrEl) addrEl.textContent = 'Finding address…';
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
-    .then(r => r.json())
-    .then(data => {
-      const a = data.address || {};
-      const parts = [
-        a.house_number, a.road,
-        a.suburb || a.neighbourhood,
-        a.city || a.town || a.village || a.county,
-        a.country
-      ].filter(Boolean);
-      _locCurrentAddr = parts.join(', ') || data.display_name || '';
-      _locCurrLat = lat; _locCurrLng = lng;
-      _locCurrData = a;
-      if (addrEl) addrEl.textContent = _locCurrentAddr;
-    })
-    .catch(() => { if (addrEl) addrEl.textContent = 'Could not detect address'; });
+  if (addrEl) addrEl.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#e91e8c;margin-right:6px"></i>Finding address…';
+  _locGeocodeTimer = setTimeout(() => {
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
+      .then(r => r.json())
+      .then(data => {
+        const a = data.address || {};
+        const parts = [
+          a.house_number, a.road,
+          a.suburb || a.neighbourhood,
+          a.city || a.town || a.village || a.county,
+          a.country
+        ].filter(Boolean);
+        _locCurrentAddr = parts.join(', ') || data.display_name || '';
+        _locCurrLat = lat; _locCurrLng = lng;
+        _locCurrData = a;
+        if (addrEl) addrEl.textContent = _locCurrentAddr;
+      })
+      .catch(() => {
+        if (addrEl) addrEl.textContent = 'Could not detect address. Try searching.';
+      });
+  }, 300);
 }
 
-let _locCurrLat = null, _locCurrLng = null, _locCurrData = {};
-
 function _locConfirmMap() {
-  if (!_locCurrentAddr) { showToast('Move the map to select your address'); return; }
+  const addrEl = document.getElementById('locAddrText');
+  const currentText = addrEl ? addrEl.textContent : '';
+  if (currentText.includes('Finding') || currentText.includes('spinner')) {
+    showToast('Please wait, finding address…'); return;
+  }
+  if (!_locCurrentAddr && !currentText.includes('address')) {
+    showToast('Move the map to select your address'); return;
+  }
+  const addr = _locCurrentAddr || currentText;
   const a = _locCurrData;
   if (!savedLocation) savedLocation = {};
   savedLocation.lat = _locCurrLat;
   savedLocation.lng = _locCurrLng;
-  savedLocation.address = _locCurrentAddr;
+  savedLocation.address = addr;
   savedLocation.city = a.city || a.town || a.village || a.county || '';
   savedLocation.area = a.suburb || a.neighbourhood || a.district || '';
   localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
@@ -2512,15 +2534,22 @@ function useMyLocation() {
       btn.classList.remove('loading');
       btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
       const { latitude: lat, longitude: lng } = pos.coords;
-      if (!locMap) { _initLocMap(); return; }
+      _locCurrLat = lat; _locCurrLng = lng;
+      if (!locMap) {
+        // Map not ready yet — init and then center
+        _initLocMap();
+        setTimeout(() => { if (locMap) locMap.setView([lat, lng], 17); }, 600);
+        return;
+      }
       locMap.setView([lat, lng], 17);
     },
-    () => {
+    err => {
       btn.classList.remove('loading');
       btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
-      showToast('Enable location permission');
+      if (err.code === 1) showToast('⚠️ Allow location access in browser settings');
+      else showToast('Could not get your location. Try searching.');
     },
-    { enableHighAccuracy: true, timeout: 10000 }
+    { enableHighAccuracy: true, timeout: 12000 }
   );
 }
 
@@ -2545,7 +2574,7 @@ function saveLocation() {
   const lat = savedLocation && savedLocation.lat ? savedLocation.lat : null;
   const lng = savedLocation && savedLocation.lng ? savedLocation.lng : null;
   savedLocation = { name, phone, city, area, address, lat, lng };
-  localStorage.setItem('shopbd_location', JSON.stringify(savedLocation));
+  localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
   refreshMeAddress();
   showToast(t('addressSaved'));
   closeLocation();
