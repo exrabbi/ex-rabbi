@@ -298,6 +298,8 @@ function applyTranslations() {
   });
 }
 
+const _langLabels = { bn: 'বাংলা', en: 'English', ar: 'العربية', hi: 'हिन्दी' };
+
 function setLang(lang) {
   currentLang = lang;
   localStorage.setItem('exg_lang', lang);
@@ -307,6 +309,8 @@ function setLang(lang) {
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === lang);
   });
+  const lbl = document.getElementById('curLangLabel');
+  if (lbl) lbl.textContent = _langLabels[lang] || lang;
   applyTranslations();
   _applySocialLinks();
   renderFlashDeals();
@@ -319,6 +323,25 @@ function setLang(lang) {
   const ec = document.getElementById('revEntryCount');
   const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
   if (ec) ec.textContent = (stored.length + 4871).toLocaleString() + ' ' + (t('reviewsLabel')||'reviews');
+}
+
+function openLangPicker() {
+  document.getElementById('langSheetOverlay').classList.add('open');
+  document.getElementById('langSheet').classList.add('open');
+  // highlight active language
+  document.querySelectorAll('.lang-sheet-row').forEach(row => {
+    row.classList.toggle('active', row.dataset.lang === currentLang);
+  });
+}
+
+function closeLangPicker() {
+  document.getElementById('langSheetOverlay').classList.remove('open');
+  document.getElementById('langSheet').classList.remove('open');
+}
+
+function pickLang(lang) {
+  setLang(lang);
+  closeLangPicker();
 }
 
 function _revealPage() {

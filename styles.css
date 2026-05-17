@@ -1901,6 +1901,58 @@ img { max-width: 100%; display: block; }
 .settings-item > span { flex: 1; font-size: 14px; color: #222; font-weight: 500; }
 .settings-item > i:last-child { color: #ccc; font-size: 12px; }
 .settings-val { font-size: 13px; color: #888; }
+
+/* ===== LANGUAGE PICKER SHEET ===== */
+.lang-sheet-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.45); z-index: 500;
+  backdrop-filter: blur(4px);
+}
+.lang-sheet-overlay.open { display: block; }
+.lang-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  z-index: 501; border-radius: 22px 22px 0 0;
+  background: #fff;
+  padding: 0 0 32px;
+  transform: translateY(110%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 -4px 40px rgba(0,0,0,.14);
+}
+.lang-sheet.open { transform: translateY(0); }
+.lang-sheet-handle {
+  width: 40px; height: 4px; border-radius: 4px;
+  background: #e0e0e0; margin: 12px auto 4px;
+}
+.lang-sheet-title {
+  text-align: center; font-size: 15px; font-weight: 700; color: #111;
+  padding: 10px 20px 16px; border-bottom: 1px solid #f0f0f0;
+}
+.lang-sheet-list { padding: 8px 0; }
+.lang-sheet-row {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 15px 22px; background: none; border: none;
+  text-align: left; cursor: pointer;
+  transition: background .15s;
+}
+[dir="rtl"] .lang-sheet-row { text-align: right; }
+.lang-sheet-row:active { background: #fdf0f7; }
+.lang-sheet-row.active { background: #fdf0f7; }
+.lang-sheet-flag { font-size: 26px; line-height: 1; flex-shrink: 0; }
+.lang-sheet-name { font-size: 16px; font-weight: 700; color: #111; flex: 1; }
+.lang-sheet-native { font-size: 12px; color: #999; font-weight: 500; }
+.lang-sheet-check {
+  font-size: 16px; color: #e91e8c;
+  opacity: 0; transition: opacity .15s;
+}
+.lang-sheet-row.active .lang-sheet-check { opacity: 1; }
+
+[data-theme="dark"] .lang-sheet { background: #1a1a1a; }
+[data-theme="dark"] .lang-sheet-title { color: #eee; border-color: #2a2a2a; }
+[data-theme="dark"] .lang-sheet-name { color: #eee; }
+[data-theme="dark"] .lang-sheet-row:active { background: #2a1420; }
+[data-theme="dark"] .lang-sheet-row.active { background: #2a1420; }
+[data-theme="dark"] .lang-sheet-handle { background: #333; }
+
 /* Sound toggle switch */
 .snd-toggle {
   width: 44px; height: 26px; border-radius: 13px;
