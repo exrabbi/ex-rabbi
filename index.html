@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=112" />
+  <link rel="stylesheet" href="styles.css?v=113" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1641,7 +1641,6 @@
       </div>
       <div class="loc-nearby-list" id="locNearbyList" style="display:none"></div>
       <button class="loc-confirm-btn" onclick="_locOpenDetails()"><i class="fas fa-check-circle"></i> Confirm location</button>
-      <button class="loc-manual-btn" onclick="_locShowManual()">Enter address manually <i class="fas fa-chevron-right"></i></button>
     </div>
 
     <!-- STEP 2: Address Details -->
@@ -1698,22 +1697,6 @@
       </div>
     </div>
 
-    <!-- Manual entry fallback -->
-    <div class="loc-manual-form" id="locManualForm" style="display:none">
-      <div class="loc-mf-head">
-        <button onclick="_locHideManual()"><i class="fas fa-chevron-left"></i></button>
-        <span>Enter address manually</span>
-        <div></div>
-      </div>
-      <div class="loc-body">
-        <div class="loc-field"><label>Full name</label><input type="text" id="locNameM" placeholder="Your name" /></div>
-        <div class="loc-field"><label>Phone</label><input type="tel" id="locPhoneM" placeholder="+966 XXX XXX XXXX" /></div>
-        <div class="loc-field"><label>City</label><input type="text" id="locCityM" placeholder="e.g. Riyadh, Jeddah…" /></div>
-        <div class="loc-field"><label>Area</label><input type="text" id="locAreaM" placeholder="Area name" /></div>
-        <div class="loc-field"><label>Street / Detail</label><textarea id="locAddressM" rows="3" placeholder="Street name, building, flat…"></textarea></div>
-        <button class="loc-save-btn" onclick="_locSaveManual()"><i class="fas fa-check"></i> Save address</button>
-      </div>
-    </div>
   </div>
 
   <div class="toast" id="toast"></div>
@@ -2058,6 +2041,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=113"></script>
+  <script src="script.js?v=114"></script>
 </body>
 </html>

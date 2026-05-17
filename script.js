@@ -2499,8 +2499,6 @@ function openLocation() {
   // Reset step 2 and manual form on open
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
-  const mf = document.getElementById('locManualForm');
-  if (mf) mf.style.display = 'none';
   setTimeout(_initLocMap, 350);
 }
 
@@ -2686,38 +2684,6 @@ function _locAddTag() {
   _locRenderTags();
 }
 
-function _locShowManual() {
-  const mf = document.getElementById('locManualForm');
-  if (!mf) return;
-  mf.style.display = 'flex';
-  mf.style.flexDirection = 'column';
-  if (savedLocation) {
-    document.getElementById('locNameM').value = savedLocation.name || '';
-    document.getElementById('locPhoneM').value = savedLocation.phone || '';
-    document.getElementById('locCityM').value = savedLocation.city || '';
-    document.getElementById('locAreaM').value = savedLocation.area || '';
-    document.getElementById('locAddressM').value = savedLocation.address || '';
-  }
-}
-function _locHideManual() {
-  document.getElementById('locManualForm').style.display = 'none';
-}
-
-function _locSaveManual() {
-  const name = document.getElementById('locNameM').value.trim();
-  const phone = document.getElementById('locPhoneM').value.trim();
-  const city = document.getElementById('locCityM').value.trim();
-  const area = document.getElementById('locAreaM').value.trim();
-  const address = document.getElementById('locAddressM').value.trim();
-  if (!name) { showToast('Please enter full name'); document.getElementById('locNameM').focus(); return; }
-  if (!phone) { showToast('Please enter phone number'); document.getElementById('locPhoneM').focus(); return; }
-  if (!city) { showToast('Please enter city'); document.getElementById('locCityM').focus(); return; }
-  if (!address) { showToast('Please enter street / address detail'); document.getElementById('locAddressM').focus(); return; }
-  savedLocation = { name, phone, city, area, address, type: _locAddrType, lat: _locCurrLat, lng: _locCurrLng };
-  localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
-  refreshMeAddress(); closeLocation(); showToast('✅ Address saved!');
-}
-
 function _locSearchDebounce(val) {
   clearTimeout(_locSearchTimer);
   const drop = document.getElementById('locSearchDrop');
@@ -2869,8 +2835,6 @@ function closeLocation() {
   document.getElementById('locModal').classList.remove('open');
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
-  const mf = document.getElementById('locManualForm');
-  if (mf) mf.style.display = 'none';
   const drop = document.getElementById('locSearchDrop');
   if (drop) drop.style.display = 'none';
   const input = document.getElementById('locSearchInput');
