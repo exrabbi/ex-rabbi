@@ -2487,6 +2487,9 @@ function _locOpenDetails() {
 
   _locRenderTags();
   det.style.display = 'flex';
+  // Hide map UI elements that bleed through
+  const toast = document.getElementById('locMapToast');
+  if (toast) toast.style.display = 'none';
   // Auto-focus name field if empty
   const nameEl = document.getElementById('locName');
   if (nameEl && !nameEl.value) setTimeout(() => nameEl.focus(), 300);
