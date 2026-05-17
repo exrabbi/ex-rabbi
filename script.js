@@ -2521,7 +2521,7 @@ function _initLocMap() {
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
   locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
     .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 19, subdomains: 'abcd' }).addTo(locMap);
 
   locMap.on('movestart', () => {
     const pin = document.getElementById('locPinWrap');
@@ -2538,6 +2538,7 @@ function _initLocMap() {
   _locReverseGeocode(defaultLat, defaultLng);
 }
 
+let _locNearbyAddrs = [];
 function _locReverseGeocode(lat, lng) {
   clearTimeout(_locGeocodeTimer);
   _locGeocoding = true;
@@ -2545,22 +2546,47 @@ function _locReverseGeocode(lat, lng) {
   _locCurrData = {};
   const addrEl = document.getElementById('locAddrText');
   if (addrEl) addrEl.innerHTML = '<i class="fas fa-spinner fa-spin" style="color:#e91e8c;margin-right:6px"></i>Finding address…';
+  const labelEl = document.getElementById('locPinLabel');
+  if (labelEl) { labelEl.textContent = ''; labelEl.classList.remove('show'); }
+  const nearbyEl = document.getElementById('locNearbyList');
+  if (nearbyEl) nearbyEl.style.display = 'none';
+
   _locGeocodeTimer = setTimeout(() => {
     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
       .then(r => r.json())
       .then(data => {
         _locGeocoding = false;
         const a = data.address || {};
-        const parts = [
-          a.house_number, a.road,
-          a.suburb || a.neighbourhood,
-          a.city || a.town || a.village || a.county,
-          a.country
-        ].filter(Boolean);
-        _locCurrentAddr = parts.join(', ') || data.display_name || '';
+        const precise = [a.house_number, a.road, a.suburb || a.neighbourhood,
+          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
+        const street  = [a.road, a.suburb || a.neighbourhood,
+          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
+        const area    = [a.suburb || a.neighbourhood,
+          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
+
+        _locCurrentAddr = precise || data.display_name || '';
         _locCurrLat = lat; _locCurrLng = lng;
         _locCurrData = a;
+
         if (addrEl) addrEl.textContent = _locCurrentAddr || 'Address found';
+
+        // Pin label callout
+        if (labelEl && _locCurrentAddr) {
+          labelEl.textContent = _locCurrentAddr;
+          labelEl.classList.add('show');
+        }
+
+        // Build nearby variants list
+        _locNearbyAddrs = [precise, street, area]
+          .filter((v, i, arr) => v && arr.indexOf(v) === i);
+        if (nearbyEl && _locNearbyAddrs.length > 1) {
+          nearbyEl.style.display = 'block';
+          nearbyEl.innerHTML = _locNearbyAddrs.map((addr, i) => `
+            <div class="loc-nearby-item${i === 0 ? ' active' : ''}" onclick="_locSelectNearby(${i})">
+              <div class="loc-nearby-radio"></div>
+              <span class="loc-nearby-addr">${addr}</span>
+            </div>`).join('');
+        }
       })
       .catch(() => {
         _locGeocoding = false;
@@ -2568,6 +2594,19 @@ function _locReverseGeocode(lat, lng) {
         if (addrEl) addrEl.textContent = 'Could not detect address. Try searching.';
       });
   }, 300);
+}
+
+function _locSelectNearby(idx) {
+  if (!_locNearbyAddrs[idx]) return;
+  _locCurrentAddr = _locNearbyAddrs[idx];
+  const addrEl = document.getElementById('locAddrText');
+  if (addrEl) addrEl.textContent = _locCurrentAddr;
+  const labelEl = document.getElementById('locPinLabel');
+  if (labelEl) { labelEl.textContent = _locCurrentAddr; labelEl.classList.add('show'); }
+  const nearbyEl = document.getElementById('locNearbyList');
+  if (nearbyEl) nearbyEl.querySelectorAll('.loc-nearby-item').forEach((el, i) => {
+    el.classList.toggle('active', i === idx);
+  });
 }
 
 let _locAddrType = 'home', _locTagSelected = '';
