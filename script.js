@@ -3839,15 +3839,56 @@ function markHelpful(btn) {
 
 /* ===== SPLASH SCREEN ===== */
 (function initSplash() {
+  // ── Letter-by-letter brand name ──
+  const brandEl = document.getElementById('exsBrand');
+  if (brandEl) {
+    const text = 'EX GLOBAL';
+    let delay = 1.4;
+    text.split('').forEach(ch => {
+      if (ch === ' ') {
+        const sp = document.createElement('span');
+        sp.className = 'exs-space';
+        brandEl.appendChild(sp);
+      } else {
+        const sp = document.createElement('span');
+        sp.textContent = ch;
+        sp.style.animationDelay = delay + 's';
+        delay += 0.1;
+        brandEl.appendChild(sp);
+      }
+    });
+  }
+
+  // ── Floating particles ──
+  const pContainer = document.getElementById('exsParticles');
+  if (pContainer) {
+    const colors = ['#e91e8c','#d4a017','#9b1dea','#ff69b4','#ffd700','#fff'];
+    for (let i = 0; i < 30; i++) {
+      const p = document.createElement('div');
+      p.className = 'exs-particle';
+      const size = Math.random() * 5 + 2;
+      p.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `left:${Math.random() * 100}%`,
+        `top:${Math.random() * 100 + 60}%`,
+        `background:${colors[Math.floor(Math.random() * colors.length)]}`,
+        `opacity:${Math.random() * .6 + .2}`,
+        `animation-duration:${Math.random() * 5 + 4}s`,
+        `animation-delay:${Math.random() * 4}s`,
+      ].join(';');
+      pContainer.appendChild(p);
+    }
+  }
+
   function hideSplash() {
     const s = document.getElementById('exSplash');
-    if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 700); }
+    if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 900); }
   }
-  const t = setTimeout(hideSplash, 3500);
+  const t = setTimeout(hideSplash, 5000);
   window.addEventListener('load', () => {
     if (document.readyState === 'complete') {
       clearTimeout(t);
-      setTimeout(hideSplash, 3000);
+      setTimeout(hideSplash, 4500);
     }
   });
 })();
