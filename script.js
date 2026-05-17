@@ -750,10 +750,7 @@ function setupEvents() {
   }
 
   document.getElementById('searchToggleBtn').addEventListener('click', () => {
-    document.getElementById('searchBar').classList.toggle('open');
-    if (document.getElementById('searchBar').classList.contains('open')) {
-      document.getElementById('searchInput').focus();
-    }
+    openVspPanel();
   });
   document.getElementById('searchInput').addEventListener('input', e => {
     const q = e.target.value.trim();
@@ -955,25 +952,9 @@ function renderCart() {
       vatRow.style.display = 'none';
     }
   }
-  // Address warning strip
-  let addrWarn = document.getElementById('cartAddrWarn');
-  if (!addrWarn) {
-    addrWarn = document.createElement('div');
-    addrWarn.id = 'cartAddrWarn';
-    addrWarn.className = 'cart-addr-warn';
-    addrWarn.onclick = () => { closeCart(); setTimeout(openLocation, 300); };
-    footer.insertBefore(addrWarn, footer.firstChild);
-  }
-  if (!savedLocation || !savedLocation.city || !savedLocation.name) {
-    addrWarn.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${t('locationRequired') || 'Add delivery address'}`;
-    addrWarn.style.display = 'flex';
-  } else {
-    addrWarn.innerHTML = `<i class="fas fa-location-dot"></i> ${[savedLocation.name, savedLocation.city].filter(Boolean).join(' · ')} <span style="margin-left:auto;font-size:10px;opacity:.6">${t('change')||'Change'}</span>`;
-    addrWarn.style.display = 'flex';
-    addrWarn.style.background = '#e8f5e9';
-    addrWarn.style.color = '#2e7d32';
-    addrWarn.style.borderColor = '#c8e6c9';
-  }
+  // Remove any old address warning if still in DOM
+  const _oldWarn = document.getElementById('cartAddrWarn');
+  if (_oldWarn) _oldWarn.remove();
   if (footer) footer.style.display = 'block';
 }
 function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
@@ -5121,3 +5102,251 @@ function _logSignIn(device) {
     }
   }
 })();
+
+/* ===================================================
+   VIP SEARCH PANEL
+   =================================================== */
+const VSP_TRENDING = [
+  'Abaya', 'Kaftan', 'Jalabiya', 'Hijab', 'Evening dress',
+  'Kids fashion', 'Perfume', 'Saudi style', 'Luxury brands', 'Summer collection'
+];
+
+function openVspPanel() {
+  document.getElementById('vspOverlay').classList.add('open');
+  document.getElementById('vspPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _vspRenderRecent();
+  _vspRenderTrending();
+  setTimeout(() => {
+    const inp = document.getElementById('vspInput');
+    if (inp) inp.focus();
+  }, 320);
+}
+
+function closeVspPanel() {
+  document.getElementById('vspOverlay').classList.remove('open');
+  document.getElementById('vspPanel').classList.remove('open');
+  document.body.style.overflow = '';
+  const inp = document.getElementById('vspInput');
+  if (inp) inp.value = '';
+  document.getElementById('vspClearBtn').style.display = 'none';
+  document.getElementById('vspResults').style.display = 'none';
+  document.getElementById('vspDefault').style.display = 'block';
+}
+
+function _vspClearInput() {
+  document.getElementById('vspInput').value = '';
+  document.getElementById('vspClearBtn').style.display = 'none';
+  document.getElementById('vspResults').style.display = 'none';
+  document.getElementById('vspDefault').style.display = 'block';
+  document.getElementById('vspInput').focus();
+}
+
+function _vspOnInput(val) {
+  document.getElementById('vspClearBtn').style.display = val ? 'flex' : 'none';
+  if (!val.trim()) {
+    document.getElementById('vspResults').style.display = 'none';
+    document.getElementById('vspDefault').style.display = 'block';
+    return;
+  }
+  document.getElementById('vspDefault').style.display = 'none';
+  document.getElementById('vspResults').style.display = 'block';
+  _vspSearch(val.trim());
+}
+
+function _vspSearch(q) {
+  const s = q.toLowerCase();
+  const matches = PRODUCTS.filter(p =>
+    getName(p).toLowerCase().includes(s) ||
+    p.category.includes(s) ||
+    (p.description || '').toLowerCase().includes(s)
+  ).slice(0, 12);
+
+  const res = document.getElementById('vspResults');
+  if (!matches.length) {
+    res.innerHTML = `<div class="vsp-no-result"><i class="fas fa-search"></i><p>No products found for "${q}"</p></div>`;
+    return;
+  }
+  res.innerHTML = matches.map(p => `
+    <div class="vsp-res-item" onclick="_vspPickProduct(${p.id},'${q.replace(/'/g,"\\'").replace(/"/g,'\\"')}','${(p.image||'').replace(/'/g,"\\'")}')">
+      <img src="${p.image}" class="vsp-res-img" loading="lazy" onerror="this.style.display='none'" />
+      <div class="vsp-res-info" style="flex:1;min-width:0">
+        <div class="vsp-res-name">${getName(p)}</div>
+        <div class="vsp-res-price">${fmtD(p.price)}</div>
+      </div>
+      <i class="fas fa-chevron-right" style="color:#ddd;font-size:13px;flex-shrink:0"></i>
+    </div>
+  `).join('');
+}
+
+function _vspPickProduct(id, query, image) {
+  _vspSaveHistory(query, image);
+  closeVspPanel();
+  openModal(id);
+}
+
+function _vspSubmit(val) {
+  if (!val.trim()) return;
+  _vspSaveHistory(val.trim(), '');
+  closeVspPanel();
+  visibleCount = 8;
+  renderProducts(val.trim());
+  document.getElementById('productsSection')?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function _vspSaveHistory(term, image) {
+  const h = JSON.parse(localStorage.getItem('exg_search_history') || '[]');
+  const idx = h.findIndex(x => x.term === term);
+  if (idx > -1) h.splice(idx, 1);
+  h.unshift({ term, image });
+  if (h.length > 10) h.pop();
+  localStorage.setItem('exg_search_history', JSON.stringify(h));
+}
+
+function _vspRenderRecent() {
+  const h = JSON.parse(localStorage.getItem('exg_search_history') || '[]');
+  const section = document.getElementById('vspRecentSection');
+  const list = document.getElementById('vspRecentList');
+  if (!section || !list) return;
+  if (!h.length) { section.style.display = 'none'; return; }
+  section.style.display = 'block';
+  list.innerHTML = h.map(item => `
+    <div class="vsp-recent-card" onclick="_vspDoTerm('${item.term.replace(/'/g,"\\'")}')">
+      ${item.image
+        ? `<img src="${item.image}" class="vsp-recent-img" loading="lazy" onerror="this.classList.add('vsp-recent-placeholder');this.innerHTML='<i class=\'fas fa-search\'></i>'" />`
+        : `<div class="vsp-recent-img vsp-recent-placeholder"><i class="fas fa-search"></i></div>`}
+      <span class="vsp-recent-term">${item.term}</span>
+    </div>
+  `).join('');
+}
+
+function _vspDoTerm(term) {
+  document.getElementById('vspInput').value = term;
+  document.getElementById('vspClearBtn').style.display = 'flex';
+  document.getElementById('vspDefault').style.display = 'none';
+  document.getElementById('vspResults').style.display = 'block';
+  _vspSearch(term);
+}
+
+function _vspClearHistory() {
+  localStorage.removeItem('exg_search_history');
+  _vspRenderRecent();
+}
+
+function _vspRenderTrending() {
+  const wrap = document.getElementById('vspTrending');
+  if (!wrap) return;
+  wrap.innerHTML = VSP_TRENDING.map(t => `
+    <button class="vsp-trend-chip" onclick="_vspDoTerm('${t}')">
+      <i class="fas fa-arrow-trend-up"></i> ${t}
+    </button>
+  `).join('');
+}
+
+/* ===================================================
+   EX GLOBAL VISION (Visual Search Camera)
+   =================================================== */
+let _exvStream = null, _exvFacing = 'environment';
+
+async function openVision() {
+  const sc = document.getElementById('exvScreen');
+  sc.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+  await _exvStartCamera();
+}
+
+function closeVision() {
+  _exvStopCamera();
+  document.getElementById('exvScreen').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+async function _exvStartCamera() {
+  try {
+    _exvStopCamera();
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: _exvFacing, width: { ideal: 1280 }, height: { ideal: 720 } }
+    });
+    _exvStream = stream;
+    const video = document.getElementById('exvVideo');
+    video.srcObject = stream;
+    video.style.display = 'block';
+  } catch(e) {
+    document.getElementById('exvVideo').style.display = 'none';
+    showToast('Camera not available — use Gallery');
+  }
+}
+
+function _exvStopCamera() {
+  if (_exvStream) { _exvStream.getTracks().forEach(t => t.stop()); _exvStream = null; }
+}
+
+function _exvFlip() {
+  _exvFacing = _exvFacing === 'environment' ? 'user' : 'environment';
+  _exvStartCamera();
+}
+
+function _exvToggleFlash() {
+  const btn = document.getElementById('exvFlashBtn');
+  btn.classList.toggle('active');
+  if (_exvStream) {
+    const track = _exvStream.getVideoTracks()[0];
+    if (track?.getCapabilities?.()?.torch) {
+      track.applyConstraints({ advanced: [{ torch: btn.classList.contains('active') }] });
+    }
+  }
+}
+
+function _exvGallery() {
+  document.getElementById('exvFileInput').click();
+}
+
+function _exvHandleFile(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => _exvProcessImage(e.target.result);
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function _exvCapture() {
+  const video = document.getElementById('exvVideo');
+  if (!video.srcObject) { _exvGallery(); return; }
+  const canvas = document.getElementById('exvCanvas');
+  canvas.width = video.videoWidth || 320;
+  canvas.height = video.videoHeight || 240;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  _exvProcessImage(canvas.toDataURL('image/jpeg', 0.8));
+}
+
+function _exvProcessImage(dataUrl) {
+  const img = new Image();
+  img.onload = () => {
+    const canvas = document.getElementById('exvCanvas');
+    canvas.width = 60; canvas.height = 60;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, 60, 60);
+    const data = ctx.getImageData(0, 0, 60, 60).data;
+    let r = 0, g = 0, b = 0, n = 0;
+    for (let i = 0; i < data.length; i += 4) { r += data[i]; g += data[i+1]; b += data[i+2]; n++; }
+    r = Math.round(r/n); g = Math.round(g/n); b = Math.round(b/n);
+    const brightness = (r + g + b) / 3;
+    let colorName = 'fashion';
+    if (brightness < 55) colorName = 'black';
+    else if (brightness > 210) colorName = 'white';
+    else if (r > g + 45 && r > b + 45) colorName = 'red';
+    else if (g > r + 30 && g > b + 30) colorName = 'green';
+    else if (b > r + 45 && b > g + 30) colorName = 'blue';
+    else if (r > 180 && g > 140 && b < 90) colorName = 'yellow';
+    else if (r > 180 && g > 80 && b < 70) colorName = 'orange';
+    else if (r > 140 && b > 140 && g < 100) colorName = 'purple';
+    else if (r > 180 && b > 140 && g < 100) colorName = 'pink';
+    else colorName = 'beige';
+    closeVision();
+    _vspSaveHistory(colorName, dataUrl.slice(0, 200));
+    openVspPanel();
+    setTimeout(() => _vspDoTerm(colorName), 150);
+  };
+  img.src = dataUrl;
+}

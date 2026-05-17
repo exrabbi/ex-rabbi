@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=98" />
+  <link rel="stylesheet" href="styles.css?v=99" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -841,6 +841,71 @@
   <div class="product-modal" id="productModal">
     <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
     <div class="modal-body" id="modalBody"></div>
+  </div>
+
+  <!-- ===== VIP SEARCH PANEL ===== -->
+  <div class="vsp-overlay" id="vspOverlay" onclick="closeVspPanel()"></div>
+  <div class="vsp-panel" id="vspPanel">
+    <div class="vsp-header">
+      <button class="vsp-back" onclick="closeVspPanel()"><i class="fas fa-chevron-left"></i></button>
+      <div class="vsp-input-wrap">
+        <i class="fas fa-search vsp-search-icon"></i>
+        <input type="text" id="vspInput" class="vsp-input" placeholder="Search EX GLOBAL…" autocomplete="off"
+          oninput="_vspOnInput(this.value)"
+          onkeydown="if(event.key==='Enter')_vspSubmit(this.value)" />
+        <button class="vsp-clear-btn" id="vspClearBtn" onclick="_vspClearInput()" style="display:none"><i class="fas fa-xmark"></i></button>
+      </div>
+      <button class="vsp-cam-btn" onclick="openVision()"><i class="fas fa-camera"></i></button>
+    </div>
+
+    <!-- Live results -->
+    <div class="vsp-results" id="vspResults" style="display:none"></div>
+
+    <!-- Default: recent + trending -->
+    <div class="vsp-default" id="vspDefault">
+      <div class="vsp-section" id="vspRecentSection" style="display:none">
+        <div class="vsp-sec-head">
+          <span class="vsp-sec-title">Recently Searched</span>
+          <button class="vsp-clear-all" onclick="_vspClearHistory()">Clear all</button>
+        </div>
+        <div class="vsp-recent-scroll">
+          <div class="vsp-recent-list" id="vspRecentList"></div>
+        </div>
+      </div>
+      <div class="vsp-section">
+        <div class="vsp-sec-head">
+          <span class="vsp-sec-title">Trending searches</span>
+        </div>
+        <div class="vsp-trending-wrap" id="vspTrending"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== EX GLOBAL VISION ===== -->
+  <div class="exv-screen" id="exvScreen" style="display:none">
+    <div class="exv-header">
+      <button class="exv-back" onclick="closeVision()"><i class="fas fa-chevron-left"></i></button>
+      <div class="exv-brand"><strong>EX GLOBAL</strong> VISION</div>
+      <button class="exv-flash" id="exvFlashBtn" onclick="_exvToggleFlash()"><i class="fas fa-bolt-lightning"></i></button>
+    </div>
+    <div class="exv-viewfinder">
+      <video id="exvVideo" autoplay playsinline muted></video>
+      <div class="exv-frame">
+        <span class="exv-corner exv-tl"></span>
+        <span class="exv-corner exv-tr"></span>
+        <span class="exv-corner exv-bl"></span>
+        <span class="exv-corner exv-br"></span>
+      </div>
+      <div class="exv-scan-line"></div>
+    </div>
+    <p class="exv-hint">Position your product within the frame</p>
+    <div class="exv-actions">
+      <button class="exv-action-btn" onclick="_exvGallery()"><i class="fas fa-image"></i></button>
+      <button class="exv-capture-btn" onclick="_exvCapture()"><i class="fas fa-search"></i></button>
+      <button class="exv-action-btn" onclick="_exvFlip()"><i class="fas fa-rotate"></i></button>
+    </div>
+    <input type="file" id="exvFileInput" accept="image/*" style="display:none" onchange="_exvHandleFile(this)" />
+    <canvas id="exvCanvas" style="display:none"></canvas>
   </div>
 
   <!-- AI CHAT FAB -->
@@ -1941,6 +2006,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=101"></script>
+  <script src="script.js?v=102"></script>
 </body>
 </html>
