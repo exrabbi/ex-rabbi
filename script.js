@@ -2188,6 +2188,17 @@ function maskEmail(email) {
   return local.charAt(0) + '***@' + domain;
 }
 
+function _deleteAddress() {
+  if (!confirm('Delete your saved address?')) return;
+  savedLocation = null;
+  localStorage.removeItem('exglobal_location');
+  refreshMeAddress();
+  // Refresh cart strip if cart is open
+  const footer = document.getElementById('cartFooter');
+  if (footer && footer.style.display !== 'none') renderCart();
+  showToast('Address deleted');
+}
+
 function refreshMeAddress() {
   const addrCard = document.getElementById('meAddrCard');
   const addRow   = document.getElementById('meAddAddrRow');

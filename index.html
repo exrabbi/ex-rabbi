@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=102" />
+  <link rel="stylesheet" href="styles.css?v=103" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1085,9 +1085,21 @@
         <i class="fas fa-chevron-right me-chev-r"></i>
       </div>
       <div class="me-addr-card" id="meAddrCard" style="display:none">
-        <div class="me-addr-name-row" id="meAddrNameRow"></div>
-        <div class="me-addr-line" id="meAddrLine1"></div>
-        <div class="me-addr-line" id="meAddrLine2"></div>
+        <div class="me-addr-card-inner">
+          <div class="me-addr-info">
+            <div class="me-addr-name-row" id="meAddrNameRow"></div>
+            <div class="me-addr-line" id="meAddrLine1"></div>
+            <div class="me-addr-line" id="meAddrLine2"></div>
+          </div>
+          <div class="me-addr-actions">
+            <button class="me-addr-edit-btn" onclick="openLocation()" title="Edit">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="me-addr-del-btn" onclick="_deleteAddress()" title="Delete">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
       </div>
       <div class="me-add-addr-row" id="meAddAddrRow" onclick="openLocation()">
         <i class="fas fa-circle-plus"></i>
@@ -2007,6 +2019,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=105"></script>
+  <script src="script.js?v=106"></script>
 </body>
 </html>
