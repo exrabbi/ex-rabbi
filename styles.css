@@ -1874,7 +1874,12 @@ img { max-width: 100%; display: block; }
 }
 .loc-det-field input:focus { border-color: #e91e8c; }
 .loc-det-field input::placeholder { color: #aaa; }
-/* Save as label */
+/* Section labels inside address details */
+.loc-det-section-lbl {
+  font-size: 12px; font-weight: 700; color: #888;
+  text-transform: uppercase; letter-spacing: .6px;
+  margin: 18px 0 10px;
+}
 .loc-det-label { font-size: 13px; color: #555; font-weight: 600; margin: 14px 0 8px; }
 .loc-det-tags-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 .loc-det-tag-add {
@@ -3766,9 +3771,33 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .bnc-input { background: #222; color: #eee; border-color: rgba(255,255,255,.1); }
 [data-theme="dark"] .bnc-label { color: #aaa; }
 
-/* Location map area */
+/* Location — dark mode */
 [data-theme="dark"] .loc-modal { background: #111; }
-[data-theme="dark"] .loc-head { background: #1a1a1a; border-bottom-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .loc-header { background: #1a1a1a; }
+[data-theme="dark"] .loc-search-wrap { background: #2a2a2a; }
+[data-theme="dark"] .loc-search-input { color: #eee; }
+[data-theme="dark"] .loc-bottom-card { background: #1a1a1a; }
+[data-theme="dark"] .loc-addr-text { color: #ddd; }
+[data-theme="dark"] .loc-details { background: #111; }
+[data-theme="dark"] .loc-det-head { background: #1a1a1a; }
+[data-theme="dark"] .loc-det-head span { color: #eee; }
+[data-theme="dark"] .loc-det-head button { background: #2a2a2a; color: #eee; }
+[data-theme="dark"] .loc-det-addr-card { background: #1a1a1a; }
+[data-theme="dark"] .loc-det-addr-txt { color: #ddd; }
+[data-theme="dark"] .loc-type-btn { background: #1a1a1a; border-color: #333; color: #bbb; }
+[data-theme="dark"] .loc-type-btn.active { background: #eee; color: #111; border-color: #eee; }
+[data-theme="dark"] .loc-det-section-lbl { color: #666; }
+[data-theme="dark"] .loc-det-field input { background: #1a1a1a; border-color: #333; color: #eee; }
+[data-theme="dark"] .loc-det-footer { background: #111; border-top-color: rgba(255,255,255,.07); }
+[data-theme="dark"] .loc-manual-form { background: #111; }
+[data-theme="dark"] .loc-mf-head { background: #1a1a1a; }
+[data-theme="dark"] .loc-field label { color: #aaa; }
+[data-theme="dark"] .loc-field input, [data-theme="dark"] .loc-field textarea { background: #1a1a1a; border-color: #333; color: #eee; }
+[data-theme="dark"] .loc-search-drop { background: #1a1a1a; }
+[data-theme="dark"] .loc-search-item { border-bottom-color: #2a2a2a; }
+[data-theme="dark"] .loc-search-item span { color: #ddd; }
+[data-theme="dark"] .loc-det-tag { background: #1a1a1a; border-color: #333; color: #bbb; }
+[data-theme="dark"] .loc-locate-btn { background: #1a1a1a; color: #ddd; }
 
 /* ===== PRODUCT SHARE / DEEP LINK ===== */
 .modal-top-row {

@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=97" />
+  <link rel="stylesheet" href="styles.css?v=98" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1557,43 +1557,35 @@
         </div>
         <!-- Address type -->
         <div class="loc-det-type-row">
-          <button class="loc-type-btn active" onclick="_locSetType(this,'home')"><i class="fas fa-house"></i> Home</button>
-          <button class="loc-type-btn" onclick="_locSetType(this,'work')"><i class="fas fa-briefcase"></i> Work</button>
-          <button class="loc-type-btn" onclick="_locSetType(this,'other')"><i class="fas fa-location-dot"></i> Other</button>
+          <button class="loc-type-btn active" data-type="home" onclick="_locSetType(this,'home')"><i class="fas fa-house"></i> Home</button>
+          <button class="loc-type-btn" data-type="work" onclick="_locSetType(this,'work')"><i class="fas fa-briefcase"></i> Work</button>
+          <button class="loc-type-btn" data-type="other" onclick="_locSetType(this,'other')"><i class="fas fa-location-dot"></i> Other</button>
         </div>
-        <!-- Fields -->
+        <!-- Delivery details -->
+        <p class="loc-det-section-lbl">Delivery details</p>
         <div class="loc-det-field">
           <input type="text" id="locApt" placeholder="Apt & Floor No. / Villa No." />
         </div>
         <div class="loc-det-field">
-          <input type="text" id="locBuilding" placeholder="National address / Building name" />
+          <input type="text" id="locBuilding" placeholder="Building name / National address" />
         </div>
         <div class="loc-det-field">
           <input type="text" id="locDirections" placeholder="Directions to reach (Optional)" />
         </div>
+        <!-- Contact (required) -->
+        <p class="loc-det-section-lbl">Receiver <span style="color:#e91e8c">*</span></p>
+        <div class="loc-det-field">
+          <input type="text" id="locName" placeholder="Full name *" autocomplete="name" />
+        </div>
+        <div class="loc-det-field">
+          <input type="tel" id="locPhone" placeholder="+966 5XX XXX XXXX *" autocomplete="tel" />
+        </div>
         <!-- Save as label -->
-        <p class="loc-det-label">Save this address as <span style="color:#aaa">(Optional)</span></p>
+        <p class="loc-det-section-lbl">Save as <span style="color:#aaa;font-weight:500">(Optional)</span></p>
         <div class="loc-det-tags-row">
           <button class="loc-det-tag-add" onclick="_locAddTag()"><i class="fas fa-plus"></i></button>
           <div class="loc-det-tags" id="locDetTags"></div>
         </div>
-        <!-- Receiver details -->
-        <div class="loc-det-receiver" id="locDetReceiver">
-          <div>
-            <p class="loc-det-rec-lbl">Receiver details for this address</p>
-            <p class="loc-det-rec-val" id="locDetRecVal">Tap to add name & phone</p>
-          </div>
-          <button onclick="_locEditReceiver()"><i class="fas fa-pen" style="color:#aaa;font-size:14px"></i></button>
-        </div>
-        <!-- Receiver inline edit (hidden) -->
-        <div id="locRecEdit" style="display:none">
-          <div class="loc-det-field"><input type="text" id="locName" placeholder="Full name" /></div>
-          <div class="loc-det-field"><input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" /></div>
-        </div>
-        <!-- City hidden inputs (used internally) -->
-        <input type="hidden" id="locCity" />
-        <input type="hidden" id="locArea" />
-        <input type="hidden" id="locAddress" />
       </div>
       <div class="loc-det-footer">
         <button class="loc-save-btn" onclick="saveLocation()"><i class="fas fa-check"></i> Save address</button>
@@ -1949,6 +1941,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=100"></script>
+  <script src="script.js?v=101"></script>
 </body>
 </html>
