@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=105" />
+  <link rel="stylesheet" href="styles.css?v=106" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -113,12 +113,20 @@
 <div id="exSplash">
   <div class="exs-bg"></div>
   <div class="exs-grid"></div>
+  <div class="exs-scanline"></div>
+  <div class="exs-burst"></div>
   <div class="exs-particles" id="exsParticles"></div>
   <div class="exs-rings">
     <div class="exs-ring exs-ring-1"></div>
     <div class="exs-ring exs-ring-2"></div>
     <div class="exs-ring exs-ring-3"></div>
   </div>
+  <!-- Corner bracket decorations -->
+  <div class="exs-c exs-c-tl"><span></span><span></span></div>
+  <div class="exs-c exs-c-tr"><span></span><span></span></div>
+  <div class="exs-c exs-c-bl"><span></span><span></span></div>
+  <div class="exs-c exs-c-br"><span></span><span></span></div>
+  <!-- Logo -->
   <div class="exs-logo-container">
     <div class="exs-logo-orbit"></div>
     <div class="exs-logo-wrap">
@@ -126,13 +134,16 @@
       <img src="icon-512.png" alt="EX GLOBAL" class="exs-logo" />
     </div>
   </div>
+  <!-- Text -->
   <div class="exs-crown-row">
     <div class="exs-crown-line"></div>
     <div class="exs-crown">✦ VIP ✦</div>
     <div class="exs-crown-line"></div>
   </div>
   <div class="exs-brand" id="exsBrand"></div>
+  <div class="exs-arabic">إكس جلوبال</div>
   <div class="exs-tagline">PREMIUM FASHION · SAUDI ARABIA</div>
+  <div class="exs-est">— EST. 2024 · RIYADH, KSA —</div>
   <div class="exs-loader"><div class="exs-bar"></div></div>
 </div>
 
@@ -439,11 +450,18 @@
     <!-- FLASH DEALS -->
     <div class="flash-deals-banner">
       <div class="flash-left">
-        <i class="fas fa-bolt"></i>
-        <span data-i18n="flashDeal">Flash Deal</span>
-        <div class="countdown">
-          <span id="hours">05</span>:<span id="minutes">30</span>:<span id="seconds">00</span>
+        <div class="flash-icon-box"><i class="fas fa-bolt"></i></div>
+        <div class="flash-info">
+          <span class="flash-title" data-i18n="flashDeal">Flash Deal</span>
+          <span class="flash-ends">Ends in</span>
         </div>
+      </div>
+      <div class="countdown">
+        <div class="cd-block"><span id="hours">05</span><small>H</small></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span id="minutes">30</span><small>M</small></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><span id="seconds">00</span><small>S</small></div>
       </div>
       <a href="#" class="flash-more"><span data-i18n="seeAll">See All</span> <i class="fas fa-chevron-right"></i></a>
     </div>
@@ -2027,6 +2045,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=108"></script>
+  <script src="script.js?v=109"></script>
 </body>
 </html>
