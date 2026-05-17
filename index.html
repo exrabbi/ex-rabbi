@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=99" />
+  <link rel="stylesheet" href="styles.css?v=100" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1620,14 +1620,23 @@
           </div>
           <button class="loc-det-edit-btn" onclick="_locBackToMap()">Edit</button>
         </div>
+        <!-- RECEIVER (required) — shown first so user sees it immediately -->
+        <p class="loc-det-section-lbl" style="margin-top:10px">Receiver <span style="color:#e91e8c">*</span></p>
+        <div class="loc-det-field">
+          <input type="text" id="locName" placeholder="Full name *" autocomplete="name" />
+        </div>
+        <div class="loc-det-field">
+          <input type="tel" id="locPhone" placeholder="+966 5XX XXX XXXX *" autocomplete="tel" inputmode="tel" />
+        </div>
         <!-- Address type -->
+        <p class="loc-det-section-lbl">Address type</p>
         <div class="loc-det-type-row">
           <button class="loc-type-btn active" data-type="home" onclick="_locSetType(this,'home')"><i class="fas fa-house"></i> Home</button>
           <button class="loc-type-btn" data-type="work" onclick="_locSetType(this,'work')"><i class="fas fa-briefcase"></i> Work</button>
           <button class="loc-type-btn" data-type="other" onclick="_locSetType(this,'other')"><i class="fas fa-location-dot"></i> Other</button>
         </div>
-        <!-- Delivery details -->
-        <p class="loc-det-section-lbl">Delivery details</p>
+        <!-- Delivery details (optional) -->
+        <p class="loc-det-section-lbl">Delivery details <span style="color:#aaa;font-weight:400;text-transform:none;font-size:11px">(Optional)</span></p>
         <div class="loc-det-field">
           <input type="text" id="locApt" placeholder="Apt & Floor No. / Villa No." />
         </div>
@@ -1635,18 +1644,10 @@
           <input type="text" id="locBuilding" placeholder="Building name / National address" />
         </div>
         <div class="loc-det-field">
-          <input type="text" id="locDirections" placeholder="Directions to reach (Optional)" />
-        </div>
-        <!-- Contact (required) -->
-        <p class="loc-det-section-lbl">Receiver <span style="color:#e91e8c">*</span></p>
-        <div class="loc-det-field">
-          <input type="text" id="locName" placeholder="Full name *" autocomplete="name" />
-        </div>
-        <div class="loc-det-field">
-          <input type="tel" id="locPhone" placeholder="+966 5XX XXX XXXX *" autocomplete="tel" />
+          <input type="text" id="locDirections" placeholder="Directions to reach" />
         </div>
         <!-- Save as label -->
-        <p class="loc-det-section-lbl">Save as <span style="color:#aaa;font-weight:500">(Optional)</span></p>
+        <p class="loc-det-section-lbl">Save as <span style="color:#aaa;font-weight:400;text-transform:none;font-size:11px">(Optional)</span></p>
         <div class="loc-det-tags-row">
           <button class="loc-det-tag-add" onclick="_locAddTag()"><i class="fas fa-plus"></i></button>
           <div class="loc-det-tags" id="locDetTags"></div>
@@ -2006,6 +2007,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=102"></script>
+  <script src="script.js?v=103"></script>
 </body>
 </html>
