@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=94" />
+  <link rel="stylesheet" href="styles.css?v=95" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1535,10 +1535,72 @@
         <div class="loc-addr-dot"><i class="fas fa-location-dot"></i></div>
         <p class="loc-addr-text" id="locAddrText">Finding location…</p>
       </div>
-      <button class="loc-confirm-btn" onclick="_locConfirmMap()"><i class="fas fa-check-circle"></i> Confirm address</button>
+      <button class="loc-confirm-btn" onclick="_locOpenDetails()"><i class="fas fa-check-circle"></i> Confirm location</button>
       <button class="loc-manual-btn" onclick="_locShowManual()">Enter address manually <i class="fas fa-chevron-right"></i></button>
     </div>
-    <!-- Manual entry (hidden by default) -->
+
+    <!-- STEP 2: Address Details -->
+    <div class="loc-details" id="locDetails" style="display:none">
+      <div class="loc-det-head">
+        <button onclick="_locBackToMap()"><i class="fas fa-chevron-left"></i></button>
+        <span>Address Details</span>
+        <div></div>
+      </div>
+      <div class="loc-det-body">
+        <!-- Confirmed address card -->
+        <div class="loc-det-addr-card">
+          <div class="loc-det-addr-left">
+            <i class="fas fa-location-dot" style="color:#e91e8c;font-size:20px;flex-shrink:0"></i>
+            <p id="locDetAddrText" class="loc-det-addr-txt"></p>
+          </div>
+          <button class="loc-det-edit-btn" onclick="_locBackToMap()">Edit</button>
+        </div>
+        <!-- Address type -->
+        <div class="loc-det-type-row">
+          <button class="loc-type-btn active" onclick="_locSetType(this,'home')"><i class="fas fa-house"></i> Home</button>
+          <button class="loc-type-btn" onclick="_locSetType(this,'work')"><i class="fas fa-briefcase"></i> Work</button>
+          <button class="loc-type-btn" onclick="_locSetType(this,'other')"><i class="fas fa-location-dot"></i> Other</button>
+        </div>
+        <!-- Fields -->
+        <div class="loc-det-field">
+          <input type="text" id="locApt" placeholder="Apt & Floor No. / Villa No." />
+        </div>
+        <div class="loc-det-field">
+          <input type="text" id="locBuilding" placeholder="National address / Building name" />
+        </div>
+        <div class="loc-det-field">
+          <input type="text" id="locDirections" placeholder="Directions to reach (Optional)" />
+        </div>
+        <!-- Save as label -->
+        <p class="loc-det-label">Save this address as <span style="color:#aaa">(Optional)</span></p>
+        <div class="loc-det-tags-row">
+          <button class="loc-det-tag-add" onclick="_locAddTag()"><i class="fas fa-plus"></i></button>
+          <div class="loc-det-tags" id="locDetTags"></div>
+        </div>
+        <!-- Receiver details -->
+        <div class="loc-det-receiver" id="locDetReceiver">
+          <div>
+            <p class="loc-det-rec-lbl">Receiver details for this address</p>
+            <p class="loc-det-rec-val" id="locDetRecVal">Tap to add name & phone</p>
+          </div>
+          <button onclick="_locEditReceiver()"><i class="fas fa-pen" style="color:#aaa;font-size:14px"></i></button>
+        </div>
+        <!-- Receiver inline edit (hidden) -->
+        <div id="locRecEdit" style="display:none">
+          <div class="loc-det-field"><input type="text" id="locName" placeholder="Full name" /></div>
+          <div class="loc-det-field"><input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" /></div>
+        </div>
+        <!-- City hidden inputs (used internally) -->
+        <input type="hidden" id="locCity" />
+        <input type="hidden" id="locArea" />
+        <input type="hidden" id="locAddress" />
+      </div>
+      <div class="loc-det-footer">
+        <button class="loc-save-btn" onclick="saveLocation()"><i class="fas fa-check"></i> Save address</button>
+      </div>
+    </div>
+
+    <!-- Manual entry fallback -->
     <div class="loc-manual-form" id="locManualForm" style="display:none">
       <div class="loc-mf-head">
         <button onclick="_locHideManual()"><i class="fas fa-chevron-left"></i></button>
@@ -1546,29 +1608,12 @@
         <div></div>
       </div>
       <div class="loc-body">
-        <div class="loc-field">
-          <label data-i18n="fullName">Full name</label>
-          <input type="text" id="locName" placeholder="Your name" />
-        </div>
-        <div class="loc-field">
-          <label data-i18n="phoneLbl">Phone number</label>
-          <input type="tel" id="locPhone" placeholder="+966 XXX XXX XXXX" />
-        </div>
-        <div class="loc-field">
-          <label data-i18n="cityLbl">City</label>
-          <input type="text" id="locCity" placeholder="e.g. Riyadh, Jeddah…" />
-        </div>
-        <div class="loc-field">
-          <label data-i18n="areaLbl">Area</label>
-          <input type="text" id="locArea" placeholder="Area name" />
-        </div>
-        <div class="loc-field">
-          <label data-i18n="addressLbl">Street / Detail</label>
-          <textarea id="locAddress" rows="3" placeholder="Street name, building, flat…"></textarea>
-        </div>
-        <button class="loc-save-btn" onclick="saveLocation()">
-          <i class="fas fa-check"></i> Save address
-        </button>
+        <div class="loc-field"><label>Full name</label><input type="text" id="locNameM" placeholder="Your name" /></div>
+        <div class="loc-field"><label>Phone</label><input type="tel" id="locPhoneM" placeholder="+966 XXX XXX XXXX" /></div>
+        <div class="loc-field"><label>City</label><input type="text" id="locCityM" placeholder="e.g. Riyadh, Jeddah…" /></div>
+        <div class="loc-field"><label>Area</label><input type="text" id="locAreaM" placeholder="Area name" /></div>
+        <div class="loc-field"><label>Street / Detail</label><textarea id="locAddressM" rows="3" placeholder="Street name, building, flat…"></textarea></div>
+        <button class="loc-save-btn" onclick="_locSaveManual()"><i class="fas fa-check"></i> Save address</button>
       </div>
     </div>
   </div>
@@ -1909,6 +1954,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=95"></script>
+  <script src="script.js?v=96"></script>
 </body>
 </html>

@@ -2477,21 +2477,112 @@ function _locConfirmMap() {
   showToast('✅ Address saved!');
 }
 
+let _locAddrType = 'home', _locTagSelected = '';
+
+function _locOpenDetails() {
+  const addrEl = document.getElementById('locAddrText');
+  const txt = addrEl ? addrEl.textContent : '';
+  if (txt.includes('Finding') || txt.includes('spinner')) {
+    showToast('Please wait, finding address…'); return;
+  }
+  // Populate step 2
+  const det = document.getElementById('locDetails');
+  if (!det) return;
+  document.getElementById('locDetAddrText').textContent = _locCurrentAddr || txt;
+  // Pre-fill building from geocode
+  const a = _locCurrData;
+  const building = [a.house_number, a.road].filter(Boolean).join(', ');
+  document.getElementById('locBuilding').value = building || '';
+  document.getElementById('locApt').value = savedLocation?.apt || '';
+  document.getElementById('locDirections').value = savedLocation?.directions || '';
+  document.getElementById('locName').value = savedLocation?.name || '';
+  document.getElementById('locPhone').value = savedLocation?.phone || '';
+  _locAddrType = savedLocation?.type || 'home';
+  // Set type buttons
+  document.querySelectorAll('.loc-type-btn').forEach(b => {
+    b.classList.toggle('active', b.onclick.toString().includes(_locAddrType));
+  });
+  // Receiver display
+  _locUpdateReceiverDisplay();
+  // Tags
+  _locRenderTags();
+  det.style.display = 'flex';
+  det.style.flexDirection = 'column';
+}
+
+function _locBackToMap() {
+  document.getElementById('locDetails').style.display = 'none';
+}
+
+function _locSetType(btn, type) {
+  _locAddrType = type;
+  document.querySelectorAll('.loc-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function _locEditReceiver() {
+  const re = document.getElementById('locRecEdit');
+  re.style.display = re.style.display === 'none' ? 'block' : 'none';
+  if (re.style.display === 'block') document.getElementById('locName').focus();
+}
+
+function _locUpdateReceiverDisplay() {
+  const name = (document.getElementById('locName') && document.getElementById('locName').value) || savedLocation?.name || '';
+  const phone = (document.getElementById('locPhone') && document.getElementById('locPhone').value) || savedLocation?.phone || '';
+  const val = document.getElementById('locDetRecVal');
+  if (val) val.textContent = (name || phone) ? [name, phone].filter(Boolean).join(', ') : 'Tap to add name & phone';
+}
+
+function _locRenderTags() {
+  const saved = JSON.parse(localStorage.getItem('exg_addr_labels') || '[]');
+  const container = document.getElementById('locDetTags');
+  if (!container) return;
+  container.innerHTML = saved.map(label => `
+    <button class="loc-det-tag${label === _locTagSelected ? ' active' : ''}" onclick="_locSelectTag('${label}')">${label}</button>
+  `).join('');
+}
+
+function _locSelectTag(label) {
+  _locTagSelected = (_locTagSelected === label) ? '' : label;
+  _locRenderTags();
+}
+
+function _locAddTag() {
+  const label = prompt('Enter a label for this address (e.g. "Home Riyadh"):');
+  if (!label || !label.trim()) return;
+  const saved = JSON.parse(localStorage.getItem('exg_addr_labels') || '[]');
+  if (!saved.includes(label.trim())) { saved.push(label.trim()); localStorage.setItem('exg_addr_labels', JSON.stringify(saved)); }
+  _locTagSelected = label.trim();
+  _locRenderTags();
+}
+
 function _locShowManual() {
   const mf = document.getElementById('locManualForm');
   if (!mf) return;
   mf.style.display = 'flex';
   mf.style.flexDirection = 'column';
   if (savedLocation) {
-    document.getElementById('locName').value = savedLocation.name || '';
-    document.getElementById('locPhone').value = savedLocation.phone || '';
-    document.getElementById('locCity').value = savedLocation.city || '';
-    document.getElementById('locArea').value = savedLocation.area || '';
-    document.getElementById('locAddress').value = savedLocation.address || '';
+    document.getElementById('locNameM').value = savedLocation.name || '';
+    document.getElementById('locPhoneM').value = savedLocation.phone || '';
+    document.getElementById('locCityM').value = savedLocation.city || '';
+    document.getElementById('locAreaM').value = savedLocation.area || '';
+    document.getElementById('locAddressM').value = savedLocation.address || '';
   }
 }
 function _locHideManual() {
   document.getElementById('locManualForm').style.display = 'none';
+}
+
+function _locSaveManual() {
+  const name = document.getElementById('locNameM').value.trim();
+  const phone = document.getElementById('locPhoneM').value.trim();
+  const city = document.getElementById('locCityM').value.trim();
+  const area = document.getElementById('locAreaM').value.trim();
+  const address = document.getElementById('locAddressM').value.trim();
+  if (!name || !phone || !city || !address) { showToast(t('fillAllFields')); return; }
+  savedLocation = { name, phone, city, area, address, lat: _locCurrLat, lng: _locCurrLng };
+  localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
+  refreshMeAddress(); closeLocation(); showToast('✅ Address saved!');
 }
 
 function _locSearchDebounce(val) {
@@ -2556,27 +2647,37 @@ function useMyLocation() {
 function closeLocation() {
   document.getElementById('locOverlay').classList.remove('open');
   document.getElementById('locModal').classList.remove('open');
+  const det = document.getElementById('locDetails');
+  if (det) det.style.display = 'none';
   document.getElementById('locManualForm').style.display = 'none';
   document.getElementById('locSearchDrop').style.display = 'none';
   document.body.style.overflow = '';
 }
 
 function saveLocation() {
-  const name = document.getElementById('locName').value.trim();
-  const phone = document.getElementById('locPhone').value.trim();
-  const city = document.getElementById('locCity').value.trim();
-  const area = document.getElementById('locArea').value.trim();
-  const address = document.getElementById('locAddress').value.trim();
-  if (!name || !phone || !city || !address) {
-    showToast(t('fillAllFields'));
-    return;
+  const name = (document.getElementById('locName').value || '').trim();
+  const phone = (document.getElementById('locPhone').value || '').trim();
+  const apt = (document.getElementById('locApt').value || '').trim();
+  const building = (document.getElementById('locBuilding').value || '').trim();
+  const directions = (document.getElementById('locDirections').value || '').trim();
+  const a = _locCurrData;
+  const city = a.city || a.town || a.village || a.county || savedLocation?.city || '';
+  const area = a.suburb || a.neighbourhood || a.district || savedLocation?.area || '';
+  const address = _locCurrentAddr || savedLocation?.address || '';
+  // Save tag label if selected
+  if (_locTagSelected) {
+    const labels = JSON.parse(localStorage.getItem('exg_addr_labels') || '[]');
+    if (!labels.includes(_locTagSelected)) { labels.push(_locTagSelected); localStorage.setItem('exg_addr_labels', JSON.stringify(labels)); }
   }
-  const lat = savedLocation && savedLocation.lat ? savedLocation.lat : null;
-  const lng = savedLocation && savedLocation.lng ? savedLocation.lng : null;
-  savedLocation = { name, phone, city, area, address, lat, lng };
+  savedLocation = {
+    name, phone, apt, building, directions,
+    city, area, address, type: _locAddrType,
+    label: _locTagSelected,
+    lat: _locCurrLat, lng: _locCurrLng
+  };
   localStorage.setItem('exglobal_location', JSON.stringify(savedLocation));
   refreshMeAddress();
-  showToast(t('addressSaved'));
+  showToast('✅ Address saved!');
   closeLocation();
 }
 
