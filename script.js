@@ -678,7 +678,7 @@ function productCardHTML(p) {
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
           <span class="product-sold">${p.sold} ${t('soldText')}</span>
         </div>
-        ${p.stock === 0 ? `<div class="stock-badge out">${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low">${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok">${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
+        ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-lock"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok"><i class="fas fa-circle-check"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
       <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
         ${p.stock === 0 ? `<i class="fas fa-times-circle" style="margin-right:5px;opacity:.7"></i>${t('outOfStock')}` : `<i class="fas fa-bag-shopping" style="margin-right:5px;font-size:11px"></i>${t('addToCart')}`}
@@ -2777,7 +2777,7 @@ function useMyLocation() {
 
   if (!navigator.geolocation) {
     _resetBtn();
-    _locFallbackIP();
+    _locGpsHint();
     return;
   }
 
@@ -2788,11 +2788,25 @@ function useMyLocation() {
     },
     () => {
       _resetBtn();
-      // GPS denied/failed → silently fall back to IP
-      _locFallbackIP();
+      _locGpsHint();
     },
     { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
   );
+}
+
+function _locGpsHint() {
+  const el = document.getElementById('locAddrText');
+  if (el) {
+    el.classList.add('loc-addr-shake');
+    el.style.color = '#b45309';
+    el.textContent = 'GPS unavailable — drag the map to your location';
+    setTimeout(() => {
+      el.classList.remove('loc-addr-shake');
+      el.style.color = '';
+      if (!_locCurrentAddr) el.textContent = 'Drag map to set location';
+      else el.textContent = _locCurrentAddr;
+    }, 3500);
+  }
 }
 
 function _locFallbackIP() {

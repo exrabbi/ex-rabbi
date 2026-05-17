@@ -683,10 +683,14 @@ img { max-width: 100%; display: block; }
 }
 .product-rating { font-size: 10px; color: #ff9800; }
 .product-sold { font-size: 10px; color: #999; }
-.stock-badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 20px; margin-top: 4px; display: inline-block; }
-.stock-badge.out { background: #fde8e8; color: #c0392b; }
-.stock-badge.low { background: #fff3cd; color: #b45309; }
-.stock-badge.ok  { background: #e8f5e9; color: #2e7d32; }
+.stock-badge {
+  font-size: 11px; font-weight: 700; padding: 0;
+  margin-top: 5px; display: flex; align-items: center; gap: 4px;
+}
+.stock-badge i { font-size: 10px; }
+.stock-badge.out { color: #c0392b; }
+.stock-badge.low { color: #b45309; }
+.stock-badge.ok  { color: #2e7d32; }
 @keyframes vipShimmer {
   0%   { background-position: 0% 50%; }
   50%  { background-position: 100% 50%; }
@@ -1219,10 +1223,11 @@ img { max-width: 100%; display: block; }
 .modal-rating { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
 .stars { color: #ff9800; font-size: 14px; }
 .rating-count { font-size: 13px; color: #888; }
-.modal-stock { font-size: 13px; font-weight: 700; padding: 6px 12px; border-radius: 8px; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 6px; }
+.modal-stock { font-size: 13px; font-weight: 700; padding: 7px 14px; border-radius: 50px; margin-bottom: 10px; display: inline-flex; align-items: center; gap: 7px; }
 .modal-stock.out { background: #fde8e8; color: #c0392b; }
-.modal-stock.low { background: #fff3cd; color: #b45309; }
+.modal-stock.low { background: #fff7ed; color: #b45309; border: 1px solid #fbbf24; animation: stockUrgency 1.4s ease-in-out infinite; }
 .modal-stock.ok  { background: #e8f5e9; color: #2e7d32; }
+@keyframes stockUrgency { 0%,100% { box-shadow: 0 0 0 0 rgba(180,83,9,.0); } 50% { box-shadow: 0 0 0 4px rgba(180,83,9,.18); } }
 .modal-divider { height: 1px; background: #f0f0f0; margin: 12px 0; }
 .modal-desc { font-size: 13px; color: #555; line-height: 1.7; white-space: pre-line; }
 .modal-section-title {
