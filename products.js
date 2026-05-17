@@ -4,6 +4,7 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80",
     rating: 4.8, ratingCount: 2340, sold: "10K+", stock: 8,
     colors: ["#e91e8c","#9c27b0","#2196f3","#4caf50"], sizes: ["S","M","L","XL","XXL"], tag: "bestseller",
+    video: "mhZ1g5x-m2g",
     names: { bn: "ফ্লোরাল প্রিন্ট মিডি ড্রেস - গ্রীষ্মকালীন কালেকশন", en: "Floral Print Midi Dress - Summer Collection", ar: "فستان ميدي بطباعة زهرية - كولكشن الصيف", hi: "फ्लोरल प्रिंट मिडी ड्रेस - समर कलेक्शन" }
   },
   {
@@ -88,6 +89,7 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&q=80",
     rating: 4.6, ratingCount: 2100, sold: "9K+", stock: 1,
     colors: ["#ffffff","#212121","#f44336","#1565c0"], sizes: ["38","39","40","41","42","43","44"], tag: "bestseller",
+    video: "Iz7QXkSn9vk",
     colorImages: [
       "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&q=80",
       "https://images.unsplash.com/photo-1491553895911-0055eca6402d?w=120&q=80",
@@ -163,6 +165,7 @@ const PRODUCTS = [
     image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400&q=80",
     rating: 4.7, ratingCount: 5600, sold: "25K+", stock: 7,
     colors: ["#ffffff","#212121","#1565c0"], sizes: ["One Size"], tag: "hot",
+    video: "6WEOATyMKBA",
     names: { bn: "ওয়্যারলেস ইয়ারবাড - নয়েজ ক্যান্সেলিং", en: "Wireless Earbuds - Noise Cancelling", ar: "سماعات لاسلكية - إلغاء الضوضاء", hi: "वायरलेस ईयरबड्स - नॉइज़ कैंसेलिंग" }
   },
   {
@@ -201,6 +204,7 @@ const PRODUCTS = [
       "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=120&q=80"
     ],
     colorNames: ["Black","Navy","Maroon","Green"],
+    video: "INXM3sRYe18",
     names: { bn: "প্রিমিয়াম আবায়া - মডার্ন ডিজাইন", en: "Premium Abaya - Modern Design", ar: "عباءة بريميوم - تصميم عصري", hi: "प्रीमियम अबाया - मॉडर्न डिज़ाइन" }
   },
   {
@@ -288,6 +292,7 @@ const PRODUCTS = [
       "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=120&q=80"
     ],
     colorNames: ["Black","White","Blue","Pink"],
+    video: "6WEOATyMKBA",
     names: { bn: "পোর্টেবল ব্লুটুথ স্পিকার - 360° সাউন্ড", en: "Portable Bluetooth Speaker - 360° Sound", ar: "مكبر صوت بلوتوث محمول - صوت 360°", hi: "पोर्टेबल ब्लूटूथ स्पीकर - 360° साउंड" }
   },
   {
@@ -418,6 +423,7 @@ const PRODUCTS = [
       "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=120&q=80"
     ],
     colorNames: ["Black","Pink","Blue","Green","Orange"],
+    video: "Iz7QXkSn9vk",
     names: { bn: "রেজিস্ট্যান্স ব্যান্ড সেট - ৫ লেভেল", en: "Resistance Band Set - 5 Levels", ar: "مجموعة أربطة مقاومة - 5 مستويات", hi: "रेजिस्टेंस बैंड सेट - 5 लेवल" }
   },
   {
