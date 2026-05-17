@@ -1690,6 +1690,7 @@ function openModal(id) {
       </div>
       <div class="modal-divider"></div>
       ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
+      ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="pd-coupon-row" onclick="openPdCoupons()"><div class="pd-coupon-icon"><i class="fas fa-percent"></i></div><span class="pd-coupon-text">Extra ${av[0][1].pct}% off — CODE: ${av[0][0]}</span><i class="fas fa-chevron-right pd-coupon-chev"></i></div>`:'';})()}
       <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
         <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
@@ -1925,6 +1926,46 @@ function copyCouponCode(code) {
     }, 2000);
   }
   showToast('✅ ' + code + ' ' + (t('copied') || 'Copied!'));
+}
+
+function openPdCoupons() {
+  const av = Object.entries(_allCoupons()).filter(([c]) => !isCouponUsed(c));
+  if (!av.length) return;
+  const list = document.getElementById('pdCouponList');
+  if (!list) return;
+  list.innerHTML = av.map(([code, c]) => `
+    <div class="pd-cs-card">
+      <div class="pd-cs-card-top">
+        <div class="pd-cs-pct-badge">
+          <span class="pd-cs-pct-num">${c.pct}%</span>
+          <span class="pd-cs-pct-off">OFF</span>
+        </div>
+        <div class="pd-cs-info">
+          <div class="pd-cs-head-title">Extra ${c.pct}% Off</div>
+          <div class="pd-cs-head-sub">${c.oneTime ? 'One-time use only' : 'Unlimited use'}</div>
+        </div>
+      </div>
+      <div class="pd-cs-code-row">
+        <span class="pd-cs-code-lbl">Code:</span>
+        <span class="pd-cs-code">${code}</span>
+        <button class="pd-cs-copy-btn" onclick="navigator.clipboard.writeText('${code}').then(()=>{showToast('✅ Code copied!');})">
+          <i class="fas fa-copy"></i> Copy
+        </button>
+      </div>
+      <div class="pd-cs-terms">
+        <p>Valid on all products in your cart</p>
+        <p>Apply code at checkout in payment page</p>
+        ${c.oneTime ? '<p>Can only be used once per account</p>' : ''}
+      </div>
+    </div>`).join('');
+  document.getElementById('pdCouponOverlay').classList.add('open');
+  document.getElementById('pdCouponSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePdCoupons() {
+  document.getElementById('pdCouponOverlay').classList.remove('open');
+  document.getElementById('pdCouponSheet').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
 function _allCoupons() {
