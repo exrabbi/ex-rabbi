@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=119" />
+  <link rel="stylesheet" href="styles.css?v=120" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -1190,10 +1190,10 @@
           <span class="settings-val">🇸🇦 KSA</span>
           <i class="fas fa-chevron-right"></i>
         </div>
-        <div class="settings-item" onclick="closeSettings();closeMe();">
+        <div class="settings-item" onclick="openLangPicker()">
           <i class="fas fa-language"></i>
           <span data-i18n="language">ভাষা</span>
-          <span class="settings-val" id="curLangLabel">বাংলা</span>
+          <span class="settings-val" id="curLangLabel">English</span>
           <i class="fas fa-chevron-right"></i>
         </div>
         <div class="settings-item" onclick="openAccountSecurity()">
@@ -2078,8 +2078,41 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
-  <script src="translations.js?v=87"></script>
+  <!-- LANGUAGE PICKER SHEET -->
+  <div class="lang-sheet-overlay" id="langSheetOverlay" onclick="closeLangPicker()"></div>
+  <div class="lang-sheet" id="langSheet">
+    <div class="lang-sheet-handle"></div>
+    <div class="lang-sheet-title" data-i18n="selectLanguage">Select Language</div>
+    <div class="lang-sheet-list">
+      <button class="lang-sheet-row" data-lang="bn" onclick="pickLang('bn')">
+        <span class="lang-sheet-flag">🇧🇩</span>
+        <span class="lang-sheet-name">বাংলা</span>
+        <span class="lang-sheet-native">Bangla</span>
+        <i class="fas fa-check lang-sheet-check" id="lchk-bn"></i>
+      </button>
+      <button class="lang-sheet-row" data-lang="en" onclick="pickLang('en')">
+        <span class="lang-sheet-flag">🇬🇧</span>
+        <span class="lang-sheet-name">English</span>
+        <span class="lang-sheet-native">English</span>
+        <i class="fas fa-check lang-sheet-check" id="lchk-en"></i>
+      </button>
+      <button class="lang-sheet-row" data-lang="ar" onclick="pickLang('ar')">
+        <span class="lang-sheet-flag">🇸🇦</span>
+        <span class="lang-sheet-name">العربية</span>
+        <span class="lang-sheet-native">Arabic</span>
+        <i class="fas fa-check lang-sheet-check" id="lchk-ar"></i>
+      </button>
+      <button class="lang-sheet-row" data-lang="hi" onclick="pickLang('hi')">
+        <span class="lang-sheet-flag">🇮🇳</span>
+        <span class="lang-sheet-name">हिन्दी</span>
+        <span class="lang-sheet-native">Hindi</span>
+        <i class="fas fa-check lang-sheet-check" id="lchk-hi"></i>
+      </button>
+    </div>
+  </div>
+
+  <script src="translations.js?v=88"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=116"></script>
+  <script src="script.js?v=117"></script>
 </body>
 </html>
