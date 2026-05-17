@@ -2171,12 +2171,6 @@ img { max-width: 100%; display: block; }
   pointer-events: none;
 }
 .loc-confirm-btn:active { transform: scale(.97); box-shadow: 0 3px 12px rgba(233,30,140,.3); }
-.loc-manual-btn {
-  width: 100%; text-align: center;
-  font-size: 14px; color: #666; font-weight: 600;
-  padding: 6px; display: flex; align-items: center; justify-content: center; gap: 5px;
-}
-
 /* ===== STEP 2: ADDRESS DETAILS ===== */
 .loc-details {
   position: absolute; inset: 0; background: #f4f6fb; z-index: 1500;
@@ -2262,42 +2256,6 @@ img { max-width: 100%; display: block; }
 }
 
 /* Manual form overlay */
-.loc-manual-form {
-  position: absolute; inset: 0; background: #fff; z-index: 1500;
-  overflow-y: auto; display: flex; flex-direction: column;
-}
-.loc-mf-head {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; border-bottom: 1px solid #eee;
-  font-size: 16px; font-weight: 700; color: #111;
-  position: sticky; top: 0; background: #fff; z-index: 2;
-}
-.loc-mf-head button { font-size: 18px; color: #333; }
-.loc-body { padding: 16px; }
-.loc-field { margin-bottom: 14px; }
-.loc-field label { display: block; font-size: 13px; font-weight: 700; color: #333; margin-bottom: 6px; }
-.loc-field input, .loc-field textarea {
-  width: 100%; padding: 12px 14px;
-  border: 1.5px solid #e0e0e0; border-radius: 10px;
-  font-size: 14px; font-family: inherit; outline: none;
-  transition: border-color .2s;
-}
-.loc-field input:focus, .loc-field textarea:focus { border-color: #e91e8c; }
-.loc-field textarea { resize: none; }
-.loc-save-btn {
-  width: 100%;
-  background: linear-gradient(135deg, #ff0d9a 0%, #d4008c 40%, #9415f5 100%);
-  background-size: 220% 220%;
-  animation: vipShimmer 3s ease infinite;
-  color: #fff; padding: 15px; border-radius: 50px;
-  font-size: 15px; font-weight: 900; letter-spacing: .3px;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; margin-top: 8px;
-  box-shadow: 0 5px 18px rgba(233,30,140,.4);
-  transition: transform .15s;
-}
-.loc-save-btn:active { transform: scale(.97); }
-
 /* ===== AUTH MODAL ===== */
 .auth-overlay {
   display: none; position: fixed; inset: 0;
@@ -4181,10 +4139,6 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .loc-det-section-lbl { color: #666; }
 [data-theme="dark"] .loc-det-field input { background: #1a1a1a; border-color: #333; color: #eee; }
 [data-theme="dark"] .loc-det-footer { background: #111; border-top-color: rgba(255,255,255,.07); }
-[data-theme="dark"] .loc-manual-form { background: #111; }
-[data-theme="dark"] .loc-mf-head { background: #1a1a1a; }
-[data-theme="dark"] .loc-field label { color: #aaa; }
-[data-theme="dark"] .loc-field input, [data-theme="dark"] .loc-field textarea { background: #1a1a1a; border-color: #333; color: #eee; }
 [data-theme="dark"] .loc-search-drop { background: #1a1a1a; }
 [data-theme="dark"] .loc-search-item { border-bottom-color: #2a2a2a; }
 [data-theme="dark"] .loc-search-item:hover { background: #2a1520; }
