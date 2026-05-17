@@ -1314,7 +1314,7 @@ const PAGE_CONTENT = {
       <a class="contact-btn" href="https://wa.me/966546224029?text=Hello, I need help with my order" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
       <div class="info-card">⏰ Available: Saturday – Thursday · 9 AM – 9 PM (AST)<br/>We reply within <strong>2–4 hours</strong> during working hours.</div>
       <h2>📧 Email</h2>
-      <p>support@exglobal.online</p>
+      <p>exglobalbusiness@gmail.com</p>
       <h2>📱 Social Media</h2>
       <p>You can also DM us on Instagram or TikTok for quick questions about products, sizes, or availability.</p>
       <h2>📦 Order Issues?</h2>
@@ -1326,7 +1326,7 @@ const PAGE_CONTENT = {
       <a class="contact-btn" href="https://wa.me/966546224029?text=مرحباً، أحتاج مساعدة بخصوص طلبي" target="_blank"><i class="fab fa-whatsapp"></i> واتساب: 966546224029+</a>
       <div class="info-card">⏰ متاحون: السبت – الخميس · 9 صباحاً – 9 مساءً<br/>نرد خلال <strong>2–4 ساعات</strong> في ساعات العمل.</div>
       <h2>📧 البريد الإلكتروني</h2>
-      <p>support@exglobal.online</p>
+      <p>exglobalbusiness@gmail.com</p>
       <h2>📦 مشكلة في طلبك؟</h2>
       <p>إذا كانت لديك مشكلة في طلبك (منتج خاطئ، تالف، تأخر في التوصيل)، يرجى التواصل معنا عبر واتساب مع رقم الطلب وصورة — وسنحلها بسرعة.</p>
     `},
@@ -1336,7 +1336,7 @@ const PAGE_CONTENT = {
       <a class="contact-btn" href="https://wa.me/966546224029?text=হ্যালো, আমার অর্ডার নিয়ে সাহায্য দরকার" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
       <div class="info-card">⏰ সময়: শনিবার – বৃহস্পতিবার · সকাল ৯টা – রাত ৯টা<br/>কর্মঘণ্টায় <strong>২–৪ ঘণ্টার</strong> মধ্যে সাড়া দিই।</div>
       <h2>📧 ইমেইল</h2>
-      <p>support@exglobal.online</p>
+      <p>exglobalbusiness@gmail.com</p>
       <h2>📦 অর্ডারে সমস্যা?</h2>
       <p>ভুল পণ্য, ক্ষতিগ্রস্ত পণ্য বা ডেলিভারি দেরি হলে — অর্ডার নম্বর ও ছবি সহ WhatsApp করুন, আমরা দ্রুত সমাধান করব।</p>
     `},
@@ -1367,7 +1367,7 @@ const PAGE_CONTENT = {
       <h2>🍪 Cookies</h2>
       <p>We use cookies to remember your cart, language preference, and improve your browsing experience. You can disable cookies in your browser settings at any time.</p>
       <h2>📬 Contact</h2>
-      <p>For privacy concerns, contact us at: support@exglobal.online</p>
+      <p>For privacy concerns, contact us at: exglobalbusiness@gmail.com</p>
     `},
     ar: { title: 'سياسة الخصوصية', body: `
       <p style="color:#888;font-size:12px">آخر تحديث: يناير 2025</p>
@@ -1411,7 +1411,7 @@ const PAGE_CONTENT = {
         <li>আপনার অনুমতি ছাড়া তথ্য শেয়ার</li>
       </ul>
       <h2>📬 যোগাযোগ</h2>
-      <p>গোপনীয়তা সংক্রান্ত যেকোনো বিষয়ে: support@exglobal.online</p>
+      <p>গোপনীয়তা সংক্রান্ত যেকোনো বিষয়ে: exglobalbusiness@gmail.com</p>
     `},
   },
   refund: {
