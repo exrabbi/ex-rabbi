@@ -271,8 +271,7 @@ img { max-width: 100%; display: block; }
 }
 .drawer-menu li a:hover { background: #fce4ec; color: #e91e8c; }
 .drawer-menu li a i { width: 20px; color: #e91e8c; }
-#drawerInstallItem a { border-radius: 12px; margin: 4px 12px; padding: 13px 16px; }
-#drawerInstallItem a:hover { background: linear-gradient(135deg,#d01070,#7200c0) !important; }
+#drawerInstallItem a:hover { background: #fce4ec; color: #e91e8c; }
 .drawer-footer {
   padding: 16px; display: flex; gap: 10px; border-top: 1px solid #eee;
 }

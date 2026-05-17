@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=95" />
+  <link rel="stylesheet" href="styles.css?v=96" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -197,11 +197,11 @@
       <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">Sign Out</span></a></li>
       <li style="border-top:1px solid rgba(128,128,128,.15);margin-top:6px;padding-top:6px"><a href="store2.html"><i class="fas fa-store" style="color:#00c4b4"></i> EX STYLE Store</a></li>
       <li><a href="store3.html"><i class="fas fa-gem" style="color:#c9a227"></i> EX LUXE Store</a></li>
-      <li id="drawerInstallItem" style="display:none;border-top:1px solid rgba(128,128,128,.15);margin-top:6px;padding-top:6px">
-        <a href="#" onclick="installPWA();return false;" style="background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border-radius:12px;padding:10px 14px;margin:0 -6px;font-weight:700">
-          <i class="fas fa-download" style="color:#fff"></i>
+      <li id="drawerInstallItem" style="display:none">
+        <a href="#" onclick="installPWA();return false;">
+          <i class="fas fa-download" style="color:#e91e8c"></i>
           <span data-i18n="installApp">অ্যাপ ডাউনলোড করুন</span>
-          <span style="font-size:9px;opacity:.85;margin-left:auto;background:rgba(255,255,255,.2);padding:2px 7px;border-radius:20px">FREE</span>
+          <span style="font-size:9px;font-weight:600;color:#e91e8c;margin-left:auto;border:1px solid #e91e8c;padding:1px 6px;border-radius:20px">FREE</span>
         </a>
       </li>
     </ul>
@@ -1943,6 +1943,6 @@
   <script src="paypal-config.js"></script>
   <script src="translations.js?v=87"></script>
   <script src="products.js?v=81"></script>
-  <script src="script.js?v=99"></script>
+  <script src="script.js?v=100"></script>
 </body>
 </html>
