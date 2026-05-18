@@ -2604,13 +2604,15 @@ function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
   document.getElementById('locModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Hide floating buttons so they don't overlap the map
   const fab = document.getElementById('aiChatFab');
   if (fab) fab.style.display = 'none';
-  // Reset step 2 and manual form on open
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
-  setTimeout(_initLocMap, 350);
+  setTimeout(() => { _initLocMap(); _locAutoGps(); }, 350);
+  // When user returns from browser settings, retry GPS
+  const _retry = () => { if (document.getElementById('locOverlay')?.classList.contains('open')) _locAutoGps(); };
+  document.removeEventListener('visibilitychange', _retry);
+  document.addEventListener('visibilitychange', _retry);
 }
 
 function _initLocMap() {
@@ -2637,20 +2639,7 @@ function _initLocMap() {
     ? { maxZoom: 19 }
     : { maxZoom: 19, subdomains: 'abcd' };
   L.tileLayer(tileUrl, tileOpts).addTo(locMap);
-  // Try GPS silently — if allowed, center map and show blue dot
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      pos => {
-        _locShowUserDot(pos.coords.latitude, pos.coords.longitude);
-        if (!savedLocation?.lat) {
-          _locCurrLat = pos.coords.latitude; _locCurrLng = pos.coords.longitude;
-          locMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
-        }
-      },
-      () => {},
-      { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 }
-    );
-  }
+  // GPS is handled by _locAutoGps() called from openLocation()
 
   locMap.on('movestart', () => {
     const pin = document.getElementById('locPinWrap');
@@ -2907,90 +2896,81 @@ function _locSelectResult(lat, lng, displayName) {
   }
 }
 
-function useMyLocation() {
+/* GPS helpers */
+function _locSetPos(lat, lng, zoom) {
+  _locCurrLat = lat; _locCurrLng = lng;
+  if (!locMap) { _initLocMap(); setTimeout(() => locMap?.flyTo([lat, lng], zoom||17, {duration:1.2}), 700); }
+  else locMap.flyTo([lat, lng], zoom||17, {duration:1.2});
+}
+function _locSetBtn(html, loading) {
   const btn = document.getElementById('locGpsBtn');
-  btn.classList.add('loading');
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Locating…';
-
-  const _resetBtn = () => {
-    btn.classList.remove('loading');
-    btn.innerHTML = '<i class="fas fa-location-crosshairs"></i> Locate me';
-  };
-
-  const _setPos = (lat, lng, zoom) => {
-    _locCurrLat = lat; _locCurrLng = lng;
-    if (!locMap) {
-      _initLocMap();
-      setTimeout(() => { if (locMap) locMap.flyTo([lat, lng], zoom || 17, { duration: 1.2 }); }, 700);
-    } else {
-      locMap.flyTo([lat, lng], zoom || 17, { duration: 1.2 });
-    }
-  };
-
-  if (!navigator.geolocation) {
-    _resetBtn();
-    _locGpsHint();
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      _resetBtn();
-      _locShowUserDot(pos.coords.latitude, pos.coords.longitude);
-      _setPos(pos.coords.latitude, pos.coords.longitude, 17);
-    },
-    () => {
-      _resetBtn();
-      _locShowGpsGuide();
-    },
-    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-  );
+  if (!btn) return;
+  btn.innerHTML = html;
+  btn.classList.toggle('loading', !!loading);
 }
-
-function _locGpsHint() {
+function _locGpsSuccess(pos) {
+  const lat = pos.coords.latitude, lng = pos.coords.longitude;
+  _locSetBtn('<i class="fas fa-location-crosshairs"></i> Locate me', false);
+  _locShowUserDot(lat, lng);
+  _locSetPos(lat, lng, 17);
   const el = document.getElementById('locAddrText');
-  if (el) {
-    el.classList.add('loc-addr-shake');
-    el.style.color = '#b45309';
-    el.textContent = 'GPS unavailable — drag the map to your location';
-    setTimeout(() => {
-      el.classList.remove('loc-addr-shake');
-      el.style.color = '';
-      if (!_locCurrentAddr) el.textContent = 'Drag map to set location';
-      else el.textContent = _locCurrentAddr;
-    }, 3500);
+  if (el) { el.style.color = '#16a34a'; el.textContent = '✓ GPS location found'; setTimeout(() => { el.style.color = ''; }, 2000); }
+  const g = document.getElementById('locGpsGuide'); if (g) g.remove();
+}
+function _locGpsFail(err) {
+  _locSetBtn('<i class="fas fa-location-crosshairs"></i> Locate me', false);
+  _locShowGpsGuide(err?.code);
+}
+function _locAutoGps() {
+  if (!navigator.geolocation) return;
+  if (navigator.permissions) {
+    navigator.permissions.query({name:'geolocation'}).then(p => {
+      if (p.state === 'denied') { _locShowGpsGuide(1); return; }
+      _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
+      navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
+        {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
+    }).catch(() => {
+      _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
+      navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
+        {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
+    });
+  } else {
+    _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
+    navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
+      {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
   }
 }
-function _locShowGpsGuide() {
-  // Remove any old guide
-  const old = document.getElementById('locGpsGuide');
-  if (old) old.remove();
+function useMyLocation() { _locAutoGps(); }
+
+function _locShowGpsGuide(code) {
+  const old = document.getElementById('locGpsGuide'); if (old) old.remove();
   const isAr = currentLang === 'ar';
+  const denied = code === 1;
   const guide = document.createElement('div');
   guide.id = 'locGpsGuide';
-  guide.style.cssText = 'position:absolute;bottom:130px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:360px;background:#1a1200;border:1.5px solid rgba(201,168,76,.4);border-radius:16px;padding:14px 16px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+  guide.style.cssText = 'position:absolute;bottom:80px;left:12px;right:12px;background:rgba(10,8,0,.97);border:1.5px solid #e91e8c;border-radius:18px;padding:16px;z-index:600;box-shadow:0 8px 40px rgba(233,30,140,.25)';
+  const steps = denied
+    ? (isAr
+      ? ['اضغط على 🔒 في شريط العنوان بالأعلى','اختر <b>الموقع</b> ← <b>السماح</b>','ثم اضغط <b>Locate me</b> مجدداً']
+      : ['Tap the <b>🔒 lock icon</b> in your browser address bar','Tap <b>Location</b> → select <b>Allow</b>','Then tap <b>Locate me</b> button again'])
+    : (isAr
+      ? ['تأكد أن GPS مفعّل في الإعدادات','اضغط <b>Locate me</b> مرة أخرى']
+      : ['Make sure <b>Location/GPS is ON</b> in your phone settings','Then tap <b>Locate me</b> again']);
   guide.innerHTML = `
-    <div style="display:flex;align-items:flex-start;gap:10px">
-      <span style="font-size:22px;flex-shrink:0">📍</span>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:#f5d98b;margin-bottom:5px">${isAr ? 'تفعيل الموقع' : 'Enable Location'}</div>
-        <div style="font-size:12px;color:#c9a84c;line-height:1.6">
-          ${isAr
-            ? '١. اضغط 🔒 في شريط العناوين<br>٢. الموقع ← السماح<br>٣. ثم اضغط "Locate me" مرة أخرى'
-            : '1. Tap 🔒 in your browser address bar<br>2. Location → Allow<br>3. Then tap <b>Locate me</b> again'}
-        </div>
-      </div>
-      <button onclick="document.getElementById('locGpsGuide').remove()" style="background:none;border:none;color:#888;font-size:16px;cursor:pointer;flex-shrink:0;padding:0">✕</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:14px;font-weight:800;color:#fff">📍 ${isAr ? 'كيفية تفعيل الموقع' : 'How to enable GPS'}</div>
+      <button onclick="document.getElementById('locGpsGuide').remove()" style="background:rgba(255,255,255,.1);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px">✕</button>
     </div>
-    <div style="margin-top:10px;font-size:11px;color:#665500;text-align:center">
-      ${isAr ? 'أو ابحث عن عنوانك في شريط البحث أعلاه ↑' : 'Or search your address in the bar above ↑'}
-    </div>`;
+    ${steps.map((s,i)=>`<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">
+      <div style="background:#e91e8c;color:#fff;font-size:11px;font-weight:900;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
+      <div style="font-size:12px;color:#ddd;line-height:1.5">${s}</div>
+    </div>`).join('')}
+    <button onclick="_locAutoGps();document.getElementById('locGpsGuide').remove()" style="width:100%;margin-top:8px;padding:11px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer">
+      <i class="fas fa-location-crosshairs"></i> ${isAr ? 'حاول مرة أخرى' : 'Try Again'}
+    </button>
+    <div style="text-align:center;margin-top:8px;font-size:11px;color:#666">${isAr ? 'أو ابحث عن عنوانك ↑' : 'Or type your address in the search bar ↑'}</div>`;
   const mapWrap = document.getElementById('locMapWrap');
-  if (mapWrap) {
-    mapWrap.style.position = 'relative';
-    mapWrap.appendChild(guide);
-    setTimeout(() => { const g = document.getElementById('locGpsGuide'); if (g) g.remove(); }, 8000);
-  }
+  if (mapWrap) mapWrap.appendChild(guide);
 }
 
 function _locFallbackIP() {
