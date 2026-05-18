@@ -2637,7 +2637,7 @@ function _initLocMap() {
     ? { maxZoom: 19 }
     : { maxZoom: 19, subdomains: 'abcd' };
   L.tileLayer(tileUrl, tileOpts).addTo(locMap);
-  // Try GPS first; fall back to IP geolocation if no saved location
+  // Try GPS silently — if allowed, center map and show blue dot
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       pos => {
@@ -2647,11 +2647,9 @@ function _initLocMap() {
           locMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
         }
       },
-      () => { if (!savedLocation?.lat) _locFallbackIP(); },
+      () => {},
       { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 }
     );
-  } else if (!savedLocation?.lat) {
-    _locFallbackIP();
   }
 
   locMap.on('movestart', () => {
@@ -2943,8 +2941,7 @@ function useMyLocation() {
     },
     () => {
       _resetBtn();
-      _locGpsHint();
-      _locFallbackIP();
+      _locShowGpsGuide();
     },
     { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
   );
@@ -2962,6 +2959,37 @@ function _locGpsHint() {
       if (!_locCurrentAddr) el.textContent = 'Drag map to set location';
       else el.textContent = _locCurrentAddr;
     }, 3500);
+  }
+}
+function _locShowGpsGuide() {
+  // Remove any old guide
+  const old = document.getElementById('locGpsGuide');
+  if (old) old.remove();
+  const isAr = currentLang === 'ar';
+  const guide = document.createElement('div');
+  guide.id = 'locGpsGuide';
+  guide.style.cssText = 'position:absolute;bottom:130px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:360px;background:#1a1200;border:1.5px solid rgba(201,168,76,.4);border-radius:16px;padding:14px 16px;z-index:500;box-shadow:0 8px 32px rgba(0,0,0,.5)';
+  guide.innerHTML = `
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <span style="font-size:22px;flex-shrink:0">📍</span>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#f5d98b;margin-bottom:5px">${isAr ? 'تفعيل الموقع' : 'Enable Location'}</div>
+        <div style="font-size:12px;color:#c9a84c;line-height:1.6">
+          ${isAr
+            ? '١. اضغط 🔒 في شريط العناوين<br>٢. الموقع ← السماح<br>٣. ثم اضغط "Locate me" مرة أخرى'
+            : '1. Tap 🔒 in your browser address bar<br>2. Location → Allow<br>3. Then tap <b>Locate me</b> again'}
+        </div>
+      </div>
+      <button onclick="document.getElementById('locGpsGuide').remove()" style="background:none;border:none;color:#888;font-size:16px;cursor:pointer;flex-shrink:0;padding:0">✕</button>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#665500;text-align:center">
+      ${isAr ? 'أو ابحث عن عنوانك في شريط البحث أعلاه ↑' : 'Or search your address in the bar above ↑'}
+    </div>`;
+  const mapWrap = document.getElementById('locMapWrap');
+  if (mapWrap) {
+    mapWrap.style.position = 'relative';
+    mapWrap.appendChild(guide);
+    setTimeout(() => { const g = document.getElementById('locGpsGuide'); if (g) g.remove(); }, 8000);
   }
 }
 
