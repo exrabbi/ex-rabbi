@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=124" />
+  <link rel="stylesheet" href="styles.css?v=125" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1414,53 +1414,42 @@
 
       <!-- Card form -->
       <div id="cardForm" style="display:none">
-        <!-- 3D card mockup -->
-        <div class="card-mockup" id="cardMockup">
-          <div class="cm-shimmer"></div>
-          <div class="cm-top">
-            <div class="cm-chip">
-              <svg viewBox="0 0 44 34" width="42" height="32">
-                <rect width="44" height="34" rx="5" fill="#c9a84c"/>
-                <rect x="0" y="11" width="44" height="12" fill="#b8922d" opacity=".55"/>
-                <rect x="15" y="0" width="14" height="34" fill="#b8922d" opacity=".55"/>
-                <rect x="13" y="9" width="18" height="16" rx="2" fill="none" stroke="#b8922d" stroke-width="1.5"/>
-                <circle cx="22" cy="17" r="3" fill="#b8922d" opacity=".7"/>
-              </svg>
-            </div>
-            <div class="cm-nfc">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M4.93 4.93A10 10 0 0 0 2 12a10 10 0 0 0 2.93 7.07" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M7.76 7.76A6 6 0 0 0 6 12a6 6 0 0 0 1.76 4.24" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
-                <path d="M10.59 10.59A2 2 0 0 0 10 12a2 2 0 0 0 .59 1.41" stroke="rgba(255,255,255,.55)" stroke-width="1.8" stroke-linecap="round"/>
-              </svg>
-            </div>
-          </div>
-          <div class="cm-number" id="cmNumber">•••• •••• •••• ••••</div>
-          <div class="cm-brand" id="cmBrand"></div>
-        </div>
         <div class="card-form-wrap">
+          <div class="card-form-header">
+            <i class="fas fa-credit-card"></i>
+            <span>Card</span>
+          </div>
           <div class="card-field">
-            <label data-i18n="cardNumber">Card Number</label>
+            <label>* Card number</label>
             <div class="card-input-wrap">
-              <input type="tel" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" oninput="formatCard(this)" />
+              <input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" />
               <div class="card-type-icon" id="cardTypeIcon"></div>
+            </div>
+            <div class="card-field-req" id="cardNumReq">Required</div>
+          </div>
+          <div class="card-row2">
+            <div class="card-field">
+              <label>* Expiry date</label>
+              <input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+            </div>
+            <div class="card-field">
+              <label>* CVV</label>
+              <input type="tel" id="cardCvv" placeholder="123" maxlength="4" />
             </div>
           </div>
           <div class="card-row2">
             <div class="card-field">
-              <label data-i18n="cardExpiry">Expiry</label>
-              <input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+              <label>* First name</label>
+              <input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName()" />
             </div>
             <div class="card-field">
-              <label>CVV</label>
-              <input type="tel" id="cardCvv" placeholder="•••" maxlength="4" />
+              <label>* Last name</label>
+              <input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName()" />
             </div>
           </div>
-          <div class="card-field">
-            <label data-i18n="cardHolder">Cardholder Name</label>
-            <input type="text" id="cardName" data-i18n-placeholder="cardHolderPh" placeholder="Name on card" />
-          </div>
         </div>
+        <!-- hidden: keeps old id for any legacy JS that reads cardName -->
+        <input type="hidden" id="cardName" />
       </div>
 
       <!-- Binance form -->
@@ -2121,6 +2110,6 @@
 
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=129"></script>
+  <script src="script.js?v=130"></script>
 </body>
 </html>

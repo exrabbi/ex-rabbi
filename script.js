@@ -3729,13 +3729,6 @@ function formatCard(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 16);
   el.value = v.replace(/(.{4})/g, '$1 ').trim();
 
-  // Update card mockup number display
-  const cmNum = document.getElementById('cmNumber');
-  if (cmNum) {
-    const padded = (v + '').padEnd(16, '•');
-    cmNum.textContent = padded.replace(/(.{4})/g, '$1 ').trim();
-  }
-
   const icon = document.getElementById('cardTypeIcon');
   const cmBrand = document.getElementById('cmBrand');
   let html = '', brandHtml = '';
@@ -3766,6 +3759,12 @@ function formatExpiry(el) {
   let v = el.value.replace(/\D/g, '').substring(0, 4);
   if (v.length >= 2) v = v.substring(0,2) + '/' + v.substring(2);
   el.value = v;
+}
+function _syncCardName() {
+  const f = (document.getElementById('cardFirstName')?.value || '').trim();
+  const l = (document.getElementById('cardLastName')?.value || '').trim();
+  const h = document.getElementById('cardName');
+  if (h) h.value = [f, l].filter(Boolean).join(' ');
 }
 
 /* ===== REVIEWS ===== */
