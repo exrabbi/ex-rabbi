@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=130" />
+  <link rel="stylesheet" href="styles.css?v=131" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -869,11 +869,11 @@
       <!-- Summary -->
       <div class="cart-summary">
         <div class="cart-srow">
-          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> Items total</span>
+          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="itemsTotal">Items total</span></span>
           <span class="cart-srow-val cart-original-total" id="cartOriginalTotal"></span>
         </div>
         <div class="cart-srow">
-          <span class="cart-srow-label" style="color:#e05c00"><i class="fas fa-tag"></i> Discounts</span>
+          <span class="cart-srow-label" style="color:#e05c00"><i class="fas fa-tag"></i> <span data-i18n="discountsLabel">Discounts</span></span>
           <span class="cart-srow-val cart-discount-val" id="cartDiscountDisp"></span>
         </div>
         <div class="cart-srow">
@@ -1338,7 +1338,7 @@
           <span id="payOriginalTotal" class="pay-original-total">0</span>
         </div>
         <div class="pay-summary-row" id="payItemDiscountRow">
-          <span style="color:#e05c00"><i class="fas fa-tag"></i> Discounts</span>
+          <span style="color:#e05c00"><i class="fas fa-tag"></i> <span data-i18n="discountsLabel">Discounts</span></span>
           <span id="payItemDiscount" style="color:#e05c00">-0</span>
         </div>
         <div class="pay-summary-row">
@@ -1421,8 +1421,8 @@
           <div class="pm-top-row">
             <div class="pm-cod-icon"><i class="fas fa-money-bill-wave" style="font-size:16px;color:#4a7c4e"></i></div>
             <div>
-              <div class="pm-name">Cash on Delivery</div>
-              <div class="pm-sub">Pay when you receive</div>
+              <div class="pm-name" data-i18n="waOrderSub">Cash on Delivery</div>
+              <div class="pm-sub" data-i18n="codPayWhen">Pay when you receive</div>
             </div>
           </div>
         </div>
@@ -2240,8 +2240,8 @@
     <button class="promo-skip" onclick="closeExitPopup()">No thanks, I'll pay full price</button>
   </div>
 
-  <script src="translations.js?v=89"></script>
+  <script src="translations.js?v=90"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=135"></script>
+  <script src="script.js?v=136"></script>
 </body>
 </html>

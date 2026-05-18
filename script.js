@@ -1072,12 +1072,12 @@ function renderCart() {
       <div class="cas-left">
         <i class="fas fa-location-dot cas-icon"></i>
         <div>
-          <p class="cas-label">Delivery address required</p>
-          <p class="cas-sub">Add your address to place order</p>
+          <p class="cas-label">${t('deliveryAddress') || 'Delivery address required'}</p>
+          <p class="cas-sub">${t('addAddressHint') || 'Add your address to place order'}</p>
         </div>
       </div>
       <button class="cas-add-btn" onclick="closeCart();setTimeout(openLocation,300)">
-        Add <i class="fas fa-chevron-right"></i>
+        ${t('addBtn') || 'Add'} <i class="fas fa-chevron-right"></i>
       </button>`;
   } else {
     addrStrip.className = 'cart-addr-strip cart-addr-strip--set';
@@ -1090,7 +1090,7 @@ function renderCart() {
         </div>
       </div>
       <button class="cas-change-btn" onclick="closeCart();setTimeout(openLocation,300)">
-        Change
+        ${t('changeBtn') || 'Change'}
       </button>`;
   }
   // Remove old-style warning if still present
@@ -3431,12 +3431,6 @@ function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
   const stockErr = _cartStockError();
   if (stockErr) { showToast('🚫 ' + stockErr); return; }
-  if (!currentUser) {
-    closeCart();
-    showToast(t('loginToOrder'));
-    setTimeout(openAuth, 400);
-    return;
-  }
   // Block if no delivery address (name + phone + city all required)
   if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
     closeCart();
