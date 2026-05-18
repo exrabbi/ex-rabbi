@@ -3570,7 +3570,7 @@ function closePayment() {
 
 function selectPayMethod(method) {
   selectedPayMethod = method;
-  ['whatsapp','paypal','card','gpay','binance'].forEach(m => {
+  ['whatsapp','paypal','card','gpay','binance','stc'].forEach(m => {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
     if (pm) pm.classList.remove('active');
@@ -3579,11 +3579,13 @@ function selectPayMethod(method) {
   const card = document.getElementById('pm' + method.charAt(0).toUpperCase() + method.slice(1));
   if (card) card.classList.add('active');
   const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
-  if (check) check.querySelector('i').style.color = method === 'binance' ? '#F3BA2F' : '#e91e8c';
+  if (check) check.querySelector('i').style.color =
+    method === 'binance' ? '#F3BA2F' : method === 'stc' ? '#6D2C8A' : '#e91e8c';
   // Show/hide sub-forms
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
   document.getElementById('binanceForm').style.display = (method === 'binance') ? 'block' : 'none';
+  document.getElementById('stcForm').style.display = (method === 'stc') ? 'block' : 'none';
   // Populate Binance form
   if (method === 'binance') {
     const lang3 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
@@ -3598,7 +3600,22 @@ function selectPayMethod(method) {
     if (sarEl) sarEl.textContent = lang3.currency + Math.round(totalSAR) + ' ≈ ' + usdt + ' USDT';
     if (addrEl) addrEl.textContent = BINANCE_PAY_ID;
   }
-  // Update button text
+  // Populate STC Pay form
+  if (method === 'stc') {
+    const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    const stcNum = s.stcPayNumber || '0546224029';
+    const lang4 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const sub4 = cartSubtotalBase() * lang4.rate;
+    const del4 = sub4 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const totalSAR4 = sub4 + del4;
+    const phoneEl = document.getElementById('stcPhoneTxt');
+    const amtEl   = document.getElementById('stcAmtDisplay');
+    const pillEl  = document.getElementById('stcAmtSAR');
+    if (phoneEl) phoneEl.textContent = stcNum;
+    if (amtEl)   amtEl.textContent   = 'SAR ' + Math.round(totalSAR4);
+    if (pillEl)  pillEl.textContent  = 'SAR ' + Math.round(totalSAR4);
+  }
+  // Update button text & color
   const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const subtotalDisp2 = cartSubtotalBase() * lang2.rate;
   const delDisp2 = subtotalDisp2 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
@@ -3606,15 +3623,24 @@ function selectPayMethod(method) {
   const methodLabel = {
     whatsapp: t('placeOrder'), paypal: 'PayPal',
     card: t('cardName'), gpay: 'Google Pay',
-    binance: '⚡ Verify & Confirm Order'
+    binance: '⚡ Verify & Confirm Order',
+    stc: '✅ Confirm STC Pay Order',
   };
   const btnEl = document.getElementById('btnPayNow');
-  if (btnEl) btnEl.style.background = method === 'binance'
-    ? 'linear-gradient(135deg,#F3BA2F,#F0A500)' : '';
+  if (btnEl) btnEl.style.background =
+    method === 'binance' ? 'linear-gradient(135deg,#F3BA2F,#F0A500)' :
+    method === 'stc'     ? 'linear-gradient(135deg,#6D2C8A,#9C27B0)' : '';
   document.getElementById('payBtnText').textContent =
     (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
 }
 
+function copyStcNumber() {
+  const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  const num = s.stcPayNumber || '0546224029';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(num).then(() => showToast('✅ STC Pay number copied!')).catch(() => showToast(num));
+  } else { showToast(num); }
+}
 function copyBinanceAddr() {
   const addr = BINANCE_PAY_ID;
   if (navigator.clipboard) {
@@ -3713,6 +3739,42 @@ function processPayment() {
         showOrderConfirm(bOrd?.id, (bLang.currency||'SAR ')+Math.round(totalSAR*(bLang.rate||1)).toLocaleString());
       }, 1200);
     }, 2800);
+  } else if (selectedPayMethod === 'stc') {
+    const ref = (document.getElementById('stcRefInput')?.value || '').trim();
+    if (ref.length < 4) { showToast('⚠️ Enter your STC Pay transaction ID'); return; }
+    const usedStc = JSON.parse(localStorage.getItem('stc_used_refs') || '[]');
+    if (usedStc.includes(ref)) { showToast('⚠️ This transaction ID has already been used'); return; }
+
+    const btn = document.getElementById('btnPayNow');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying…';
+
+    setTimeout(() => {
+      usedStc.push(ref);
+      localStorage.setItem('stc_used_refs', JSON.stringify(usedStc));
+      const orderNum = 'EX-' + (Date.now() % 100000).toString().padStart(5, '0');
+      btn.disabled = false;
+      btn.style.background = 'linear-gradient(135deg,#059669,#34d399)';
+      document.getElementById('payBtnText').textContent = '✓ Order Confirmed!';
+
+      const langS = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+      const subS  = cartSubtotalBase() * langS.rate;
+      const delS  = subS >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+      const totalS = subS + delS;
+      const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+      const stcNum = s.stcPayNumber || '0546224029';
+      const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `• ${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
+      const locText = getLocationText();
+      const msg = `💜 *STC Pay — ORDER RECEIVED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 *SAR ${Math.round(totalS)}*\n📱 STC Pay: ${stcNum}\n🔖 Txn ID: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
+
+      setTimeout(() => {
+        const sOrd = _saveOrderRecord(cart, totalS, 'stc');
+        window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+        cart = []; _saveCart(); updateCartBadge();
+        closePayment(); openCart();
+        showOrderConfirm(sOrd?.id, 'SAR ' + Math.round(totalS).toLocaleString());
+      }, 1000);
+    }, 2000);
   }
 }
 

@@ -821,6 +821,18 @@ service cloud.firestore {
               </select>
             </div>
 
+            <!-- STC Pay number -->
+            <div style="background:#1a0a2e;border-radius:8px;padding:12px;margin-bottom:10px;border:1px solid rgba(109,44,138,.4)">
+              <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:700">
+                💜 STC Pay — Personal Transfer
+              </div>
+              <div class="field-wrap">
+                <div class="field-label">Your STC Pay Phone Number</div>
+                <input type="tel" id="setStcPayNumber" class="adm-input" placeholder="05XXXXXXXX" maxlength="15"/>
+                <div class="setting-desc" style="margin-top:5px;font-size:11px">Customers will send money to this number</div>
+              </div>
+            </div>
+
             <!-- Moyasar fields (shown when Moyasar selected) -->
             <div id="moyasarFields" style="display:none;background:#160a30;border-radius:8px;padding:12px;margin-bottom:10px">
               <div class="setting-desc" style="margin-bottom:8px;color:#c084fc;font-weight:600">
@@ -2637,6 +2649,7 @@ function loadSettings() {
     // Automation settings
     if (el('setWorkerUrl2'))      el('setWorkerUrl2').value      = localStorage.getItem('exg_worker_url2')       || '';
     if (el('setPaymentGateway'))  el('setPaymentGateway').value  = localStorage.getItem('exg_payment_gateway')   || 'whatsapp';
+    if (el('setStcPayNumber'))    el('setStcPayNumber').value    = (JSON.parse(localStorage.getItem('exg_settings')||'{}').stcPayNumber) || '0546224029';
     if (el('setMoyasarPubKey'))   el('setMoyasarPubKey').value   = localStorage.getItem('exg_moyasar_pub')       || '';
     if (el('setHyperPayEntity'))  el('setHyperPayEntity').value  = localStorage.getItem('exg_hyperpay_entity')   || '';
     if (el('setHyperPayToken'))   el('setHyperPayToken').value   = localStorage.getItem('exg_hyperpay_token')    || '';
@@ -2695,6 +2708,8 @@ function saveSettings() {
   const aramexPass     = (document.getElementById('setAramexPass')?.value     || '').trim();
   if (workerUrl2)     localStorage.setItem('exg_worker_url2',       workerUrl2);     else localStorage.removeItem('exg_worker_url2');
   localStorage.setItem('exg_payment_gateway', paymentGateway);
+  const stcPayNumber = (document.getElementById('setStcPayNumber')?.value || '').trim();
+  sUpdated.stcPayNumber = stcPayNumber || '0546224029';
   if (moyasarPub)     localStorage.setItem('exg_moyasar_pub',       moyasarPub);     else localStorage.removeItem('exg_moyasar_pub');
   if (hyperpayEntity) localStorage.setItem('exg_hyperpay_entity',   hyperpayEntity); else localStorage.removeItem('exg_hyperpay_entity');
   if (hyperpayToken)  localStorage.setItem('exg_hyperpay_token',    hyperpayToken);  else localStorage.removeItem('exg_hyperpay_token');
