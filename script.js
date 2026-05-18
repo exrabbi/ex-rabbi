@@ -2630,8 +2630,6 @@ function _initLocMap() {
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
   locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
     .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
-  // Use standard OSM tiles for Arabic (shows native Arabic labels in Saudi Arabia)
-  // Use CartoDB Voyager for other languages (cleaner look with transliterated names)
   const tileUrl = currentLang === 'ar'
     ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
     : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
@@ -2639,12 +2637,21 @@ function _initLocMap() {
     ? { maxZoom: 19 }
     : { maxZoom: 19, subdomains: 'abcd' };
   L.tileLayer(tileUrl, tileOpts).addTo(locMap);
-  // Silently try GPS to place blue dot (does not move map)
+  // Try GPS first; fall back to IP geolocation if no saved location
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
-      pos => _locShowUserDot(pos.coords.latitude, pos.coords.longitude),
-      () => {}, { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 }
+      pos => {
+        _locShowUserDot(pos.coords.latitude, pos.coords.longitude);
+        if (!savedLocation?.lat) {
+          _locCurrLat = pos.coords.latitude; _locCurrLng = pos.coords.longitude;
+          locMap.setView([pos.coords.latitude, pos.coords.longitude], 16);
+        }
+      },
+      () => { if (!savedLocation?.lat) _locFallbackIP(); },
+      { enableHighAccuracy: false, timeout: 6000, maximumAge: 300000 }
     );
+  } else if (!savedLocation?.lat) {
+    _locFallbackIP();
   }
 
   locMap.on('movestart', () => {
@@ -2937,6 +2944,7 @@ function useMyLocation() {
     () => {
       _resetBtn();
       _locGpsHint();
+      _locFallbackIP();
     },
     { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
   );
@@ -2958,19 +2966,23 @@ function _locGpsHint() {
 }
 
 function _locFallbackIP() {
-  // Try IP-based geolocation silently
+  const _apply = (lat, lng) => {
+    _locCurrLat = lat; _locCurrLng = lng;
+    if (locMap) locMap.flyTo([lat, lng], 14, { duration: 1.2 });
+    else { _initLocMap(); setTimeout(() => { if (locMap) locMap.setView([lat, lng], 14); }, 700); }
+    const el = document.getElementById('locAddrText');
+    if (el && (el.textContent === 'Drag map to set location' || el.textContent.includes('GPS unavailable')))
+      el.textContent = 'Drag map to your exact location';
+  };
   fetch('https://ipapi.co/json/')
     .then(r => r.json())
-    .then(d => {
-      if (d && d.latitude && d.longitude) {
-        const lat = parseFloat(d.latitude);
-        const lng = parseFloat(d.longitude);
-        _locCurrLat = lat; _locCurrLng = lng;
-        if (locMap) locMap.flyTo([lat, lng], 14, { duration: 1.5 });
-        else { _initLocMap(); setTimeout(() => { if (locMap) locMap.setView([lat, lng], 14); }, 700); }
-      }
-    })
-    .catch(() => {});
+    .then(d => { if (d?.latitude) _apply(parseFloat(d.latitude), parseFloat(d.longitude)); })
+    .catch(() => {
+      fetch('https://ip-api.com/json/?fields=lat,lon')
+        .then(r => r.json())
+        .then(d => { if (d?.lat) _apply(parseFloat(d.lat), parseFloat(d.lon)); })
+        .catch(() => {});
+    });
 }
 
 function closeLocation() {
