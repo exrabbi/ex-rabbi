@@ -936,6 +936,27 @@ service cloud.firestore {
           <div style="margin-top:8px;font-size:11px;color:#666">⚠️ Worker URL ছাড়া chatbot কাজ করবে না</div>
         </div>
 
+        <!-- AI AGENT WORKER SETTINGS -->
+        <div class="setting-row" style="border:1px solid #1a3a1a;border-radius:10px;padding:14px;background:#071407;margin-top:6px">
+          <div class="setting-label" style="color:#4ade80;font-size:14px"><i class="fas fa-network-wired" style="color:#22c55e"></i> 🤖 AI Agent Worker (n8n-style)</div>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
+            <div style="color:#4ade80;font-weight:600;margin-bottom:5px">ai-agent-worker.js deploy করার পর URL দিন:</div>
+            AI Agent → Auto-fix Parser → Switch Router → HTTP Execute — natural language দিয়ে store API control করুন।<br/>
+            <span style="color:#666">যেমন: "show all products under SAR 200" বা "delete product id 42"</span>
+          </div>
+          <input type="url" id="setAgentWorkerUrl" class="adm-input" placeholder="https://ex-global-agent.yourname.workers.dev" style="font-size:12px;margin-bottom:7px"/>
+          <input type="password" id="setAgentSecret" class="adm-input" placeholder="Agent Secret (AGENT_SECRET Cloudflare variable)" style="font-size:12px"/>
+          <div style="margin-top:10px">
+            <div style="font-size:11px;color:#4ade80;font-weight:600;margin-bottom:6px">Test Agent:</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+              <input type="text" id="agentTestInput" class="adm-input" placeholder='যেমন: "show all products"' style="font-size:12px;flex:1;min-width:200px;margin-bottom:0"/>
+              <button onclick="testAgentWorker()" style="background:#16a34a;color:#fff;border:none;border-radius:7px;padding:8px 16px;font-size:12px;cursor:pointer;white-space:nowrap"><i class="fas fa-play"></i> Run</button>
+            </div>
+            <pre id="agentTestResult" style="display:none;margin-top:10px;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:6px;padding:10px;font-size:11px;color:#86efac;overflow-x:auto;max-height:200px;white-space:pre-wrap"></pre>
+          </div>
+          <div style="margin-top:8px;font-size:11px;color:#666">⚠️ STORE_API_BASE_URL এবং STORE_API_TOKEN Cloudflare Worker secrets-এ set করতে হবে</div>
+        </div>
+
         <!-- FCM / PUSH NOTIFICATION KEYS -->
         <div class="setting-row" style="border:1px solid #2a1a0a;border-radius:10px;padding:14px;background:#140d02;margin-top:6px">
           <div class="setting-label" style="color:#fbbf24;font-size:14px"><i class="fas fa-bell" style="color:#f59e0b"></i> 🔔 Push Notification Keys</div>
@@ -2604,7 +2625,9 @@ function loadSettings() {
     if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
     if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
     if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
-    if (el('setAiWorkerUrl')) el('setAiWorkerUrl').value = s.aiWorkerUrl || '';
+    if (el('setAiWorkerUrl'))    el('setAiWorkerUrl').value    = s.aiWorkerUrl    || '';
+    if (el('setAgentWorkerUrl')) el('setAgentWorkerUrl').value = s.agentWorkerUrl || '';
+    if (el('setAgentSecret'))    el('setAgentSecret').value    = localStorage.getItem('exg_agent_secret') || '';
     if (el('setVapidKey'))     el('setVapidKey').value     = s.vapidKey     || '';
     if (el('setFcmServerKey')) el('setFcmServerKey').value = localStorage.getItem('exg_fcm_server_key') || '';
     // Automation settings
@@ -2635,9 +2658,12 @@ function saveSettings() {
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
     vatId:   (document.getElementById('setVatId')?.value || '').trim(),
     vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
-    aiWorkerUrl: (document.getElementById('setAiWorkerUrl')?.value || '').trim(),
-    vapidKey:    (document.getElementById('setVapidKey')?.value    || '').trim(),
+    aiWorkerUrl:    (document.getElementById('setAiWorkerUrl')?.value    || '').trim(),
+    agentWorkerUrl: (document.getElementById('setAgentWorkerUrl')?.value || '').trim(),
+    vapidKey:       (document.getElementById('setVapidKey')?.value       || '').trim(),
   };
+  const agentSecret = (document.getElementById('setAgentSecret')?.value || '').trim();
+  if (agentSecret) localStorage.setItem('exg_agent_secret', agentSecret); else localStorage.removeItem('exg_agent_secret');
   localStorage.setItem('exg_settings', JSON.stringify(s));
   const fcmServerKey = (document.getElementById('setFcmServerKey')?.value || '').trim();
   if (fcmServerKey) localStorage.setItem('exg_fcm_server_key', fcmServerKey);
@@ -2687,6 +2713,34 @@ function saveSettings() {
   _markAdminEdit();
   updatePublishStatus();
   toast('✅ Settings saved!');
+}
+
+/* ── AI Agent Worker test ── */
+async function testAgentWorker() {
+  const workerUrl = (document.getElementById('setAgentWorkerUrl')?.value || '').trim();
+  const secret    = (document.getElementById('setAgentSecret')?.value    || '').trim();
+  const instruction = (document.getElementById('agentTestInput')?.value  || '').trim();
+  const resultEl  = document.getElementById('agentTestResult');
+  if (!workerUrl) { toast('⚠️ Agent Worker URL দিন'); return; }
+  if (!instruction) { toast('⚠️ Instruction লিখুন'); return; }
+  resultEl.style.display = 'block';
+  resultEl.textContent = '⏳ Running agent...';
+  try {
+    const res = await fetch(workerUrl + '/agent', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(secret ? { 'Authorization': `Bearer ${secret}` } : {}),
+      },
+      body: JSON.stringify({ instruction }),
+    });
+    const data = await res.json();
+    resultEl.textContent = JSON.stringify(data, null, 2);
+    resultEl.style.color = res.ok ? '#86efac' : '#f87171';
+  } catch (e) {
+    resultEl.textContent = '❌ Error: ' + e.message;
+    resultEl.style.color = '#f87171';
+  }
 }
 
 /* ── Automation section toggle & conditional field show/hide ── */
