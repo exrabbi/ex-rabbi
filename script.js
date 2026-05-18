@@ -897,8 +897,12 @@ function closeCart() {
     const cc = document.getElementById('cartConfirmed');
     const ci = document.getElementById('cartItems');
     const cf = document.getElementById('cartFooter');
+    const sp = document.getElementById('stcPendWrap');
+    const cb = document.getElementById('cartBody');
     if (cc) cc.style.display = 'none';
+    if (sp) sp.style.display = 'none';
     if (ci) ci.style.display = '';
+    if (cb) cb.style.display = '';
     if (cf) { cf.style.display = cart.length ? 'block' : 'none'; }
   }, 350);
 }
@@ -3306,7 +3310,7 @@ function _saveCustomerRecord(user){
   }catch(e){}
 }
 
-function _saveOrderRecord(items,totalSAR,method){
+function _saveOrderRecord(items,totalSAR,method,status,txnRef){
   let newOrder = null;
   try{
     const orders=JSON.parse(localStorage.getItem('exg_orders')||'[]');
@@ -3318,7 +3322,8 @@ function _saveOrderRecord(items,totalSAR,method){
       method,
       customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},
       address:typeof savedLocation!=='undefined'?savedLocation:null,
-      status:'pending'
+      status:status||'pending',
+      ...(txnRef?{txnRef}:{})
     };
     orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
@@ -3641,6 +3646,21 @@ function copyStcNumber() {
     navigator.clipboard.writeText(num).then(() => showToast('✅ STC Pay number copied!')).catch(() => showToast(num));
   } else { showToast(num); }
 }
+function showStcPending(orderId, totalDisplay, txnRef) {
+  const pend = document.getElementById('stcPendWrap');
+  const conf = document.getElementById('cartConfirmed');
+  const body = document.getElementById('cartBody');
+  const foot = document.getElementById('cartFooter');
+  if (!pend) return;
+  if (conf) conf.style.display = 'none';
+  if (body) body.style.display = 'none';
+  if (foot) foot.style.display = 'none';
+  document.getElementById('stcPendOrderId').textContent = orderId || '';
+  document.getElementById('stcPendAmount').textContent = totalDisplay || '';
+  document.getElementById('stcPendRef').textContent = txnRef || '';
+  pend.style.display = 'flex';
+}
+
 function copyBinanceAddr() {
   const addr = BINANCE_PAY_ID;
   if (navigator.clipboard) {
@@ -3741,21 +3761,20 @@ function processPayment() {
     }, 2800);
   } else if (selectedPayMethod === 'stc') {
     const ref = (document.getElementById('stcRefInput')?.value || '').trim();
-    if (ref.length < 4) { showToast('⚠️ Enter your STC Pay transaction ID'); return; }
+    if (!/^\d{8,16}$/.test(ref)) {
+      showToast('⚠️ Invalid ID — STC Pay transaction reference must be 8–16 digits (numbers only)');
+      return;
+    }
     const usedStc = JSON.parse(localStorage.getItem('stc_used_refs') || '[]');
     if (usedStc.includes(ref)) { showToast('⚠️ This transaction ID has already been used'); return; }
 
     const btn = document.getElementById('btnPayNow');
     btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verifying…';
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting…';
 
     setTimeout(() => {
       usedStc.push(ref);
       localStorage.setItem('stc_used_refs', JSON.stringify(usedStc));
-      const orderNum = 'EX-' + (Date.now() % 100000).toString().padStart(5, '0');
-      btn.disabled = false;
-      btn.style.background = 'linear-gradient(135deg,#059669,#34d399)';
-      document.getElementById('payBtnText').textContent = '✓ Order Confirmed!';
 
       const langS = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
       const subS  = cartSubtotalBase() * langS.rate;
@@ -3765,16 +3784,16 @@ function processPayment() {
       const stcNum = s.stcPayNumber || '0546224029';
       const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `• ${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
       const locText = getLocationText();
-      const msg = `💜 *STC Pay — ORDER RECEIVED*\n🛒 Order: *${orderNum}*\n\n${lines}\n\n💵 *SAR ${Math.round(totalS)}*\n📱 STC Pay: ${stcNum}\n🔖 Txn ID: \`${ref}\`${locText}\n\n⏰ ${new Date().toLocaleString()}`;
 
-      setTimeout(() => {
-        const sOrd = _saveOrderRecord(cart, totalS, 'stc');
-        window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
-        cart = []; _saveCart(); updateCartBadge();
-        closePayment(); openCart();
-        showOrderConfirm(sOrd?.id, 'SAR ' + Math.round(totalS).toLocaleString());
-      }, 1000);
-    }, 2000);
+      const sOrd = _saveOrderRecord(cart, totalS, 'stc', 'awaiting_stc', ref);
+      const msg = `💜 *STC Pay — VERIFY PAYMENT*\n🛒 Order: *${sOrd?.id || ''}*\n\n${lines}\n\n💵 *SAR ${Math.round(totalS)}*\n📱 STC Pay Number: ${stcNum}\n🔖 Txn Ref: \`${ref}\`${locText}\n\n⚠️ Check STC app — approve in admin after verifying\n⏰ ${new Date().toLocaleString()}`;
+
+      btn.disabled = false;
+      window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+      cart = []; _saveCart(); updateCartBadge();
+      closePayment();
+      showStcPending(sOrd?.id, 'SAR ' + Math.round(totalS).toLocaleString(), ref);
+    }, 1500);
   }
 }
 
