@@ -6,213 +6,269 @@
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
   <meta http-equiv="Pragma" content="no-cache"/>
   <meta http-equiv="Expires" content="0"/>
-  <title>EX GLOBAL — Admin Panel v32</title>
+  <title>EX GLOBAL — Admin Panel v33</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    :root{
+      --gold:#c9a84c;--gold2:#f5d98b;--gold3:#8a6c1e;
+      --bg:#080808;--bg1:#0f0f0f;--bg2:#141414;--bg3:#1c1c1c;
+      --border:rgba(201,168,76,.13);--border2:rgba(255,255,255,.06);
+      --text:#e8e0d0;--text2:#a09070;--text3:#4a4030;
+      --accent:#c9a84c;--accent-glow:rgba(201,168,76,.25);
+      --red:#ef5350;--green:#34d399;--blue:#64b5f6;--orange:#ffb300;--purple:#a78bfa;
+    }
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Segoe UI',Arial,sans-serif;background:#0d0d0d;color:#eee;min-height:100vh}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-    /* LOGIN */
-    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
-    .login-box{background:#1a1a1a;border-radius:20px;padding:40px 32px;width:100%;max-width:380px;text-align:center;border:1px solid rgba(255,255,255,.07)}
-    .login-logo{font-size:32px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:2px;margin-bottom:4px}
-    .login-sub{font-size:12px;color:#666;margin-bottom:28px;letter-spacing:1px;text-transform:uppercase}
-    .login-input{width:100%;padding:14px 16px;background:#111;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;color:#eee;font-size:16px;margin-bottom:14px;outline:none;text-align:center;letter-spacing:4px}
-    .login-input:focus{border-color:#e91e8c}
-    .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:800;cursor:pointer}
-    .login-err{color:#e53935;font-size:13px;margin-top:10px;display:none}
+    /* ===== LOGIN ===== */
+    .login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;
+      background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,168,76,.08) 0%,transparent 70%),var(--bg)}
+    .login-box{background:rgba(20,16,8,.9);border-radius:24px;padding:44px 32px 36px;width:100%;max-width:380px;
+      text-align:center;border:1px solid rgba(201,168,76,.25);
+      box-shadow:0 0 60px rgba(201,168,76,.08),0 24px 64px rgba(0,0,0,.6);
+      backdrop-filter:blur(20px);position:relative;overflow:hidden}
+    .login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),transparent)}
+    .login-crown{font-size:36px;margin-bottom:6px;filter:drop-shadow(0 0 12px rgba(201,168,76,.5))}
+    .login-logo{font-size:28px;font-weight:900;letter-spacing:4px;text-transform:uppercase;
+      background:linear-gradient(135deg,#c9a84c,#f5d98b,#c9a84c);-webkit-background-clip:text;background-clip:text;color:transparent;
+      margin-bottom:3px}
+    .login-sub{font-size:10px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-bottom:30px}
+    .login-input{width:100%;padding:14px 18px;background:rgba(255,255,255,.04);
+      border:1.5px solid rgba(201,168,76,.2);border-radius:12px;color:var(--text);font-size:16px;
+      margin-bottom:14px;outline:none;text-align:center;letter-spacing:5px;font-family:inherit;
+      transition:border .2s,box-shadow .2s}
+    .login-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--accent-glow)}
+    .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#8a6c1e,#c9a84c,#f5d98b,#c9a84c);
+      background-size:200% 100%;animation:goldShimmer 2.5s ease infinite;
+      color:#0a0800;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;
+      letter-spacing:.5px;transition:opacity .15s}
+    .login-btn:active{opacity:.85}
+    .login-err{color:#ef9090;font-size:12px;margin-top:10px;display:none}
+    @keyframes goldShimmer{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 
-    /* ADMIN LAYOUT */
+    /* ===== LAYOUT ===== */
     .admin-wrap{display:none;min-height:100vh}
-    .top-bar{background:#111;padding:0 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.07);position:sticky;top:0;z-index:100;height:52px}
-    .top-logo{font-size:16px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .top-actions{display:flex;gap:8px;align-items:center}
+    .top-bar{background:rgba(10,8,3,.95);padding:0 16px;display:flex;align-items:center;
+      justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;
+      height:54px;backdrop-filter:blur(20px)}
+    .top-logo{font-size:15px;font-weight:900;letter-spacing:3px;text-transform:uppercase;
+      background:linear-gradient(135deg,#c9a84c,#f5d98b);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .top-actions{display:flex;gap:7px;align-items:center}
 
-    /* TABS */
-    .tab-nav{background:#111;border-bottom:1px solid rgba(255,255,255,.07);padding:0 8px;display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:52px;z-index:99}
+    /* ===== TABS ===== */
+    .tab-nav{background:rgba(10,8,3,.95);border-bottom:1px solid var(--border);padding:0 8px;
+      display:flex;overflow-x:auto;scrollbar-width:none;position:sticky;top:54px;z-index:99;
+      backdrop-filter:blur(20px)}
     .tab-nav::-webkit-scrollbar{display:none}
-    .tab-btn{padding:11px 13px;font-size:11px;font-weight:700;color:#555;border:none;background:none;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;transition:all .2s;display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.3px}
-    .tab-btn.active{color:#e91e8c;border-bottom-color:#e91e8c}
-    .tab-btn i{font-size:12px}
+    .tab-btn{padding:13px 12px;font-size:11px;font-weight:700;color:var(--text3);border:none;background:none;
+      cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s;
+      display:flex;align-items:center;gap:5px;text-transform:uppercase;letter-spacing:.4px;font-family:inherit}
+    .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+    .tab-btn:hover:not(.active){color:var(--text2)}
+    .tab-btn i{font-size:11px}
     .tab-panel{display:none}
     .tab-panel.active{display:block}
     .admin-body{padding:16px;max-width:960px;margin:0 auto}
 
-    /* BUTTONS */
-    .adm-btn{padding:9px 16px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s}
+    /* ===== BUTTONS ===== */
+    .adm-btn{padding:9px 16px;background:linear-gradient(135deg,#6b4e10,#c9a84c);color:#0a0800;
+      border:none;border-radius:10px;font-size:12px;font-weight:800;cursor:pointer;
+      white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:opacity .15s;font-family:inherit}
     .adm-btn:active{opacity:.8}
     .adm-btn.sm{padding:6px 12px;font-size:11px}
     .adm-btn.xs{padding:4px 9px;font-size:10px}
-    .adm-btn.gray{background:#222;color:#888;border:1px solid rgba(255,255,255,.08)}
-    .adm-btn.red{background:rgba(229,57,53,.18);color:#ef5350;border:1px solid rgba(229,57,53,.2)}
-    .adm-btn.red.locked-del{background:rgba(245,158,11,.12);color:#f59e0b;border:1px solid rgba(245,158,11,.25);cursor:not-allowed}
-    .adm-btn.green{background:rgba(5,150,105,.18);color:#34d399;border:1px solid rgba(5,150,105,.2)}
-    .adm-btn.blue{background:rgba(33,150,243,.18);color:#64b5f6;border:1px solid rgba(33,150,243,.2)}
-    .adm-btn.orange{background:rgba(255,152,0,.18);color:#ffb300;border:1px solid rgba(255,152,0,.2)}
-    .logout-btn{background:rgba(255,255,255,.06);color:#888;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11px}
+    .adm-btn.gray{background:rgba(255,255,255,.05);color:var(--text2);border:1px solid var(--border2)}
+    .adm-btn.red{background:rgba(239,83,80,.12);color:#ef9090;border:1px solid rgba(239,83,80,.2)}
+    .adm-btn.red.locked-del{background:rgba(255,179,0,.1);color:#ffb300;border:1px solid rgba(255,179,0,.2);cursor:not-allowed}
+    .adm-btn.green{background:rgba(52,211,153,.12);color:#34d399;border:1px solid rgba(52,211,153,.2)}
+    .adm-btn.blue{background:rgba(100,181,246,.12);color:#64b5f6;border:1px solid rgba(100,181,246,.2)}
+    .adm-btn.orange{background:rgba(255,179,0,.12);color:#ffb300;border:1px solid rgba(255,179,0,.2)}
+    .logout-btn{background:transparent;color:var(--text3);border:1px solid var(--border2);
+      padding:6px 12px;border-radius:8px;cursor:pointer;font-size:11px;font-family:inherit;transition:all .2s}
+    .logout-btn:hover{color:var(--text2);border-color:var(--border)}
 
-    /* SIZE SELECTOR */
+    /* ===== SIZE SELECTOR ===== */
     .size-selector{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
-    .size-chip{padding:6px 13px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:#111;color:#888;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none}
-    .size-chip.on{border-color:#e91e8c;background:rgba(233,30,140,.15);color:#e91e8c}
+    .size-chip{padding:6px 13px;border-radius:8px;border:1.5px solid var(--border2);
+      background:var(--bg1);color:var(--text3);font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;user-select:none}
+    .size-chip.on{border-color:var(--gold);background:rgba(201,168,76,.12);color:var(--gold)}
 
-    /* COLOR SELECTOR */
+    /* ===== COLOR SELECTOR ===== */
     .color-selector{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
     .color-chip{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;user-select:none}
-    .color-chip-circle{width:30px;height:30px;border-radius:50%;border:2.5px solid rgba(255,255,255,.12);position:relative;transition:transform .15s}
-    .color-chip.on .color-chip-circle{border-color:#e91e8c;transform:scale(1.15)}
+    .color-chip-circle{width:30px;height:30px;border-radius:50%;border:2.5px solid var(--border2);position:relative;transition:transform .15s}
+    .color-chip.on .color-chip-circle{border-color:var(--gold);transform:scale(1.15)}
     .color-chip.on .color-chip-circle::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.8)}
-    .color-chip-label{font-size:9px;color:#666;font-weight:600;text-transform:uppercase}
-    .color-chip.on .color-chip-label{color:#e91e8c}
+    .color-chip-label{font-size:9px;color:var(--text3);font-weight:600;text-transform:uppercase}
+    .color-chip.on .color-chip-label{color:var(--gold)}
     .color-add-row{display:flex;gap:6px;align-items:center;margin-top:6px}
-    .color-hex-input{width:90px;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
-    .color-hex-input:focus{border-color:#e91e8c}
-    .color-name-input{flex:1;padding:6px 10px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:8px;color:#eee;font-size:12px;outline:none}
-    .color-name-input:focus{border-color:#e91e8c}
+    .color-hex-input{width:90px;padding:6px 10px;background:var(--bg1);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:12px;outline:none}
+    .color-hex-input:focus{border-color:var(--gold)}
+    .color-name-input{flex:1;padding:6px 10px;background:var(--bg1);border:1.5px solid var(--border2);border-radius:8px;color:var(--text);font-size:12px;outline:none}
+    .color-name-input:focus{border-color:var(--gold)}
 
-    /* DESCRIPTION */
-    .desc-editor{width:100%;min-height:100px;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;resize:vertical;line-height:1.6;transition:border .2s;font-family:inherit}
-    .desc-editor:focus{border-color:#e91e8c}
-    .desc-editor::placeholder{color:#3a3a3a}
+    /* ===== DESCRIPTION ===== */
+    .desc-editor{width:100%;min-height:100px;padding:10px 14px;background:var(--bg1);
+      border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;
+      outline:none;resize:vertical;line-height:1.6;transition:border .2s;font-family:inherit}
+    .desc-editor:focus{border-color:var(--gold)}
+    .desc-editor::placeholder{color:var(--text3)}
 
-    /* IMAGE EDITOR */
-    .img-editor-wrap{position:relative;width:100%;padding-bottom:90%;overflow:hidden;border-radius:14px;background:#0a0a0a;border:2px dashed #2a2a2a;cursor:grab;touch-action:none;user-select:none}
-    .img-editor-wrap.has-img{border-style:solid;border-color:#333}
+    /* ===== IMAGE EDITOR ===== */
+    .img-editor-wrap{position:relative;width:100%;padding-bottom:90%;overflow:hidden;border-radius:14px;
+      background:#050503;border:2px dashed rgba(201,168,76,.15);cursor:grab;touch-action:none;user-select:none}
+    .img-editor-wrap.has-img{border-style:solid;border-color:var(--border)}
     .img-editor-wrap:active{cursor:grabbing}
     .img-editor-wrap img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;pointer-events:none;transition:object-position .1s}
     .img-editor-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
-    .img-editor-hint{background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:5px 10px;border-radius:20px;backdrop-filter:blur(4px);opacity:1;transition:opacity .4s}
+    .img-editor-hint{background:rgba(0,0,0,.6);color:#c9a84c;font-size:11px;padding:5px 12px;border-radius:20px;backdrop-filter:blur(4px);opacity:1;transition:opacity .4s;border:1px solid rgba(201,168,76,.2)}
     .img-editor-hint.hidden{opacity:0}
     .img-editor-toolbar{display:flex;align-items:center;gap:8px;margin-top:7px}
-    .img-zoom-slider{flex:1;accent-color:#e91e8c;height:4px;cursor:pointer}
-    .img-zoom-val{font-size:11px;color:#888;min-width:34px;text-align:right;font-weight:700}
+    .img-zoom-slider{flex:1;accent-color:var(--gold);height:4px;cursor:pointer}
+    .img-zoom-val{font-size:11px;color:var(--text2);min-width:34px;text-align:right;font-weight:700}
 
-    /* INPUTS */
-    .adm-input{width:100%;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;transition:border .2s}
-    .adm-input:focus{border-color:#e91e8c}
-    .adm-input::placeholder{color:#3a3a3a}
-    .adm-select{width:100%;padding:10px 14px;background:#111;border:1.5px solid rgba(255,255,255,.09);border-radius:10px;color:#eee;font-size:13px;outline:none;cursor:pointer}
-    .adm-select:focus{border-color:#e91e8c}
+    /* ===== INPUTS ===== */
+    .adm-input{width:100%;padding:10px 14px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);
+      border-radius:10px;color:var(--text);font-size:13px;outline:none;transition:border .2s,box-shadow .2s;font-family:inherit}
+    .adm-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+    .adm-input::placeholder{color:var(--text3)}
+    .adm-select{width:100%;padding:10px 14px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);
+      border-radius:10px;color:var(--text);font-size:13px;outline:none;cursor:pointer;font-family:inherit}
+    .adm-select:focus{border-color:var(--gold)}
     .field-wrap{display:flex;flex-direction:column;gap:5px}
-    .field-label{font-size:10px;color:#555;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+    .field-label{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
     .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .form-grid.g3{grid-template-columns:1fr 1fr 1fr}
     .form-full{grid-column:1/-1}
 
-    /* CARDS & SECTIONS */
+    /* ===== CARDS & SECTIONS ===== */
     .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px}
-    .stat-card{background:#1a1a1a;border-radius:14px;padding:16px 12px;text-align:center;border:1px solid rgba(255,255,255,.06)}
-    .stat-val{font-size:22px;font-weight:900;background:linear-gradient(135deg,#e91e8c,#8b2be2);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.2}
-    .stat-label{font-size:10px;color:#444;margin-top:5px;text-transform:uppercase;letter-spacing:.5px}
-    .sec{background:#1a1a1a;border-radius:16px;padding:18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.06)}
+    .stat-card{background:var(--bg2);border-radius:16px;padding:18px 14px;text-align:center;
+      border:1px solid var(--border);position:relative;overflow:hidden}
+    .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent)}
+    .stat-val{font-size:24px;font-weight:900;background:linear-gradient(135deg,#c9a84c,#f5d98b);
+      -webkit-background-clip:text;background-clip:text;color:transparent;line-height:1.2}
+    .stat-label{font-size:10px;color:var(--text3);margin-top:5px;text-transform:uppercase;letter-spacing:.5px}
+    .sec{background:var(--bg2);border-radius:16px;padding:18px;margin-bottom:14px;
+      border:1px solid var(--border2);position:relative}
+    .sec::before{content:'';position:absolute;top:0;left:0;bottom:0;width:2px;
+      border-radius:2px 0 0 2px;background:linear-gradient(180deg,transparent,var(--gold),transparent);opacity:.5}
     .sec-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
-    .sec-title{font-size:13px;font-weight:800;color:#ddd;display:flex;align-items:center;gap:8px}
-    .sec-title i{color:#e91e8c}
+    .sec-title{font-size:13px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+    .sec-title i{color:var(--gold)}
 
-    /* PRODUCT LIST */
-    .prod-item{display:flex;align-items:center;gap:10px;padding:10px;background:#111;border-radius:12px;margin-bottom:7px;transition:background .15s}
-    .prod-item:hover{background:#151515}
-    .prod-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#1e1e1e}
+    /* ===== PRODUCT LIST ===== */
+    .prod-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg1);
+      border-radius:12px;margin-bottom:7px;transition:background .15s;border:1px solid transparent}
+    .prod-item:hover{background:var(--bg3);border-color:var(--border)}
+    .prod-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;flex-shrink:0;background:var(--bg2);border:1px solid var(--border2)}
     .prod-info{flex:1;min-width:0}
-    .prod-name{font-size:12px;font-weight:600;color:#ccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .prod-meta{font-size:11px;color:#444;margin-top:2px}
-    .prod-price{font-size:13px;font-weight:900;color:#e91e8c;white-space:nowrap;margin-right:6px}
+    .prod-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .prod-meta{font-size:11px;color:var(--text3);margin-top:2px}
+    .prod-price{font-size:13px;font-weight:900;color:var(--gold);white-space:nowrap;margin-right:6px}
     .prod-actions{display:flex;gap:5px;flex-shrink:0}
 
-    /* BADGES */
+    /* ===== BADGES ===== */
     .badge{display:inline-flex;align-items:center;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
-    .badge-pending{background:rgba(255,152,0,.15);color:#ffb300}
-    .badge-processing{background:rgba(33,150,243,.15);color:#64b5f6}
-    .badge-shipped{background:rgba(103,58,183,.15);color:#ce93d8}
-    .badge-delivered{background:rgba(5,150,105,.15);color:#34d399}
-    .badge-cancelled{background:rgba(229,57,53,.15);color:#ef5350}
-    .badge-active{background:rgba(5,150,105,.15);color:#34d399}
+    .badge-pending{background:rgba(255,179,0,.12);color:#ffb300}
+    .badge-processing{background:rgba(100,181,246,.12);color:#64b5f6}
+    .badge-shipped{background:rgba(167,139,250,.12);color:var(--purple)}
+    .badge-delivered{background:rgba(52,211,153,.12);color:#34d399}
+    .badge-cancelled{background:rgba(239,83,80,.12);color:#ef9090}
+    .badge-active{background:rgba(52,211,153,.12);color:#34d399}
     .pill{display:inline-flex;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:700}
-    .pill-cat{background:rgba(139,43,226,.2);color:#a855f7}
-    .pill-tag{background:rgba(255,152,0,.15);color:#ffb300}
+    .pill-cat{background:rgba(201,168,76,.12);color:var(--gold)}
+    .pill-tag{background:rgba(255,179,0,.12);color:#ffb300}
 
-    /* ORDER LIST */
-    .order-item{background:#111;border-radius:12px;margin-bottom:8px;overflow:hidden}
+    /* ===== ORDER LIST ===== */
+    .order-item{background:var(--bg1);border-radius:12px;margin-bottom:8px;overflow:hidden;border:1px solid transparent;transition:border .2s}
+    .order-item:hover{border-color:var(--border)}
     .order-head{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer}
-    .order-head:hover{background:#141414}
-    .order-body{padding:10px 12px 12px;border-top:1px solid rgba(255,255,255,.04);display:none}
+    .order-head:hover{background:rgba(201,168,76,.04)}
+    .order-body{padding:10px 12px 12px;border-top:1px solid var(--border2);display:none}
     .order-body.open{display:block}
-    .order-items-txt{font-size:12px;color:#777;line-height:1.7;margin-bottom:8px}
-    .order-detail-row{font-size:12px;color:#666;display:flex;align-items:center;gap:6px;margin-bottom:4px}
-    .order-detail-row i{color:#3a3a3a;width:14px}
-    /* Order product cards */
+    .order-items-txt{font-size:12px;color:var(--text3);line-height:1.7;margin-bottom:8px}
+    .order-detail-row{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+    .order-detail-row i{color:var(--text3);width:14px}
     .ord-prods{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
-    .ord-prod-card{display:flex;align-items:center;gap:10px;background:#1a1a1a;border-radius:10px;padding:8px;border:1px solid #222}
-    .ord-prod-img{width:52px;height:52px;border-radius:8px;overflow:hidden;background:#111;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .ord-prod-card{display:flex;align-items:center;gap:10px;background:var(--bg2);border-radius:10px;padding:8px;border:1px solid var(--border2)}
+    .ord-prod-img{width:52px;height:52px;border-radius:8px;overflow:hidden;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0}
     .ord-prod-img img{width:100%;height:100%;object-fit:cover}
-    .ord-prod-name{font-size:12px;font-weight:600;color:#ccc;line-height:1.4;margin-bottom:3px}
-    .ord-prod-meta{font-size:11px;color:#555}
-    .ord-prod-qty{font-size:11px;color:#888;margin-bottom:4px}
-    .ord-prod-qty b{color:#a78bfa}
+    .ord-prod-name{font-size:12px;font-weight:600;color:var(--text);line-height:1.4;margin-bottom:3px}
+    .ord-prod-meta{font-size:11px;color:var(--text3)}
+    .ord-prod-qty{font-size:11px;color:var(--text2);margin-bottom:4px}
+    .ord-prod-qty b{color:var(--gold)}
     .ord-variants{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
-    .ord-variant-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:#252525;color:#aaa;border:1px solid #333;display:flex;align-items:center;gap:3px}
-    /* Address block */
-    .ord-addr-block{background:#151515;border:1px solid #252525;border-radius:10px;padding:10px 12px;margin-top:4px}
-    .ord-addr-title{font-size:11px;font-weight:700;color:#888;margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
-    .ord-addr-row{font-size:12px;color:#aaa;display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;line-height:1.5}
-    .ord-addr-row i{color:#555;width:14px;flex-shrink:0;margin-top:2px}
+    .ord-variant-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:6px;background:var(--bg3);color:var(--text2);border:1px solid var(--border2);display:flex;align-items:center;gap:3px}
+    .ord-addr-block{background:var(--bg1);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;margin-top:4px}
+    .ord-addr-title{font-size:11px;font-weight:700;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+    .ord-addr-row{font-size:12px;color:var(--text2);display:flex;align-items:flex-start;gap:8px;margin-bottom:5px;line-height:1.5}
+    .ord-addr-row i{color:var(--text3);width:14px;flex-shrink:0;margin-top:2px}
 
-    /* CUSTOMER LIST */
-    .cust-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:#111;border-radius:12px;margin-bottom:7px}
-    .cust-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#e91e8c,#8b2be2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff;flex-shrink:0;overflow:hidden}
+    /* ===== CUSTOMER LIST ===== */
+    .cust-item{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--bg1);border-radius:12px;margin-bottom:7px;border:1px solid transparent;transition:border .2s}
+    .cust-item:hover{border-color:var(--border)}
+    .cust-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6b4e10,#c9a84c);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#0a0800;flex-shrink:0;overflow:hidden}
     .cust-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
     .cust-info{flex:1;min-width:0}
-    .cust-name{font-size:13px;font-weight:700;color:#ddd}
-    .cust-sub{font-size:11px;color:#444;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-    .cust-date{font-size:10px;color:#333;white-space:nowrap;flex-shrink:0}
+    .cust-name{font-size:13px;font-weight:700;color:var(--text)}
+    .cust-sub{font-size:11px;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .cust-date{font-size:10px;color:var(--text3);white-space:nowrap;flex-shrink:0}
 
-    /* COUPON LIST */
-    .coupon-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#111;border-radius:12px;margin-bottom:7px}
-    .coupon-code{font-size:15px;font-weight:900;color:#a855f7;letter-spacing:2px;font-family:monospace}
-    .coupon-meta{font-size:11px;color:#444;margin-top:2px}
+    /* ===== COUPON LIST ===== */
+    .coupon-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg1);border-radius:12px;margin-bottom:7px;border:1px solid var(--border2)}
+    .coupon-code{font-size:15px;font-weight:900;color:var(--gold);letter-spacing:2px;font-family:monospace}
+    .coupon-meta{font-size:11px;color:var(--text3);margin-top:2px}
 
-    /* SEARCH BAR */
+    /* ===== SEARCH BAR ===== */
     .search-bar{position:relative;margin-bottom:12px}
-    .search-bar i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#333;font-size:12px;pointer-events:none}
-    .search-bar input{width:100%;padding:9px 12px 9px 32px;background:#111;border:1.5px solid rgba(255,255,255,.07);border-radius:10px;color:#eee;font-size:13px;outline:none}
-    .search-bar input:focus{border-color:#e91e8c}
+    .search-bar i{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px;pointer-events:none}
+    .search-bar input{width:100%;padding:9px 12px 9px 32px;background:rgba(255,255,255,.04);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:13px;outline:none;font-family:inherit;transition:border .2s}
+    .search-bar input:focus{border-color:var(--gold)}
 
-    /* PRODUCT MODAL */
-    .prod-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:1000;display:none;align-items:flex-end;justify-content:center}
+    /* ===== PRODUCT MODAL ===== */
+    .prod-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:1000;display:none;align-items:flex-end;justify-content:center}
     .prod-modal-overlay.open{display:flex}
-    .prod-modal{background:#1a1a1a;border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:1px solid rgba(255,255,255,.08)}
+    .prod-modal{background:var(--bg2);border-radius:20px 20px 0 0;padding:22px 18px 36px;width:100%;max-width:600px;max-height:92vh;overflow-y:auto;border-top:1px solid var(--border)}
     .prod-modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-    .prod-modal-title{font-size:15px;font-weight:900;color:#eee}
-    .modal-close-btn{background:rgba(255,255,255,.06);color:#888;border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
-    .img-preview-box{width:100%;height:120px;border-radius:10px;background:#111;margin-bottom:10px;overflow:hidden;display:none}
+    .prod-modal-title{font-size:15px;font-weight:900;color:var(--text)}
+    .modal-close-btn{background:var(--bg3);color:var(--text2);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center}
+    .img-preview-box{width:100%;height:120px;border-radius:10px;background:var(--bg1);margin-bottom:10px;overflow:hidden;display:none}
     .img-preview-box.show{display:block}
     .img-preview-box img{width:100%;height:100%;object-fit:cover}
 
-    /* SETTINGS */
-    .setting-row{padding:14px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+    /* ===== SETTINGS ===== */
+    .setting-row{padding:14px 0;border-bottom:1px solid var(--border2)}
     .setting-row:last-child{border-bottom:none}
-    .setting-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
-    .setting-desc{font-size:11px;color:#444;margin-bottom:8px}
+    .setting-label{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+    .setting-desc{font-size:11px;color:var(--text3);margin-bottom:8px}
 
-    /* LINK COPY */
-    .link-copy{background:#0d0d0d;border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:7px 10px;font-size:11px;color:#e91e8c;font-family:monospace;word-break:break-all;cursor:pointer;display:block;margin-top:5px}
+    /* ===== LINK COPY ===== */
+    .link-copy{background:var(--bg1);border:1px solid var(--border);border-radius:8px;padding:7px 10px;font-size:11px;color:var(--gold);font-family:monospace;word-break:break-all;cursor:pointer;display:block;margin-top:5px}
 
-    /* STATUS FILTER ROW */
+    /* ===== STATUS FILTER ROW ===== */
     .filter-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
 
-    /* EMPTY STATE */
-    .empty-state{text-align:center;padding:36px 20px;color:#333}
-    .empty-state i{font-size:30px;margin-bottom:10px;display:block;color:#222}
+    /* ===== EMPTY STATE ===== */
+    .empty-state{text-align:center;padding:36px 20px;color:var(--text3)}
+    .empty-state i{font-size:30px;margin-bottom:10px;display:block;color:var(--text3)}
     .empty-state span{font-size:13px}
 
-    /* DANGER */
-    .danger-sec{border-color:rgba(229,57,53,.18)!important}
+    /* ===== DANGER ===== */
+    .danger-sec{border-color:rgba(239,83,80,.15)!important}
 
-    /* TOAST */
-    .adm-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e1e1e;border:1px solid rgba(255,255,255,.1);color:#eee;padding:10px 22px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center}
+    /* ===== TOAST ===== */
+    .adm-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:var(--bg3);border:1px solid var(--border);color:var(--gold);
+      padding:10px 22px;border-radius:24px;font-size:13px;font-weight:700;opacity:0;
+      transition:all .3s;z-index:9999;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;
+      box-shadow:0 8px 32px rgba(201,168,76,.15)}
     .adm-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-    /* RESPONSIVE */
+    /* ===== RESPONSIVE ===== */
     @media(min-width:600px){
       .form-grid.g3{grid-template-columns:1fr 1fr 1fr}
       .admin-body{padding:20px}
@@ -223,15 +279,24 @@
       .stat-row{grid-template-columns:repeat(2,1fr)}
     }
 
-    /* CAT CROP MODAL */
-    .cat-crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
+    /* ===== CAT CROP MODAL ===== */
+    .cat-crop-overlay{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:3000;display:none;align-items:center;justify-content:center;padding:16px}
     .cat-crop-overlay.open{display:flex}
-    .cat-crop-modal{background:#111;border-radius:22px;padding:20px 18px 24px;width:100%;max-width:400px;display:flex;flex-direction:column;align-items:center;gap:14px;border:1px solid rgba(255,255,255,.08)}
-    .cat-crop-preview{position:relative;width:200px;height:240px;border-radius:100px 100px 14px 14px;overflow:hidden;border:3px solid #c9904a;background:#0a0a0a;cursor:grab;touch-action:none;user-select:none;box-shadow:0 0 30px rgba(201,144,74,.25)}
+    .cat-crop-modal{background:var(--bg2);border-radius:22px;padding:20px 18px 24px;width:100%;max-width:400px;
+      display:flex;flex-direction:column;align-items:center;gap:14px;border:1px solid var(--border)}
+    .cat-crop-preview{position:relative;width:200px;height:240px;border-radius:100px 100px 14px 14px;overflow:hidden;
+      border:3px solid var(--gold);background:#050503;cursor:grab;touch-action:none;user-select:none;
+      box-shadow:0 0 30px var(--accent-glow)}
     .cat-crop-preview:active{cursor:grabbing}
     .cat-crop-preview img{position:absolute;pointer-events:none;will-change:transform}
     .cat-crop-zoom-row{display:flex;align-items:center;gap:10px;width:100%}
-    .cat-crop-hint{font-size:11px;color:#444;text-align:center;line-height:1.5}
+    .cat-crop-hint{font-size:11px;color:var(--text3);text-align:center;line-height:1.5}
+
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar{width:4px;height:4px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:rgba(201,168,76,.2);border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(201,168,76,.4)}
   </style>
   <!-- Firebase for Notifications -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -255,10 +320,11 @@
 <!-- ===== LOGIN ===== -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
+    <div class="login-crown">👑</div>
     <div class="login-logo">EX GLOBAL</div>
-    <div class="login-sub">Admin Panel</div>
+    <div class="login-sub">Admin Panel · Secure Access</div>
     <input type="password" id="passInput" class="login-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
-    <button class="login-btn" onclick="doLogin()"><i class="fas fa-lock"></i> Login</button>
+    <button class="login-btn" onclick="doLogin()"><i class="fas fa-crown"></i> &nbsp;Enter Panel</button>
     <div class="login-err" id="loginErr">Wrong password</div>
   </div>
 </div>
@@ -267,15 +333,16 @@
 <div class="admin-wrap" id="adminWrap">
 
   <div class="top-bar">
-    <div style="display:flex;align-items:center;gap:8px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:16px;filter:drop-shadow(0 0 6px rgba(201,168,76,.5))">👑</span>
       <span class="top-logo">EX GLOBAL</span>
-      <span style="font-size:10px;color:#333;text-transform:uppercase;letter-spacing:1px">Admin</span>
-      <span style="font-size:9px;color:#555;background:#1a1a1a;border:1px solid #333;padding:2px 6px;border-radius:10px">v31</span>
+      <span style="font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1.5px;font-weight:700">Admin</span>
+      <span style="font-size:9px;color:var(--gold3);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);padding:2px 7px;border-radius:10px;font-weight:700;letter-spacing:.5px">v32</span>
     </div>
     <div class="top-actions">
       <button class="adm-btn sm gray" onclick="window.open('index.html','_blank')"><i class="fas fa-eye"></i> View Site</button>
       <span id="syncBadge" style="font-size:11px;padding:3px 9px;border-radius:20px;font-weight:600;display:none;align-items:center;gap:5px"></span>
-      <button class="adm-btn sm" onclick="publishToWebsite()" id="publishBtn" style="background:#16a34a;border-color:#16a34a;gap:5px">
+      <button class="adm-btn sm" onclick="publishToWebsite()" id="publishBtn" style="background:linear-gradient(135deg,#166534,#16a34a);color:#fff;gap:5px">
         <i class="fas fa-rocket" id="publishIcon"></i>
         <span id="publishBtnText">Publish</span>
       </button>
@@ -369,7 +436,7 @@
             </div>
           </div>
           <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#aaa;cursor:pointer">
-            <input type="checkbox" id="newCouponOneTime" style="accent-color:#e91e8c;width:15px;height:15px"/>
+            <input type="checkbox" id="newCouponOneTime" style="accent-color:var(--gold);width:15px;height:15px"/>
             One-time use per user
           </label>
           <button class="adm-btn" onclick="addNewCoupon()" style="width:fit-content"><i class="fas fa-plus"></i> Add Coupon</button>
@@ -390,11 +457,11 @@
 
       <!-- COLLECTION TILES EDITOR -->
       <div class="sec">
-        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-layer-group" style="color:#e91e8c"></i> Shop by Collection — Tiles</div>
+        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-layer-group" style="color:var(--gold)"></i> Shop by Collection — Tiles</div>
         <div style="font-size:11px;color:#888;margin-bottom:14px">Homepage-এর "Shop by Collection" সেকশনের টাইলগুলো এখানে এডিট করুন। ছবি আপলোড করুন, নাম ও সাবটাইটেল লিখুন।</div>
         <div id="colTilesGrid" style="display:flex;flex-direction:column;gap:10px"></div>
         <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-          <button class="adm-btn" onclick="addColTileSlot()" style="flex:1;justify-content:center;background:#1a1030;border-color:#7c3aed;color:#a78bfa"><i class="fas fa-plus"></i> আরো স্লট যোগ করুন</button>
+          <button class="adm-btn" onclick="addColTileSlot()" style="flex:1;justify-content:center;background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3);color:var(--gold)"><i class="fas fa-plus"></i> আরো স্লট যোগ করুন</button>
           <button class="adm-btn" onclick="saveColTiles()" style="flex:1;justify-content:center"><i class="fas fa-save"></i> Save Tiles</button>
         </div>
       </div>
@@ -413,7 +480,7 @@
           <input type="hidden" id="hsIdx" value="0"/>
           <!-- IMAGE -->
           <div class="field-wrap">
-            <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> Slide Image</div>
+            <div class="field-label"><i class="fas fa-image" style="color:var(--gold)"></i> Slide Image</div>
             <input type="url" id="hsImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewHsImg(this.value)"/>
             <button class="adm-btn" onclick="pickImage('hsImage','hsImgPreview_inner')" style="width:100%;justify-content:center;margin-top:7px" id="hsUploadBtn"><i class="fas fa-camera"></i> Upload Photo from Phone</button>
           </div>
@@ -422,12 +489,12 @@
           </div>
 
           <!-- VIDEO -->
-          <div class="field-wrap" style="border:1px solid #2a1a2a;border-radius:10px;padding:10px;background:#110a11">
-            <div class="field-label" style="color:#ff6b9d;margin-bottom:6px"><i class="fas fa-video" style="color:#7c3aed"></i> Slide Video <span style="font-size:10px;color:#555;font-weight:400">(optional)</span></div>
+          <div class="field-wrap" style="border:1px solid rgba(201,168,76,.15);border-radius:10px;padding:10px;background:var(--bg1)">
+            <div class="field-label" style="color:var(--gold);margin-bottom:6px"><i class="fas fa-video" style="color:var(--purple)"></i> Slide Video <span style="font-size:10px;color:#555;font-weight:400">(optional)</span></div>
 
             <!-- Easy YouTube tip -->
-            <div style="background:#1a1020;border:1px solid #3a1a3a;border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#aaa;line-height:1.6">
-              <div style="color:#e91e8c;font-weight:600;margin-bottom:3px"><i class="fab fa-youtube"></i> সহজ পদ্ধতি — YouTube লিংক</div>
+            <div style="background:var(--bg3);border:1px solid rgba(201,168,76,.15);border-radius:8px;padding:8px 10px;margin-bottom:10px;font-size:11px;color:#aaa;line-height:1.6">
+              <div style="color:var(--gold);font-weight:600;margin-bottom:3px"><i class="fab fa-youtube"></i> সহজ পদ্ধতি — YouTube লিংক</div>
               ১. ফোনে YouTube খুলুন → + বাটন → ভিডিও আপলোড করুন<br/>
               ২. আপলোড হলে ভিডিওটি খুলুন → Share → Copy Link<br/>
               ৩. নিচে পেস্ট করুন ✅
@@ -439,14 +506,14 @@
               <span style="font-size:10px;color:#555">অথবা সরাসরি ফোন থেকে আপলোড</span>
               <div style="flex:1;height:1px;background:#2a2a3a"></div>
             </div>
-            <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:10px">
+            <button class="adm-btn" onclick="pickHsVideo()" id="hsVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#5a3a00,#c9a84c);margin-bottom:10px">
               <i class="fas fa-video"></i> Upload Video from Phone
             </button>
             <div style="font-size:10px;color:#888;text-align:center;margin-bottom:8px">📲 ফোন থেকে সরাসরি আপলোড করতে Settings-এ Cloudinary সেট করুন (ফ্রি)</div>
 
             <!-- YouTube/TikTok URL -->
             <input type="url" id="hsVideo" class="adm-input" placeholder="https://youtu.be/... or TikTok URL" oninput="previewHsVideo(this.value)"/>
-            <div style="font-size:11px;color:#555;margin-top:6px"><i class="fas fa-info-circle" style="color:#7c3aed"></i> ভিডিও hero slide-এর ডান পাশে দেখাবে।</div>
+            <div style="font-size:11px;color:#555;margin-top:6px"><i class="fas fa-info-circle" style="color:var(--purple)"></i> ভিডিও hero slide-এর ডান পাশে দেখাবে।</div>
           </div>
           <div id="hsVideoPreview" style="display:none;width:100%;border-radius:10px;overflow:hidden;background:#000;border:1px solid #2a2a2a">
             <video id="hsVideoEl" controls playsinline style="width:100%;max-height:160px;display:none"></video>
@@ -504,14 +571,14 @@
           </div>
 
           <div style="padding:12px;background:#111;border-radius:12px">
-            <div style="font-size:12px;font-weight:800;color:#e91e8c;margin-bottom:8px">⚡ Super Deals (up to 4 products)</div>
+            <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px">⚡ Super Deals (up to 4 products)</div>
             <div class="field-label" style="margin-bottom:5px">Product IDs — leave empty for Auto</div>
             <input type="text" id="superPins" class="adm-input" placeholder="Auto (sale/hot tag) — or enter: 2, 4"/>
             <div id="superPinsPreview" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
           </div>
 
           <div style="padding:12px;background:#111;border-radius:12px">
-            <div style="font-size:12px;font-weight:800;color:#a855f7;margin-bottom:8px">🔥 Trending (up to 4 products)</div>
+            <div style="font-size:12px;font-weight:800;color:var(--gold);margin-bottom:8px">🔥 Trending (up to 4 products)</div>
             <div class="field-label" style="margin-bottom:5px">Product IDs — leave empty for Auto</div>
             <input type="text" id="trendPins" class="adm-input" placeholder="Auto (bestseller/new tag) — or enter: 6, 9"/>
             <div id="trendPinsPreview" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px"></div>
@@ -523,7 +590,7 @@
 
       <!-- TREND BUTTON CONTENT -->
       <div class="sec">
-        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-bolt-lightning" style="color:#a855f7"></i> ⚡ Trend Button — ছবি বা ভিডিও</div>
+        <div class="sec-title" style="margin-bottom:6px"><i class="fas fa-bolt-lightning" style="color:var(--gold)"></i> ⚡ Trend Button — ছবি বা ভিডিও</div>
         <div style="font-size:12px;color:#888;margin-bottom:14px;line-height:1.6">নিচের বাটনে ক্লিক করলে কাস্টমার এখানে সেট করা ছবি বা ভিডিও দেখবে। যেকোনো প্রমো, অফার বা হাইলাইট দেখানো যাবে।</div>
 
         <!-- TYPE SELECTOR -->
@@ -535,7 +602,7 @@
         <!-- IMAGE MODE -->
         <div id="trendImageWrap">
           <div class="field-wrap">
-            <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> ছবির URL</div>
+            <div class="field-label"><i class="fas fa-image" style="color:var(--gold)"></i> ছবির URL</div>
             <input type="url" id="trendImgUrl" class="adm-input" placeholder="https://..." oninput="previewTrendImg(this.value)"/>
             <button class="adm-btn" onclick="pickImage('trendImgUrl','trendImgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px"><i class="fas fa-camera"></i> ফোন থেকে ছবি আপলোড</button>
           </div>
@@ -547,9 +614,9 @@
         <!-- VIDEO MODE -->
         <div id="trendVideoWrap" style="display:none">
           <div class="field-wrap">
-            <div class="field-label"><i class="fas fa-video" style="color:#7c3aed"></i> ভিডিও URL (YouTube / Cloudinary)</div>
+            <div class="field-label"><i class="fas fa-video" style="color:var(--purple)"></i> ভিডিও URL (YouTube / Cloudinary)</div>
             <input type="url" id="trendVidUrl" class="adm-input" placeholder="https://youtu.be/... অথবা Cloudinary MP4"/>
-            <button class="adm-btn" onclick="pickTrendVideo()" style="width:100%;justify-content:center;margin-top:7px;background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড</button>
+            <button class="adm-btn" onclick="pickTrendVideo()" style="width:100%;justify-content:center;margin-top:7px;background:linear-gradient(135deg,#5a3a00,#c9a84c)"><i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড</button>
           </div>
         </div>
 
@@ -577,7 +644,7 @@
     <!-- NOTIFICATIONS TAB -->
     <div class="tab-panel" id="tab-notifications">
       <div class="sec">
-        <div class="sec-title" style="margin-bottom:4px"><i class="fas fa-bell" style="color:#e91e8c"></i> Push Notification পাঠান</div>
+        <div class="sec-title" style="margin-bottom:4px"><i class="fas fa-bell" style="color:var(--gold)"></i> Push Notification পাঠান</div>
         <div style="font-size:12px;color:#666;margin-bottom:16px">লগইন করা সব ইউজারদের ফোনে সরাসরি নোটিফিকেশন যাবে</div>
 
         <div class="setting-row" style="padding:0;border:none">
@@ -650,7 +717,7 @@ service cloud.firestore {
           <div class="setting-label">🇸🇦 City Video</div>
           <div class="setting-desc">হোম পেজে hero-র নিচে সৌদি আরব শহরের ভিডিও। YouTube লিংক পেস্ট করুন অথবা ফোন থেকে আপলোড করুন।</div>
           <input type="url" id="setCityVideo" class="adm-input" placeholder="YouTube লিংক বা Cloudinary ভিডিও URL" style="margin-bottom:7px"/>
-          <button class="adm-btn" id="cityVideoUploadBtn" onclick="pickCityVideo()" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7)">
+          <button class="adm-btn" id="cityVideoUploadBtn" onclick="pickCityVideo()" style="width:100%;justify-content:center;background:linear-gradient(135deg,#5a3a00,#c9a84c)">
             <i class="fas fa-video"></i> ফোন থেকে ভিডিও আপলোড করুন
           </button>
         </div>
@@ -693,14 +760,14 @@ service cloud.firestore {
         </div>
         <div class="setting-row">
           <div class="setting-label">📸 Image Upload API Key (imgBB)</div>
-          <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:#e91e8c">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
+          <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:var(--gold)">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
           <input type="text" id="setImgBBKey" class="adm-input" placeholder="Paste imgBB API key here (e.g. a1b2c3d4e5f6...)"/>
         </div>
 
         <div class="setting-row" style="border:1px solid #2a1a3a;border-radius:10px;padding:12px;background:#0d0a1a;margin-top:6px">
-          <div class="setting-label" style="color:#a78bfa"><i class="fas fa-camera" style="color:#7c3aed"></i> Photo &amp; Video Upload (Cloudinary — FREE)</div>
+          <div class="setting-label" style="color:var(--purple)"><i class="fas fa-camera" style="color:var(--purple)"></i> Photo &amp; Video Upload (Cloudinary — FREE)</div>
           <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px">
-            <div style="color:#a78bfa;font-weight:600;margin-bottom:4px">📲 ফোন থেকে ছবি ও ভিডিও আপলোডের জন্য Cloudinary লাগবে (সম্পূর্ণ ফ্রি):</div>
+            <div style="color:var(--purple);font-weight:600;margin-bottom:4px">📲 ফোন থেকে ছবি ও ভিডিও আপলোডের জন্য Cloudinary লাগবে (সম্পূর্ণ ফ্রি):</div>
             1️⃣ <strong>cloudinary.com</strong> এ যান → <strong>Sign Up Free</strong> করুন (Google দিয়েও হয়)<br/>
             2️⃣ Dashboard-এ গিয়ে উপরে <strong>Cloud Name</strong> দেখুন — সেটা কপি করুন<br/>
             3️⃣ Settings → Upload → <strong>"Upload presets"</strong> → <strong>Add upload preset</strong><br/>
@@ -720,9 +787,9 @@ service cloud.firestore {
           <!-- Collapsible header -->
           <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none" onclick="toggleAutomationSection()">
             <div class="setting-label" style="color:#c084fc;font-size:14px;margin-bottom:0">
-              <i class="fas fa-robot" style="color:#a855f7"></i> 🤖 API Automation (Payment · Supplier · Courier)
+              <i class="fas fa-robot" style="color:var(--gold)"></i> 🤖 API Automation (Payment · Supplier · Courier)
             </div>
-            <i id="automationToggleIcon" class="fas fa-chevron-down" style="color:#a855f7;transition:transform .25s"></i>
+            <i id="automationToggleIcon" class="fas fa-chevron-down" style="color:var(--gold);transition:transform .25s"></i>
           </div>
           <div id="automationBody" style="display:none;margin-top:14px">
             <div class="setting-desc" style="line-height:1.7;margin-bottom:12px;font-size:12px;color:#aaa">
@@ -732,14 +799,14 @@ service cloud.firestore {
 
             <!-- Automation Worker URL -->
             <div class="field-wrap" style="margin-bottom:10px">
-              <div class="field-label" style="color:#a78bfa">Automation Worker URL</div>
+              <div class="field-label" style="color:var(--purple)">Automation Worker URL</div>
               <div class="setting-desc">automation-worker.js deploy করার পর যে URL পাবেন (যেমন: https://ex-global-auto.yourname.workers.dev)</div>
               <input type="url" id="setWorkerUrl2" class="adm-input" placeholder="https://ex-global-automation.yourname.workers.dev" style="font-size:12px"/>
             </div>
 
             <!-- Payment Gateway -->
             <div class="field-wrap" style="margin-bottom:10px">
-              <div class="field-label" style="color:#a78bfa">Payment Gateway — পেমেন্ট গেটওয়ে</div>
+              <div class="field-label" style="color:var(--purple)">Payment Gateway — পেমেন্ট গেটওয়ে</div>
               <select id="setPaymentGateway" class="adm-select" onchange="onPayGatewayChange()">
                 <option value="whatsapp">WhatsApp Only (কোনো gateway নেই)</option>
                 <option value="moyasar">Moyasar (mada / Visa / Mastercard — Saudi Arabia)</option>
@@ -777,7 +844,7 @@ service cloud.firestore {
 
             <!-- Supplier -->
             <div class="field-wrap" style="margin-bottom:10px">
-              <div class="field-label" style="color:#a78bfa">Supplier — পণ্য সরবরাহকারী</div>
+              <div class="field-label" style="color:var(--purple)">Supplier — পণ্য সরবরাহকারী</div>
               <select id="setSupplier" class="adm-select" onchange="onSupplierChange()">
                 <option value="manual">Manual / WhatsApp (নিজে অর্ডার করবেন)</option>
                 <option value="cj">CJ Dropshipping (স্বয়ংক্রিয় অর্ডার)</option>
@@ -803,7 +870,7 @@ service cloud.firestore {
 
             <!-- Courier -->
             <div class="field-wrap" style="margin-bottom:10px">
-              <div class="field-label" style="color:#a78bfa">Courier — কুরিয়ার সার্ভিস</div>
+              <div class="field-label" style="color:var(--purple)">Courier — কুরিয়ার সার্ভিস</div>
               <select id="setCourier" class="adm-select" onchange="onCourierChange()">
                 <option value="manual">Manual (নিজে শিপমেন্ট বুক করবেন)</option>
                 <option value="aramex">Aramex Saudi Arabia (স্বয়ংক্রিয় শিপমেন্ট)</option>
@@ -833,7 +900,7 @@ service cloud.firestore {
             </div>
 
             <div style="font-size:11px;color:#666;margin-top:4px">
-              <i class="fas fa-circle-info" style="color:#7c3aed"></i>
+              <i class="fas fa-circle-info" style="color:var(--purple)"></i>
               Worker secrets (API keys) সরাসরি Cloudflare Worker → Settings → Variables-এ সেট করুন। এখানে শুধু public keys দিন।
             </div>
           </div>
@@ -896,7 +963,7 @@ service cloud.firestore {
             <input type="url" id="socFacebook" class="adm-input" placeholder="https://facebook.com/yourpage"/>
           </div>
           <div class="field-wrap">
-            <div class="field-label"><i class="fab fa-instagram" style="color:#e91e8c"></i> Instagram URL</div>
+            <div class="field-label"><i class="fab fa-instagram" style="color:var(--gold)"></i> Instagram URL</div>
             <input type="url" id="socInstagram" class="adm-input" placeholder="https://instagram.com/yourpage"/>
           </div>
           <div class="field-wrap">
@@ -965,7 +1032,7 @@ service cloud.firestore {
     <div style="display:flex;flex-direction:column;gap:11px">
       <!-- MAIN IMAGE -->
       <div class="field-wrap">
-        <div class="field-label"><i class="fas fa-image" style="color:#e91e8c"></i> Cover Photo *</div>
+        <div class="field-label"><i class="fas fa-image" style="color:var(--gold)"></i> Cover Photo *</div>
         <input type="url" id="pImage" class="adm-input" placeholder="Paste URL or click Upload below" oninput="previewImg(this.value)"/>
         <button class="adm-btn" onclick="pickImage('pImage','imgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px" id="pImgUploadBtn"><i class="fas fa-camera"></i> Upload HD Photo from Phone</button>
       </div>
@@ -973,19 +1040,19 @@ service cloud.firestore {
       <!-- EXTRA IMAGES (multi-upload gallery) -->
       <div class="field-wrap" style="background:#111;border-radius:12px;padding:11px;border:1px solid #2a2a2a">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
-          <div class="field-label" style="margin-bottom:0"><i class="fas fa-images" style="color:#7c3aed"></i> Extra Photos <span id="extraImgCount" style="font-size:11px;color:#888;font-weight:400">(0/14)</span></div>
-          <button class="adm-btn sm" onclick="addExtraImg()" id="addExtraImgBtn" style="padding:5px 10px;font-size:11px;background:linear-gradient(135deg,#7c3aed,#a855f7)"><i class="fas fa-plus"></i> Add Photo</button>
+          <div class="field-label" style="margin-bottom:0"><i class="fas fa-images" style="color:var(--purple)"></i> Extra Photos <span id="extraImgCount" style="font-size:11px;color:#888;font-weight:400">(0/14)</span></div>
+          <button class="adm-btn sm" onclick="addExtraImg()" id="addExtraImgBtn" style="padding:5px 10px;font-size:11px;background:linear-gradient(135deg,#5a3a00,#c9a84c)"><i class="fas fa-plus"></i> Add Photo</button>
         </div>
         <div id="extraImgsContainer" style="display:flex;flex-direction:column;gap:7px;max-height:420px;overflow-y:auto;padding-right:2px"></div>
-        <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-images" style="color:#7c3aed"></i> Up to 14 extra photos (15 total) — customers swipe through all in the product popup</div>
+        <div style="font-size:11px;color:#666;margin-top:6px"><i class="fas fa-images" style="color:var(--purple)"></i> Up to 14 extra photos (15 total) — customers swipe through all in the product popup</div>
       </div>
 
       <!-- VIDEO -->
-      <div class="field-wrap" style="background:#0d0d1a;border:1px solid #2a2a3a;border-radius:12px;padding:12px">
-        <div class="field-label" style="color:#a78bfa;margin-bottom:8px"><i class="fas fa-video" style="color:#7c3aed"></i> Product Video</div>
+      <div class="field-wrap" style="background:var(--bg1);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:12px">
+        <div class="field-label" style="color:var(--purple);margin-bottom:8px"><i class="fas fa-video" style="color:var(--purple)"></i> Product Video</div>
 
         <!-- Upload from phone -->
-        <button class="adm-btn" onclick="pickVideo()" id="pVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#7c3aed,#a855f7);margin-bottom:8px">
+        <button class="adm-btn" onclick="pickVideo()" id="pVideoUploadBtn" style="width:100%;justify-content:center;background:linear-gradient(135deg,#5a3a00,#c9a84c);margin-bottom:8px">
           <i class="fas fa-video"></i> Upload Video from Phone
         </button>
 
@@ -1004,11 +1071,11 @@ service cloud.firestore {
           <div id="pVideoInfo" style="display:none;padding:8px 10px;background:#111;display:flex;align-items:center;gap:8px">
             <i id="pVideoIcon" class="fab fa-youtube" style="color:#ff0000;font-size:18px"></i>
             <span id="pVideoLabel" style="font-size:11px;color:#aaa;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></span>
-            <button onclick="document.getElementById('pVideo').value='';previewProdVideo('')" style="background:#2a1a1a;border:1px solid #3a2a2a;color:#e91e8c;padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer"><i class="fas fa-times"></i> Remove</button>
+            <button onclick="document.getElementById('pVideo').value='';previewProdVideo('')" style="background:#2a1a1a;border:1px solid #3a2a2a;color:var(--gold);padding:4px 8px;border-radius:6px;font-size:10px;cursor:pointer"><i class="fas fa-times"></i> Remove</button>
           </div>
         </div>
 
-        <div style="font-size:11px;color:#888;margin-top:7px"><i class="fas fa-circle-info" style="color:#7c3aed"></i> ফোন থেকে সরাসরি আপলোড করতে Settings-এ Cloudinary সেট করুন (ফ্রি)। YouTube/TikTok লিংক সরাসরি দেওয়া যাবে।</div>
+        <div style="font-size:11px;color:#888;margin-top:7px"><i class="fas fa-circle-info" style="color:var(--purple)"></i> ফোন থেকে সরাসরি আপলোড করতে Settings-এ Cloudinary সেট করুন (ফ্রি)। YouTube/TikTok লিংক সরাসরি দেওয়া যাবে।</div>
       </div>
 
       <div class="form-grid">
@@ -1479,7 +1546,7 @@ function addExtraImg(url) {
     </div>
     <input type="url" class="adm-input xurl" placeholder="Paste URL here" value="${url||''}" style="flex:1;height:36px;font-size:12px" oninput="xUpdateThumb(this)"/>
     <button class="adm-btn" onclick="xPickImg(this)" style="padding:6px 9px;font-size:11px;white-space:nowrap"><i class="fas fa-camera"></i></button>
-    <button onclick="this.closest('.extra-img-slot').remove();updateAddExtraBtn()" style="background:#2a1a1a;border:1px solid #3a2a2a;color:#e91e8c;width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-times"></i></button>
+    <button onclick="this.closest('.extra-img-slot').remove();updateAddExtraBtn()" style="background:#2a1a1a;border:1px solid #3a2a2a;color:var(--gold);width:30px;height:30px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0"><i class="fas fa-times"></i></button>
   `;
   container.appendChild(slot);
   updateAddExtraBtn();
@@ -1796,7 +1863,7 @@ function orderRowHTML(o) {
       <div class="ord-prod-img">${i.image ? `<img src="${i.image}" onerror="this.style.display='none'"/>` : '<i class="fas fa-box" style="color:#555;font-size:16px"></i>'}</div>
       <div class="ord-prod-info">
         <div class="ord-prod-name">${i.name || 'Product'}</div>
-        <div class="ord-prod-qty"><i class="fas fa-layer-group" style="font-size:9px;color:#7c3aed"></i> <b>${i.qty || 1} পিস</b> &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
+        <div class="ord-prod-qty"><i class="fas fa-layer-group" style="font-size:9px;color:var(--purple)"></i> <b>${i.qty || 1} পিস</b> &nbsp;·&nbsp; SAR ${(i.price || 0) * (i.qty || 1)}</div>
         ${variants ? `<div class="ord-variants">${variants}</div>` : ''}
       </div>
     </div>`;
@@ -1806,7 +1873,7 @@ function orderRowHTML(o) {
   const hasAddr = a.name || a.city || a.area || a.address;
   const addrHtml = hasAddr ? `
     <div class="ord-addr-block">
-      <div class="ord-addr-title"><i class="fas fa-location-dot" style="color:#e91e8c"></i> Delivery Address</div>
+      <div class="ord-addr-title"><i class="fas fa-location-dot" style="color:var(--gold)"></i> Delivery Address</div>
       ${a.name    ? `<div class="ord-addr-row"><i class="fas fa-user"></i>${a.name}</div>` : ''}
       ${phone     ? `<div class="ord-addr-row"><i class="fas fa-phone"></i>${phone}</div>` : ''}
       ${a.city    ? `<div class="ord-addr-row"><i class="fas fa-city"></i>${[a.city, a.area].filter(Boolean).join(', ')}</div>` : ''}
@@ -1836,7 +1903,7 @@ function orderRowHTML(o) {
           </div>
           <div style="font-size:10px;color:#444;margin-top:2px;font-family:monospace">${o.id} · ${date}</div>
         </div>
-        <div style="font-size:13px;font-weight:900;color:#e91e8c;white-space:nowrap">SAR ${o.totalSAR || 0}</div>
+        <div style="font-size:13px;font-weight:900;color:var(--gold);white-space:nowrap">SAR ${o.totalSAR || 0}</div>
         <i class="fas fa-chevron-down" style="color:#333;font-size:11px;flex-shrink:0"></i>
       </div>
       <div class="order-body" id="obody-${o.id}">
@@ -1895,7 +1962,7 @@ function printOrder(orderId) {
       </td>
       <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:center;font-weight:700">${i.qty||1}</td>
       <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right">SAR ${i.price||0}</td>
-      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:#e91e8c">SAR ${(i.price||0)*(i.qty||1)}</td>
+      <td style="padding:8px 6px;border-bottom:1px solid #eee;text-align:right;font-weight:700;color:var(--gold)">SAR ${(i.price||0)*(i.qty||1)}</td>
     </tr>`;
   }).join('');
 
@@ -1910,14 +1977,14 @@ function printOrder(orderId) {
   const totalsHtml = vatRate > 0 ? `
     <tr style="background:#fafafa"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#666">Subtotal (excl. VAT)</td><td style="padding:6px 6px;text-align:right;font-size:12px">SAR ${exclVat.toFixed(2)}</td></tr>
     <tr style="background:#f0fdf4"><td colspan="3" style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">VAT (${vatRate}%)</td><td style="padding:6px 6px;text-align:right;font-size:12px;color:#059669;font-weight:700">SAR ${vatAmt.toFixed(2)}</td></tr>
-    <tr style="background:#fff"><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #e91e8c">Total (incl. VAT)</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #e91e8c">SAR ${subtotal}</td></tr>
-  ` : `<tr><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #eee">Total</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:#e91e8c;border-top:2px solid #eee">SAR ${subtotal}</td></tr>`;
+    <tr style="background:#fff"><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #c9a84c">Total (incl. VAT)</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:var(--gold);border-top:2px solid #c9a84c">SAR ${subtotal}</td></tr>
+  ` : `<tr><td colspan="3" style="padding:8px 6px;text-align:right;font-size:14px;font-weight:900;border-top:2px solid #eee">Total</td><td style="padding:8px 6px;text-align:right;font-size:16px;font-weight:900;color:var(--gold);border-top:2px solid #eee">SAR ${subtotal}</td></tr>`;
 
   const mapInvoiceQuery = (a.lat && a.lng)
     ? `${a.lat},${a.lng}`
     : encodeURIComponent([a.address, a.area, a.city, 'Saudi Arabia'].filter(Boolean).join(', '));
   const mapInvoiceLink = (a.lat || a.city || a.address)
-    ? `<a href="https://maps.google.com/?q=${mapInvoiceQuery}" target="_blank" style="font-size:11px;color:#e91e8c;text-decoration:none;font-weight:700">📍 View on Google Maps</a>`
+    ? `<a href="https://maps.google.com/?q=${mapInvoiceQuery}" target="_blank" style="font-size:11px;color:var(--gold);text-decoration:none;font-weight:700">📍 View on Google Maps</a>`
     : '';
   const htmlContent = `<!DOCTYPE html><html dir="ltr"><head>
     <meta charset="utf-8"/>
@@ -1925,8 +1992,8 @@ function printOrder(orderId) {
     <style>
       *{box-sizing:border-box;margin:0;padding:0}
       body{font-family:'Segoe UI',Arial,sans-serif;color:#111;padding:24px;max-width:720px;margin:auto}
-      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #e91e8c}
-      .store-name{font-size:24px;font-weight:900;color:#e91e8c;letter-spacing:1px}
+      .print-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;padding-bottom:16px;border-bottom:3px solid #c9a84c}
+      .store-name{font-size:24px;font-weight:900;color:var(--gold);letter-spacing:1px}
       .store-sub{font-size:11px;color:#888;margin-top:3px}
       .vat-id-line{font-size:11px;color:#555;margin-top:6px;font-weight:600}
       .vat-id-line span{background:#f0fdf4;color:#059669;padding:2px 8px;border-radius:6px;border:1px solid #bbf7d0;font-family:monospace;font-size:12px}
@@ -1934,7 +2001,7 @@ function printOrder(orderId) {
       .order-date{font-size:11px;color:#888}
       .status-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;margin-top:4px}
       .s-pending{background:#fff3cd;color:#b45309} .s-processing{background:#dbeafe;color:#1d4ed8}
-      .s-shipped{background:#ede9fe;color:#7c3aed} .s-delivered{background:#d1fae5;color:#065f46} .s-cancelled{background:#fee2e2;color:#b91c1c}
+      .s-shipped{background:#ede9fe;color:var(--purple)} .s-delivered{background:#d1fae5;color:#065f46} .s-cancelled{background:#fee2e2;color:#b91c1c}
       .section{margin-bottom:20px}
       .section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:#aaa;margin-bottom:8px;padding-bottom:4px;border-bottom:1px solid #f0f0f0}
       table{width:100%;border-collapse:collapse;font-size:13px}
@@ -2016,7 +2083,7 @@ function printOrder(orderId) {
       Invoice generated: ${new Date().toLocaleString()}
     </div>
     <br class="no-print">
-    <button onclick="window.print()" class="no-print" style="padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
+    <button onclick="window.print()" class="no-print" style="padding:12px;background:linear-gradient(135deg,#6b4e10,#c9a84c);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;width:100%">🖨️ Print / Save PDF</button>
   </body></html>`;
   try {
     const blob = new Blob([htmlContent], { type: 'text/html; charset=utf-8' });
@@ -2045,7 +2112,7 @@ function _printFallback(html) {
   const url2 = URL.createObjectURL(blob2);
   overlay.innerHTML = `
     <div style="display:flex;gap:10px;padding:12px;background:#1a1a1a;border-bottom:1px solid #333;flex-shrink:0">
-      <a href="${url2}" target="_blank" style="flex:1;padding:12px;background:linear-gradient(135deg,#e91e8c,#8b2be2);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block">🖨️ Open to Print / Save PDF</a>
+      <a href="${url2}" target="_blank" style="flex:1;padding:12px;background:linear-gradient(135deg,#6b4e10,#c9a84c);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;display:block">🖨️ Open to Print / Save PDF</a>
       <button onclick="document.getElementById('_printOverlay').remove()" style="padding:12px 16px;background:#333;color:#fff;border:none;border-radius:10px;font-size:15px;cursor:pointer">✕</button>
     </div>
     <iframe src="${url2}" style="flex:1;border:none;width:100%;background:#fff"></iframe>`;
@@ -2216,7 +2283,7 @@ function loadCatImages() {
         <div style="font-size:11px;color:#aaa;font-weight:600;text-align:center">${def.label}</div>
         <div style="position:relative;cursor:pointer" onclick="document.getElementById('catFileInput_${key}').click()">
           <img id="catImg_${key}" src="${currentImg}" style="width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #c9904a;display:block" />
-          <div style="position:absolute;bottom:4px;right:-4px;background:#e91e8c;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#fff"><i class="fas fa-camera"></i></div>
+          <div style="position:absolute;bottom:4px;right:-4px;background:linear-gradient(135deg,#6b4e10,#c9a84c);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;color:#0a0800"><i class="fas fa-camera"></i></div>
         </div>
         <input type="file" id="catFileInput_${key}" accept="image/*" style="display:none" onchange="uploadCatImage('${key}',this)" />
         <div id="catUploadStatus_${key}" style="font-size:10px;color:#4ade80;height:14px"></div>
@@ -2237,7 +2304,7 @@ function loadCatImages() {
         <div style="position:relative;cursor:pointer" onclick="document.getElementById('catFileInput_${key}').click()">
           ${currentImg
             ? `<img id="catImg_${key}" src="${currentImg}" style="width:80px;height:95px;object-fit:cover;border-radius:40px 40px 8px 8px;border:2px solid #7c6fff;display:block" />`
-            : `<div id="catImg_${key}" style="width:80px;height:95px;border-radius:40px 40px 8px 8px;border:2px dashed #3a3a5a;background:#0d0d1a;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
+            : `<div id="catImg_${key}" style="width:80px;height:95px;border-radius:40px 40px 8px 8px;border:2px dashed rgba(201,168,76,.15);background:var(--bg1);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px">
                 <i class="fas fa-image" style="font-size:20px;color:#3a3a5a"></i>
                 <span style="font-size:9px;color:#3a3a5a">No image</span>
                </div>`
@@ -2257,7 +2324,7 @@ function loadCatImages() {
     </div>
     ${fixedHtml}
     <div style="grid-column:1/-1;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;padding:8px 0 2px;border-top:1px solid #2a2a2a;margin-top:4px">
-      <i class="fas fa-plus" style="color:#7c3aed"></i> Custom Categories (name + image)
+      <i class="fas fa-plus" style="color:var(--purple)"></i> Custom Categories (name + image)
     </div>
     ${customHtml}
   `;
@@ -2364,7 +2431,7 @@ function _renderColTileRow(t, i) {
     <div style="flex:0 0 72px;display:flex;flex-direction:column;align-items:center;gap:6px">
       <div id="colTilePreview_${i}" style="width:72px;height:60px;border-radius:8px;background:#1a1a1a;border:2px dashed #333;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative" onclick="uploadColTileImg(${i})">
         ${imgSrc ? `<img src="${imgSrc}" id="colTileImg_${i}" style="width:100%;height:100%;object-fit:cover">` : `<div id="colTileImg_${i}" style="text-align:center;font-size:9px;color:#555"><i class="fas fa-image" style="font-size:18px;display:block;margin-bottom:3px"></i>ছবি নেই</div>`}
-        <div style="position:absolute;bottom:2px;right:2px;background:#e91e8c;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>
+        <div style="position:absolute;bottom:2px;right:2px;background:linear-gradient(135deg,#6b4e10,#c9a84c);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>
       </div>
       <div id="colTileStatus_${i}" style="font-size:9px;color:#4ade80;min-height:12px;text-align:center"></div>
       <input type="text" id="colTileUrl_${i}" placeholder="বা URL দিন" value="${imgSrc}" class="adm-input" style="font-size:9px;padding:4px 6px;width:100%;display:none" oninput="_colTileUrlChange(${i},this.value)">
@@ -2434,7 +2501,7 @@ function _colTileSetImg(i, url) {
   let img = document.getElementById(`colTileImg_${i}`);
   if (url) {
     if (!img || img.tagName !== 'IMG') {
-      preview.innerHTML = `<img src="${url}" id="colTileImg_${i}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:2px;right:2px;background:#e91e8c;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>`;
+      preview.innerHTML = `<img src="${url}" id="colTileImg_${i}" style="width:100%;height:100%;object-fit:cover"><div style="position:absolute;bottom:2px;right:2px;background:linear-gradient(135deg,#6b4e10,#c9a84c);width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-camera" style="font-size:8px;color:#fff"></i></div>`;
     } else {
       img.src = url;
     }
@@ -3329,7 +3396,7 @@ async function testGithubToken() {
 <div class="cat-crop-overlay" id="catCropOverlay">
   <div class="cat-crop-modal">
     <div style="width:100%;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-size:14px;font-weight:800;color:#ddd"><i class="fas fa-crop-alt" style="color:#e91e8c"></i> Image Adjuster</div>
+      <div style="font-size:14px;font-weight:800;color:#ddd"><i class="fas fa-crop-alt" style="color:var(--gold)"></i> Image Adjuster</div>
       <button class="modal-close-btn" onclick="closeCatCrop()"><i class="fas fa-times"></i></button>
     </div>
     <div class="cat-crop-hint">📱 Drag করুন • Pinch বা Slider দিয়ে Zoom করুন</div>
@@ -3338,7 +3405,7 @@ async function testGithubToken() {
     </div>
     <div class="cat-crop-zoom-row">
       <i class="fas fa-search-minus" style="color:#555;font-size:13px"></i>
-      <input type="range" class="img-zoom-slider" id="catCropZoomSlider" min="1" max="4" step="0.05" value="1" oninput="_catCropZoomSlide(this.value)" style="flex:1;accent-color:#e91e8c"/>
+      <input type="range" class="img-zoom-slider" id="catCropZoomSlider" min="1" max="4" step="0.05" value="1" oninput="_catCropZoomSlide(this.value)" style="flex:1;accent-color:var(--gold)"/>
       <i class="fas fa-search-plus" style="color:#555;font-size:13px"></i>
       <span id="catCropZoomVal" style="font-size:11px;color:#888;min-width:32px;text-align:right">1×</span>
     </div>
