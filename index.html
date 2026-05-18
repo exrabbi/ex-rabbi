@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=129" />
+  <link rel="stylesheet" href="styles.css?v=130" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -846,6 +846,22 @@
           <span data-i18n="continueShopping">Continue Shopping</span> →
         </button>
       </div>
+    </div>
+    <!-- STC Pay Pending screen -->
+    <div class="stc-pend-wrap" id="stcPendWrap" style="display:none">
+      <div class="stc-pend-icon"><i class="fas fa-clock"></i></div>
+      <div class="stc-pend-title">Payment Under Review</div>
+      <div class="stc-pend-sub">Your order is received. We're verifying your STC Pay transaction — this usually takes a few minutes.</div>
+      <div class="stc-pend-card">
+        <div class="stc-pend-row"><span>Order ID</span><b id="stcPendOrderId"></b></div>
+        <div class="stc-pend-row"><span>Amount</span><b id="stcPendAmount"></b></div>
+        <div class="stc-pend-row"><span>Transaction Ref</span><b id="stcPendRef"></b></div>
+      </div>
+      <div class="stc-pend-notice">
+        <i class="fas fa-whatsapp" style="color:#25d366"></i>
+        You'll receive a WhatsApp confirmation once payment is approved.
+      </div>
+      <button class="stc-pend-done" onclick="closeCart()">Close</button>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
       <!-- Delivery progress (VIP) -->
@@ -2226,6 +2242,6 @@
 
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=134"></script>
+  <script src="script.js?v=135"></script>
 </body>
 </html>

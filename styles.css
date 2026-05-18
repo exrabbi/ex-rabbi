@@ -3051,6 +3051,18 @@ img { max-width: 100%; display: block; }
   background: #1a1a1a; border-radius: 6px; padding: 3px 7px;
   letter-spacing: .5px;
 }
+/* STC Pay pending screen */
+.stc-pend-wrap { display:flex; flex-direction:column; align-items:center; text-align:center; padding:32px 20px 24px; gap:14px; }
+.stc-pend-icon { width:72px; height:72px; border-radius:50%; background:linear-gradient(135deg,#f59e0b,#fbbf24); display:flex; align-items:center; justify-content:center; font-size:32px; color:#fff; box-shadow:0 8px 24px rgba(245,158,11,.35); animation:stcPendPulse 2s ease-in-out infinite; }
+@keyframes stcPendPulse { 0%,100%{box-shadow:0 8px 24px rgba(245,158,11,.35)} 50%{box-shadow:0 8px 36px rgba(245,158,11,.6)} }
+.stc-pend-title { font-size:20px; font-weight:800; color:#fbbf24; margin:0; }
+.stc-pend-sub { font-size:13px; color:#888; line-height:1.5; max-width:280px; margin:0; }
+.stc-pend-card { width:100%; background:rgba(245,158,11,.07); border:1px solid rgba(245,158,11,.25); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; }
+.stc-pend-row { display:flex; justify-content:space-between; align-items:center; font-size:13px; }
+.stc-pend-row span { color:#666; }
+.stc-pend-row b { color:#e9d5ff; font-family:monospace; font-size:13px; }
+.stc-pend-notice { background:rgba(37,211,102,.08); border:1px solid rgba(37,211,102,.2); border-radius:10px; padding:10px 14px; font-size:12px; color:#aaa; display:flex; align-items:center; gap:8px; max-width:280px; line-height:1.4; }
+.stc-pend-done { width:100%; padding:14px; border-radius:12px; background:linear-gradient(135deg,#f59e0b,#fbbf24); color:#000; font-weight:800; font-size:15px; border:none; cursor:pointer; margin-top:4px; }
 /* STC Pay form */
 .stc-box { background: linear-gradient(160deg,#1a0a2e,#120820); border-radius:16px; padding:14px 14px 12px; margin-top:8px; border:1px solid rgba(109,44,138,.3); }
 .stc-box-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
