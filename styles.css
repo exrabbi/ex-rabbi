@@ -2838,7 +2838,7 @@ img { max-width: 100%; display: block; }
   transition: border-color .2s;
   direction: ltr;
 }
-.pay-method-card.active { border-color: #111; }
+.pay-method-card.active { border-color: #1976D2; }
 /* Radio button */
 .pm-radio {
   width: 20px; height: 20px; border-radius: 50%;
@@ -2846,10 +2846,10 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: center;
   transition: border-color .2s; background: #fff;
 }
-.pay-method-card.active .pm-radio { border-color: #111; }
+.pay-method-card.active .pm-radio { border-color: #1976D2; }
 .pm-dot {
   width: 10px; height: 10px; border-radius: 50%;
-  background: #111; opacity: 0; transition: opacity .15s;
+  background: #1976D2; opacity: 0; transition: opacity .15s;
 }
 .pay-method-card.active .pm-dot { opacity: 1; }
 /* Content */
@@ -3076,7 +3076,17 @@ img { max-width: 100%; display: block; }
   font-size: 15px; font-family: inherit; outline: none;
   transition: border-color .2s; letter-spacing: 1px;
 }
-.card-field input:focus { border-color: #e91e8c; }
+.card-field input:focus { border-color: #1976D2; outline: none; }
+.card-input-wrap input:focus { border-color: #1976D2; outline: none; }
+.card-form-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+.card-form-header i { font-size: 22px; color: #1a1f71; }
+.card-form-header span { font-size: 15px; font-weight: 700; color: #222; }
+.card-field-req { font-size: 11px; color: #d32f2f; font-weight: 600; margin-top: 4px; display: none; }
+.card-field-req.show { display: block; }
 .card-input-wrap { position: relative; }
 .card-type-icon {
   position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
@@ -3097,15 +3107,15 @@ img { max-width: 100%; display: block; }
 
 /* Pay button */
 .btn-pay-now {
-  width: 100%; background: #e91e8c; color: #fff;
+  width: 100%; background: #1976D2; color: #fff;
   padding: 16px; border-radius: 14px;
   font-size: 16px; font-weight: 800;
   display: flex; align-items: center; justify-content: center;
   gap: 8px; margin-top: 14px; cursor: pointer;
   transition: background .2s, transform .15s;
-  box-shadow: 0 4px 18px rgba(233,30,140,.35);
+  box-shadow: 0 4px 18px rgba(25,118,210,.35);
 }
-.btn-pay-now:active { background: #c2185b; transform: scale(.98); }
+.btn-pay-now:active { background: #1565C0; transform: scale(.98); }
 .pay-secure-badge {
   display: flex; align-items: center; justify-content: center;
   gap: 6px; font-size: 12px; color: #aaa; margin-top: 12px;
@@ -4369,9 +4379,9 @@ html, body { transition: background .35s, color .35s; }
 [data-theme="dark"] .pay-grand { color: #eee; }
 [data-theme="dark"] .pay-methods-title { color: #ddd; }
 [data-theme="dark"] .pay-method-card { background: #1a1a1a; border-color: rgba(255,255,255,.1); }
-[data-theme="dark"] .pay-method-card.active { border-color: #e91e8c; }
-[data-theme="dark"] .pay-method-card.active .pm-radio { border-color: #e91e8c; }
-[data-theme="dark"] .pay-method-card.active .pm-dot { background: #e91e8c; }
+[data-theme="dark"] .pay-method-card.active { border-color: #42a5f5; }
+[data-theme="dark"] .pay-method-card.active .pm-radio { border-color: #42a5f5; }
+[data-theme="dark"] .pay-method-card.active .pm-dot { background: #42a5f5; }
 [data-theme="dark"] .pm-name { color: #ddd; }
 [data-theme="dark"] .pm-sub { color: #666; }
 [data-theme="dark"] .pm-gpay-logo { border-color: #333; color: #ddd; }
