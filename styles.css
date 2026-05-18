@@ -3051,6 +3051,37 @@ img { max-width: 100%; display: block; }
   background: #1a1a1a; border-radius: 6px; padding: 3px 7px;
   letter-spacing: .5px;
 }
+/* STC Pay form */
+.stc-box { background: linear-gradient(160deg,#1a0a2e,#120820); border-radius:16px; padding:14px 14px 12px; margin-top:8px; border:1px solid rgba(109,44,138,.3); }
+.stc-box-header { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.stc-logo-wrap { flex-shrink:0; }
+.stc-title-wrap { flex:1; }
+.stc-box-title { font-size:14px; font-weight:800; color:#c084fc; }
+.stc-box-sub { font-size:10.5px; color:#666; margin-top:1px; }
+.stc-amount-pill { background:rgba(109,44,138,.3); border:1px solid rgba(109,44,138,.5); padding:4px 10px; border-radius:20px; }
+.stc-amt-val { font-size:12px; font-weight:800; color:#c084fc; }
+.stc-num-wrap { background:rgba(109,44,138,.15); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+.stc-num-lbl { font-size:10px; color:#888; font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-bottom:6px; }
+.stc-num-row { display:flex; align-items:center; gap:8px; margin-bottom:6px; }
+.stc-num { font-size:22px; font-weight:900; color:#e9d5ff; letter-spacing:1px; flex:1; }
+.stc-copy-btn { width:32px; height:32px; border-radius:50%; background:rgba(109,44,138,.4); color:#c084fc; font-size:13px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.stc-num-hint { font-size:10.5px; color:#666; display:flex; align-items:center; gap:5px; }
+.stc-num-hint i { color:#c084fc; }
+.stc-amount-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; margin-bottom:8px; border-top:1px solid rgba(109,44,138,.2); border-bottom:1px solid rgba(109,44,138,.2); }
+.stc-amount-lbl { font-size:12px; color:#888; font-weight:600; }
+.stc-amount-val { font-size:16px; font-weight:900; color:#c084fc; }
+.stc-steps { margin-bottom:12px; }
+.stc-step { display:flex; align-items:flex-start; gap:8px; margin-bottom:7px; font-size:12px; color:#888; line-height:1.4; }
+.stc-step b { color:#c084fc; }
+.stc-step-num { width:18px; height:18px; border-radius:50%; background:#6D2C8A; color:#fff; font-size:10px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+.stc-ref-wrap { margin-top:4px; }
+.stc-ref-lbl { font-size:11px; color:#888; font-weight:600; display:flex; align-items:center; gap:5px; margin-bottom:5px; }
+.stc-ref-lbl i { color:#c084fc; }
+.stc-ref-input { width:100%; background:rgba(255,255,255,.06); border:1.5px solid rgba(109,44,138,.4); border-radius:10px; padding:10px 12px; color:#e9d5ff; font-size:14px; font-family:monospace; outline:none; }
+.stc-ref-input:focus { border-color:#9C27B0; }
+.stc-ref-input::placeholder { color:#444; }
+.stc-ref-hint { font-size:10px; color:#555; margin-top:4px; }
+
 /* Binance Pay form */
 .binance-box {
   background: linear-gradient(160deg, #1e2026, #181a20);

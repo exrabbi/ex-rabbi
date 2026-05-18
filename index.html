@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=128" />
+  <link rel="stylesheet" href="styles.css?v=129" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1413,6 +1413,23 @@
         <div class="pay-method-check" id="checkWhatsapp" style="display:none"><i class="fas fa-check-circle"></i></div>
       </div>
 
+      <!-- STC Pay -->
+      <div class="pay-method-card" id="pmStc" onclick="selectPayMethod('stc')">
+        <div class="pm-radio"><span class="pm-dot"></span></div>
+        <div class="pm-content">
+          <div class="pm-top-row">
+            <div class="pm-stc-icon">
+              <svg width="28" height="20" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg>
+            </div>
+            <div>
+              <div class="pm-name">STC Pay</div>
+              <div class="pm-sub">Instant SAR transfer</div>
+            </div>
+          </div>
+        </div>
+        <div class="pay-method-check" id="checkStc" style="display:none"><i class="fas fa-check-circle"></i></div>
+      </div>
+
       <!-- Binance Pay -->
       <div class="pay-method-card" id="pmBinance" onclick="selectPayMethod('binance')">
         <div class="pm-radio"><span class="pm-dot"></span></div>
@@ -1541,6 +1558,53 @@
             </div>
           </div>
 
+        </div>
+      </div>
+
+      <!-- STC Pay form -->
+      <div id="stcForm" style="display:none">
+        <div class="stc-box">
+          <div class="stc-box-header">
+            <div class="stc-logo-wrap">
+              <svg width="36" height="26" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg>
+            </div>
+            <div class="stc-title-wrap">
+              <div class="stc-box-title">STC Pay</div>
+              <div class="stc-box-sub">Instant SAR · المدفوعات الفورية</div>
+            </div>
+            <div class="stc-amount-pill">
+              <span id="stcAmtSAR" class="stc-amt-val"></span>
+            </div>
+          </div>
+          <!-- Phone number -->
+          <div class="stc-num-wrap">
+            <div class="stc-num-lbl">Send to this number</div>
+            <div class="stc-num-row">
+              <span class="stc-num" id="stcPhoneTxt">0546224029</span>
+              <button class="stc-copy-btn" onclick="copyStcNumber()"><i class="fas fa-copy"></i></button>
+            </div>
+            <div class="stc-num-hint"><i class="fas fa-mobile-screen-button"></i> STC Pay App → Send Money → Enter number above</div>
+          </div>
+          <!-- Amount -->
+          <div class="stc-amount-row">
+            <span class="stc-amount-lbl">Send exactly:</span>
+            <span class="stc-amount-val" id="stcAmtDisplay"></span>
+          </div>
+          <!-- Steps -->
+          <div class="stc-steps">
+            <div class="stc-step"><span class="stc-step-num">1</span><span>Open STC Pay app</span></div>
+            <div class="stc-step"><span class="stc-step-num">2</span><span>Tap <b>Send Money</b> → enter number</span></div>
+            <div class="stc-step"><span class="stc-step-num">3</span><span>Send the exact amount shown</span></div>
+            <div class="stc-step"><span class="stc-step-num">4</span><span>Enter the transaction ID below</span></div>
+          </div>
+          <!-- Reference input -->
+          <div class="stc-ref-wrap">
+            <label class="stc-ref-lbl"><i class="fas fa-receipt"></i> STC Pay Transaction ID</label>
+            <input class="stc-ref-input" type="text" id="stcRefInput"
+              placeholder="e.g. 12345678" maxlength="20"
+              oninput="this.value=this.value.replace(/[^0-9a-zA-Z]/g,'')" />
+            <div class="stc-ref-hint">Copy the transaction ID from your STC Pay receipt</div>
+          </div>
         </div>
       </div>
 
@@ -2162,6 +2226,6 @@
 
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=133"></script>
+  <script src="script.js?v=134"></script>
 </body>
 </html>
