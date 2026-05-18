@@ -2599,6 +2599,7 @@ let savedLocation = JSON.parse(localStorage.getItem('exglobal_location') || 'nul
 let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
 let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
 let _locGeocodeTimer = null, _locGeocoding = false;
+let _locGpsWatcher = null, _locGpsBestAccuracy = Infinity;
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
@@ -2626,13 +2627,13 @@ function _initLocMap() {
     }
     return;
   }
-  const defaultLat = savedLocation?.lat || 24.7136;
-  const defaultLng = savedLocation?.lng || 46.6753;
+  const defaultLat = savedLocation?.lat || 24.0;
+  const defaultLng = savedLocation?.lng || 45.0;
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
 
   locMap = new google.maps.Map(document.getElementById('locMap'), {
     center: { lat: defaultLat, lng: defaultLng },
-    zoom: savedLocation?.lat ? 16 : 12,
+    zoom: savedLocation?.lat ? 16 : 6,
     disableDefaultUI: true,
     gestureHandling: 'greedy',
     clickableIcons: false,
@@ -2914,35 +2915,50 @@ function _locSetBtn(html, loading) {
 }
 function _locGpsSuccess(pos) {
   const lat = pos.coords.latitude, lng = pos.coords.longitude;
+  const acc = Math.round(pos.coords.accuracy);
   _locSetBtn('<i class="fas fa-location-crosshairs"></i> Locate me', false);
   _locShowUserDot(lat, lng);
-  _locSetPos(lat, lng, 17);
-  const el = document.getElementById('locAddrText');
-  if (el) { el.style.color = '#16a34a'; el.textContent = '✓ GPS location found'; setTimeout(() => { el.style.color = ''; }, 2000); }
+  _locSetPos(lat, lng, acc < 200 ? 17 : 15);
   const g = document.getElementById('locGpsGuide'); if (g) g.remove();
 }
 function _locGpsFail(err) {
   _locSetBtn('<i class="fas fa-location-crosshairs"></i> Locate me', false);
   _locShowGpsGuide(err?.code);
 }
+function _locStopGpsWatch() {
+  if (_locGpsWatcher !== null) {
+    navigator.geolocation.clearWatch(_locGpsWatcher);
+    _locGpsWatcher = null;
+  }
+  _locGpsBestAccuracy = Infinity;
+}
 function _locAutoGps() {
   if (!navigator.geolocation) return;
+  _locStopGpsWatch();
+  const _startWatch = () => {
+    _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
+    _locGpsBestAccuracy = Infinity;
+    _locGpsWatcher = navigator.geolocation.watchPosition(
+      (pos) => {
+        const acc = pos.coords.accuracy;
+        // Accept every update that is more accurate than the previous one
+        if (acc < _locGpsBestAccuracy) {
+          _locGpsBestAccuracy = acc;
+          _locGpsSuccess(pos);
+        }
+        // Stop watching once we have a GPS-quality fix (≤ 50 m)
+        if (acc <= 50) _locStopGpsWatch();
+      },
+      (err) => { _locStopGpsWatch(); _locGpsFail(err); },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+    );
+  };
   if (navigator.permissions) {
     navigator.permissions.query({name:'geolocation'}).then(p => {
       if (p.state === 'denied') { _locShowGpsGuide(1); return; }
-      _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
-      navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
-        {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
-    }).catch(() => {
-      _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
-      navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
-        {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
-    });
-  } else {
-    _locSetBtn('<i class="fas fa-spinner fa-spin"></i> Locating…', true);
-    navigator.geolocation.getCurrentPosition(_locGpsSuccess, _locGpsFail,
-      {enableHighAccuracy: true, timeout: 10000, maximumAge: 0});
-  }
+      _startWatch();
+    }).catch(_startWatch);
+  } else { _startWatch(); }
 }
 function useMyLocation() { _locAutoGps(); }
 
@@ -2980,6 +2996,7 @@ function _locShowGpsGuide(code) {
 function _locFallbackIP() {}
 
 function closeLocation() {
+  _locStopGpsWatch();
   document.getElementById('locOverlay').classList.remove('open');
   document.getElementById('locModal').classList.remove('open');
   const det = document.getElementById('locDetails');
