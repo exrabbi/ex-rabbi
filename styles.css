@@ -2293,17 +2293,22 @@ img { max-width: 100%; display: block; }
 /* Locate me button */
 .loc-locate-btn {
   position: absolute; bottom: 16px; right: 16px;
-  background: #fff; color: #111;
+  background: linear-gradient(135deg,#e91e8c,#8b2be2); color: #fff;
   font-size: 13px; font-weight: 800;
-  padding: 10px 18px; border-radius: 50px;
-  box-shadow: 0 4px 18px rgba(0,0,0,.18), 0 1px 4px rgba(233,30,140,.1);
-  display: flex; align-items: center; gap: 7px;
-  z-index: 500; border: 1.5px solid rgba(233,30,140,.15);
+  padding: 12px 20px; border-radius: 50px;
+  box-shadow: 0 4px 20px rgba(233,30,140,.4), 0 0 0 0 rgba(233,30,140,.3);
+  display: flex; align-items: center; gap: 8px;
+  z-index: 500; border: none;
   transition: transform .15s, box-shadow .15s;
+  animation: locBtnPulse 2s ease-in-out infinite;
 }
-.loc-locate-btn i { color: #e91e8c; font-size: 15px; }
+@keyframes locBtnPulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(233,30,140,.4), 0 0 0 0 rgba(233,30,140,.3); }
+  50% { box-shadow: 0 4px 24px rgba(233,30,140,.5), 0 0 0 8px rgba(233,30,140,.0); }
+}
+.loc-locate-btn i { color: #fff; font-size: 15px; }
 .loc-locate-btn:active { transform: scale(.95); }
-.loc-locate-btn.loading { opacity: .6; pointer-events: none; }
+.loc-locate-btn.loading { opacity: .7; pointer-events: none; animation: none; }
 
 /* Bottom card */
 .loc-bottom-card {
