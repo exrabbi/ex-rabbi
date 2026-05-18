@@ -2682,27 +2682,17 @@ function _locReverseGeocode(lat, lng) {
   if (nearbyEl) nearbyEl.style.display = 'none';
 
   _locGeocodeTimer = setTimeout(() => {
-    if (!window.google?.maps) return;
-    new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
+    const _applyAddr = (formatted, components) => {
       _locGeocoding = false;
-      if (status !== 'OK' || !results?.length) {
-        if (addrEl) addrEl.textContent = 'Address not found — drag the map';
-        return;
-      }
-      const best = results[0];
-      const get = (type) => (best.address_components || []).find(c => c.types.includes(type))?.long_name || '';
-      _locCurrentAddr = best.formatted_address || '';
+      if (!formatted) { if (addrEl) addrEl.textContent = 'Drag map to set location'; return; }
+      _locCurrentAddr = formatted;
       _locCurrLat = lat; _locCurrLng = lng;
-      _locCurrData = {
-        road: get('route'), suburb: get('sublocality') || get('neighborhood'),
-        city: get('locality') || get('administrative_area_level_2'),
-        country: get('country'), house_number: get('street_number'), postcode: get('postal_code'),
-      };
-      if (addrEl) addrEl.textContent = _locCurrentAddr;
-      if (labelEl && _locCurrentAddr) { labelEl.textContent = _locCurrentAddr; labelEl.classList.add('show'); }
-      const street = [get('route'), get('sublocality')||get('neighborhood'), get('locality'), get('country')].filter(Boolean).join(', ');
-      const area   = [get('sublocality')||get('neighborhood'), get('locality'), get('country')].filter(Boolean).join(', ');
-      _locNearbyAddrs = [_locCurrentAddr, street, area].filter((v, i, arr) => v && arr.indexOf(v) === i);
+      _locCurrData = components || {};
+      if (addrEl) addrEl.textContent = formatted;
+      if (labelEl) { labelEl.textContent = formatted; labelEl.classList.add('show'); }
+      const street = [components?.road, components?.suburb, components?.city, components?.country].filter(Boolean).join(', ');
+      const area   = [components?.suburb, components?.city, components?.country].filter(Boolean).join(', ');
+      _locNearbyAddrs = [formatted, street, area].filter((v, i, arr) => v && arr.indexOf(v) === i);
       if (nearbyEl && _locNearbyAddrs.length > 1) {
         nearbyEl.style.display = 'block';
         nearbyEl.innerHTML = _locNearbyAddrs.map((addr, i) => `
@@ -2711,7 +2701,27 @@ function _locReverseGeocode(lat, lng) {
             <span class="loc-nearby-addr">${addr}</span>
           </div>`).join('');
       }
-    });
+    };
+    const _nominatimFallback = () => {
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
+        .then(r => r.json()).then(data => {
+          const a = data.address || {};
+          const addr = [a.house_number, a.road, a.suburb||a.neighbourhood, a.city||a.town||a.village||a.county, a.country].filter(Boolean).join(', ') || data.display_name || '';
+          _applyAddr(addr, { road:a.road, suburb:a.suburb||a.neighbourhood, city:a.city||a.town||a.village||a.county, country:a.country, house_number:a.house_number });
+        }).catch(() => { _locGeocoding = false; if (addrEl) addrEl.textContent = 'Drag map to set location'; });
+    };
+    if (window.google?.maps) {
+      new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
+        if (status !== 'OK' || !results?.length) { _nominatimFallback(); return; }
+        const best = results[0];
+        const get = (type) => (best.address_components||[]).find(c=>c.types.includes(type))?.long_name||'';
+        _applyAddr(best.formatted_address, {
+          road:get('route'), suburb:get('sublocality')||get('neighborhood'),
+          city:get('locality')||get('administrative_area_level_2'),
+          country:get('country'), house_number:get('street_number'), postcode:get('postal_code'),
+        });
+      });
+    } else { _nominatimFallback(); }
   }, 400);
 }
 
@@ -2822,30 +2832,54 @@ function _locDoSearch(query) {
   const drop = document.getElementById('locSearchDrop');
   if (!drop || !window.google?.maps?.places) return;
 
-  new google.maps.places.AutocompleteService().getPlacePredictions({
-    input: q,
-    componentRestrictions: { country: 'sa' },
-  }, (predictions, status) => {
-    if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions?.length) {
-      drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-search"></i> No results for "${q}"<br><small>Try a city name or street</small></div>`;
+  const _showNominatimSearch = () => {
+    const bias = `&viewbox=${_locCurrLng-1},${_locCurrLat+1},${_locCurrLng+1},${_locCurrLat-1}&bounded=0`;
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=6&accept-language=en&countrycodes=sa${bias}`)
+      .then(r=>r.json()).then(results => {
+        if (!results?.length) { drop.innerHTML=`<div class="loc-search-empty"><i class="fas fa-search"></i> No results</div>`; return; }
+        drop.innerHTML = results.map(r => {
+          const parts = (r.display_name||'').split(',');
+          return `<div class="loc-search-item" onclick="_locSelectResult(${r.lat},${r.lon},\`${(r.display_name||'').replace(/\`/g,"'").substring(0,120)}\`)">
+            <i class="fas fa-location-dot"></i>
+            <div class="loc-search-text">
+              <span class="loc-search-main">${parts.slice(0,2).join(',').trim()}</span>
+              <span class="loc-search-sub">${parts.slice(2,4).join(',').trim()}</span>
+            </div></div>`;
+        }).join('');
+        drop.style.display = 'block';
+      }).catch(()=>{ drop.innerHTML=`<div class="loc-search-empty"><i class="fas fa-wifi-slash"></i> Network error</div>`; });
+  };
+
+  if (window.google?.maps?.places) {
+    new google.maps.places.AutocompleteService().getPlacePredictions({
+      input: q, componentRestrictions: { country: 'sa' },
+    }, (predictions, status) => {
+      if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions?.length) { _showNominatimSearch(); return; }
+      drop.innerHTML = predictions.map(p => {
+        const main = p.structured_formatting?.main_text || p.description;
+        const sub  = p.structured_formatting?.secondary_text || '';
+        return `<div class="loc-search-item" onclick="_locSelectPlace('${p.place_id}','${(p.description||'').replace(/'/g,"\\'").substring(0,120)}')">
+          <i class="fas fa-location-dot"></i>
+          <div class="loc-search-text">
+            <span class="loc-search-main">${main}</span>
+            ${sub ? `<span class="loc-search-sub">${sub}</span>` : ''}
+          </div>
+        </div>`;
+      }).join('');
       drop.style.display = 'block';
-      return;
-    }
-    drop.innerHTML = predictions.map(p => {
-      const main = p.structured_formatting?.main_text || p.description;
-      const sub  = p.structured_formatting?.secondary_text || '';
-      return `<div class="loc-search-item" onclick="_locSelectPlace('${p.place_id}','${(p.description||'').replace(/'/g,"\\'").substring(0,120)}')">
-        <i class="fas fa-location-dot"></i>
-        <div class="loc-search-text">
-          <span class="loc-search-main">${main}</span>
-          ${sub ? `<span class="loc-search-sub">${sub}</span>` : ''}
-        </div>
-      </div>`;
-    }).join('');
-    drop.style.display = 'block';
-  });
+    });
+  } else { _showNominatimSearch(); }
 }
 
+function _locSelectResult(lat, lng, displayName) {
+  const drop = document.getElementById('locSearchDrop'); if (drop) drop.style.display = 'none';
+  const inp = document.getElementById('locSearchInput'); if (inp) inp.value = '';
+  lat = parseFloat(lat); lng = parseFloat(lng);
+  _locCurrLat = lat; _locCurrLng = lng;
+  if (displayName) { _locCurrentAddr = displayName; const el = document.getElementById('locAddrText'); if (el) el.textContent = displayName; }
+  if (locMap) { locMap.panTo({ lat, lng }); locMap.setZoom(17); }
+  else { _initLocMap(); setTimeout(() => { locMap?.setCenter({ lat, lng }); locMap?.setZoom(17); }, 700); }
+}
 function _locSelectPlace(placeId, description) {
   const drop = document.getElementById('locSearchDrop');
   if (drop) drop.style.display = 'none';
