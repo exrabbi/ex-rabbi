@@ -907,8 +907,21 @@ function showOrderConfirm(orderId, totalDisplay) {
   if (ci) ci.style.display = 'none';
   if (cf) cf.style.display = 'none';
   cc.style.display = 'flex';
-  // Trigger SVG draw animation
   setTimeout(() => cc.classList.add('animate'), 30);
+  setTimeout(_ccLaunchConfetti, 200);
+}
+function _ccLaunchConfetti() {
+  const wrap = document.getElementById('ccConfettiWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  const colors = ['#e91e8c','#8b2be2','#ffd700','#00bcd4','#ff5722','#4caf50','#ff9800','#2196f3'];
+  for (let i = 0; i < 36; i++) {
+    const el = document.createElement('div');
+    el.className = 'cc-confetti-piece';
+    const size = 5 + Math.random() * 7;
+    el.style.cssText = `left:${Math.random()*100}%;background:${colors[i%colors.length]};width:${size}px;height:${size}px;border-radius:${Math.random()>.5?'50%':'3px'};animation-duration:${.9+Math.random()*1.2}s;animation-delay:${Math.random()*.6}s;`;
+    wrap.appendChild(el);
+  }
 }
 function renderCart() {
   const container = document.getElementById('cartItems');
