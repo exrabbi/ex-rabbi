@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=123" />
+  <link rel="stylesheet" href="styles.css?v=124" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1652,7 +1652,7 @@
       <button class="loc-back-btn" onclick="closeLocation()"><i class="fas fa-chevron-left"></i></button>
       <div class="loc-search-wrap">
         <input type="text" class="loc-search-input" id="locSearchInput"
-          placeholder="Search, e.g. Olaya street, Riyadh"
+          placeholder="Enter an address"
           oninput="_locSearchDebounce(this.value)" autocomplete="off" />
         <button class="loc-search-icon" onclick="_locDoSearch(document.getElementById('locSearchInput').value)"><i class="fas fa-magnifying-glass"></i></button>
       </div>
@@ -1675,6 +1675,11 @@
         <i class="fas fa-location-crosshairs"></i> Locate me
       </button>
     </div>
+    <!-- Delivery info strip -->
+    <div class="loc-delivery-strip">
+      <i class="fas fa-motorcycle"></i>
+      Your courier will deliver to the pinned location.
+    </div>
     <!-- Bottom card -->
     <div class="loc-bottom-card">
       <div class="loc-addr-row">
@@ -1682,7 +1687,7 @@
         <p class="loc-addr-text" id="locAddrText">Finding location…</p>
       </div>
       <div class="loc-nearby-list" id="locNearbyList" style="display:none"></div>
-      <button class="loc-confirm-btn" onclick="_locOpenDetails()"><i class="fas fa-check-circle"></i> Confirm location</button>
+      <button class="loc-confirm-btn" onclick="_locOpenDetails()">Confirm delivery address</button>
     </div>
 
     <!-- STEP 2: Address Details -->
@@ -2116,6 +2121,6 @@
 
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=127"></script>
+  <script src="script.js?v=128"></script>
 </body>
 </html>

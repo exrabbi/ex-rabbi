@@ -2830,7 +2830,7 @@ function _locDoSearch(query) {
   const q = query.trim();
   if (!q) return;
   const drop = document.getElementById('locSearchDrop');
-  if (!drop || !window.google?.maps?.places) return;
+  if (!drop) return;
 
   const _showNominatimSearch = () => {
     const bias = `&viewbox=${_locCurrLng-1},${_locCurrLat+1},${_locCurrLng+1},${_locCurrLat-1}&bounded=0`;
