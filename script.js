@@ -2616,41 +2616,38 @@ function openLocation() {
 }
 
 function _initLocMap() {
-  if (!window.L) { showToast('Map loading, please wait…'); setTimeout(_initLocMap, 800); return; }
+  if (!window.google?.maps) { showToast('Map loading…'); setTimeout(_initLocMap, 800); return; }
   if (locMap) {
-    locMap.invalidateSize();
-    // Re-center to saved location if coordinates differ significantly
+    google.maps.event.trigger(locMap, 'resize');
     if (savedLocation?.lat) {
       const c = locMap.getCenter();
-      const dist = Math.abs(c.lat - savedLocation.lat) + Math.abs(c.lng - savedLocation.lng);
-      if (dist > 0.01) locMap.setView([savedLocation.lat, savedLocation.lng], 16);
+      const dist = Math.abs(c.lat() - savedLocation.lat) + Math.abs(c.lng() - savedLocation.lng);
+      if (dist > 0.01) locMap.setCenter({ lat: savedLocation.lat, lng: savedLocation.lng });
     }
     return;
   }
   const defaultLat = savedLocation?.lat || 24.7136;
   const defaultLng = savedLocation?.lng || 46.6753;
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
-  locMap = L.map('locMap', { zoomControl: false, attributionControl: false })
-    .setView([defaultLat, defaultLng], savedLocation?.lat ? 16 : 12);
-  const tileUrl = currentLang === 'ar'
-    ? 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  const tileOpts = currentLang === 'ar'
-    ? { maxZoom: 19 }
-    : { maxZoom: 19, subdomains: 'abcd' };
-  L.tileLayer(tileUrl, tileOpts).addTo(locMap);
-  // GPS is handled by _locAutoGps() called from openLocation()
 
-  locMap.on('movestart', () => {
+  locMap = new google.maps.Map(document.getElementById('locMap'), {
+    center: { lat: defaultLat, lng: defaultLng },
+    zoom: savedLocation?.lat ? 16 : 12,
+    disableDefaultUI: true,
+    gestureHandling: 'greedy',
+    clickableIcons: false,
+  });
+
+  locMap.addListener('drag', () => {
     const pin = document.getElementById('locPinWrap');
     if (pin) pin.style.transform = 'translate(-50%,-110%) scale(1.18)';
   });
-  locMap.on('moveend', () => {
+  locMap.addListener('idle', () => {
     const pin = document.getElementById('locPinWrap');
     if (pin) pin.style.transform = 'translate(-50%,-100%)';
     const c = locMap.getCenter();
-    _locCurrLat = c.lat; _locCurrLng = c.lng;
-    _locReverseGeocode(c.lat, c.lng);
+    _locCurrLat = c.lat(); _locCurrLng = c.lng();
+    _locReverseGeocode(c.lat(), c.lng());
   });
 
   _locReverseGeocode(defaultLat, defaultLng);
@@ -2658,18 +2655,17 @@ function _initLocMap() {
 
 let _locUserDot = null;
 function _locShowUserDot(lat, lng) {
-  if (!window.L) return;
-  const dotIcon = L.divIcon({
-    className: '',
-    html: '<div class="loc-user-dot"><div class="loc-user-dot-ring"></div></div>',
-    iconSize: [20, 20], iconAnchor: [10, 10]
-  });
   const addDot = () => {
-    if (!locMap) return;
-    if (_locUserDot) locMap.removeLayer(_locUserDot);
-    _locUserDot = L.marker([lat, lng], { icon: dotIcon, zIndexOffset: -50, interactive: false }).addTo(locMap);
+    if (!locMap || !window.google?.maps) return;
+    if (_locUserDot) _locUserDot.setMap(null);
+    _locUserDot = new google.maps.Marker({
+      position: { lat, lng }, map: locMap,
+      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8,
+        fillColor: '#4285F4', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 },
+      zIndex: 1,
+    });
   };
-  if (locMap) addDot(); else setTimeout(addDot, 800);
+  if (locMap && window.google?.maps) addDot(); else setTimeout(addDot, 800);
 }
 
 let _locNearbyAddrs = [];
@@ -2686,48 +2682,37 @@ function _locReverseGeocode(lat, lng) {
   if (nearbyEl) nearbyEl.style.display = 'none';
 
   _locGeocodeTimer = setTimeout(() => {
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=en`)
-      .then(r => r.json())
-      .then(data => {
-        _locGeocoding = false;
-        const a = data.address || {};
-        const precise = [a.house_number, a.road, a.suburb || a.neighbourhood,
-          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
-        const street  = [a.road, a.suburb || a.neighbourhood,
-          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
-        const area    = [a.suburb || a.neighbourhood,
-          a.city || a.town || a.village || a.county, a.country].filter(Boolean).join(', ');
-
-        _locCurrentAddr = precise || data.display_name || '';
-        _locCurrLat = lat; _locCurrLng = lng;
-        _locCurrData = a;
-
-        if (addrEl) addrEl.textContent = _locCurrentAddr || 'Address found';
-
-        // Pin label callout
-        if (labelEl && _locCurrentAddr) {
-          labelEl.textContent = _locCurrentAddr;
-          labelEl.classList.add('show');
-        }
-
-        // Build nearby variants list
-        _locNearbyAddrs = [precise, street, area]
-          .filter((v, i, arr) => v && arr.indexOf(v) === i);
-        if (nearbyEl && _locNearbyAddrs.length > 1) {
-          nearbyEl.style.display = 'block';
-          nearbyEl.innerHTML = _locNearbyAddrs.map((addr, i) => `
-            <div class="loc-nearby-item${i === 0 ? ' active' : ''}" onclick="_locSelectNearby(${i})">
-              <div class="loc-nearby-radio"></div>
-              <span class="loc-nearby-addr">${addr}</span>
-            </div>`).join('');
-        }
-      })
-      .catch(() => {
-        _locGeocoding = false;
-        _locCurrentAddr = '';
-        if (addrEl) addrEl.textContent = 'Could not detect address. Try searching.';
-      });
-  }, 300);
+    if (!window.google?.maps) return;
+    new google.maps.Geocoder().geocode({ location: { lat, lng } }, (results, status) => {
+      _locGeocoding = false;
+      if (status !== 'OK' || !results?.length) {
+        if (addrEl) addrEl.textContent = 'Address not found — drag the map';
+        return;
+      }
+      const best = results[0];
+      const get = (type) => (best.address_components || []).find(c => c.types.includes(type))?.long_name || '';
+      _locCurrentAddr = best.formatted_address || '';
+      _locCurrLat = lat; _locCurrLng = lng;
+      _locCurrData = {
+        road: get('route'), suburb: get('sublocality') || get('neighborhood'),
+        city: get('locality') || get('administrative_area_level_2'),
+        country: get('country'), house_number: get('street_number'), postcode: get('postal_code'),
+      };
+      if (addrEl) addrEl.textContent = _locCurrentAddr;
+      if (labelEl && _locCurrentAddr) { labelEl.textContent = _locCurrentAddr; labelEl.classList.add('show'); }
+      const street = [get('route'), get('sublocality')||get('neighborhood'), get('locality'), get('country')].filter(Boolean).join(', ');
+      const area   = [get('sublocality')||get('neighborhood'), get('locality'), get('country')].filter(Boolean).join(', ');
+      _locNearbyAddrs = [_locCurrentAddr, street, area].filter((v, i, arr) => v && arr.indexOf(v) === i);
+      if (nearbyEl && _locNearbyAddrs.length > 1) {
+        nearbyEl.style.display = 'block';
+        nearbyEl.innerHTML = _locNearbyAddrs.map((addr, i) => `
+          <div class="loc-nearby-item${i===0?' active':''}" onclick="_locSelectNearby(${i})">
+            <div class="loc-nearby-radio"></div>
+            <span class="loc-nearby-addr">${addr}</span>
+          </div>`).join('');
+      }
+    });
+  }, 400);
 }
 
 function _locSelectNearby(idx) {
@@ -2738,9 +2723,7 @@ function _locSelectNearby(idx) {
   const labelEl = document.getElementById('locPinLabel');
   if (labelEl) { labelEl.textContent = _locCurrentAddr; labelEl.classList.add('show'); }
   const nearbyEl = document.getElementById('locNearbyList');
-  if (nearbyEl) nearbyEl.querySelectorAll('.loc-nearby-item').forEach((el, i) => {
-    el.classList.toggle('active', i === idx);
-  });
+  if (nearbyEl) nearbyEl.querySelectorAll('.loc-nearby-item').forEach((el, i) => el.classList.toggle('active', i === idx));
 }
 
 let _locAddrType = 'home', _locTagSelected = '';
@@ -2837,70 +2820,57 @@ function _locDoSearch(query) {
   const q = query.trim();
   if (!q) return;
   const drop = document.getElementById('locSearchDrop');
-  if (!drop) return;
+  if (!drop || !window.google?.maps?.places) return;
 
-  // Bias towards current map center for relevance
-  const bias = `&viewbox=${_locCurrLng - 1},${_locCurrLat + 1},${_locCurrLng + 1},${_locCurrLat - 1}&bounded=0`;
-
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=6&accept-language=ar,en${bias}`, {
-    headers: { 'Accept-Language': 'en' }
-  })
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(results => {
-      if (!results || !results.length) {
-        drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-search"></i> No results for "${q}"<br><small>Try a city name or street</small></div>`;
-        drop.style.display = 'block';
-        return;
-      }
-      drop.innerHTML = results.map(r => {
-        const parts = (r.display_name || '').split(',');
-        const main = parts.slice(0, 2).join(',').trim();
-        const sub  = parts.slice(2, 4).join(',').trim();
-        return `<div class="loc-search-item" onclick="_locSelectResult(${r.lat},${r.lon},\`${(r.display_name||'').replace(/`/g,"'").substring(0,100)}\`)">
-          <i class="fas fa-location-dot"></i>
-          <div class="loc-search-text">
-            <span class="loc-search-main">${main}</span>
-            ${sub ? `<span class="loc-search-sub">${sub}</span>` : ''}
-          </div>
-        </div>`;
-      }).join('');
+  new google.maps.places.AutocompleteService().getPlacePredictions({
+    input: q,
+    componentRestrictions: { country: 'sa' },
+  }, (predictions, status) => {
+    if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions?.length) {
+      drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-search"></i> No results for "${q}"<br><small>Try a city name or street</small></div>`;
       drop.style.display = 'block';
-    })
-    .catch(() => {
-      drop.innerHTML = `<div class="loc-search-empty"><i class="fas fa-wifi-slash"></i> Network error — try again</div>`;
-      drop.style.display = 'block';
-    });
+      return;
+    }
+    drop.innerHTML = predictions.map(p => {
+      const main = p.structured_formatting?.main_text || p.description;
+      const sub  = p.structured_formatting?.secondary_text || '';
+      return `<div class="loc-search-item" onclick="_locSelectPlace('${p.place_id}','${(p.description||'').replace(/'/g,"\\'").substring(0,120)}')">
+        <i class="fas fa-location-dot"></i>
+        <div class="loc-search-text">
+          <span class="loc-search-main">${main}</span>
+          ${sub ? `<span class="loc-search-sub">${sub}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    drop.style.display = 'block';
+  });
 }
 
-function _locSelectResult(lat, lng, displayName) {
+function _locSelectPlace(placeId, description) {
   const drop = document.getElementById('locSearchDrop');
   if (drop) drop.style.display = 'none';
   const inp = document.getElementById('locSearchInput');
   if (inp) inp.value = '';
-
-  lat = parseFloat(lat); lng = parseFloat(lng);
-  _locCurrLat = lat; _locCurrLng = lng;
-
-  // Immediately update address text
-  if (displayName) {
-    _locCurrentAddr = displayName;
+  if (!window.google?.maps?.places) return;
+  const svc = new google.maps.places.PlacesService(document.createElement('div'));
+  svc.getDetails({ placeId, fields: ['geometry', 'formatted_address'] }, (place, status) => {
+    if (status !== google.maps.places.PlacesServiceStatus.OK || !place?.geometry) return;
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+    _locCurrLat = lat; _locCurrLng = lng;
+    _locCurrentAddr = place.formatted_address || description;
     const addrEl = document.getElementById('locAddrText');
-    if (addrEl) addrEl.textContent = displayName;
-  }
-
-  if (locMap) {
-    locMap.flyTo([lat, lng], 17, { duration: 1.2 });
-  } else {
-    _initLocMap();
-    setTimeout(() => { if (locMap) locMap.setView([lat, lng], 17); }, 700);
-  }
+    if (addrEl) addrEl.textContent = _locCurrentAddr;
+    if (locMap) { locMap.panTo({ lat, lng }); locMap.setZoom(17); }
+    else { _initLocMap(); setTimeout(() => { locMap?.setCenter({ lat, lng }); locMap?.setZoom(17); }, 700); }
+  });
 }
 
 /* GPS helpers */
 function _locSetPos(lat, lng, zoom) {
   _locCurrLat = lat; _locCurrLng = lng;
-  if (!locMap) { _initLocMap(); setTimeout(() => locMap?.flyTo([lat, lng], zoom||17, {duration:1.2}), 700); }
-  else locMap.flyTo([lat, lng], zoom||17, {duration:1.2});
+  if (!locMap) { _initLocMap(); setTimeout(() => { locMap?.panTo({ lat, lng }); locMap?.setZoom(zoom||17); }, 700); }
+  else { locMap.panTo({ lat, lng }); locMap.setZoom(zoom||17); }
 }
 function _locSetBtn(html, loading) {
   const btn = document.getElementById('locGpsBtn');
@@ -2973,25 +2943,7 @@ function _locShowGpsGuide(code) {
   if (mapWrap) mapWrap.appendChild(guide);
 }
 
-function _locFallbackIP() {
-  const _apply = (lat, lng) => {
-    _locCurrLat = lat; _locCurrLng = lng;
-    if (locMap) locMap.flyTo([lat, lng], 14, { duration: 1.2 });
-    else { _initLocMap(); setTimeout(() => { if (locMap) locMap.setView([lat, lng], 14); }, 700); }
-    const el = document.getElementById('locAddrText');
-    if (el && (el.textContent === 'Drag map to set location' || el.textContent.includes('GPS unavailable')))
-      el.textContent = 'Drag map to your exact location';
-  };
-  fetch('https://ipapi.co/json/')
-    .then(r => r.json())
-    .then(d => { if (d?.latitude) _apply(parseFloat(d.latitude), parseFloat(d.longitude)); })
-    .catch(() => {
-      fetch('https://ip-api.com/json/?fields=lat,lon')
-        .then(r => r.json())
-        .then(d => { if (d?.lat) _apply(parseFloat(d.lat), parseFloat(d.lon)); })
-        .catch(() => {});
-    });
-}
+function _locFallbackIP() {}
 
 function closeLocation() {
   document.getElementById('locOverlay').classList.remove('open');
