@@ -1954,15 +1954,31 @@ function orderRowHTML(o) {
         <div class="ord-prods">${thumbsHtml}</div>
         ${o.customer?.email ? `<div class="order-detail-row" style="margin-bottom:6px"><i class="fas fa-envelope"></i>${o.customer.email}</div>` : ''}
         ${addrHtml}
-        ${(o.method === 'stc' && !o.stcApproved && status !== 'cancelled') ? `
-        <div style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);border-radius:12px;padding:12px 14px;margin-top:10px">
-          <div style="font-size:11px;color:#f59e0b;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px"><i class="fas fa-hourglass-half"></i> STC Pay — Payment Verification</div>
-          <div style="font-size:13px;color:#ddd;margin-bottom:10px">Transaction Ref: <b style="font-family:monospace;color:#fbbf24">${o.txnRef || '(not recorded)'}</b></div>
-          <div style="display:flex;gap:8px">
+        ${o.method === 'stc' ? `
+        <div style="background:${o.stcApproved ? 'rgba(16,185,129,.08)' : 'rgba(245,158,11,.1)'};border:1px solid ${o.stcApproved ? 'rgba(16,185,129,.3)' : 'rgba(245,158,11,.3)'};border-radius:12px;padding:12px 14px;margin-top:10px">
+          <div style="font-size:11px;color:${o.stcApproved ? '#34d399' : '#f59e0b'};font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">
+            <i class="fas fa-${o.stcApproved ? 'circle-check' : 'hourglass-half'}"></i>
+            STC Pay — ${o.stcApproved ? 'Payment Verified ✓' : 'Awaiting Verification'}
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:${(!o.stcApproved && status !== 'cancelled') ? '10px' : '0'}">
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:#666">Transaction Ref</span>
+              <b style="font-family:monospace;color:#fbbf24;font-size:13px">${o.txnRef || '—'}</b>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:#666">Amount Paid</span>
+              <b style="color:#e9d5ff">SAR ${o.totalSAR || 0}</b>
+            </div>
+            ${o.stcApproved ? `<div style="display:flex;justify-content:space-between;font-size:12px">
+              <span style="color:#666">Approved At</span>
+              <span style="color:#888">${o.stcApprovedAt ? new Date(o.stcApprovedAt).toLocaleString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'}</span>
+            </div>` : ''}
+          </div>
+          ${(!o.stcApproved && status !== 'cancelled') ? `<div style="display:flex;gap:8px;margin-top:8px">
             <button class="adm-btn xs green" style="flex:1;padding:10px" onclick="approveStcOrder('${o.id}')"><i class="fas fa-check-circle"></i> ✅ Approve Payment</button>
             <button class="adm-btn xs red" style="flex:1;padding:10px" onclick="rejectStcOrder('${o.id}')"><i class="fas fa-times-circle"></i> ❌ Reject & Cancel</button>
-          </div>
-        </div>` : (o.stcApproved ? `<div style="font-size:11px;color:#34d399;padding:8px 0 0"><i class="fas fa-circle-check"></i> STC Payment Verified ✓</div>` : '')}
+          </div>` : ''}
+        </div>` : ''}
         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px">
           ${status !== 'awaiting_stc' ? `<button class="adm-btn xs gray" onclick="updateOrderStatus('${o.id}','processing')"><i class="fas fa-spinner"></i> Processing</button>` : ''}
           <button class="adm-btn xs blue" onclick="updateOrderStatus('${o.id}','shipped')"><i class="fas fa-truck"></i> Shipped</button>
