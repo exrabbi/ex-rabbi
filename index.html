@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=125" />
+  <link rel="stylesheet" href="styles.css?v=126" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -796,7 +796,15 @@
     </div>
     <!-- Order Confirmed screen (shown after order) -->
     <div class="cart-confirmed" id="cartConfirmed" style="display:none">
+      <!-- Confetti particles -->
+      <div class="cc-confetti-wrap" id="ccConfettiWrap"></div>
+      <!-- Animated success icon -->
       <div class="cc-anim-wrap">
+        <div class="cc-rays">
+          <span></span><span></span><span></span><span></span>
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <div class="cc-pulse-ring"></div>
         <div class="cc-circle">
           <svg viewBox="0 0 52 52" class="cc-svg">
             <circle class="cc-ring" cx="26" cy="26" r="24" fill="none"/>
@@ -804,23 +812,35 @@
           </svg>
         </div>
       </div>
+      <!-- Text -->
       <div class="cc-title" data-i18n="orderConfirmed">Order Confirmed!</div>
-      <div class="cc-sub" data-i18n="orderConfirmedSub">Your order has been received 🎉</div>
-      <div class="cc-id" id="ccOrderId"></div>
-      <div class="cc-total" id="ccOrderTotal"></div>
-      <!-- Mini tracking timeline -->
+      <div class="cc-sub" data-i18n="orderConfirmedSub">We received your order 🎉</div>
+      <!-- Premium order card -->
+      <div class="cc-order-card">
+        <div class="cc-card-shine"></div>
+        <div class="cc-order-badge"><i class="fas fa-receipt"></i> Order ID</div>
+        <div class="cc-id" id="ccOrderId"></div>
+        <div class="cc-dashed-line"></div>
+        <div class="cc-total" id="ccOrderTotal"></div>
+        <div class="cc-eta">
+          <i class="fas fa-truck-fast"></i>
+          <span>Estimated delivery in <b>2–3 business days</b></span>
+        </div>
+      </div>
+      <!-- Tracking timeline -->
       <div class="cc-track">
         <div class="cc-step done"><div class="cc-dot"><i class="fas fa-check"></i></div><div class="cc-slabel" data-i18n="trackOrdered">Ordered</div></div>
-        <div class="cc-tline"></div>
+        <div class="cc-tline done"></div>
         <div class="cc-step next"><div class="cc-dot"><i class="fas fa-gear"></i></div><div class="cc-slabel" data-i18n="trackConfirmed">Confirmed</div></div>
         <div class="cc-tline"></div>
         <div class="cc-step"><div class="cc-dot"><i class="fas fa-truck"></i></div><div class="cc-slabel" data-i18n="trackShipped">Shipped</div></div>
         <div class="cc-tline"></div>
         <div class="cc-step"><div class="cc-dot"><i class="fas fa-house"></i></div><div class="cc-slabel" data-i18n="trackDelivered">Delivered</div></div>
       </div>
+      <!-- Buttons -->
       <div class="cc-btns">
         <button class="cc-track-btn" onclick="closeCart();setTimeout(()=>{openMe();},200)">
-          <i class="fas fa-location-dot"></i> <span data-i18n="trackOrder">Track Order</span>
+          <i class="fas fa-location-dot"></i> <span data-i18n="trackOrder">Manage &amp; track</span>
         </button>
         <button class="cc-cont-btn" onclick="closeCart()">
           <span data-i18n="continueShopping">Continue Shopping</span> →
@@ -2110,6 +2130,6 @@
 
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=130"></script>
+  <script src="script.js?v=131"></script>
 </body>
 </html>
