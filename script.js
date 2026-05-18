@@ -616,6 +616,10 @@ function renderSuperDeals() {
         <p class="product-name">${getName(p)}</p>
         <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
       </div>
+      <button class="cat-strip-add-btn${p.stock===0?' disabled':''}" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'style="opacity:.5;cursor:not-allowed"':''}>
+        <i class="fas fa-${p.stock===0?'times-circle':'bag-shopping'}"></i>
+        ${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}
+      </button>
     </div>
   `).join('');
 }
@@ -636,6 +640,10 @@ function renderTrending() {
         <p class="product-name">${getName(p)}</p>
         <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
       </div>
+      <button class="cat-strip-add-btn${p.stock===0?' disabled':''}" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'style="opacity:.5;cursor:not-allowed"':''}>
+        <i class="fas fa-${p.stock===0?'times-circle':'bag-shopping'}"></i>
+        ${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}
+      </button>
     </div>
   `).join('');
 }
@@ -684,6 +692,10 @@ function renderCategoryStrips() {
               <div class="cat-strip-price">${fmt(p.price)}</div>
               <div class="cat-strip-stars">★ ${p.rating} <span>(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span></div>
             </div>
+            <button class="cat-strip-add-btn${p.stock===0?' disabled':''}" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'style="opacity:.5;cursor:not-allowed"':''}>
+              <i class="fas fa-${p.stock===0?'times-circle':'bag-shopping'}"></i>
+              ${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}
+            </button>
           </div>`).join('')}
         <div class="cat-strip-more" onclick="filterCategory('${cfg.cat}');document.querySelector('.tab-btn[data-tab=\\'products\\']')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">
           <i class="fas fa-grip"></i><span>${t('seeAll')||'See All'}</span>
