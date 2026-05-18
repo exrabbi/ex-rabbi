@@ -381,6 +381,13 @@
         </div>
         <div id="dashCustomers"></div>
       </div>
+      <div class="sec">
+        <div class="sec-header">
+          <div class="sec-title"><i class="fas fa-triangle-exclamation" style="color:#f59e0b"></i> Stock Alerts</div>
+          <button class="adm-btn sm gray" onclick="showTab('products')">Manage Stock</button>
+        </div>
+        <div id="dashLowStock"></div>
+      </div>
     </div>
 
     <!-- PRODUCTS -->
@@ -1315,6 +1322,26 @@ function renderDashboard() {
   document.getElementById('dashCustomers').innerHTML = recent5custs.length
     ? recent5custs.map(custRowHTML).join('')
     : emptyState('fa-users', 'No customers yet');
+
+  // Low stock alert
+  const lowStock = PRODUCTS.filter(p => p.stock !== undefined && p.stock <= 5);
+  const lsEl = document.getElementById('dashLowStock');
+  if (lsEl) {
+    if (lowStock.length) {
+      lsEl.innerHTML = `<div style="font-size:13px;font-weight:800;color:#f59e0b;margin-bottom:10px;display:flex;align-items:center;gap:7px"><i class="fas fa-triangle-exclamation"></i> ${lowStock.length} product(s) low on stock</div>`
+        + lowStock.map(p => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+          <img src="${p.image}" style="width:38px;height:38px;border-radius:8px;object-fit:cover;flex-shrink:0" onerror="this.style.opacity='.2'" />
+          <div style="flex:1;min-width:0">
+            <div style="font-size:12px;font-weight:700;color:#e8e0d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.names?.en || '—'}</div>
+            <div style="font-size:11px;color:#888">ID ${p.id} · SAR ${p.price}</div>
+          </div>
+          <span style="background:${p.stock===0?'#3f0808':'#78350f'};color:${p.stock===0?'#fca5a5':'#fde68a'};padding:3px 9px;border-radius:20px;font-size:11px;font-weight:800;flex-shrink:0">${p.stock===0?'OUT':'Low: '+p.stock}</span>
+        </div>`).join('');
+    } else {
+      lsEl.innerHTML = `<div style="font-size:13px;color:#4ade80;display:flex;align-items:center;gap:7px"><i class="fas fa-circle-check"></i> All products have sufficient stock</div>`;
+    }
+  }
 }
 
 /* ===== PRODUCTS ===== */
