@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=127" />
+  <link rel="stylesheet" href="styles.css?v=128" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -2128,8 +2128,40 @@
     </div>
   </div>
 
+  <!-- ===== ABANDONED CART POPUP ===== -->
+  <div class="promo-overlay" id="abandonOverlay" onclick="closeAbandonPopup()"></div>
+  <div class="promo-popup" id="abandonPopup">
+    <button class="promo-close" onclick="closeAbandonPopup()"><i class="fas fa-times"></i></button>
+    <div class="promo-emoji">🛒</div>
+    <div class="promo-title">Your cart is waiting!</div>
+    <div class="promo-sub">You have <b id="abandonCount">0</b> item(s) ready to order</div>
+    <div class="promo-amount" id="abandonTotal"></div>
+    <div class="promo-hint"><i class="fas fa-truck-fast"></i> Fast delivery across Saudi Arabia</div>
+    <button class="promo-cta" onclick="abandonCheckout()">
+      <i class="fas fa-bag-shopping"></i> Complete My Order →
+    </button>
+    <button class="promo-skip" onclick="closeAbandonPopup()">Maybe later</button>
+  </div>
+
+  <!-- ===== EXIT INTENT POPUP ===== -->
+  <div class="promo-overlay" id="exitOverlay" onclick="closeExitPopup()"></div>
+  <div class="promo-popup exit-popup" id="exitPopup">
+    <button class="promo-close" onclick="closeExitPopup()"><i class="fas fa-times"></i></button>
+    <div class="promo-emoji">🎁</div>
+    <div class="promo-title">Wait! Special offer for you</div>
+    <div class="promo-sub">Get <b>10% OFF</b> your entire order right now</div>
+    <div class="promo-coupon-box">
+      <span class="promo-coupon-code">COMEBACK10</span>
+      <span class="promo-coupon-label">Use this code at checkout</span>
+    </div>
+    <button class="promo-cta" onclick="exitGrabDeal()">
+      <i class="fas fa-bolt"></i> Grab My 10% Discount
+    </button>
+    <button class="promo-skip" onclick="closeExitPopup()">No thanks, I'll pay full price</button>
+  </div>
+
   <script src="translations.js?v=89"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=132"></script>
+  <script src="script.js?v=133"></script>
 </body>
 </html>
