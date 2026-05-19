@@ -3340,7 +3340,60 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     });
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
+  // Fire automations (non-blocking)
+  if (newOrder) setTimeout(() => _automationFire(newOrder), 500);
   return newOrder;
+}
+
+/* ===== AUTOMATIONS ===== */
+async function _automationFire(order) {
+  _syncOrderToSheets(order);
+  _sendOrderConfirmEmail(order);
+}
+
+async function _syncOrderToSheets(order) {
+  const url = localStorage.getItem('exg_sheet_webhook');
+  if (!url) return;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(order)
+    });
+  } catch(e) {}
+}
+
+async function _sendOrderConfirmEmail(order) {
+  const pubKey   = localStorage.getItem('exg_emailjs_pubkey');
+  const service  = localStorage.getItem('exg_emailjs_service');
+  const template = localStorage.getItem('exg_emailjs_template');
+  const toEmail  = order.customer?.email || '';
+  if (!pubKey || !service || !template || !toEmail) return;
+  // Load EmailJS SDK if not loaded
+  if (!window.emailjs) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    emailjs.init(pubKey);
+  }
+  const itemsText = (order.items || []).map(i => `${i.name} × ${i.qty}  —  SAR ${i.price * i.qty}`).join('\n');
+  const addr = order.address || {};
+  const addrText = [addr.name, addr.phone, addr.city, addr.area, addr.address].filter(Boolean).join(', ');
+  try {
+    await emailjs.send(service, template, {
+      to_email:      toEmail,
+      customer_name: order.customer?.name || 'Customer',
+      order_id:      order.id || '',
+      items:         itemsText,
+      total:         'SAR ' + (order.totalSAR || 0),
+      address:       addrText || 'Not provided',
+      payment:       (order.method || '').toUpperCase(),
+      date:          new Date(order.date).toLocaleString('en-SA')
+    });
+  } catch(e) {}
 }
 
 function setUser(user) {

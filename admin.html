@@ -971,6 +971,59 @@ service cloud.firestore {
         <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
       </div>
 
+      <!-- AUTOMATIONS SECTION -->
+      <div class="sec" id="automationSec">
+        <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-robot"></i> Automations</div>
+
+        <!-- Google Sheets -->
+        <div style="background:#0a1a0a;border:1px solid rgba(34,197,94,.2);border-radius:12px;padding:14px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <img src="https://ssl.gstatic.com/docs/spreadsheets/favicon3.ico" style="width:20px;height:20px" onerror="this.style.display='none'"/>
+            <span style="font-weight:700;color:#4ade80;font-size:13px">Google Sheets — Auto Order Log</span>
+            <span id="sheetStatusBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(34,197,94,.15);color:#4ade80;display:none">✓ Connected</span>
+          </div>
+          <div style="font-size:11px;color:#666;margin-bottom:10px">Every new order automatically saves to your Google Sheet. <a href="#" onclick="showSheetSetupGuide();return false" style="color:#4ade80">Setup Guide ↗</a></div>
+          <div class="field-wrap">
+            <div class="field-label">Google Apps Script Webhook URL</div>
+            <input type="url" id="setSheetWebhook" class="adm-input" placeholder="https://script.google.com/macros/s/..." style="font-family:monospace;font-size:11px"/>
+          </div>
+          <button class="adm-btn xs" style="background:#166534;margin-top:6px" onclick="testSheetWebhook()"><i class="fas fa-flask"></i> Test Connection</button>
+        </div>
+
+        <!-- EmailJS -->
+        <div style="background:#0a0f1a;border:1px solid rgba(59,130,246,.2);border-radius:12px;padding:14px;margin-bottom:14px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+            <i class="fas fa-envelope" style="color:#60a5fa;font-size:16px"></i>
+            <span style="font-weight:700;color:#60a5fa;font-size:13px">EmailJS — Customer Order Confirmation</span>
+            <span id="emailStatusBadge" style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(59,130,246,.15);color:#60a5fa;display:none">✓ Connected</span>
+          </div>
+          <div style="font-size:11px;color:#666;margin-bottom:10px">Send automatic order confirmation email to customers. Free: 200 emails/month. <a href="https://www.emailjs.com" target="_blank" style="color:#60a5fa">emailjs.com ↗</a></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div class="field-wrap">
+              <div class="field-label">EmailJS Public Key</div>
+              <input type="text" id="setEmailJsPublicKey" class="adm-input" placeholder="xxxxxxxxxxxxxxx" style="font-family:monospace;font-size:11px"/>
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">Service ID</div>
+              <input type="text" id="setEmailJsServiceId" class="adm-input" placeholder="service_xxxxxxx" style="font-family:monospace;font-size:11px"/>
+            </div>
+            <div class="field-wrap">
+              <div class="field-label">Template ID</div>
+              <input type="text" id="setEmailJsTemplateId" class="adm-input" placeholder="template_xxxxxxx" style="font-family:monospace;font-size:11px"/>
+            </div>
+          </div>
+          <button class="adm-btn xs" style="background:#1e3a5f;margin-top:6px" onclick="showEmailSetupGuide()"><i class="fas fa-book"></i> Setup Guide</button>
+        </div>
+
+        <!-- Automation Status -->
+        <div style="background:#111;border-radius:10px;padding:12px;font-size:12px;color:#555">
+          <div style="margin-bottom:6px;color:#888;font-weight:600">Automation Status</div>
+          <div id="automationStatusList">Loading...</div>
+        </div>
+
+        <button class="adm-btn" onclick="saveSettings()" style="margin-top:14px"><i class="fas fa-save"></i> Save Settings</button>
+      </div>
+
       <div class="sec">
         <div class="sec-title" style="margin-bottom:16px"><i class="fas fa-share-nodes"></i> Social Media Links</div>
         <div style="display:flex;flex-direction:column;gap:10px">
@@ -2041,6 +2094,136 @@ function rejectStcOrder(orderId) {
   toast('❌ STC Payment rejected — order cancelled');
 }
 
+/* ===== AUTOMATION FUNCTIONS ===== */
+function renderAutomationStatus() {
+  const el = document.getElementById('automationStatusList');
+  if (!el) return;
+  const sheet   = localStorage.getItem('exg_sheet_webhook');
+  const emailPk = localStorage.getItem('exg_emailjs_pubkey');
+  const emailSv = localStorage.getItem('exg_emailjs_service');
+  const emailTp = localStorage.getItem('exg_emailjs_template');
+  const emailOk = emailPk && emailSv && emailTp;
+  el.innerHTML = [
+    `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #222">
+      <span><i class="fas fa-table" style="color:#4ade80;width:16px"></i> Google Sheets</span>
+      <span style="color:${sheet?'#4ade80':'#555'}">${sheet ? '✅ Connected' : '⭕ Not set'}</span>
+    </div>`,
+    `<div style="display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid #222">
+      <span><i class="fas fa-envelope" style="color:#60a5fa;width:16px"></i> Email (EmailJS)</span>
+      <span style="color:${emailOk?'#60a5fa':'#555'}">${emailOk ? '✅ Connected' : '⭕ Not set'}</span>
+    </div>`,
+    `<div style="display:flex;justify-content:space-between;padding:4px 0">
+      <span><i class="fas fa-robot" style="color:#c084fc;width:16px"></i> AI Chatbot</span>
+      <span style="color:${localStorage.getItem('exg_ai_worker_url')?'#c084fc':'#555'}">${localStorage.getItem('exg_ai_worker_url') ? '✅ Active' : '⭕ Not set'}</span>
+    </div>`
+  ].join('');
+  const sheetBadge = document.getElementById('sheetStatusBadge');
+  const emailBadge = document.getElementById('emailStatusBadge');
+  if (sheetBadge) sheetBadge.style.display = sheet ? 'inline' : 'none';
+  if (emailBadge) emailBadge.style.display = emailOk ? 'inline' : 'none';
+}
+
+async function testSheetWebhook() {
+  const url = (document.getElementById('setSheetWebhook')?.value || '').trim();
+  if (!url) { toast('⚠️ Enter the webhook URL first'); return; }
+  const testOrder = {
+    id: 'TEST-' + Date.now(), date: new Date().toISOString(),
+    items: [{ name: 'Test Product', qty: 1, price: 99 }],
+    totalSAR: 99, method: 'test', status: 'test',
+    customer: { name: 'Test Customer', email: 'test@test.com', phone: '+966500000000' },
+    address: { city: 'Riyadh', area: 'Test Area', address: '123 Test St' }
+  };
+  try {
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(testOrder) });
+    if (r.ok) toast('✅ Google Sheets connected! Check your sheet for a test row.');
+    else toast('❌ Error: ' + r.status + ' — check your script URL');
+  } catch(e) { toast('❌ Connection failed — make sure the script is deployed as web app'); }
+}
+
+function showSheetSetupGuide() {
+  const script = `function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    sheet.appendRow([
+      data.id,
+      new Date(data.date).toLocaleString('en-SA'),
+      data.customer?.name || 'Guest',
+      data.customer?.phone || '',
+      data.customer?.email || '',
+      data.address?.city || '',
+      data.address?.area || '',
+      data.address?.address || '',
+      (data.items || []).map(i => i.name + ' x' + i.qty).join(', '),
+      'SAR ' + (data.totalSAR || 0),
+      data.method?.toUpperCase() || '',
+      data.status || 'pending',
+      data.txnRef || ''
+    ]);
+  } catch(e) {}
+  return ContentService.createTextOutput('OK').setMimeType(ContentService.MimeType.TEXT);
+}`;
+  const w = window.open('', '_blank', 'width=700,height=600');
+  w.document.write(`<html><head><title>Google Sheets Setup</title>
+  <style>body{font-family:Arial;padding:20px;background:#1a1a1a;color:#ddd}
+  pre{background:#0a0a0a;padding:16px;border-radius:8px;overflow:auto;font-size:12px;border:1px solid #333;color:#4ade80}
+  h2{color:#4ade80}ol li{margin-bottom:10px;line-height:1.6}
+  a{color:#4ade80}.copy-btn{background:#166534;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;margin-bottom:8px}</style></head>
+  <body><h2>📊 Google Sheets Auto-Sync Setup</h2>
+  <ol>
+  <li>Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> → Create a new sheet</li>
+  <li>Add headers in row 1: <b>Order ID | Date | Customer | Phone | Email | City | Area | Address | Items | Total | Payment | Status | Txn Ref</b></li>
+  <li>Click <b>Extensions → Apps Script</b></li>
+  <li>Delete existing code, paste the code below</li>
+  <li>Click <b>Deploy → New deployment → Web app</b></li>
+  <li>Set <b>"Execute as"</b> = Me, <b>"Who has access"</b> = Anyone</li>
+  <li>Click <b>Deploy</b> → copy the Web App URL</li>
+  <li>Paste the URL in Admin → Settings → Automations → Google Sheets</li>
+  </ol>
+  <button class="copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('pre').textContent);this.textContent='✅ Copied!'">📋 Copy Script</button>
+  <pre>${script.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</pre>
+  </body></html>`);
+}
+
+function showEmailSetupGuide() {
+  const template = `Subject: Order Confirmed — {{order_id}} | EX GLOBAL
+
+Hello {{customer_name}},
+
+Your order has been confirmed! 🎉
+
+Order ID: {{order_id}}
+Items: {{items}}
+Total: {{total}}
+
+Delivery Address:
+{{address}}
+
+Estimated delivery: 2–3 business days
+
+Thank you for shopping with EX GLOBAL!
+exglobal.online`;
+  const w = window.open('', '_blank', 'width=700,height=700');
+  w.document.write(`<html><head><title>EmailJS Setup</title>
+  <style>body{font-family:Arial;padding:20px;background:#1a1a1a;color:#ddd}
+  pre{background:#0a0a0a;padding:16px;border-radius:8px;overflow:auto;font-size:12px;border:1px solid #333;color:#93c5fd}
+  h2{color:#60a5fa}ol li{margin-bottom:10px;line-height:1.6}
+  a{color:#60a5fa}.copy-btn{background:#1e3a5f;color:#fff;border:none;padding:8px 14px;border-radius:6px;cursor:pointer;margin-bottom:8px}</style></head>
+  <body><h2>📧 EmailJS Setup Guide</h2>
+  <ol>
+  <li>Go to <a href="https://www.emailjs.com" target="_blank">emailjs.com</a> → Sign up free</li>
+  <li><b>Email Services</b> → Add Service → Gmail → Connect your Gmail</li>
+  <li><b>Email Templates</b> → Create Template → paste the template below</li>
+  <li>Template variables used: <b>{{order_id}}, {{customer_name}}, {{items}}, {{total}}, {{address}}, {{to_email}}</b></li>
+  <li>Set <b>To Email</b> field = <code>{{to_email}}</code></li>
+  <li>Go to <b>Account → API Keys</b> → copy your Public Key</li>
+  <li>Enter Service ID, Template ID, Public Key in Admin → Settings → Automations</li>
+  </ol>
+  <button class="copy-btn" onclick="navigator.clipboard.writeText(document.querySelector('pre').textContent);this.textContent='✅ Copied!'">📋 Copy Template</button>
+  <pre>${template}</pre>
+  </body></html>`);
+}
+
 function waMessage(phone, orderId) {
   const num = phone.replace(/[^0-9]/g, '');
   if (!num) return;
@@ -2711,7 +2894,12 @@ function loadSettings() {
     if (el('setVapidKey'))     el('setVapidKey').value     = s.vapidKey     || '';
     if (el('setFcmServerKey')) el('setFcmServerKey').value = localStorage.getItem('exg_fcm_server_key') || '';
     // Automation settings
+    if (el('setSheetWebhook'))    el('setSheetWebhook').value    = localStorage.getItem('exg_sheet_webhook')     || '';
+    if (el('setEmailJsPublicKey')) el('setEmailJsPublicKey').value = localStorage.getItem('exg_emailjs_pubkey')  || '';
+    if (el('setEmailJsServiceId')) el('setEmailJsServiceId').value = localStorage.getItem('exg_emailjs_service') || '';
+    if (el('setEmailJsTemplateId')) el('setEmailJsTemplateId').value = localStorage.getItem('exg_emailjs_template') || '';
     if (el('setWorkerUrl2'))      el('setWorkerUrl2').value      = localStorage.getItem('exg_worker_url2')       || '';
+    renderAutomationStatus();
     if (el('setPaymentGateway'))  el('setPaymentGateway').value  = localStorage.getItem('exg_payment_gateway')   || 'whatsapp';
     if (el('setStcPayNumber'))    el('setStcPayNumber').value    = (JSON.parse(localStorage.getItem('exg_settings')||'{}').stcPayNumber) || '0546224029';
     if (el('setMoyasarPubKey'))   el('setMoyasarPubKey').value   = localStorage.getItem('exg_moyasar_pub')       || '';
@@ -2770,6 +2958,16 @@ function saveSettings() {
   const aramexAccount  = (document.getElementById('setAramexAccount')?.value  || '').trim();
   const aramexUser     = (document.getElementById('setAramexUser')?.value     || '').trim();
   const aramexPass     = (document.getElementById('setAramexPass')?.value     || '').trim();
+  // Automation saves
+  const sheetWebhook    = (document.getElementById('setSheetWebhook')?.value    || '').trim();
+  const emailJsPubKey   = (document.getElementById('setEmailJsPublicKey')?.value || '').trim();
+  const emailJsService  = (document.getElementById('setEmailJsServiceId')?.value || '').trim();
+  const emailJsTemplate = (document.getElementById('setEmailJsTemplateId')?.value|| '').trim();
+  if (sheetWebhook)    localStorage.setItem('exg_sheet_webhook',    sheetWebhook);    else localStorage.removeItem('exg_sheet_webhook');
+  if (emailJsPubKey)   localStorage.setItem('exg_emailjs_pubkey',   emailJsPubKey);   else localStorage.removeItem('exg_emailjs_pubkey');
+  if (emailJsService)  localStorage.setItem('exg_emailjs_service',  emailJsService);  else localStorage.removeItem('exg_emailjs_service');
+  if (emailJsTemplate) localStorage.setItem('exg_emailjs_template', emailJsTemplate); else localStorage.removeItem('exg_emailjs_template');
+  renderAutomationStatus();
   if (workerUrl2)     localStorage.setItem('exg_worker_url2',       workerUrl2);     else localStorage.removeItem('exg_worker_url2');
   localStorage.setItem('exg_payment_gateway', paymentGateway);
   const stcPayNumber = (document.getElementById('setStcPayNumber')?.value || '').trim();
