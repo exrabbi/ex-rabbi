@@ -165,6 +165,32 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .ali-price.down{color:var(--red)}
 .ali-payout{font-size:10px;font-weight:700;color:var(--green)}
 
+/* Account switcher sheet */
+.acc-info-row{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.acc-logo{font-size:22px;color:var(--green)}
+.acc-plan{font-size:11px;color:var(--text2)}
+.acc-profit{color:var(--green);font-weight:700}
+.acc-email-txt{font-size:14px;font-weight:700;margin-top:2px}
+.acc-id-txt{font-size:12px;color:var(--text2)}
+.acc-eye{font-size:18px;margin-left:auto;cursor:pointer}
+.acc-currency-row{padding:0 16px 12px;font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.btn-acc-change{background:#1976d2;color:#fff;border:none;border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer}
+.acc-divider{height:1px;background:var(--border);margin:0 16px}
+.acc-option{display:flex;align-items:flex-start;gap:14px;padding:14px 16px;cursor:pointer;transition:.1s}
+.acc-option:active{background:rgba(255,255,255,.04)}
+.acc-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--text2);margin-top:2px;flex-shrink:0;transition:.2s;position:relative}
+.acc-radio.selected{border-color:#1976d2;background:#1976d2}
+.acc-radio.selected::after{content:'✓';color:#fff;font-size:11px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-weight:800}
+.acc-opt-body{flex:1}
+.acc-opt-name{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.acc-opt-bal{font-size:18px;font-weight:800;margin-top:4px}
+.acc-opt-sub{font-size:12px;color:var(--text2);margin-top:2px}
+.acc-set-limit{font-size:12px;color:#1976d2;font-weight:700;margin-top:4px;cursor:pointer;display:inline-block}
+.acc-icon-btn{font-size:14px;color:var(--text2);cursor:pointer;padding:2px 4px;border:none;background:none;font-family:inherit}
+.acc-icon-btn:active{color:#fff}
+.acc-countdown-badge{background:#1976d2;color:#fff;font-size:11px;padding:3px 8px;border-radius:12px;margin-top:6px;display:inline-block}
+.tb-mode.tournament{background:#2d1a6e;color:#a78bfa}
+
 /* Auth sheet */
 .auth-form{padding:16px}
 .form-group{margin-bottom:12px}
@@ -290,11 +316,11 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
 
 <!-- TOP BAR -->
 <nav class="topbar">
-  <div class="tb-live" onclick="toggleAccountMode()">
+  <div class="tb-live" onclick="openSheet('sheet-account')">
     <div class="tb-live-dot"></div>
     <span class="tb-live-label" id="tb-live-label">LIVE</span>
   </div>
-  <div class="tb-balance" onclick="toggleAccountMode()">
+  <div class="tb-balance" onclick="openSheet('sheet-account')">
     <span id="tb-balance-val">$10,000.00</span>
     <span class="tb-mode demo" id="tb-mode-badge">DEMO</span>
   </div>
@@ -489,6 +515,66 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
   </div>
 </div>
 
+<!-- ACCOUNT SWITCHER SHEET -->
+<div class="sheet-backdrop" id="sheet-account" onclick="closeSheetIfBackdrop(event,'sheet-account')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Accounts</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-account')"><i class="fas fa-times"></i></button>
+    </div>
+    <!-- User Info -->
+    <div class="acc-info-row">
+      <div class="acc-logo">✈</div>
+      <div style="flex:1">
+        <div class="acc-plan">STANDARD: <span class="acc-profit">+0% profit</span></div>
+        <div class="acc-email-txt" id="acc-email">Guest</div>
+        <div class="acc-id-txt" id="acc-uid">ID: —</div>
+      </div>
+      <div class="acc-eye" onclick="openSheet('sheet-profile')">👁</div>
+    </div>
+    <div class="acc-currency-row">
+      Currency: <strong style="color:var(--text)">USD</strong>
+      <button class="btn-acc-change">CHANGE</button>
+    </div>
+    <div class="acc-divider"></div>
+    <!-- Live Account -->
+    <div class="acc-option" onclick="switchAccount('real')">
+      <div class="acc-radio" id="acc-radio-real"></div>
+      <div class="acc-opt-body">
+        <div class="acc-opt-name">Live Account</div>
+        <div class="acc-opt-bal" id="acc-real-bal">$0.00</div>
+        <div class="acc-opt-sub" id="acc-limit-text">The daily limit is not set</div>
+        <span class="acc-set-limit" onclick="event.stopPropagation();setDailyLimit()">SET LIMIT</span>
+      </div>
+    </div>
+    <div class="acc-divider"></div>
+    <!-- Demo Account -->
+    <div class="acc-option" onclick="switchAccount('demo')">
+      <div class="acc-radio" id="acc-radio-demo"></div>
+      <div class="acc-opt-body">
+        <div class="acc-opt-name">
+          Demo Account
+          <button class="acc-icon-btn" onclick="event.stopPropagation();editDemoBalance()" title="Edit balance">✏</button>
+          <button class="acc-icon-btn" onclick="event.stopPropagation();resetDemo()" title="Reset to $10,000">↺</button>
+        </div>
+        <div class="acc-opt-bal" id="acc-demo-bal">$10,000.00</div>
+      </div>
+    </div>
+    <div class="acc-divider"></div>
+    <!-- Free Friday -->
+    <div class="acc-option" onclick="switchAccount('tournament')">
+      <div class="acc-radio" id="acc-radio-tournament"></div>
+      <div class="acc-opt-body">
+        <div class="acc-opt-name">🏆 Free Friday</div>
+        <div class="acc-opt-bal" id="acc-tourn-bal">$100.00</div>
+        <div id="acc-tourn-countdown"><span class="acc-countdown-badge">⏱ Until start: 1 day(s)</span></div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
 <!-- DEPOSIT SHEET -->
 <div class="sheet-backdrop" id="sheet-deposit" onclick="closeSheetIfBackdrop(event,'sheet-deposit')">
   <div class="sheet">
@@ -643,13 +729,14 @@ const ASSETS=[
 /* ── STATE ── */
 const S={
   asset:ASSETS[0],
-  demoBalance:10000,realBalance:0,mode:'demo',
+  demoBalance:10000,realBalance:0,tournamentBalance:100,mode:'demo',
+  dailyLimit:null,
   amount:10,tradeTimeSec:60,
   activeTrades:[],history:[],
   prices:{},dirs:{},priceHist:{},
   tradeTab:'active',user:null,
 };
-try{const sv=JSON.parse(localStorage.getItem('ext_s')||'{}');if(sv.demoBalance!==undefined)S.demoBalance=sv.demoBalance;if(sv.realBalance!==undefined)S.realBalance=sv.realBalance;if(sv.history)S.history=sv.history;if(sv.mode)S.mode=sv.mode;}catch(e){}
+try{const sv=JSON.parse(localStorage.getItem('ext_s')||'{}');if(sv.demoBalance!==undefined)S.demoBalance=sv.demoBalance;if(sv.realBalance!==undefined)S.realBalance=sv.realBalance;if(sv.tournamentBalance!==undefined)S.tournamentBalance=sv.tournamentBalance;if(sv.history)S.history=sv.history;if(sv.mode)S.mode=sv.mode;if(sv.dailyLimit!==undefined)S.dailyLimit=sv.dailyLimit;}catch(e){}
 ASSETS.forEach(a=>{S.prices[a.id]=a.price;});
 
 /* ── CHART ── */
@@ -792,21 +879,77 @@ function updateTopBarPrice(price){
 }
 
 /* ── BALANCE ── */
-function getBal(){return S.mode==='demo'?S.demoBalance:S.realBalance;}
-function setBal(v){if(S.mode==='demo')S.demoBalance=v;else S.realBalance=v;saveState();updateBalanceUI();}
+function getBal(){
+  if(S.mode==='demo')return S.demoBalance;
+  if(S.mode==='tournament')return S.tournamentBalance;
+  return S.realBalance;
+}
+function setBal(v){
+  if(S.mode==='demo')S.demoBalance=v;
+  else if(S.mode==='tournament')S.tournamentBalance=v;
+  else S.realBalance=v;
+  saveState();updateBalanceUI();
+}
 function updateBalanceUI(){
   document.getElementById('tb-balance-val').textContent='$'+getBal().toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
   const badge=document.getElementById('tb-mode-badge');
-  badge.textContent=S.mode==='demo'?'DEMO':'REAL';
-  badge.className='tb-mode '+(S.mode==='demo'?'demo':'real');
+  const modeLabels={demo:'DEMO',real:'REAL',tournament:'FREE'};
+  badge.textContent=modeLabels[S.mode]||'DEMO';
+  badge.className='tb-mode '+(S.mode==='tournament'?'tournament':S.mode==='real'?'real':'demo');
   const lbl=document.getElementById('tb-live-label');
-  lbl.textContent=S.mode==='demo'?'DEMO':'LIVE';
+  lbl.textContent=S.mode==='real'?'LIVE':S.mode==='tournament'?'FREE':'DEMO';
   if(document.getElementById('profile-balance'))document.getElementById('profile-balance').textContent='$'+getBal().toLocaleString('en',{minimumFractionDigits:2});
 }
-function toggleAccountMode(){
-  S.mode=S.mode==='demo'?'real':'demo';
+function switchAccount(mode){
+  S.mode=mode;
   saveState();updateBalanceUI();
-  showToast('Switched to '+(S.mode==='demo'?'Demo':'Real')+' account');
+  renderAccountSheet();
+  closeSheet('sheet-account');
+  const labels={demo:'Demo',real:'Live',tournament:'Free Friday'};
+  showToast('Switched to '+labels[mode]+' account');
+}
+function renderAccountSheet(){
+  document.getElementById('acc-email').textContent=S.user?.email||'Guest';
+  document.getElementById('acc-uid').textContent='ID: '+(S.user?.uid?.slice(0,8)||'—');
+  const fmt=v=>'$'+v.toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('acc-real-bal').textContent=fmt(S.realBalance);
+  document.getElementById('acc-demo-bal').textContent=fmt(S.demoBalance);
+  document.getElementById('acc-tourn-bal').textContent=fmt(S.tournamentBalance);
+  ['real','demo','tournament'].forEach(m=>{
+    const r=document.getElementById('acc-radio-'+m);
+    if(r)r.className='acc-radio'+(S.mode===m?' selected':'');
+  });
+  document.getElementById('acc-limit-text').textContent=S.dailyLimit?'Daily limit: $'+S.dailyLimit:'The daily limit is not set';
+  updateTournamentCountdown();
+}
+function resetDemo(){
+  S.demoBalance=10000;saveState();
+  renderAccountSheet();
+  if(S.mode==='demo')updateBalanceUI();
+  showToast('Demo account reset to $10,000');
+}
+function editDemoBalance(){
+  const v=prompt('Set demo balance ($):',S.demoBalance);
+  if(v!==null&&!isNaN(+v)&&+v>0){
+    S.demoBalance=+v;saveState();
+    renderAccountSheet();
+    if(S.mode==='demo')updateBalanceUI();
+  }
+}
+function setDailyLimit(){
+  const v=prompt('Set daily loss limit ($):\n(Leave empty to remove)',S.dailyLimit||'');
+  if(v===null)return;
+  if(v==='')S.dailyLimit=null;
+  else if(!isNaN(+v)&&+v>0)S.dailyLimit=+v;
+  saveState();renderAccountSheet();
+}
+function updateTournamentCountdown(){
+  const el=document.getElementById('acc-tourn-countdown');
+  if(!el)return;
+  const now=new Date();
+  const day=now.getUTCDay();
+  const daysUntilFriday=(5-day+7)%7||7;
+  el.innerHTML='<span class="acc-countdown-badge">⏱ Until start: '+daysUntilFriday+' day(s)</span>';
 }
 
 /* ── PAYOUT ── */
@@ -1095,6 +1238,7 @@ function openSheet(id){
   if(id==='sheet-signals')renderSignals();
   if(id==='sheet-trades')renderTradesList();
   if(id==='sheet-deposit'){renderDepositDetails();updateDepositSummary();}
+  if(id==='sheet-account')renderAccountSheet();
 }
 function closeSheet(id){document.getElementById(id).classList.remove('show');}
 function closeSheetIfBackdrop(e,id){if(e.target.id===id)closeSheet(id);}
