@@ -68,13 +68,12 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .tcm-h-line{position:absolute;left:0;right:48px;height:1px;top:0}
 .tcm-h-line.down{border-top:1.5px dashed rgba(255,61,61,.8)}
 .tcm-h-line.up{border-top:1.5px dashed rgba(0,200,122,.8)}
-.tcm-dots-row{position:absolute;top:-9px;left:15%;display:flex;gap:5px;align-items:center}
+.tcm-dots-row{position:absolute;top:-9px;left:15%}
 .tcm-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.2)}
 .tcm-dot.down{background:var(--red)}
 .tcm-dot.up{background:var(--green)}
 .tcm-dot i{font-size:7px;color:#fff}
 .tcm-dot.up i{color:#000}
-.tcm-entry-dot{position:absolute;top:-5px;left:13%;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.3)}
 .tcm-timer-tag{position:absolute;top:-10px;right:56px;background:rgba(0,0,0,.88);border:1px solid rgba(255,255,255,.12);color:var(--text);font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
 .tcm-amt-tag{position:absolute;top:-10px;left:4px;background:rgba(0,0,0,.78);color:var(--text2);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}
 .tcm-price-tag{position:absolute;top:-10px;right:0;color:#fff;font-size:11px;font-weight:700;padding:2px 5px;border-radius:4px 0 0 4px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -1155,13 +1154,11 @@ function showTradeMarker(trade){
   const dir=isDown?'down':'up';
   const icon=isDown?'fa-arrow-down':'fa-arrow-up';
   const dec=trade.dec||5;
-  const dots=Array(6).fill(0).map(()=>`<div class="tcm-dot ${dir}"><i class="fas ${icon}"></i></div>`).join('');
   const el=document.createElement('div');
   el.id='tm-'+trade.id;
   el.className='trade-chart-marker';
   el.innerHTML=`<div class="tcm-h-line ${dir}">
-    <div class="tcm-entry-dot"></div>
-    <div class="tcm-dots-row">${dots}</div>
+    <div class="tcm-dots-row"><div class="tcm-dot ${dir}"><i class="fas ${icon}"></i></div></div>
     <div class="tcm-amt-tag">$${trade.amt}</div>
     <div class="tcm-timer-tag" id="tcm-t-${trade.id}">00:00</div>
     <div class="tcm-price-tag ${dir}" id="tcm-p-${trade.id}">${trade.openP.toFixed(dec)}</div>
