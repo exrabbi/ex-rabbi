@@ -63,11 +63,23 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .chart-time-utc{font-size:10px;color:var(--text3);margin-top:1px}
 .chart-asset-overlay{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--text);pointer-events:all;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:10}
 .asset-payout-badge{background:var(--green-bg);color:var(--green);font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px}
-/* Trade markers on chart */
-.trade-marker-begin{position:absolute;top:0;bottom:0;width:1px;background:rgba(59,130,246,.6);border-left:1px dashed rgba(59,130,246,.6);pointer-events:none;z-index:5}
-.trade-marker-begin::after{content:'Begin';position:absolute;top:8px;left:4px;font-size:9px;color:#60a5fa;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
-.trade-marker-end{position:absolute;top:0;bottom:0;width:1px;background:rgba(248,113,113,.6);border-left:1px dashed rgba(248,113,113,.6);pointer-events:none;z-index:5}
-.trade-marker-end::after{content:'End';position:absolute;top:8px;left:4px;font-size:9px;color:#f87171;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
+/* Active trade markers on chart */
+.trade-chart-marker{position:absolute;left:0;right:0;height:0;pointer-events:none;z-index:8;transition:top .3s ease}
+.tcm-h-line{position:absolute;left:0;right:48px;height:1px;top:0}
+.tcm-h-line.down{border-top:1.5px dashed rgba(255,61,61,.8)}
+.tcm-h-line.up{border-top:1.5px dashed rgba(0,200,122,.8)}
+.tcm-dots-row{position:absolute;top:-9px;left:15%;display:flex;gap:5px;align-items:center}
+.tcm-dot{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.2)}
+.tcm-dot.down{background:var(--red)}
+.tcm-dot.up{background:var(--green)}
+.tcm-dot i{font-size:7px;color:#fff}
+.tcm-dot.up i{color:#000}
+.tcm-entry-dot{position:absolute;top:-5px;left:13%;width:10px;height:10px;border-radius:50%;background:#fff;border:2px solid rgba(0,0,0,.3)}
+.tcm-timer-tag{position:absolute;top:-10px;right:56px;background:rgba(0,0,0,.88);border:1px solid rgba(255,255,255,.12);color:var(--text);font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tcm-amt-tag{position:absolute;top:-10px;left:4px;background:rgba(0,0,0,.78);color:var(--text2);font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.tcm-price-tag{position:absolute;top:-10px;right:0;color:#fff;font-size:11px;font-weight:700;padding:2px 5px;border-radius:4px 0 0 4px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tcm-price-tag.down{background:var(--red)}
+.tcm-price-tag.up{background:var(--green);color:#000}
 
 /* ── CHART LEFT TOOLBAR ── */
 .chart-toolbar{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:20;pointer-events:all}
@@ -1095,13 +1107,13 @@ function placeTrade(dir){
   setBal(+(getBal()-amt).toFixed(2));
   const trade={id:'T'+Date.now()+Math.random().toString(36).slice(2,5).toUpperCase(),
     asset:a.name,assetId:a.id,dir,amt,profit,payout:a.payout,
-    openP,closeP:null,expiry,sec:S.tradeTimeSec,
+    openP,closeP:null,expiry,sec:S.tradeTimeSec,dec:a.dec,
     status:'pending',mode:S.mode,at:new Date().toISOString()};
   S.activeTrades.push(trade);
   updateBadges();updateBalanceUI();
   disableTradeBtns(1500);
   setTimeout(()=>resolveTrade(trade.id),S.tradeTimeSec*1000);
-  showTradeMarkers(S.tradeTimeSec);
+  showTradeMarker(trade);
   showNotif(`${dir==='up'?'↑ UP':'↓ DOWN'} ${a.name} — $${amt}  |  ${a.payout}% payout`,'info');
 }
 
@@ -1114,10 +1126,11 @@ function resolveTrade(id){
   if(draw){t.status='draw';setBal(+(getBal()+t.amt).toFixed(2));showNotif('Draw! $'+t.amt+' refunded','info');}
   else if(win){t.status='win';setBal(+(getBal()+t.amt+t.profit).toFixed(2));showNotif('WIN! +$'+t.profit.toFixed(2)+' on '+t.asset,'win');}
   else{t.status='lose';showNotif('Lost $'+t.amt+' on '+t.asset,'lose');}
+  const tid=t.id;
   S.activeTrades.splice(idx,1);
   S.history.unshift({...t});if(S.history.length>200)S.history.pop();
   updateBadges();updateBalanceUI();saveState();
-  clearTradeMarkers();
+  clearTradeMarker(tid);
 }
 
 function updateActiveTimers(){
@@ -1133,14 +1146,46 @@ function disableTradeBtns(ms){
   setTimeout(()=>{document.getElementById('btn-up').disabled=false;document.getElementById('btn-down').disabled=false;},ms);
 }
 
-/* ── TRADE MARKERS ON CHART ── */
-function showTradeMarkers(sec){
-  const wrap=document.getElementById('chart-wrap');
-  document.getElementById('trade-markers').innerHTML=`
-    <div class="trade-marker-begin" style="left:50%"></div>
-    <div class="trade-marker-end" style="left:${50+sec/2}%;max-left:95%"></div>`;
+/* ── ACTIVE TRADE MARKERS ON CHART ── */
+const _tmIv={};
+function showTradeMarker(trade){
+  const container=document.getElementById('trade-markers');
+  const old=document.getElementById('tm-'+trade.id);if(old)old.remove();
+  const isDown=trade.dir==='down';
+  const dir=isDown?'down':'up';
+  const icon=isDown?'fa-arrow-down':'fa-arrow-up';
+  const dec=trade.dec||5;
+  const dots=Array(6).fill(0).map(()=>`<div class="tcm-dot ${dir}"><i class="fas ${icon}"></i></div>`).join('');
+  const el=document.createElement('div');
+  el.id='tm-'+trade.id;
+  el.className='trade-chart-marker';
+  el.innerHTML=`<div class="tcm-h-line ${dir}">
+    <div class="tcm-entry-dot"></div>
+    <div class="tcm-dots-row">${dots}</div>
+    <div class="tcm-amt-tag">$${trade.amt}</div>
+    <div class="tcm-timer-tag" id="tcm-t-${trade.id}">00:00</div>
+    <div class="tcm-price-tag ${dir}" id="tcm-p-${trade.id}">${trade.openP.toFixed(dec)}</div>
+  </div>`;
+  container.appendChild(el);
+  function tick(){
+    try{const y=candle.priceToCoordinate(trade.openP);if(y!==null&&y!==undefined)el.style.top=y+'px';}catch(e){}
+    const rem=Math.max(0,Math.ceil((trade.expiry-Date.now())/1000));
+    const tEl=document.getElementById('tcm-t-'+trade.id);
+    if(tEl)tEl.textContent=String(Math.floor(rem/60)).padStart(2,'0')+':'+String(rem%60).padStart(2,'0');
+    const pEl=document.getElementById('tcm-p-'+trade.id);
+    if(pEl)pEl.textContent=(S.prices[trade.assetId]||trade.openP).toFixed(dec);
+  }
+  tick();
+  _tmIv[trade.id]=setInterval(tick,400);
 }
-function clearTradeMarkers(){document.getElementById('trade-markers').innerHTML='';}
+function clearTradeMarker(id){
+  clearInterval(_tmIv[id]);delete _tmIv[id];
+  const el=document.getElementById('tm-'+id);if(el)el.remove();
+}
+function clearTradeMarkers(){
+  Object.keys(_tmIv).forEach(id=>{clearInterval(_tmIv[id]);delete _tmIv[id];});
+  document.getElementById('trade-markers').innerHTML='';
+}
 
 /* ── TRADES UI ── */
 let tradeTabMode='active';
