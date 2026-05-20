@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>EX Trade Admin Panel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2330;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --green: #00c87a;
+    --green2: #00a563;
+    --red: #ff4d4d;
+    --red2: #cc3e3e;
+    --yellow: #f0b429;
+    --blue: #58a6ff;
+    --radius: 8px;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* ---- LOGIN ---- */
+  #login-screen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; background: var(--bg);
+  }
+  .login-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+    padding: 48px 40px; width: 380px; box-shadow: var(--shadow);
+  }
+  .login-logo { text-align: center; margin-bottom: 32px; }
+  .login-logo .brand { font-size: 28px; font-weight: 700; color: var(--green); letter-spacing: 1px; }
+  .login-logo p { color: var(--text2); font-size: 13px; margin-top: 6px; }
+  .form-group { margin-bottom: 20px; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border); color: var(--text);
+    padding: 10px 14px; border-radius: var(--radius); font-size: 14px; font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--green);
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 18px; border-radius: var(--radius); border: none; cursor: pointer;
+    font-size: 13px; font-weight: 600; font-family: inherit; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--green); color: #0d1117; }
+  .btn-primary:hover { background: var(--green2); }
+  .btn-danger { background: var(--red); color: #fff; }
+  .btn-danger:hover { background: var(--red2); }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--text2); }
+  .btn-warning { background: var(--yellow); color: #0d1117; }
+  .btn-sm { padding: 6px 12px; font-size: 12px; }
+  .btn-full { width: 100%; justify-content: center; }
+  .login-err { color: var(--red); font-size: 13px; margin-top: 12px; text-align: center; display: none; }
+
+  /* ---- LAYOUT ---- */
+  #app { display: none; }
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 230px;
+    background: var(--bg2); border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; z-index: 100;
+  }
+  .sidebar-logo {
+    padding: 20px 20px 16px; border-bottom: 1px solid var(--border);
+    font-size: 20px; font-weight: 700; color: var(--green); letter-spacing: 0.5px;
+  }
+  .sidebar-logo span { color: var(--text2); font-weight: 400; font-size: 11px; display: block; margin-top: 2px; }
+  .nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px; padding: 11px 20px;
+    cursor: pointer; color: var(--text2); font-size: 13px; font-weight: 500;
+    transition: all 0.18s; position: relative;
+  }
+  .nav-item:hover { color: var(--text); background: var(--bg3); }
+  .nav-item.active { color: var(--green); background: rgba(0,200,122,0.08); }
+  .nav-item.active::before {
+    content: ''; position: absolute; left: 0; top: 4px; bottom: 4px;
+    width: 3px; background: var(--green); border-radius: 0 3px 3px 0;
+  }
+  .nav-item i { width: 16px; text-align: center; font-size: 14px; }
+  .sidebar-footer {
+    padding: 16px 20px; border-top: 1px solid var(--border);
+    font-size: 12px; color: var(--text2);
+  }
+  .sidebar-footer .logout-btn {
+    display: flex; align-items: center; gap: 8px; cursor: pointer;
+    color: var(--red); font-weight: 500; margin-top: 8px;
+  }
+  .main { margin-left: 230px; min-height: 100vh; }
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+  }
+  .topbar-title { font-size: 17px; font-weight: 600; }
+  .topbar-right { display: flex; align-items: center; gap: 16px; }
+  .badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 600; border-radius: 20px; padding: 2px 8px;
+  }
+  .badge-green { background: rgba(0,200,122,0.15); color: var(--green); }
+  .badge-red { background: rgba(255,77,77,0.15); color: var(--red); }
+  .badge-yellow { background: rgba(240,180,41,0.15); color: var(--yellow); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--blue); }
+  .content { padding: 28px; }
+
+  /* ---- TABS ---- */
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ---- CARDS ---- */
+  .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 18px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; display: flex; align-items: flex-start; justify-content: space-between;
+  }
+  .stat-card .stat-label { font-size: 12px; color: var(--text2); font-weight: 500; margin-bottom: 8px; }
+  .stat-card .stat-value { font-size: 26px; font-weight: 700; }
+  .stat-card .stat-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 17px;
+  }
+  .stat-green { color: var(--green); background: rgba(0,200,122,0.12); }
+  .stat-blue { color: var(--blue); background: rgba(88,166,255,0.12); }
+  .stat-yellow { color: var(--yellow); background: rgba(240,180,41,0.12); }
+  .stat-red { color: var(--red); background: rgba(255,77,77,0.12); }
+  .stat-change { font-size: 12px; color: var(--text2); margin-top: 4px; }
+  .stat-change.up { color: var(--green); }
+  .stat-change.down { color: var(--red); }
+
+  /* ---- TABLES ---- */
+  .card {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+  }
+  .card-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-header h3 { font-size: 14px; font-weight: 600; }
+  .card-body { padding: 20px; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead th {
+    padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600;
+    color: var(--text2); text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border); background: var(--bg3);
+  }
+  tbody tr { border-bottom: 1px solid rgba(48,54,61,0.6); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.03); }
+  tbody td { padding: 11px 14px; color: var(--text); vertical-align: middle; }
+  .actions-cell { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* ---- GRID LAYOUT ---- */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
+  .full-col { margin-bottom: 18px; }
+
+  /* ---- SEARCH / FILTER BAR ---- */
+  .filter-bar {
+    display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--bg3);
+  }
+  .filter-bar input, .filter-bar select {
+    background: var(--bg2); border: 1px solid var(--border); color: var(--text);
+    padding: 7px 12px; border-radius: var(--radius); font-size: 13px; font-family: inherit;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--green); }
+
+  /* ---- ACTIVITY FEED ---- */
+  .feed-list { list-style: none; }
+  .feed-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 0; border-bottom: 1px solid var(--border);
+  }
+  .feed-item:last-child { border-bottom: none; }
+  .feed-dot {
+    width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0;
+  }
+  .feed-text { font-size: 13px; }
+  .feed-time { font-size: 11px; color: var(--text2); margin-top: 3px; }
+
+  /* ---- TOGGLE ---- */
+  .toggle-wrap { display: flex; align-items: center; gap: 12px; }
+  .toggle {
+    position: relative; display: inline-block; width: 44px; height: 24px;
+  }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 24px; transition: 0.3s;
+  }
+  .slider:before {
+    position: absolute; content: ''; height: 16px; width: 16px; left: 3px; bottom: 3px;
+    background: var(--text2); border-radius: 50%; transition: 0.3s;
+  }
+  input:checked + .slider { background: var(--green); border-color: var(--green); }
+  input:checked + .slider:before { transform: translateX(20px); background: #fff; }
+
+  /* ---- MODAL ---- */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    z-index: 200; align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+    width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+    box-shadow: var(--shadow);
+  }
+  .modal-header {
+    padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h3 { font-size: 15px; font-weight: 600; }
+  .modal-close { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 18px; }
+  .modal-close:hover { color: var(--text); }
+  .modal-body { padding: 24px; }
+  .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* ---- SETTINGS ---- */
+  .settings-section { margin-bottom: 28px; }
+  .settings-section h3 { font-size: 14px; font-weight: 600; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+  .settings-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid rgba(48,54,61,0.5);
+  }
+  .settings-row:last-child { border-bottom: none; }
+  .settings-label { font-size: 13px; }
+  .settings-label span { display: block; font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .settings-row input { max-width: 180px; }
+
+  /* ---- SIGNAL CARDS ---- */
+  .signal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+  .signal-card {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px;
+  }
+  .signal-card .asset-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .signal-card .signal-status { font-size: 12px; color: var(--text2); margin-bottom: 12px; }
+  .signal-dir {
+    display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500;
+  }
+  .dir-up { color: var(--green); }
+  .dir-down { color: var(--red); }
+
+  /* ---- LOADER ---- */
+  .loader {
+    text-align: center; padding: 40px; color: var(--text2); font-size: 13px;
+  }
+  .spinner {
+    width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--green);
+    border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-bottom: 10px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ---- TOAST ---- */
+  #toast-container {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 10px;
+  }
+  .toast {
+    background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 18px; font-size: 13px; display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--shadow); min-width: 260px; animation: slideIn 0.3s ease;
+  }
+  .toast.success { border-left: 3px solid var(--green); }
+  .toast.error { border-left: 3px solid var(--red); }
+  .toast.info { border-left: 3px solid var(--blue); }
+  @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ---- MISC ---- */
+  .empty-state { text-align: center; padding: 48px; color: var(--text2); }
+  .empty-state i { font-size: 36px; margin-bottom: 12px; display: block; }
+  .pill {
+    display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+    border-radius: 20px; font-size: 11px; font-weight: 600;
+  }
+  .pill-green { background: rgba(0,200,122,0.1); color: var(--green); border: 1px solid rgba(0,200,122,0.25); }
+  .pill-red { background: rgba(255,77,77,0.1); color: var(--red); border: 1px solid rgba(255,77,77,0.25); }
+  .pill-yellow { background: rgba(240,180,41,0.1); color: var(--yellow); border: 1px solid rgba(240,180,41,0.25); }
+  .pill-blue { background: rgba(88,166,255,0.1); color: var(--blue); border: 1px solid rgba(88,166,255,0.25); }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%; background: var(--bg3);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600; color: var(--green); border: 1px solid var(--border);
+  }
+  .flex-center { display: flex; align-items: center; gap: 8px; }
+  .mt-2 { margin-top: 8px; }
+  .mt-4 { margin-top: 16px; }
+  .mb-2 { margin-bottom: 8px; }
+  .mb-4 { margin-bottom: 16px; }
+  .text-green { color: var(--green); }
+  .text-red { color: var(--red); }
+  .text-yellow { color: var(--yellow); }
+  .text-muted { color: var(--text2); }
+  .text-sm { font-size: 12px; }
+  .font-bold { font-weight: 700; }
+  .w-full { width: 100%; }
+  hr.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+  @media (max-width: 1200px) {
+    .stats-grid { grid-template-columns: repeat(2,1fr); }
+    .signal-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width: 768px) {
+    .sidebar { width: 200px; }
+    .main { margin-left: 200px; }
+    .two-col, .three-col { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: 1fr 1fr; }
+    .content { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="brand"><i class="fas fa-chart-line"></i> EX Trade</div>
+      <p>Admin Control Panel</p>
+    </div>
+    <div class="form-group">
+      <label>Admin Password</label>
+      <input type="password" id="login-pass" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')doLogin()" />
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+    <div class="login-err" id="login-err">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="sidebar">
+    <div class="sidebar-logo">EX Trade <span>Admin Panel v1.0</span></div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="switchTab('dashboard')"><i class="fas fa-th-large"></i> Dashboard</div>
+      <div class="nav-item" onclick="switchTab('users')"><i class="fas fa-users"></i> Users</div>
+      <div class="nav-item" onclick="switchTab('trades')"><i class="fas fa-exchange-alt"></i> Trades</div>
+      <div class="nav-item" onclick="switchTab('deposits')"><i class="fas fa-arrow-down-to-line"></i> Deposits</div>
+      <div class="nav-item" onclick="switchTab('withdrawals')"><i class="fas fa-arrow-up-from-bracket"></i> Withdrawals</div>
+      <div class="nav-item" onclick="switchTab('tournaments')"><i class="fas fa-trophy"></i> Tournaments</div>
+      <div class="nav-item" onclick="switchTab('signals')"><i class="fas fa-signal"></i> Signals</div>
+      <div class="nav-item" onclick="switchTab('settings')"><i class="fas fa-gear"></i> Settings</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div>Logged in as <strong>admin</strong></div>
+      <div class="logout-btn" onclick="doLogout()"><i class="fas fa-right-from-bracket"></i> Logout</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-title" id="page-title">Dashboard</div>
+      <div class="topbar-right">
+        <span class="badge badge-green"><i class="fas fa-circle" style="font-size:8px"></i> Live</span>
+        <span class="text-muted text-sm" id="clock"></span>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- DASHBOARD TAB -->
+      <div class="tab-pane active" id="tab-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Total Users</div>
+              <div class="stat-value text-green" id="stat-users">--</div>
+              <div class="stat-change up" id="stat-users-change">Loading...</div>
+            </div>
+            <div class="stat-icon stat-green"><i class="fas fa-users"></i></div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Total Trades</div>
+              <div class="stat-value text-blue" id="stat-trades">--</div>
+              <div class="stat-change" id="stat-trades-change">Loading...</div>
+            </div>
+            <div class="stat-icon stat-blue"><i class="fas fa-exchange-alt"></i></div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Total Volume</div>
+              <div class="stat-value" id="stat-volume">--</div>
+              <div class="stat-change" id="stat-volume-change">Loading...</div>
+            </div>
+            <div class="stat-icon stat-yellow"><i class="fas fa-dollar-sign"></i></div>
+          </div>
+          <div class="stat-card">
+            <div>
+              <div class="stat-label">Platform Profit</div>
+              <div class="stat-value text-green" id="stat-profit">--</div>
+              <div class="stat-change up" id="stat-profit-change">Loading...</div>
+            </div>
+            <div class="stat-icon stat-red"><i class="fas fa-chart-line"></i></div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-clock-rotate-left text-green" style="margin-right:7px"></i>Recent Deposits</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('deposits')">View All</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="dash-deposits-body">
+                  <tr><td colspan="5"><div class="loader"><div class="spinner"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-clock-rotate-left text-blue" style="margin-right:7px"></i>Recent Withdrawals</h3>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('withdrawals')">View All</button>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="dash-withdrawals-body">
+                  <tr><td colspan="5"><div class="loader"><div class="spinner"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="full-col mt-4">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-bolt text-yellow" style="margin-right:7px"></i>Live Activity Feed</h3>
+              <button class="btn btn-secondary btn-sm" onclick="loadActivityFeed()"><i class="fas fa-rotate-right"></i> Refresh</button>
+            </div>
+            <div class="card-body">
+              <ul class="feed-list" id="activity-feed">
+                <li><div class="loader"><div class="spinner"></div></div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USERS TAB -->
+      <div class="tab-pane" id="tab-users">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-users text-green" style="margin-right:7px"></i>All Users</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadUsers()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="user-search" placeholder="Search email or name..." style="flex:1;min-width:200px" oninput="filterUsers()" />
+            <select id="user-status-filter" onchange="filterUsers()">
+              <option value="">All Status</option>
+              <option value="active">Active</option>
+              <option value="suspended">Suspended</option>
+            </select>
+            <button class="btn btn-secondary btn-sm" onclick="exportUsersCSV()"><i class="fas fa-download"></i> Export CSV</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>Demo Balance</th>
+                  <th>Real Balance</th>
+                  <th>Trades</th>
+                  <th>Win Rate</th>
+                  <th>Deposited</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-body">
+                <tr><td colspan="8"><div class="loader"><div class="spinner"></div><br>Loading users...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TRADES TAB -->
+      <div class="tab-pane" id="tab-trades">
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-exchange-alt text-blue" style="margin-right:7px"></i>All Trades</h3>
+            <button class="btn btn-primary btn-sm" onclick="exportTradesCSV()"><i class="fas fa-download"></i> Export CSV</button>
+          </div>
+          <div class="filter-bar">
+            <input type="text" id="trade-user-filter" placeholder="Filter by email..." oninput="filterTrades()" />
+            <select id="trade-asset-filter" onchange="filterTrades()">
+              <option value="">All Assets</option>
+              <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option>
+              <option>BTC/USD</option><option>ETH/USD</option><option>Gold</option><option>Oil</option>
+            </select>
+            <select id="trade-result-filter" onchange="filterTrades()">
+              <option value="">All Results</option>
+              <option value="win">Win</option>
+              <option value="lose">Lose</option>
+              <option value="pending">Pending</option>
+            </select>
+            <input type="date" id="trade-date-from" onchange="filterTrades()" />
+            <input type="date" id="trade-date-to" onchange="filterTrades()" />
+            <button class="btn btn-secondary btn-sm" onclick="loadTrades()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User</th><th>Asset</th><th>Direction</th><th>Amount</th>
+                  <th>Open Price</th><th>Close Price</th><th>Result</th><th>P&amp;L</th><th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="trades-body">
+                <tr><td colspan="9"><div class="loader"><div class="spinner"></div><br>Loading trades...</div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPOSITS TAB -->
+      <div class="tab-pane" id="tab-deposits">
+        <div class="card full-col">
+          <div class="card-header">
+            <h3><i class="fas fa-arrow-down-to-line text-yellow" style="margin-right:7px"></i>Pending Deposits</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadDeposits()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Tx/Reference</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="deposits-pending-body">
+                <tr><td colspan="7"><div class="loader"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Approved / Rejected History</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th><th>Processed By</th></tr></thead>
+              <tbody id="deposits-history-body">
+                <tr><td colspan="6" class="text-muted text-sm" style="padding:20px;text-align:center">No history yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- WITHDRAWALS TAB -->
+      <div class="tab-pane" id="tab-withdrawals">
+        <div class="card full-col">
+          <div class="card-header">
+            <h3><i class="fas fa-arrow-up-from-bracket text-red" style="margin-right:7px"></i>Pending Withdrawals</h3>
+            <button class="btn btn-primary btn-sm" onclick="loadWithdrawals()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Address / Account</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="withdrawals-pending-body">
+                <tr><td colspan="7"><div class="loader"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header"><h3>Processed Withdrawals History</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User</th><th>Amount</th><th>Method</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="withdrawals-history-body">
+                <tr><td colspan="5" class="text-muted text-sm" style="padding:20px;text-align:center">No history yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TOURNAMENTS TAB -->
+      <div class="tab-pane" id="tab-tournaments">
+        <div class="two-col mb-4">
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-trophy text-yellow" style="margin-right:7px"></i>Active Tournament</h3>
+              <button class="btn btn-secondary btn-sm" onclick="loadTournaments()"><i class="fas fa-rotate-right"></i></button>
+            </div>
+            <div class="card-body" id="active-tournament-body">
+              <div class="loader"><div class="spinner"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-plus text-green" style="margin-right:7px"></i>Create Tournament</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Tournament Name</label>
+                <input type="text" id="t-name" placeholder="e.g. Weekend Challenge" />
+              </div>
+              <div class="form-group">
+                <label>Prize Pool ($)</label>
+                <input type="number" id="t-prize" placeholder="e.g. 5000" />
+              </div>
+              <div class="form-group">
+                <label>Start Date</label>
+                <input type="datetime-local" id="t-start" />
+              </div>
+              <div class="form-group">
+                <label>End Date</label>
+                <input type="datetime-local" id="t-end" />
+              </div>
+              <div class="form-group">
+                <label>Entry Fee ($)</label>
+                <input type="number" id="t-fee" placeholder="0 for free" value="0" />
+              </div>
+              <button class="btn btn-primary w-full" onclick="createTournament()"><i class="fas fa-plus"></i> Create Tournament</button>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3><i class="fas fa-ranking-star text-blue" style="margin-right:7px"></i>Leaderboard</h3></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Rank</th><th>User</th><th>Profit</th><th>Trades</th><th>Win Rate</th><th>Prize</th></tr></thead>
+              <tbody id="tournament-leaderboard">
+                <tr><td colspan="6"><div class="loader"><div class="spinner"></div></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIGNALS TAB -->
+      <div class="tab-pane" id="tab-signals">
+        <div class="two-col mb-4">
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-sliders text-green" style="margin-right:7px"></i>Manual Signal Override</h3></div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Asset</label>
+                <select id="sig-asset">
+                  <option>EUR/USD</option><option>GBP/USD</option><option>USD/JPY</option>
+                  <option>BTC/USD</option><option>ETH/USD</option><option>Gold</option><option>Oil</option>
+                  <option>AUD/USD</option><option>USD/CAD</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Direction</label>
+                <select id="sig-dir">
+                  <option value="UP">UP (Call)</option>
+                  <option value="DOWN">DOWN (Put)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Strength (1-3)</label>
+                <select id="sig-strength">
+                  <option value="1">1 - Weak</option>
+                  <option value="2">2 - Medium</option>
+                  <option value="3">3 - Strong</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Duration (minutes)</label>
+                <input type="number" id="sig-duration" value="5" min="1" max="60" />
+              </div>
+              <button class="btn btn-primary w-full" onclick="sendSignal()"><i class="fas fa-paper-plane"></i> Publish Signal</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3><i class="fas fa-history text-blue" style="margin-right:7px"></i>Signal History</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Asset</th><th>Dir</th><th>Strength</th><th>Duration</th><th>Sent</th></tr></thead>
+                <tbody id="signal-history-body">
+                  <tr><td colspan="5"><div class="loader"><div class="spinner"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h3><i class="fas fa-toggle-on text-yellow" style="margin-right:7px"></i>Asset Signal Controls</h3>
+            <button class="btn btn-secondary btn-sm" onclick="loadSignalSettings()"><i class="fas fa-rotate-right"></i> Refresh</button>
+          </div>
+          <div class="card-body">
+            <div class="signal-grid" id="signal-grid">
+              <div class="loader"><div class="spinner"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div class="tab-pane" id="tab-settings">
+        <div class="two-col">
+          <div>
+            <div class="card settings-section" style="padding:20px;margin-bottom:18px">
+              <div class="settings-section">
+                <h3><i class="fas fa-sliders" style="margin-right:7px"></i>Platform Settings</h3>
+                <div class="settings-row">
+                  <div class="settings-label">Platform Fee %<span>Fee deducted from losing trades</span></div>
+                  <input type="number" class="form-group input" id="set-fee" value="5" min="0" max="50" style="max-width:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:var(--radius);font-family:inherit" />
+                </div>
+                <div class="settings-row">
+                  <div class="settings-label">Max Trade Amount ($)<span>Per single trade limit</span></div>
+                  <input type="number" id="set-max-trade" value="10000" style="max-width:120px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:var(--radius);font-family:inherit" />
+                </div>
+                <div class="settings-row">
+                  <div class="settings-label">Min Deposit ($)<span>Minimum allowed deposit</span></div>
+                  <input type="number" id="set-min-dep" value="10" style="max-width:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:var(--radius);font-family:inherit" />
+                </div>
+                <div class="settings-row">
+                  <div class="settings-label">Min Withdrawal ($)<span>Minimum allowed withdrawal</span></div>
+                  <input type="number" id="set-min-wd" value="20" style="max-width:100px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 12px;border-radius:var(--radius);font-family:inherit" />
+                </div>
+                <div class="settings-row">
+                  <div class="settings-label">Maintenance Mode<span>Disable trading for all users</span></div>
+                  <label class="toggle"><input type="checkbox" id="set-maintenance" onchange="saveMaintenanceMode()" /><span class="slider"></span></label>
+                </div>
+                <div class="mt-4">
+                  <button class="btn btn-primary" onclick="savePlatformSettings()"><i class="fas fa-save"></i> Save Settings</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="padding:20px">
+              <div class="settings-section">
+                <h3><i class="fas fa-wallet" style="margin-right:7px"></i>Payment Addresses</h3>
+                <div class="form-group">
+                  <label>USDT (TRC20) Wallet</label>
+                  <input type="text" id="set-usdt" placeholder="USDT TRC20 address" />
+                </div>
+                <div class="form-group">
+                  <label>Bitcoin (BTC) Wallet</label>
+                  <input type="text" id="set-btc" placeholder="BTC wallet address" />
+                </div>
+                <div class="form-group">
+                  <label>Ethereum (ETH) Wallet</label>
+                  <input type="text" id="set-eth" placeholder="ETH wallet address" />
+                </div>
+                <div class="form-group">
+                  <label>bKash Number</label>
+                  <input type="text" id="set-bkash" placeholder="01XXXXXXXXX" />
+                </div>
+                <div class="form-group">
+                  <label>Nagad Number</label>
+                  <input type="text" id="set-nagad" placeholder="01XXXXXXXXX" />
+                </div>
+                <button class="btn btn-primary" onclick="savePaymentAddresses()"><i class="fas fa-save"></i> Save Addresses</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="padding:20px">
+            <div class="settings-section">
+              <h3><i class="fas fa-percent" style="margin-right:7px"></i>Payout % Per Asset</h3>
+              <div class="table-wrap">
+                <table>
+                  <thead><tr><th>Asset</th><th>Payout %</th></tr></thead>
+                  <tbody id="payout-table-body"></tbody>
+                </table>
+              </div>
+              <button class="btn btn-primary mt-4" onclick="savePayouts()"><i class="fas fa-save"></i> Save Payouts</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- MODAL: Add Balance -->
+<div class="modal-overlay" id="modal-balance">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add Balance to User</h3>
+      <button class="modal-close" onclick="closeModal('modal-balance')">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p class="text-muted text-sm mb-4" id="bal-user-label"></p>
+      <div class="form-group">
+        <label>Account Type</label>
+        <select id="bal-type">
+          <option value="realBalance">Real Balance</option>
+          <option value="demoBalance">Demo Balance</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Amount ($)</label>
+        <input type="number" id="bal-amount" placeholder="Enter amount" min="0" />
+      </div>
+      <div class="form-group">
+        <label>Note (optional)</label>
+        <input type="text" id="bal-note" placeholder="e.g. Bonus credit" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-balance')">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmAddBalance()"><i class="fas fa-plus"></i> Add Balance</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: View User -->
+<div class="modal-overlay" id="modal-user-detail">
+  <div class="modal" style="width:560px">
+    <div class="modal-header">
+      <h3>User Details</h3>
+      <button class="modal-close" onclick="closeModal('modal-user-detail')">&times;</button>
+    </div>
+    <div class="modal-body" id="user-detail-body">Loading...</div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('modal-user-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- FIREBASE -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, collection, getDocs, getDoc, doc, updateDoc, addDoc,
+    query, where, orderBy, limit, serverTimestamp, deleteDoc, setDoc, onSnapshot
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCPSsxifbE92WqEa2VsGdSqaJIRTPkZiLQ",
+    authDomain: "exglobal21.firebaseapp.com",
+    projectId: "exglobal21",
+    storageBucket: "exglobal21.appspot.com",
+    messagingSenderId: "000000000000",
+    appId: "1:000000000000:web:0000000000000000"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Expose globally
+  window._db = db;
+  window._col = collection;
+  window._getDocs = getDocs;
+  window._getDoc = getDoc;
+  window._doc = doc;
+  window._updateDoc = updateDoc;
+  window._addDoc = addDoc;
+  window._query = query;
+  window._where = where;
+  window._orderBy = orderBy;
+  window._limit = limit;
+  window._serverTimestamp = serverTimestamp;
+  window._deleteDoc = deleteDoc;
+  window._setDoc = setDoc;
+  window._onSnapshot = onSnapshot;
+  window._firebaseReady = true;
+
+  // Notify app firebase is ready
+  document.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<script>
+  // ============================================================
+  //  AUTH
+  // ============================================================
+  const ADMIN_PASS = 'extrade_admin_2024';
+
+  function doLogin() {
+    const pass = document.getElementById('login-pass').value;
+    if (pass === ADMIN_PASS) {
+      localStorage.setItem('xt_admin_auth', '1');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      initApp();
+    } else {
+      document.getElementById('login-err').style.display = 'block';
+    }
+  }
+
+  function doLogout() {
+    localStorage.removeItem('xt_admin_auth');
+    location.reload();
+  }
+
+  // Check auth on load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('xt_admin_auth') === '1') {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      initApp();
+    }
+    startClock();
+  });
+
+  // ============================================================
+  //  CLOCK
+  // ============================================================
+  function startClock() {
+    const el = document.getElementById('clock');
+    setInterval(() => {
+      el.textContent = new Date().toUTCString().slice(5, 25) + ' UTC';
+    }, 1000);
+  }
+
+  // ============================================================
+  //  TAB NAVIGATION
+  // ============================================================
+  const tabTitles = {
+    dashboard: 'Dashboard', users: 'Users', trades: 'Trades',
+    deposits: 'Deposits', withdrawals: 'Withdrawals', tournaments: 'Tournaments',
+    signals: 'Signals', settings: 'Settings'
+  };
+  let currentTab = 'dashboard';
+
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(el => { if (el.textContent.trim().toLowerCase().startsWith(tabTitles[tab].slice(0, 4).toLowerCase())) el.classList.add('active'); });
+    document.querySelector(`.nav-item[onclick*="${tab}"]`).classList.add('active');
+    document.getElementById('page-title').textContent = tabTitles[tab];
+    currentTab = tab;
+
+    // Load data
+    if (tab === 'users') loadUsers();
+    else if (tab === 'trades') loadTrades();
+    else if (tab === 'deposits') loadDeposits();
+    else if (tab === 'withdrawals') loadWithdrawals();
+    else if (tab === 'tournaments') loadTournaments();
+    else if (tab === 'signals') { loadSignalSettings(); loadSignalHistory(); }
+    else if (tab === 'settings') loadSettings();
+  }
+
+  // ============================================================
+  //  INIT APP
+  // ============================================================
+  let appInited = false;
+  function initApp() {
+    if (appInited) return;
+    appInited = true;
+    const go = () => {
+      loadDashboard();
+      initPayoutTable();
+    };
+    if (window._firebaseReady) go();
+    else document.addEventListener('firebase-ready', go);
+  }
+
+  // ============================================================
+  //  TOAST
+  // ============================================================
+  function toast(msg, type = 'info') {
+    const icons = { success: 'fas fa-check-circle', error: 'fas fa-times-circle', info: 'fas fa-info-circle' };
+    const colors = { success: 'var(--green)', error: 'var(--red)', info: 'var(--blue)' };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `<i class="${icons[type]}" style="color:${colors[type]}"></i> ${msg}`;
+    document.getElementById('toast-container').appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+  }
+
+  // ============================================================
+  //  HELPERS
+  // ============================================================
+  function fmt$(n) { return '$' + Number(n || 0).toLocaleString('en', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtDate(ts) {
+    if (!ts) return '--';
+    const d = ts.toDate ? ts.toDate() : new Date(ts);
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  function avatarLetter(email) { return (email || '?')[0].toUpperCase(); }
+  function statusPill(s) {
+    if (s === 'pending') return `<span class="pill pill-yellow">Pending</span>`;
+    if (s === 'approved') return `<span class="pill pill-green">Approved</span>`;
+    if (s === 'rejected') return `<span class="pill pill-red">Rejected</span>`;
+    if (s === 'active') return `<span class="pill pill-green">Active</span>`;
+    if (s === 'suspended') return `<span class="pill pill-red">Suspended</span>`;
+    return `<span class="pill pill-blue">${s || '--'}</span>`;
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  // ============================================================
+  //  DASHBOARD
+  // ============================================================
+  async function loadDashboard() {
+    try {
+      const db = window._db;
+      // Count users
+      const usersSnap = await window._getDocs(window._col(db, 'traders'));
+      const users = [];
+      usersSnap.forEach(d => users.push({ id: d.id, ...d.data() }));
+      document.getElementById('stat-users').textContent = users.length;
+      document.getElementById('stat-users-change').textContent = users.length + ' registered accounts';
+
+      // Trades stats
+      const tradesSnap = await window._getDocs(window._col(db, 'trades'));
+      const trades = [];
+      tradesSnap.forEach(d => trades.push({ id: d.id, ...d.data() }));
+      document.getElementById('stat-trades').textContent = trades.length;
+      const volume = trades.reduce((s, t) => s + Number(t.amount || 0), 0);
+      document.getElementById('stat-volume').textContent = fmt$(volume);
+      document.getElementById('stat-trades-change').textContent = trades.filter(t => t.result === 'win').length + ' wins / ' + trades.filter(t => t.result === 'lose').length + ' losses';
+
+      // Profit = sum of losing trade amounts (platform keeps)
+      const profit = trades.filter(t => t.result === 'lose').reduce((s, t) => s + Number(t.amount || 0), 0);
+      document.getElementById('stat-profit').textContent = fmt$(profit);
+      document.getElementById('stat-profit-change').textContent = 'From ' + trades.filter(t => t.result === 'lose').length + ' losing trades';
+      document.getElementById('stat-volume-change').textContent = fmt$(volume / (trades.length || 1)) + ' avg per trade';
+
+      // Recent deposits
+      const depSnap = await window._getDocs(
+        window._query(window._col(db, 'deposits'), window._orderBy('createdAt', 'desc'), window._limit(5))
+      );
+      const deps = []; depSnap.forEach(d => deps.push({ id: d.id, ...d.data() }));
+      renderDashDeposits(deps);
+
+      // Recent withdrawals
+      const wdSnap = await window._getDocs(
+        window._query(window._col(db, 'withdrawals'), window._orderBy('createdAt', 'desc'), window._limit(5))
+      );
+      const wds = []; wdSnap.forEach(d => wds.push({ id: d.id, ...d.data() }));
+      renderDashWithdrawals(wds);
+
+      loadActivityFeed();
+    } catch (e) {
+      console.error(e);
+      toast('Error loading dashboard data: ' + e.message, 'error');
+    }
+  }
+
+  function renderDashDeposits(deps) {
+    const tbody = document.getElementById('dash-deposits-body');
+    if (!deps.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-inbox"></i>No deposits</div></td></tr>`; return; }
+    tbody.innerHTML = deps.map(d => `
+      <tr>
+        <td><div class="flex-center"><div class="avatar">${avatarLetter(d.email)}</div><span>${d.email || '--'}</span></div></td>
+        <td class="font-bold">${fmt$(d.amount)}</td>
+        <td>${d.method || '--'}</td>
+        <td>${statusPill(d.status || 'pending')}</td>
+        <td>
+          ${d.status === 'pending' ? `
+            <div class="actions-cell">
+              <button class="btn btn-primary btn-sm" onclick="approveDeposit('${d.id}','${d.userId}',${d.amount})"><i class="fas fa-check"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="rejectDeposit('${d.id}')"><i class="fas fa-times"></i></button>
+            </div>` : '--'}
+        </td>
+      </tr>`).join('');
+  }
+
+  function renderDashWithdrawals(wds) {
+    const tbody = document.getElementById('dash-withdrawals-body');
+    if (!wds.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-inbox"></i>No withdrawals</div></td></tr>`; return; }
+    tbody.innerHTML = wds.map(w => `
+      <tr>
+        <td><div class="flex-center"><div class="avatar">${avatarLetter(w.email)}</div><span>${w.email || '--'}</span></div></td>
+        <td class="font-bold">${fmt$(w.amount)}</td>
+        <td>${w.method || '--'}</td>
+        <td>${statusPill(w.status || 'pending')}</td>
+        <td>
+          ${w.status === 'pending' ? `
+            <div class="actions-cell">
+              <button class="btn btn-primary btn-sm" onclick="approveWithdrawal('${w.id}','${w.userId}',${w.amount})"><i class="fas fa-check"></i></button>
+              <button class="btn btn-danger btn-sm" onclick="rejectWithdrawal('${w.id}')"><i class="fas fa-times"></i></button>
+            </div>` : '--'}
+        </td>
+      </tr>`).join('');
+  }
+
+  async function loadActivityFeed() {
+    const feed = document.getElementById('activity-feed');
+    feed.innerHTML = '<li><div class="loader"><div class="spinner"></div></div></li>';
+    try {
+      const db = window._db;
+      const items = [];
+
+      const tSnap = await window._getDocs(
+        window._query(window._col(db, 'trades'), window._orderBy('createdAt', 'desc'), window._limit(8))
+      );
+      tSnap.forEach(d => { const data = d.data(); items.push({ type: 'trade', ...data, ts: data.createdAt }); });
+
+      const dSnap = await window._getDocs(
+        window._query(window._col(db, 'deposits'), window._orderBy('createdAt', 'desc'), window._limit(4))
+      );
+      dSnap.forEach(d => { const data = d.data(); items.push({ type: 'deposit', ...data, ts: data.createdAt }); });
+
+      items.sort((a, b) => {
+        const ta = a.ts?.toDate ? a.ts.toDate().getTime() : 0;
+        const tb = b.ts?.toDate ? b.ts.toDate().getTime() : 0;
+        return tb - ta;
+      });
+
+      if (!items.length) { feed.innerHTML = `<li><div class="empty-state"><i class="fas fa-rss"></i>No activity yet</div></li>`; return; }
+
+      feed.innerHTML = items.slice(0, 12).map(item => {
+        let dot = '#8b949e', text = '';
+        if (item.type === 'trade') {
+          dot = item.result === 'win' ? 'var(--green)' : item.result === 'lose' ? 'var(--red)' : 'var(--yellow)';
+          text = `<strong>${item.email || 'User'}</strong> placed a ${item.direction || ''} trade on <strong>${item.asset || ''}</strong> — ${fmt$(item.amount)} — <span style="color:${dot}">${(item.result || 'pending').toUpperCase()}</span>`;
+        } else if (item.type === 'deposit') {
+          dot = 'var(--blue)';
+          text = `<strong>${item.email || 'User'}</strong> requested a deposit of <strong>${fmt$(item.amount)}</strong> via ${item.method || ''}`;
+        }
+        return `<li class="feed-item">
+          <div class="feed-dot" style="background:${dot}"></div>
+          <div>
+            <div class="feed-text">${text}</div>
+            <div class="feed-time">${fmtDate(item.ts)}</div>
+          </div>
+        </li>`;
+      }).join('');
+    } catch (e) {
+      feed.innerHTML = `<li class="text-muted text-sm" style="padding:20px">Could not load feed: ${e.message}</li>`;
+    }
+  }
+
+  // ============================================================
+  //  USERS
+  // ============================================================
+  let allUsers = [];
+
+  async function loadUsers() {
+    const tbody = document.getElementById('users-body');
+    tbody.innerHTML = `<tr><td colspan="8"><div class="loader"><div class="spinner"></div><br>Loading users...</div></td></tr>`;
+    try {
+      const snap = await window._getDocs(window._col(window._db, 'traders'));
+      allUsers = [];
+      snap.forEach(d => allUsers.push({ id: d.id, ...d.data() }));
+      renderUsers(allUsers);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-triangle-exclamation"></i>Error: ${e.message}</div></td></tr>`;
+    }
+  }
+
+  function renderUsers(users) {
+    const tbody = document.getElementById('users-body');
+    if (!users.length) {
+      tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fas fa-users-slash"></i>No users found</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = users.map(u => {
+      const wins = u.wins || 0, total = u.totalTrades || 0;
+      const wr = total > 0 ? Math.round((wins / total) * 100) : 0;
+      return `<tr>
+        <td>
+          <div class="flex-center">
+            <div class="avatar">${avatarLetter(u.email)}</div>
+            <div>
+              <div style="font-weight:500">${u.displayName || u.email || '--'}</div>
+              <div class="text-muted text-sm">${u.email || ''}</div>
+            </div>
+          </div>
+        </td>
+        <td>${fmt$(u.demoBalance)}</td>
+        <td class="font-bold text-green">${fmt$(u.realBalance)}</td>
+        <td>${total}</td>
+        <td><span class="badge ${wr >= 50 ? 'badge-green' : 'badge-red'}">${wr}%</span></td>
+        <td>${fmt$(u.totalDeposit)}</td>
+        <td>${statusPill(u.status || 'active')}</td>
+        <td>
+          <div class="actions-cell">
+            <button class="btn btn-secondary btn-sm" title="View" onclick="viewUser('${u.id}')"><i class="fas fa-eye"></i></button>
+            <button class="btn btn-primary btn-sm" title="Add Balance" onclick="openAddBalance('${u.id}','${u.email}')"><i class="fas fa-plus-circle"></i></button>
+            <button class="btn btn-warning btn-sm" title="${u.status === 'suspended' ? 'Unsuspend' : 'Suspend'}" onclick="toggleSuspend('${u.id}','${u.status}')">
+              <i class="fas fa-${u.status === 'suspended' ? 'unlock' : 'ban'}"></i>
+            </button>
+            <button class="btn btn-danger btn-sm" title="Delete" onclick="deleteUser('${u.id}')"><i class="fas fa-trash"></i></button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function filterUsers() {
+    const q = document.getElementById('user-search').value.toLowerCase();
+    const s = document.getElementById('user-status-filter').value;
+    const filtered = allUsers.filter(u => {
+      const matchQ = !q || (u.email || '').toLowerCase().includes(q) || (u.displayName || '').toLowerCase().includes(q);
+      const matchS = !s || (u.status || 'active') === s;
+      return matchQ && matchS;
+    });
+    renderUsers(filtered);
+  }
+
+  async function viewUser(uid) {
+    const body = document.getElementById('user-detail-body');
+    body.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+    openModal('modal-user-detail');
+    try {
+      const snap = await window._getDoc(window._doc(window._db, 'traders', uid));
+      if (!snap.exists()) { body.innerHTML = '<p class="text-muted">User not found.</p>'; return; }
+      const u = snap.data();
+      body.innerHTML = `
+        <div class="flex-center mb-4" style="gap:16px">
+          <div class="avatar" style="width:52px;height:52px;font-size:22px">${avatarLetter(u.email)}</div>
+          <div>
+            <div style="font-size:17px;font-weight:600">${u.displayName || 'No Name'}</div>
+            <div class="text-muted text-sm">${u.email}</div>
+          </div>
+          ${statusPill(u.status || 'active')}
+        </div>
+        <hr class="divider" />
+        <div class="three-col" style="gap:12px;margin-bottom:16px">
+          <div style="background:var(--bg3);border-radius:var(--radius);padding:14px;border:1px solid var(--border)">
+            <div class="text-muted text-sm">Demo Balance</div>
+            <div class="font-bold" style="font-size:18px">${fmt$(u.demoBalance)}</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius);padding:14px;border:1px solid var(--border)">
+            <div class="text-muted text-sm">Real Balance</div>
+            <div class="font-bold text-green" style="font-size:18px">${fmt$(u.realBalance)}</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius);padding:14px;border:1px solid var(--border)">
+            <div class="text-muted text-sm">Total Deposited</div>
+            <div class="font-bold" style="font-size:18px">${fmt$(u.totalDeposit)}</div>
+          </div>
+        </div>
+        <div class="two-col" style="gap:12px">
+          <div><span class="text-muted text-sm">Total Trades:</span> <strong>${u.totalTrades || 0}</strong></div>
+          <div><span class="text-muted text-sm">Wins:</span> <strong class="text-green">${u.wins || 0}</strong></div>
+          <div><span class="text-muted text-sm">Losses:</span> <strong class="text-red">${u.losses || 0}</strong></div>
+          <div><span class="text-muted text-sm">Joined:</span> <strong>${fmtDate(u.createdAt)}</strong></div>
+          <div><span class="text-muted text-sm">Country:</span> <strong>${u.country || '--'}</strong></div>
+          <div><span class="text-muted text-sm">Phone:</span> <strong>${u.phone || '--'}</strong></div>
+        </div>`;
+    } catch (e) { body.innerHTML = `<p class="text-red">Error: ${e.message}</p>`; }
+  }
+
+  let _balUserId = null;
+  function openAddBalance(uid, email) {
+    _balUserId = uid;
+    document.getElementById('bal-user-label').textContent = 'User: ' + email;
+    document.getElementById('bal-amount').value = '';
+    document.getElementById('bal-note').value = '';
+    openModal('modal-balance');
+  }
+
+  async function confirmAddBalance() {
+    if (!_balUserId) return;
+    const type = document.getElementById('bal-type').value;
+    const amount = parseFloat(document.getElementById('bal-amount').value);
+    if (!amount || amount <= 0) { toast('Enter a valid amount', 'error'); return; }
+    try {
+      const ref = window._doc(window._db, 'traders', _balUserId);
+      const snap = await window._getDoc(ref);
+      if (!snap.exists()) { toast('User not found', 'error'); return; }
+      const curr = snap.data()[type] || 0;
+      await window._updateDoc(ref, { [type]: curr + amount });
+      toast('Balance added successfully!', 'success');
+      closeModal('modal-balance');
+      loadUsers();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function toggleSuspend(uid, currentStatus) {
+    const newStatus = currentStatus === 'suspended' ? 'active' : 'suspended';
+    try {
+      await window._updateDoc(window._doc(window._db, 'traders', uid), { status: newStatus });
+      toast(`User ${newStatus === 'suspended' ? 'suspended' : 'unsuspended'}`, 'success');
+      loadUsers();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function deleteUser(uid) {
+    if (!confirm('Are you sure you want to delete this user? This cannot be undone.')) return;
+    try {
+      await window._deleteDoc(window._doc(window._db, 'traders', uid));
+      toast('User deleted', 'success');
+      loadUsers();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  function exportUsersCSV() {
+    const rows = [['Email', 'Name', 'Demo Balance', 'Real Balance', 'Total Trades', 'Win Rate', 'Total Deposit', 'Status']];
+    allUsers.forEach(u => {
+      const wr = u.totalTrades > 0 ? Math.round((u.wins / u.totalTrades) * 100) : 0;
+      rows.push([u.email, u.displayName || '', u.demoBalance || 0, u.realBalance || 0, u.totalTrades || 0, wr + '%', u.totalDeposit || 0, u.status || 'active']);
+    });
+    downloadCSV(rows, 'users_export.csv');
+  }
+
+  // ============================================================
+  //  TRADES
+  // ============================================================
+  let allTrades = [];
+
+  async function loadTrades() {
+    const tbody = document.getElementById('trades-body');
+    tbody.innerHTML = `<tr><td colspan="9"><div class="loader"><div class="spinner"></div><br>Loading trades...</div></td></tr>`;
+    try {
+      const snap = await window._getDocs(
+        window._query(window._col(window._db, 'trades'), window._orderBy('createdAt', 'desc'), window._limit(500))
+      );
+      allTrades = [];
+      snap.forEach(d => allTrades.push({ id: d.id, ...d.data() }));
+      renderTrades(allTrades);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><i class="fas fa-triangle-exclamation"></i>Error: ${e.message}</div></td></tr>`;
+    }
+  }
+
+  function renderTrades(trades) {
+    const tbody = document.getElementById('trades-body');
+    if (!trades.length) {
+      tbody.innerHTML = `<tr><td colspan="9"><div class="empty-state"><i class="fas fa-chart-simple"></i>No trades found</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML = trades.map(t => {
+      const isWin = t.result === 'win';
+      const isLose = t.result === 'lose';
+      const pl = isWin ? (t.profit || 0) : isLose ? -(t.amount || 0) : 0;
+      return `<tr>
+        <td><div class="flex-center"><div class="avatar" style="font-size:10px">${avatarLetter(t.email)}</div><span class="text-sm">${t.email || '--'}</span></div></td>
+        <td><strong>${t.asset || '--'}</strong></td>
+        <td><span style="color:${t.direction === 'UP' ? 'var(--green)' : 'var(--red)'}; font-weight:600">
+          <i class="fas fa-arrow-${t.direction === 'UP' ? 'up' : 'down'}"></i> ${t.direction || '--'}</span></td>
+        <td>${fmt$(t.amount)}</td>
+        <td class="text-muted">${t.openPrice ? Number(t.openPrice).toFixed(4) : '--'}</td>
+        <td class="text-muted">${t.closePrice ? Number(t.closePrice).toFixed(4) : '--'}</td>
+        <td>${t.result === 'win' ? `<span class="pill pill-green">WIN</span>` : t.result === 'lose' ? `<span class="pill pill-red">LOSE</span>` : `<span class="pill pill-yellow">PENDING</span>`}</td>
+        <td class="${pl > 0 ? 'text-green' : pl < 0 ? 'text-red' : ''} font-bold">${pl > 0 ? '+' : ''}${fmt$(pl)}</td>
+        <td class="text-muted text-sm">${fmtDate(t.createdAt)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function filterTrades() {
+    const user = document.getElementById('trade-user-filter').value.toLowerCase();
+    const asset = document.getElementById('trade-asset-filter').value;
+    const result = document.getElementById('trade-result-filter').value;
+    const from = document.getElementById('trade-date-from').value;
+    const to = document.getElementById('trade-date-to').value;
+
+    const filtered = allTrades.filter(t => {
+      if (user && !(t.email || '').toLowerCase().includes(user)) return false;
+      if (asset && t.asset !== asset) return false;
+      if (result && t.result !== result) return false;
+      if (from || to) {
+        const ts = t.createdAt?.toDate ? t.createdAt.toDate() : new Date(t.createdAt || 0);
+        if (from && ts < new Date(from)) return false;
+        if (to && ts > new Date(to + 'T23:59:59')) return false;
+      }
+      return true;
+    });
+    renderTrades(filtered);
+  }
+
+  function exportTradesCSV() {
+    const rows = [['User', 'Asset', 'Direction', 'Amount', 'Open Price', 'Close Price', 'Result', 'P&L', 'Time']];
+    allTrades.forEach(t => {
+      const pl = t.result === 'win' ? (t.profit || 0) : t.result === 'lose' ? -(t.amount || 0) : 0;
+      rows.push([t.email || '', t.asset || '', t.direction || '', t.amount || 0, t.openPrice || '', t.closePrice || '', t.result || '', pl, fmtDate(t.createdAt)]);
+    });
+    downloadCSV(rows, 'trades_export.csv');
+  }
+
+  // ============================================================
+  //  DEPOSITS
+  // ============================================================
+  async function loadDeposits() {
+    const pending = document.getElementById('deposits-pending-body');
+    const history = document.getElementById('deposits-history-body');
+    pending.innerHTML = `<tr><td colspan="7"><div class="loader"><div class="spinner"></div></div></td></tr>`;
+
+    try {
+      const snap = await window._getDocs(
+        window._query(window._col(window._db, 'deposits'), window._orderBy('createdAt', 'desc'), window._limit(200))
+      );
+      const deps = []; snap.forEach(d => deps.push({ id: d.id, ...d.data() }));
+
+      const pend = deps.filter(d => d.status === 'pending' || !d.status);
+      const hist = deps.filter(d => d.status && d.status !== 'pending');
+
+      if (!pend.length) {
+        pending.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i>No pending deposits</div></td></tr>`;
+      } else {
+        pending.innerHTML = pend.map(d => `<tr>
+          <td><div class="flex-center"><div class="avatar">${avatarLetter(d.email)}</div><span>${d.email || '--'}</span></div></td>
+          <td class="font-bold text-green">${fmt$(d.amount)}</td>
+          <td>${d.method || '--'}</td>
+          <td class="text-muted text-sm">${d.txId || d.reference || '--'}</td>
+          <td class="text-muted text-sm">${fmtDate(d.createdAt)}</td>
+          <td>${statusPill(d.status || 'pending')}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn-primary btn-sm" onclick="approveDeposit('${d.id}','${d.userId}',${d.amount})"><i class="fas fa-check"></i> Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectDeposit('${d.id}')"><i class="fas fa-times"></i> Reject</button>
+            </div>
+          </td>
+        </tr>`).join('');
+      }
+
+      if (!hist.length) {
+        history.innerHTML = `<tr><td colspan="6" class="text-muted text-sm" style="padding:20px;text-align:center">No processed deposits yet</td></tr>`;
+      } else {
+        history.innerHTML = hist.map(d => `<tr>
+          <td><div class="flex-center"><div class="avatar">${avatarLetter(d.email)}</div><span>${d.email || '--'}</span></div></td>
+          <td class="font-bold">${fmt$(d.amount)}</td>
+          <td>${d.method || '--'}</td>
+          <td class="text-muted text-sm">${fmtDate(d.createdAt)}</td>
+          <td>${statusPill(d.status)}</td>
+          <td class="text-muted text-sm">${d.processedBy || 'admin'}</td>
+        </tr>`).join('');
+      }
+    } catch (e) {
+      pending.innerHTML = `<tr><td colspan="7"><div class="empty-state text-red"><i class="fas fa-triangle-exclamation"></i>Error: ${e.message}</div></td></tr>`;
+    }
+  }
+
+  async function approveDeposit(depId, userId, amount) {
+    if (!confirm(`Approve this deposit of ${fmt$(amount)}? This will add funds to the user's real balance.`)) return;
+    try {
+      const db = window._db;
+      // Update deposit status
+      await window._updateDoc(window._doc(db, 'deposits', depId), {
+        status: 'approved', processedAt: window._serverTimestamp(), processedBy: 'admin'
+      });
+      // Add to user real balance
+      if (userId) {
+        const uRef = window._doc(db, 'traders', userId);
+        const uSnap = await window._getDoc(uRef);
+        if (uSnap.exists()) {
+          const curr = uSnap.data().realBalance || 0;
+          const currDep = uSnap.data().totalDeposit || 0;
+          await window._updateDoc(uRef, { realBalance: curr + amount, totalDeposit: currDep + amount });
+        }
+      }
+      toast('Deposit approved! Balance updated.', 'success');
+      loadDeposits();
+      if (currentTab === 'dashboard') loadDashboard();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function rejectDeposit(depId) {
+    if (!confirm('Reject this deposit?')) return;
+    try {
+      await window._updateDoc(window._doc(window._db, 'deposits', depId), {
+        status: 'rejected', processedAt: window._serverTimestamp(), processedBy: 'admin'
+      });
+      toast('Deposit rejected', 'info');
+      loadDeposits();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  // ============================================================
+  //  WITHDRAWALS
+  // ============================================================
+  async function loadWithdrawals() {
+    const pending = document.getElementById('withdrawals-pending-body');
+    const history = document.getElementById('withdrawals-history-body');
+    pending.innerHTML = `<tr><td colspan="7"><div class="loader"><div class="spinner"></div></div></td></tr>`;
+
+    try {
+      const snap = await window._getDocs(
+        window._query(window._col(window._db, 'withdrawals'), window._orderBy('createdAt', 'desc'), window._limit(200))
+      );
+      const wds = []; snap.forEach(d => wds.push({ id: d.id, ...d.data() }));
+
+      const pend = wds.filter(w => w.status === 'pending' || !w.status);
+      const hist = wds.filter(w => w.status && w.status !== 'pending');
+
+      if (!pend.length) {
+        pending.innerHTML = `<tr><td colspan="7"><div class="empty-state"><i class="fas fa-inbox"></i>No pending withdrawals</div></td></tr>`;
+      } else {
+        pending.innerHTML = pend.map(w => `<tr>
+          <td><div class="flex-center"><div class="avatar">${avatarLetter(w.email)}</div><span>${w.email || '--'}</span></div></td>
+          <td class="font-bold text-red">${fmt$(w.amount)}</td>
+          <td>${w.method || '--'}</td>
+          <td class="text-muted text-sm" style="max-width:180px;overflow:hidden;text-overflow:ellipsis">${w.address || w.account || '--'}</td>
+          <td class="text-muted text-sm">${fmtDate(w.createdAt)}</td>
+          <td>${statusPill(w.status || 'pending')}</td>
+          <td>
+            <div class="actions-cell">
+              <button class="btn btn-primary btn-sm" onclick="approveWithdrawal('${w.id}','${w.userId}',${w.amount})"><i class="fas fa-check"></i> Approve</button>
+              <button class="btn btn-danger btn-sm" onclick="rejectWithdrawal('${w.id}')"><i class="fas fa-times"></i> Reject</button>
+            </div>
+          </td>
+        </tr>`).join('');
+      }
+
+      if (!hist.length) {
+        history.innerHTML = `<tr><td colspan="5" class="text-muted text-sm" style="padding:20px;text-align:center">No processed withdrawals yet</td></tr>`;
+      } else {
+        history.innerHTML = hist.map(w => `<tr>
+          <td><div class="flex-center"><div class="avatar">${avatarLetter(w.email)}</div><span>${w.email || '--'}</span></div></td>
+          <td class="font-bold">${fmt$(w.amount)}</td>
+          <td>${w.method || '--'}</td>
+          <td class="text-muted text-sm">${fmtDate(w.createdAt)}</td>
+          <td>${statusPill(w.status)}</td>
+        </tr>`).join('');
+      }
+    } catch (e) {
+      pending.innerHTML = `<tr><td colspan="7"><div class="empty-state text-red">Error: ${e.message}</div></td></tr>`;
+    }
+  }
+
+  async function approveWithdrawal(wdId, userId, amount) {
+    if (!confirm(`Approve withdrawal of ${fmt$(amount)}? This will deduct funds from the user's balance.`)) return;
+    try {
+      const db = window._db;
+      await window._updateDoc(window._doc(db, 'withdrawals', wdId), {
+        status: 'approved', processedAt: window._serverTimestamp(), processedBy: 'admin'
+      });
+      if (userId) {
+        const uRef = window._doc(db, 'traders', userId);
+        const uSnap = await window._getDoc(uRef);
+        if (uSnap.exists()) {
+          const curr = Math.max(0, (uSnap.data().realBalance || 0) - amount);
+          await window._updateDoc(uRef, { realBalance: curr });
+        }
+      }
+      toast('Withdrawal approved!', 'success');
+      loadWithdrawals();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function rejectWithdrawal(wdId) {
+    if (!confirm('Reject this withdrawal request?')) return;
+    try {
+      await window._updateDoc(window._doc(window._db, 'withdrawals', wdId), {
+        status: 'rejected', processedAt: window._serverTimestamp(), processedBy: 'admin'
+      });
+      toast('Withdrawal rejected', 'info');
+      loadWithdrawals();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  // ============================================================
+  //  TOURNAMENTS
+  // ============================================================
+  async function loadTournaments() {
+    const body = document.getElementById('active-tournament-body');
+    const lb = document.getElementById('tournament-leaderboard');
+    body.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+    lb.innerHTML = '<tr><td colspan="6"><div class="loader"><div class="spinner"></div></div></td></tr>';
+
+    try {
+      const snap = await window._getDocs(
+        window._query(window._col(window._db, 'tournaments'), window._orderBy('createdAt', 'desc'), window._limit(10))
+      );
+      const tournaments = []; snap.forEach(d => tournaments.push({ id: d.id, ...d.data() }));
+
+      const active = tournaments.find(t => t.status === 'active') || tournaments[0];
+      if (!active) {
+        body.innerHTML = `<div class="empty-state"><i class="fas fa-trophy"></i><p>No tournaments yet. Create one!</p></div>`;
+        lb.innerHTML = `<tr><td colspan="6"><div class="empty-state">No data</div></td></tr>`;
+        return;
+      }
+
+      const end = active.endDate?.toDate ? active.endDate.toDate() : new Date(active.endDate || Date.now());
+      const now = new Date();
+      const diff = Math.max(0, end - now);
+      const days = Math.floor(diff / 86400000);
+      const hrs = Math.floor((diff % 86400000) / 3600000);
+
+      body.innerHTML = `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px">
+          <div>
+            <div style="font-size:20px;font-weight:700;margin-bottom:4px">${active.name}</div>
+            <div class="text-muted text-sm">ID: ${active.id}</div>
+          </div>
+          ${statusPill(active.status || 'active')}
+        </div>
+        <hr class="divider" />
+        <div class="three-col" style="gap:12px;margin-bottom:16px">
+          <div style="background:var(--bg);border-radius:var(--radius);padding:14px;border:1px solid var(--border);text-align:center">
+            <div class="text-muted text-sm">Prize Pool</div>
+            <div class="font-bold text-yellow" style="font-size:20px">${fmt$(active.prizePool)}</div>
+          </div>
+          <div style="background:var(--bg);border-radius:var(--radius);padding:14px;border:1px solid var(--border);text-align:center">
+            <div class="text-muted text-sm">Participants</div>
+            <div class="font-bold text-blue" style="font-size:20px">${active.participants || 0}</div>
+          </div>
+          <div style="background:var(--bg);border-radius:var(--radius);padding:14px;border:1px solid var(--border);text-align:center">
+            <div class="text-muted text-sm">Time Left</div>
+            <div class="font-bold text-green" style="font-size:20px">${diff > 0 ? days + 'd ' + hrs + 'h' : 'Ended'}</div>
+          </div>
+        </div>
+        <div class="text-muted text-sm">
+          <i class="fas fa-calendar"></i> Ends: ${fmtDate(active.endDate)}
+          &nbsp;&nbsp; Entry Fee: ${active.entryFee > 0 ? fmt$(active.entryFee) : 'Free'}
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-danger btn-sm" onclick="endTournament('${active.id}')"><i class="fas fa-stop"></i> End Tournament</button>
+        </div>`;
+
+      // Leaderboard from participants sub-collection or top traders
+      const usersSnap = await window._getDocs(
+        window._query(window._col(window._db, 'traders'), window._orderBy('realBalance', 'desc'), window._limit(10))
+      );
+      const top = []; usersSnap.forEach(d => top.push({ id: d.id, ...d.data() }));
+      const prizes = [fmt$(active.prizePool * 0.5), fmt$(active.prizePool * 0.3), fmt$(active.prizePool * 0.2)];
+      lb.innerHTML = top.map((u, i) => {
+        const wr = u.totalTrades > 0 ? Math.round((u.wins / u.totalTrades) * 100) : 0;
+        return `<tr>
+          <td><span style="font-size:${i < 3 ? '18' : '14'}px;font-weight:700;color:${i === 0 ? 'var(--yellow)' : i === 1 ? 'var(--text2)' : i === 2 ? 'var(--yellow)' : 'var(--text)'}">#${i + 1}</span></td>
+          <td><div class="flex-center"><div class="avatar">${avatarLetter(u.email)}</div>${u.email || '--'}</div></td>
+          <td class="text-green font-bold">${fmt$(u.realBalance)}</td>
+          <td>${u.totalTrades || 0}</td>
+          <td><span class="badge ${wr >= 50 ? 'badge-green' : 'badge-red'}">${wr}%</span></td>
+          <td class="text-yellow font-bold">${prizes[i] || '--'}</td>
+        </tr>`;
+      }).join('');
+    } catch (e) {
+      body.innerHTML = `<div class="empty-state text-red">Error: ${e.message}</div>`;
+    }
+  }
+
+  async function createTournament() {
+    const name = document.getElementById('t-name').value.trim();
+    const prize = parseFloat(document.getElementById('t-prize').value);
+    const start = document.getElementById('t-start').value;
+    const end = document.getElementById('t-end').value;
+    const fee = parseFloat(document.getElementById('t-fee').value) || 0;
+
+    if (!name || !prize || !end) { toast('Fill in all required fields', 'error'); return; }
+    try {
+      await window._addDoc(window._col(window._db, 'tournaments'), {
+        name, prizePool: prize, startDate: start ? new Date(start) : new Date(),
+        endDate: new Date(end), entryFee: fee, status: 'active',
+        participants: 0, createdAt: window._serverTimestamp()
+      });
+      toast('Tournament created!', 'success');
+      document.getElementById('t-name').value = '';
+      document.getElementById('t-prize').value = '';
+      document.getElementById('t-start').value = '';
+      document.getElementById('t-end').value = '';
+      loadTournaments();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function endTournament(id) {
+    if (!confirm('End this tournament?')) return;
+    try {
+      await window._updateDoc(window._doc(window._db, 'tournaments', id), { status: 'ended' });
+      toast('Tournament ended', 'info');
+      loadTournaments();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  // ============================================================
+  //  SIGNALS
+  // ============================================================
+  const ASSETS = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'BTC/USD', 'ETH/USD', 'Gold', 'Oil'];
+
+  async function loadSignalSettings() {
+    const grid = document.getElementById('signal-grid');
+    grid.innerHTML = '<div class="loader"><div class="spinner"></div></div>';
+    try {
+      const snap = await window._getDoc(window._doc(window._db, 'settings', 'signals'));
+      const data = snap.exists() ? snap.data() : {};
+      grid.innerHTML = ASSETS.map(asset => {
+        const cfg = data[asset.replace('/', '_')] || {};
+        const enabled = cfg.enabled !== false;
+        const dir = cfg.direction || 'UP';
+        const str = cfg.strength || 1;
+        return `<div class="signal-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div class="asset-name">${asset}</div>
+            <label class="toggle">
+              <input type="checkbox" ${enabled ? 'checked' : ''} onchange="toggleAssetSignal('${asset}',this.checked)" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="signal-dir ${dir === 'UP' ? 'dir-up' : 'dir-down'}">
+            <i class="fas fa-arrow-${dir === 'UP' ? 'up' : 'down'}"></i> ${dir}
+            <span class="text-muted text-sm" style="margin-left:4px">Str:${str}</span>
+          </div>
+          <div class="signal-status">${enabled ? 'Signals Active' : 'Signals Disabled'}</div>
+        </div>`;
+      }).join('');
+    } catch (e) {
+      grid.innerHTML = `<div class="text-red text-sm">Error: ${e.message}</div>`;
+    }
+  }
+
+  async function toggleAssetSignal(asset, enabled) {
+    try {
+      const key = asset.replace('/', '_');
+      await window._setDoc(window._doc(window._db, 'settings', 'signals'),
+        { [key]: { enabled } }, { merge: true });
+      toast(`${asset} signals ${enabled ? 'enabled' : 'disabled'}`, enabled ? 'success' : 'info');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function sendSignal() {
+    const asset = document.getElementById('sig-asset').value;
+    const direction = document.getElementById('sig-dir').value;
+    const strength = parseInt(document.getElementById('sig-strength').value);
+    const duration = parseInt(document.getElementById('sig-duration').value);
+
+    if (!asset || !direction || !duration) { toast('Fill all signal fields', 'error'); return; }
+    try {
+      await window._addDoc(window._col(window._db, 'signals'), {
+        asset, direction, strength, duration,
+        active: true, createdAt: window._serverTimestamp(), sentBy: 'admin'
+      });
+      // Also update asset signal settings
+      const key = asset.replace('/', '_');
+      await window._setDoc(window._doc(window._db, 'settings', 'signals'),
+        { [key]: { enabled: true, direction, strength, lastUpdated: new Date() } }, { merge: true });
+      toast(`Signal sent: ${asset} ${direction}`, 'success');
+      loadSignalHistory();
+      loadSignalSettings();
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function loadSignalHistory() {
+    const tbody = document.getElementById('signal-history-body');
+    tbody.innerHTML = `<tr><td colspan="5"><div class="loader"><div class="spinner"></div></div></td></tr>`;
+    try {
+      const snap = await window._getDocs(
+        window._query(window._col(window._db, 'signals'), window._orderBy('createdAt', 'desc'), window._limit(20))
+      );
+      const sigs = []; snap.forEach(d => sigs.push({ id: d.id, ...d.data() }));
+      if (!sigs.length) {
+        tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state"><i class="fas fa-signal"></i>No signals yet</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = sigs.map(s => `<tr>
+        <td><strong>${s.asset}</strong></td>
+        <td><span style="color:${s.direction === 'UP' ? 'var(--green)' : 'var(--red)'}; font-weight:600">
+          <i class="fas fa-arrow-${s.direction === 'UP' ? 'up' : 'down'}"></i> ${s.direction}</span></td>
+        <td>${'★'.repeat(s.strength || 1)}</td>
+        <td>${s.duration}m</td>
+        <td class="text-muted text-sm">${fmtDate(s.createdAt)}</td>
+      </tr>`).join('');
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="5" class="text-red text-sm">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  // ============================================================
+  //  SETTINGS
+  // ============================================================
+  const DEFAULT_PAYOUTS = {
+    'EUR/USD': 85, 'GBP/USD': 83, 'USD/JPY': 82, 'AUD/USD': 80,
+    'USD/CAD': 80, 'BTC/USD': 78, 'ETH/USD': 77, 'Gold': 75, 'Oil': 74
+  };
+
+  function initPayoutTable() {
+    const tbody = document.getElementById('payout-table-body');
+    tbody.innerHTML = ASSETS.map(a => `<tr>
+      <td><strong>${a}</strong></td>
+      <td>
+        <input type="number" id="payout-${a.replace('/', '_')}" value="${DEFAULT_PAYOUTS[a] || 80}"
+          min="50" max="99" style="width:80px;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:6px 10px;border-radius:var(--radius);font-family:inherit" />
+        <span class="text-muted" style="margin-left:4px">%</span>
+      </td>
+    </tr>`).join('');
+  }
+
+  async function loadSettings() {
+    try {
+      const snap = await window._getDoc(window._doc(window._db, 'settings', 'platform'));
+      if (snap.exists()) {
+        const d = snap.data();
+        document.getElementById('set-fee').value = d.platformFee ?? 5;
+        document.getElementById('set-max-trade').value = d.maxTrade ?? 10000;
+        document.getElementById('set-min-dep').value = d.minDeposit ?? 10;
+        document.getElementById('set-min-wd').value = d.minWithdrawal ?? 20;
+        document.getElementById('set-maintenance').checked = d.maintenanceMode || false;
+        document.getElementById('set-usdt').value = d.walletUSDT || '';
+        document.getElementById('set-btc').value = d.walletBTC || '';
+        document.getElementById('set-eth').value = d.walletETH || '';
+        document.getElementById('set-bkash').value = d.bkash || '';
+        document.getElementById('set-nagad').value = d.nagad || '';
+
+        // Payouts
+        if (d.payouts) {
+          ASSETS.forEach(a => {
+            const el = document.getElementById('payout-' + a.replace('/', '_'));
+            if (el && d.payouts[a]) el.value = d.payouts[a];
+          });
+        }
+      }
+    } catch (e) { toast('Error loading settings: ' + e.message, 'error'); }
+  }
+
+  async function savePlatformSettings() {
+    try {
+      await window._setDoc(window._doc(window._db, 'settings', 'platform'), {
+        platformFee: parseFloat(document.getElementById('set-fee').value) || 5,
+        maxTrade: parseFloat(document.getElementById('set-max-trade').value) || 10000,
+        minDeposit: parseFloat(document.getElementById('set-min-dep').value) || 10,
+        minWithdrawal: parseFloat(document.getElementById('set-min-wd').value) || 20,
+        maintenanceMode: document.getElementById('set-maintenance').checked,
+      }, { merge: true });
+      toast('Platform settings saved!', 'success');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function saveMaintenanceMode() {
+    const checked = document.getElementById('set-maintenance').checked;
+    try {
+      await window._setDoc(window._doc(window._db, 'settings', 'platform'),
+        { maintenanceMode: checked }, { merge: true });
+      toast(`Maintenance mode ${checked ? 'ENABLED' : 'DISABLED'}`, checked ? 'error' : 'success');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function savePaymentAddresses() {
+    try {
+      await window._setDoc(window._doc(window._db, 'settings', 'platform'), {
+        walletUSDT: document.getElementById('set-usdt').value.trim(),
+        walletBTC: document.getElementById('set-btc').value.trim(),
+        walletETH: document.getElementById('set-eth').value.trim(),
+        bkash: document.getElementById('set-bkash').value.trim(),
+        nagad: document.getElementById('set-nagad').value.trim(),
+      }, { merge: true });
+      toast('Payment addresses saved!', 'success');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  async function savePayouts() {
+    const payouts = {};
+    ASSETS.forEach(a => {
+      const el = document.getElementById('payout-' + a.replace('/', '_'));
+      if (el) payouts[a] = parseFloat(el.value) || DEFAULT_PAYOUTS[a] || 80;
+    });
+    try {
+      await window._setDoc(window._doc(window._db, 'settings', 'platform'), { payouts }, { merge: true });
+      toast('Payout settings saved!', 'success');
+    } catch (e) { toast('Error: ' + e.message, 'error'); }
+  }
+
+  // ============================================================
+  //  CSV EXPORT
+  // ============================================================
+  function downloadCSV(rows, filename) {
+    const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ============================================================
+  //  CLOSE MODALS ON OVERLAY CLICK
+  // ============================================================
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', function(e) {
+      if (e.target === this) this.classList.remove('open');
+    });
+  });
+</script>
+</body>
+</html>

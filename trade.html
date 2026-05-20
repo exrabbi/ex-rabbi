@@ -279,9 +279,79 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .chart-loader .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .chart-loader p{color:var(--text3);font-size:12px}
+
+/* ── LEVERAGE ── */
+.leverage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
+.lev-btn{padding:6px 4px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;transition:.15s}
+.lev-btn:hover{border-color:var(--gold);color:var(--gold)}
+.lev-btn.active{background:#2a2200;border-color:var(--gold);color:var(--gold)}
+.leverage-info{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:6px;padding:6px 10px;background:var(--bg4);border-radius:6px}
+.leverage-info span b{color:var(--text)}
+
+/* ── SIGNALS ── */
+.signal-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.signal-row:last-child{border-bottom:none}
+.sig-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.sig-icon.buy{background:var(--green-dim);color:var(--green)}
+.sig-icon.sell{background:var(--red-dim);color:var(--red)}
+.sig-icon.neutral{background:var(--bg4);color:var(--text3)}
+.sig-asset{flex:1;font-size:12px;font-weight:600}
+.sig-dir{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px}
+.sig-dir.buy{background:var(--green-dim);color:var(--green)}
+.sig-dir.sell{background:var(--red-dim);color:var(--red)}
+.sig-dir.neutral{background:var(--bg4);color:var(--text3)}
+.sig-strength{display:flex;gap:2px}
+.sig-strength span{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.sig-strength span.active{background:var(--gold)}
+.sig-payout{font-size:11px;color:var(--text3);text-align:right}
+.sig-payout b{color:var(--green)}
+
+/* ── TOURNAMENTS ── */
+.tournament-card{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
+.tc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.tc-name{font-size:14px;font-weight:700}
+.tc-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
+.tc-status.live{background:#1a2e1a;color:var(--green);border:1px solid #1a5a2a}
+.tc-status.upcoming{background:#2a2200;color:var(--gold);border:1px solid #4a3a00}
+.tc-prize{font-size:22px;font-weight:800;color:var(--gold);text-align:center;margin:10px 0}
+.tc-prize small{font-size:12px;color:var(--text3);display:block;font-weight:400}
+.tc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.tc-stat{text-align:center;background:var(--bg3);border-radius:7px;padding:8px}
+.tc-stat-val{font-size:14px;font-weight:700}
+.tc-stat-label{font-size:10px;color:var(--text3)}
+.leaderboard-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.lb-rank{width:22px;font-size:12px;font-weight:700;text-align:center;flex-shrink:0}
+.lb-rank.gold{color:var(--gold)}
+.lb-rank.silver{color:#c0c0c0}
+.lb-rank.bronze{color:#cd7f32}
+.lb-name{flex:1;font-size:12px;font-weight:600}
+.lb-profit{font-size:12px;font-weight:700;color:var(--green)}
+
+/* ── REFERRAL ── */
+.ref-link-box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.ref-link{flex:1;font-size:11px;color:var(--blue);font-family:monospace;word-break:break-all;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ref-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
+.ref-stat{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+.ref-stat-val{font-size:18px;font-weight:800;color:var(--green)}
+.ref-stat-label{font-size:10px;color:var(--text3)}
+.ref-how{background:var(--bg4);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:2}
+
+/* ── PWA install ── */
+.pwa-install-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:#0d2040;border-bottom:1px solid #1a3a6a;font-size:12px}
+.pwa-install-bar.show{display:flex}
+.pwa-install-bar button{background:var(--blue);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.pwa-install-bar .pwa-close{background:none;color:var(--text2);padding:4px 8px;margin-left:auto}
 </style>
 </head>
 <body>
+
+<!-- PWA INSTALL BAR -->
+<div class="pwa-install-bar" id="pwa-install-bar">
+  <i class="fas fa-mobile-alt" style="color:var(--blue)"></i>
+  <span>Install EX Trade as an app for faster access!</span>
+  <button onclick="installPWA()">Install</button>
+  <button class="pwa-close" onclick="document.getElementById('pwa-install-bar').classList.remove('show')"><i class="fas fa-times"></i></button>
+</div>
 
 <!-- TOP BAR -->
 <nav class="topbar">
@@ -296,6 +366,8 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     </div>
   </div>
   <div class="tb-spacer"></div>
+  <button class="btn-toggle-account" onclick="openModal('modal-tournament')" style="color:var(--gold);border-color:#4a3a00;background:#1a1200" title="Tournaments"><i class="fas fa-trophy"></i> <span style="display:none" class="tb-text">Tournament</span></button>
+  <button class="btn-toggle-account" onclick="openModal('modal-referral')" style="color:#a78bfa;border-color:#3a2a6a;background:#120d20" title="Referral"><i class="fas fa-user-plus"></i> <span style="display:none" class="tb-text">Referral</span></button>
   <div class="tb-account">
     <div class="tb-balance" onclick="toggleAccountMode()" title="Switch Demo/Real">
       <div class="tb-balance-label">Balance</div>
@@ -432,6 +504,25 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
       </div>
     </div>
 
+    <div class="tp-section">
+      <div class="tp-label">Leverage</div>
+      <div class="leverage-grid">
+        <button class="lev-btn active" data-lev="1" onclick="setLeverage(1,this)">1x</button>
+        <button class="lev-btn" data-lev="2" onclick="setLeverage(2,this)">2x</button>
+        <button class="lev-btn" data-lev="5" onclick="setLeverage(5,this)">5x</button>
+        <button class="lev-btn" data-lev="10" onclick="setLeverage(10,this)">10x</button>
+        <button class="lev-btn" data-lev="25" onclick="setLeverage(25,this)">25x</button>
+        <button class="lev-btn" data-lev="50" onclick="setLeverage(50,this)">50x</button>
+        <button class="lev-btn" data-lev="100" onclick="setLeverage(100,this)">100x</button>
+        <button class="lev-btn" data-lev="200" onclick="setLeverage(200,this)">200x</button>
+      </div>
+      <div class="leverage-info">
+        <span>Exposure: <b id="lev-exposure">$10</b></span>
+        <span>Payout: <b id="lev-payout" style="color:var(--green)">82%</b></span>
+        <span>Margin: <b id="lev-margin">$10</b></span>
+      </div>
+    </div>
+
     <div class="trade-info-row">
       <span>Min: $1</span>
       <span id="trade-mode-label" style="color:var(--text2)">Demo Mode</span>
@@ -455,6 +546,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="bp-tab active" onclick="switchBPTab('active',this)">Active Trades <span class="bp-count" id="active-count">0</span></div>
     <div class="bp-tab" onclick="switchBPTab('history',this)">Trade History</div>
     <div class="bp-tab" onclick="switchBPTab('analytics',this)">Analytics</div>
+    <div class="bp-tab" onclick="switchBPTab('signals',this)"><i class="fas fa-bolt" style="color:var(--gold)"></i> Signals</div>
   </div>
   <div class="bp-content" id="bp-content">
     <div class="bp-empty" id="bp-empty">
@@ -616,6 +708,69 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
     <div class="modal-title"><i class="fas fa-history" style="color:var(--blue)"></i> Trade History</div>
     <div style="margin-bottom:14px" id="history-stats"></div>
     <div id="history-list"></div>
+  </div>
+</div>
+
+<!-- TOURNAMENT MODAL -->
+<div class="modal-backdrop" id="modal-tournament">
+  <div class="modal" style="max-width:500px">
+    <button class="modal-close" onclick="closeModal('modal-tournament')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-trophy" style="color:var(--gold)"></i> Tournaments</div>
+    <div class="modal-sub">Compete with traders, win real prizes</div>
+    <div id="tournament-content">
+      <div class="tournament-card">
+        <div class="tc-header">
+          <div class="tc-name">Daily Championship</div>
+          <div class="tc-status live">🔴 LIVE</div>
+        </div>
+        <div class="tc-prize">$500 <small>Prize Pool</small></div>
+        <div class="tc-stats">
+          <div class="tc-stat"><div class="tc-stat-val" id="tc-participants">247</div><div class="tc-stat-label">Traders</div></div>
+          <div class="tc-stat"><div class="tc-stat-val" id="tc-timeleft">14:32:08</div><div class="tc-stat-label">Time Left</div></div>
+          <div class="tc-stat"><div class="tc-stat-val">Free</div><div class="tc-stat-label">Entry</div></div>
+        </div>
+        <button class="btn-primary" onclick="joinTournament()" id="btn-join-tournament"><i class="fas fa-flag"></i> Join Tournament</button>
+      </div>
+      <div style="margin-bottom:10px;font-size:12px;font-weight:700;color:var(--text2)">🏆 LEADERBOARD</div>
+      <div id="tournament-leaderboard">
+        <div class="leaderboard-row"><div class="lb-rank gold">1</div><div class="lb-name">Ahmad K.</div><div class="lb-profit">+$234.50</div></div>
+        <div class="leaderboard-row"><div class="lb-rank silver">2</div><div class="lb-name">Sara M.</div><div class="lb-profit">+$198.20</div></div>
+        <div class="leaderboard-row"><div class="lb-rank bronze">3</div><div class="lb-name">You</div><div class="lb-profit" id="your-tournament-rank">—</div></div>
+        <div class="leaderboard-row"><div class="lb-rank">4</div><div class="lb-name">Fatima R.</div><div class="lb-profit">+$145.00</div></div>
+        <div class="leaderboard-row"><div class="lb-rank">5</div><div class="lb-name">Omar T.</div><div class="lb-profit">+$122.75</div></div>
+      </div>
+      <div class="info-box" style="margin-top:12px;font-size:11px">
+        <strong>Prize Distribution</strong>
+        🥇 1st: $250 &nbsp; 🥈 2nd: $150 &nbsp; 🥉 3rd: $75 &nbsp; 4th-5th: $12.50 each
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REFERRAL MODAL -->
+<div class="modal-backdrop" id="modal-referral">
+  <div class="modal" style="max-width:460px">
+    <button class="modal-close" onclick="closeModal('modal-referral')"><i class="fas fa-times"></i></button>
+    <div class="modal-title"><i class="fas fa-user-plus" style="color:#a78bfa"></i> Referral Program</div>
+    <div class="modal-sub">Earn 5% commission on every deposit your friends make</div>
+    <div class="tp-label" style="margin-bottom:8px">Your Referral Link</div>
+    <div class="ref-link-box">
+      <span class="ref-link" id="ref-link-text">https://exglobal.online/trade.html?ref=XXXXXX</span>
+      <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy</button>
+    </div>
+    <div class="ref-stats">
+      <div class="ref-stat"><div class="ref-stat-val" id="ref-total">0</div><div class="ref-stat-label">Referred</div></div>
+      <div class="ref-stat"><div class="ref-stat-val" id="ref-active">0</div><div class="ref-stat-label">Active</div></div>
+      <div class="ref-stat"><div class="ref-stat-val" id="ref-earned">$0</div><div class="ref-stat-label">Earned</div></div>
+    </div>
+    <div class="ref-how">
+      <div style="font-weight:700;color:var(--text);margin-bottom:6px">How it works:</div>
+      1. Share your unique referral link<br/>
+      2. Friend registers & makes a deposit<br/>
+      3. You earn <b style="color:var(--green)">5% commission</b> instantly<br/>
+      4. No limit — earn from unlimited referrals
+    </div>
+    <button class="btn-primary" style="margin-top:12px" onclick="shareReferral()"><i class="fas fa-share-alt"></i> Share Link</button>
   </div>
 </div>
 
@@ -1598,7 +1753,310 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'ArrowUp') placeTrade('up');
     if (e.key === 'ArrowDown') placeTrade('down');
   });
+
+  // PWA install
+  initPWA();
+  // Signals
+  initSignals();
+  // Referral code
+  initReferral();
+  // Tournament timer
+  startTournamentTimer();
 });
+
+/* ────────────────────────────────────────────────────────
+   LEVERAGE
+──────────────────────────────────────────────────────── */
+STATE.leverage = 1;
+
+function setLeverage(lev, btn) {
+  STATE.leverage = lev;
+  document.querySelectorAll('.lev-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updateLeverageInfo();
+  updatePayoutDisplay();
+}
+
+function updateLeverageInfo() {
+  const amt = STATE.tradeAmount;
+  const lev = STATE.leverage;
+  const exposure = amt * lev;
+  const asset = STATE.currentAsset;
+  // Higher leverage = higher payout capped at 95%
+  const levPayout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
+  document.getElementById('lev-exposure').textContent = '$' + exposure.toLocaleString();
+  document.getElementById('lev-margin').textContent = '$' + amt;
+  document.getElementById('lev-payout').textContent = levPayout + '%';
+}
+
+// Override updatePayoutDisplay to include leverage
+const _origUpdatePayout = updatePayoutDisplay;
+function updatePayoutDisplay() {
+  const asset = STATE.currentAsset;
+  const lev = STATE.leverage || 1;
+  const payout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
+  const exposure = STATE.tradeAmount * lev;
+  const profit = parseFloat((exposure * payout / 100).toFixed(2));
+  document.getElementById('payout-pct').textContent = payout + '%';
+  document.getElementById('profit-amount').textContent = '+$' + profit.toFixed(2);
+  document.getElementById('payout-chip-val').textContent = payout + '%';
+  updateLeverageInfo();
+}
+
+// Override placeTrade to use leverage
+const _origPlaceTrade = placeTrade;
+function placeTrade(direction) {
+  const amount = parseFloat(document.getElementById('trade-amount').value);
+  if (isNaN(amount) || amount < 1) { showToast('Min trade: $1'); return; }
+  if (amount > getBalance()) { showToast('Insufficient balance'); return; }
+
+  const asset = STATE.currentAsset;
+  const lev = STATE.leverage || 1;
+  const exposure = amount * lev;
+  const payout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
+  const openPrice = STATE.prices[asset.id];
+  const profit = parseFloat((exposure * payout / 100).toFixed(2));
+  const expirySec = STATE.tradeTimeSec;
+  const expiryTime = Date.now() + expirySec * 1000;
+
+  setBalance(parseFloat((getBalance() - amount).toFixed(2)));
+
+  const trade = {
+    id: 'T' + Date.now() + Math.random().toString(36).slice(2,5).toUpperCase(),
+    asset: asset.name, assetId: asset.id,
+    direction, amount, profit, payout, leverage: lev, exposure,
+    openPrice, closePrice: null,
+    expiryTime, expirySec,
+    status: 'pending', mode: STATE.accountMode,
+    openedAt: new Date().toISOString(),
+  };
+
+  STATE.activeTrades.push(trade);
+  updateActiveTradesUI();
+  updateBalanceUI();
+  startCountdown(expirySec, expiryTime);
+  setTradeButtons(false);
+  setTimeout(() => setTradeButtons(true), 1500);
+  setTimeout(() => resolveTrade(trade.id), expirySec * 1000);
+
+  const levText = lev > 1 ? ` (${lev}x leverage)` : '';
+  showNotif(`${direction.toUpperCase()} ${asset.name}${levText} — $${amount} → $${exposure} exposure`, 'info');
+
+  // Track for tournament
+  if (STATE.inTournament) STATE.tournamentTrades = (STATE.tournamentTrades||0) + 1;
+}
+
+/* ────────────────────────────────────────────────────────
+   SIGNALS ENGINE
+──────────────────────────────────────────────────────── */
+const priceHistory = {}; // assetId → last 20 prices
+
+function recordPriceHistory(assetId, price) {
+  if (!priceHistory[assetId]) priceHistory[assetId] = [];
+  priceHistory[assetId].push(price);
+  if (priceHistory[assetId].length > 50) priceHistory[assetId].shift();
+}
+
+function calcRSI(prices, period = 14) {
+  if (prices.length < period + 1) return 50;
+  let gains = 0, losses = 0;
+  for (let i = prices.length - period; i < prices.length; i++) {
+    const diff = prices[i] - prices[i-1];
+    if (diff > 0) gains += diff; else losses -= diff;
+  }
+  const rs = gains / (losses || 0.0001);
+  return 100 - (100 / (1 + rs));
+}
+
+function calcMA(prices, period) {
+  if (prices.length < period) return prices[prices.length-1];
+  return prices.slice(-period).reduce((a,b) => a+b, 0) / period;
+}
+
+function generateSignal(asset) {
+  const hist = priceHistory[asset.id] || [];
+  if (hist.length < 5) return { signal: 'NEUTRAL', strength: 0, reason: 'Gathering data...' };
+
+  const rsi = calcRSI(hist);
+  const ma7 = calcMA(hist, Math.min(7, hist.length));
+  const ma20 = calcMA(hist, Math.min(20, hist.length));
+  const current = hist[hist.length-1];
+  const momentum = hist.length >= 5 ? (current - hist[hist.length-5]) / hist[hist.length-5] * 100 : 0;
+
+  let score = 0;
+  if (rsi < 35) score += 2;
+  else if (rsi < 45) score += 1;
+  else if (rsi > 65) score -= 2;
+  else if (rsi > 55) score -= 1;
+  if (ma7 > ma20) score += 1; else score -= 1;
+  if (momentum > 0.01) score += 1; else if (momentum < -0.01) score -= 1;
+
+  if (score >= 2) return { signal: 'BUY', strength: Math.min(3, score), reason: `RSI:${rsi.toFixed(0)} MA↑ Mom:+${momentum.toFixed(3)}%` };
+  if (score <= -2) return { signal: 'SELL', strength: Math.min(3, Math.abs(score)), reason: `RSI:${rsi.toFixed(0)} MA↓ Mom:${momentum.toFixed(3)}%` };
+  return { signal: 'NEUTRAL', strength: 1, reason: `RSI:${rsi.toFixed(0)} — No clear trend` };
+}
+
+function initSignals() {
+  // Record prices every tick
+  const origTickChart = tickChart;
+  setInterval(() => {
+    ASSETS.forEach(a => recordPriceHistory(a.id, STATE.prices[a.id]));
+  }, 2000);
+}
+
+function renderSignalsTab() {
+  const list = document.getElementById('trades-list');
+  const empty = document.getElementById('bp-empty');
+  empty.style.display = 'none';
+
+  list.innerHTML = ASSETS.map(a => {
+    const sig = generateSignal(a);
+    const cls = sig.signal === 'BUY' ? 'buy' : sig.signal === 'SELL' ? 'sell' : 'neutral';
+    const stars = [1,2,3].map(i => `<span class="${i <= sig.strength ? 'active' : ''}"></span>`).join('');
+    return `
+    <div class="signal-row" onclick="selectAsset('${a.id}');switchBPTab('active',document.querySelector('.bp-tab'))">
+      <div class="sig-icon ${cls}">
+        <i class="fas fa-arrow-${sig.signal==='BUY'?'up':sig.signal==='SELL'?'down':'right'}"></i>
+      </div>
+      <div style="flex:1">
+        <div class="sig-asset">${a.name}</div>
+        <div style="font-size:10px;color:var(--text3)">${sig.reason}</div>
+      </div>
+      <div class="sig-strength">${stars}</div>
+      <div class="sig-dir ${cls}" style="margin:0 8px">${sig.signal}</div>
+      <div class="sig-payout"><b>${a.payout}%</b></div>
+    </div>`;
+  }).join('');
+}
+
+// Extend switchBPTab
+const _origSwitchBPTab = switchBPTab;
+function switchBPTab(tab, btn) {
+  STATE.bpTab = tab;
+  document.querySelectorAll('.bp-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  if (tab === 'signals') { renderSignalsTab(); return; }
+  if (tab === 'analytics') { showAnalytics(); return; }
+  updateActiveTradesUI();
+}
+
+/* ────────────────────────────────────────────────────────
+   TOURNAMENTS
+──────────────────────────────────────────────────────── */
+STATE.inTournament = false;
+STATE.tournamentProfit = 0;
+
+function joinTournament() {
+  STATE.inTournament = true;
+  STATE.tournamentProfit = 0;
+  STATE.tournamentTrades = 0;
+  document.getElementById('btn-join-tournament').textContent = '✓ Joined!';
+  document.getElementById('btn-join-tournament').disabled = true;
+  document.getElementById('your-tournament-rank').textContent = '$0.00';
+  showNotif('You joined the Daily Championship! Good luck! 🏆', 'win');
+  closeModal('modal-tournament');
+}
+
+function startTournamentTimer() {
+  // Countdown to midnight UTC
+  function updateTimer() {
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setUTCHours(24, 0, 0, 0);
+    const diff = midnight - now;
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const el = document.getElementById('tc-timeleft');
+    if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+  // Simulate participant count growing
+  setInterval(() => {
+    const el = document.getElementById('tc-participants');
+    if (el) el.textContent = parseInt(el.textContent) + Math.floor(Math.random()*2);
+  }, 5000);
+}
+
+/* ────────────────────────────────────────────────────────
+   REFERRAL
+──────────────────────────────────────────────────────── */
+function initReferral() {
+  // Check URL for referral code
+  const params = new URLSearchParams(window.location.search);
+  const refCode = params.get('ref');
+  if (refCode) localStorage.setItem('extrade_ref', refCode);
+
+  // Generate user's own code
+  let myCode = localStorage.getItem('extrade_myref');
+  if (!myCode) {
+    myCode = 'EX' + Math.random().toString(36).slice(2,8).toUpperCase();
+    localStorage.setItem('extrade_myref', myCode);
+  }
+  STATE.myReferralCode = myCode;
+
+  const linkEl = document.getElementById('ref-link-text');
+  if (linkEl) linkEl.textContent = `https://exglobal.online/trade.html?ref=${myCode}`;
+
+  // Load referral stats from localStorage
+  const stats = JSON.parse(localStorage.getItem('extrade_ref_stats') || '{"total":0,"active":0,"earned":0}');
+  document.getElementById('ref-total').textContent = stats.total;
+  document.getElementById('ref-active').textContent = stats.active;
+  document.getElementById('ref-earned').textContent = '$' + stats.earned.toFixed(2);
+}
+
+function copyReferralLink() {
+  const code = STATE.myReferralCode || 'XXXXXX';
+  const link = `https://exglobal.online/trade.html?ref=${code}`;
+  navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!')).catch(() => showToast('Copy failed'));
+}
+
+function shareReferral() {
+  const code = STATE.myReferralCode || 'XXXXXX';
+  const link = `https://exglobal.online/trade.html?ref=${code}`;
+  if (navigator.share) {
+    navigator.share({ title: 'Join EX Trade', text: 'Trade binary options and win! Use my referral link:', url: link });
+  } else {
+    copyReferralLink();
+  }
+}
+
+/* ────────────────────────────────────────────────────────
+   PWA
+──────────────────────────────────────────────────────── */
+let deferredInstallPrompt;
+
+function initPWA() {
+  window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (!localStorage.getItem('extrade_pwa_dismissed')) {
+      document.getElementById('pwa-install-bar').classList.add('show');
+    }
+  });
+  window.addEventListener('appinstalled', () => {
+    document.getElementById('pwa-install-bar').classList.remove('show');
+    showToast('EX Trade installed!');
+  });
+
+  // Register service worker
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  }
+}
+
+function installPWA() {
+  if (!deferredInstallPrompt) { showToast('Use browser menu → Add to Home Screen'); return; }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(r => {
+    if (r.outcome === 'accepted') showNotif('App installed!', 'win');
+    deferredInstallPrompt = null;
+    document.getElementById('pwa-install-bar').classList.remove('show');
+    localStorage.setItem('extrade_pwa_dismissed', '1');
+  });
+}
 </script>
 </body>
 </html>
