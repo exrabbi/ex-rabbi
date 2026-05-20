@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v29';
+const CACHE = 'exglobal-v30';
 
 self.addEventListener('install', e => {
   // Use dynamic scope so it works on both exglobal.online and exrabbi.github.io/ex-rabbi/
@@ -32,21 +32,18 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const base = self.registration.scope;
 
-  // Navigation — admin.html সরাসরি serve করো, SW bypass
+  // Navigation — requested পেজ সরাসরি serve করো
   if (e.request.mode === 'navigate') {
-    const reqUrl = new URL(e.request.url);
-    if (reqUrl.pathname.includes('admin')) {
-      e.respondWith(fetch(e.request)); // direct fetch, no redirect
-      return;
-    }
     e.respondWith(
-      fetch(base + 'index.html')
+      fetch(e.request)
         .then(res => {
-          const c = res.clone();
-          caches.open(CACHE).then(cache => cache.put(base + 'index.html', c));
+          if (res.ok) {
+            const c = res.clone();
+            caches.open(CACHE).then(cache => cache.put(e.request, c));
+          }
           return res;
         })
-        .catch(() => caches.match(base + 'index.html').then(r => r || caches.match(base)))
+        .catch(() => caches.match(e.request).then(r => r || caches.match(base + 'index.html')))
     );
     return;
   }
