@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-<title>EX Trade — Binary Options Platform</title>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>EX Trade — Binary Options</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
@@ -13,2050 +16,1136 @@
 <script src="firebase-config.js"></script>
 <style>
 :root{
-  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#21262d;
-  --border:#30363d;--border2:#3d444d;
-  --green:#00c87a;--green2:#00ff9d;--green-dim:#0d4a2e;
-  --red:#ff4d4d;--red2:#ff7070;--red-dim:#4a0d0d;
-  --blue:#2f81f7;--gold:#ffd700;
-  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
-  --pane-w:260px;--trade-w:290px;
+  --bg:#0a0e1a;--bg2:#111827;--bg3:#1c2333;--bg4:#232d3f;
+  --border:#2a3547;--border2:#3a4a5c;
+  --green:#00c87a;--green2:#00ff9d;--green-bg:#00c87a22;
+  --red:#ff3d3d;--red2:#ff6060;--red-bg:#ff3d3d22;
+  --blue:#3b82f6;--gold:#f59e0b;
+  --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
+  --topbar:44px;--bottomnav:56px;--tradepanel:210px;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100dvh;display:flex;flex-direction:column;overflow:hidden;font-size:13px}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif}
+html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;font-size:13px;touch-action:manipulation}
 
 /* ── TOP BAR ── */
-.topbar{display:flex;align-items:center;gap:8px;padding:0 10px;height:48px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;z-index:100}
-.tb-logo{font-weight:800;font-size:16px;letter-spacing:-.5px;color:#fff;display:flex;align-items:center;gap:6px;text-decoration:none;flex-shrink:0}
-.tb-logo span{color:var(--green)}
-.tb-asset-info{display:flex;align-items:center;gap:10px;padding:0 12px;border-left:1px solid var(--border);border-right:1px solid var(--border);margin:0 4px;min-width:200px}
-.tb-asset-name{font-weight:600;font-size:13px;cursor:pointer}
-.tb-price{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.5px}
-.tb-price.up{color:var(--green)}
-.tb-price.down{color:var(--red)}
-.tb-change{font-size:11px;font-weight:500}
-.tb-change.up{color:var(--green)}
-.tb-change.down{color:var(--red)}
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:var(--topbar);
+  background:rgba(10,14,26,.95);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 12px;gap:8px;z-index:200;
+}
+.tb-live{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:4px 10px;cursor:pointer}
+.tb-live-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+.tb-live-label{font-size:11px;font-weight:700;color:var(--green);letter-spacing:.5px}
+.tb-balance{font-size:15px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;cursor:pointer}
+.tb-mode{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;margin-left:2px}
+.tb-mode.demo{background:#1e3a5f;color:#60a5fa}
+.tb-mode.real{background:#0d3320;color:var(--green)}
+.tb-notif{position:relative;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:var(--bg3);border-radius:50%;border:1px solid var(--border)}
+.tb-notif-badge{position:absolute;top:3px;right:3px;width:14px;height:14px;background:var(--red);border-radius:50%;font-size:9px;font-weight:800;display:flex;align-items:center;justify-content:center;color:#fff}
 .tb-spacer{flex:1}
-.tb-account{display:flex;align-items:center;gap:6px}
-.tb-balance{display:flex;flex-direction:column;align-items:flex-end;cursor:pointer}
-.tb-balance-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
-.tb-balance-val{font-size:15px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
-.demo-badge{background:#2a3a4a;color:#60a5fa;font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.5px;border:1px solid #3a5a8a}
-.real-badge{background:#1a2e1a;color:var(--green);font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px;letter-spacing:.5px;border:1px solid #1a4a2a}
-.btn-toggle-account{background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;font-family:inherit;transition:.2s}
-.btn-toggle-account:hover{border-color:var(--blue);color:var(--blue)}
-.btn-deposit-top{background:var(--green);color:#000;padding:6px 14px;border-radius:7px;border:none;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;transition:.2s;flex-shrink:0}
-.btn-deposit-top:hover{background:var(--green2)}
-.btn-user{background:var(--bg4);border:1px solid var(--border);color:var(--text);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;position:relative}
-.btn-user:hover{border-color:var(--blue)}
+.btn-deposit-top{background:var(--green);color:#000;padding:7px 18px;border-radius:22px;border:none;font-weight:800;font-size:13px;cursor:pointer;letter-spacing:.3px;flex-shrink:0}
+.btn-deposit-top:active{transform:scale(.95)}
 
-/* ── MAIN LAYOUT ── */
-.main-layout{display:flex;flex:1;overflow:hidden}
-
-/* ── LEFT SIDEBAR (ASSETS) ── */
-.sidebar-left{width:var(--pane-w);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.sidebar-search{padding:10px;border-bottom:1px solid var(--border)}
-.sidebar-search input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:7px 10px 7px 30px;border-radius:7px;font-size:12px;font-family:inherit;outline:none}
-.sidebar-search input:focus{border-color:var(--blue)}
-.sidebar-search{position:relative}
-.sidebar-search .fa-search{position:absolute;left:20px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:12px}
-.asset-cats{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
-.asset-cats::-webkit-scrollbar{height:2px}
-.asset-cats::-webkit-scrollbar-thumb{background:var(--border2)}
-.asset-cat-btn{flex-shrink:0;padding:8px 12px;font-size:11px;font-weight:600;color:var(--text2);background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;font-family:inherit;transition:.15s;white-space:nowrap}
-.asset-cat-btn.active{color:var(--green);border-bottom-color:var(--green)}
-.asset-cat-btn:hover{color:var(--text)}
-.assets-list{flex:1;overflow-y:auto;padding:6px 0}
-.assets-list::-webkit-scrollbar{width:3px}
-.assets-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.asset-item{display:flex;align-items:center;gap:10px;padding:9px 12px;cursor:pointer;transition:.15s;border-radius:0;position:relative}
-.asset-item:hover{background:var(--bg3)}
-.asset-item.active{background:var(--bg4)}
-.asset-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--green);border-radius:0 2px 2px 0}
-.asset-icon{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;background:var(--bg4)}
-.asset-details{flex:1;min-width:0}
-.asset-name{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.asset-cat-tag{font-size:10px;color:var(--text3)}
-.asset-price-col{text-align:right;flex-shrink:0}
-.asset-price-val{font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
-.asset-price-val.up{color:var(--green)}
-.asset-price-val.down{color:var(--red)}
-.asset-payout{font-size:10px;color:var(--text2);font-weight:500}
-.asset-payout span{color:var(--green)}
-
-/* ── CHART AREA ── */
-.chart-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.chart-controls{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;flex-wrap:nowrap;overflow-x:auto}
-.chart-controls::-webkit-scrollbar{height:2px}
-.tf-btn{padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text2);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0}
-.tf-btn:hover{background:var(--bg4);color:var(--text)}
-.tf-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
-.chart-sep{width:1px;height:18px;background:var(--border);flex-shrink:0;margin:0 2px}
-.ct-btn{padding:4px 9px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text2);font-size:11px;cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0;display:flex;align-items:center;gap:4px}
-.ct-btn.active{background:var(--bg4);color:var(--text);border-color:var(--border2)}
-.ct-btn:hover{background:var(--bg4);color:var(--text)}
-.chart-spacer{flex:1}
-.payout-chip{background:var(--green-dim);color:var(--green);font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px;border:1px solid #1a5a35;flex-shrink:0}
-#chart-container{flex:1;position:relative;overflow:hidden}
+/* ── CHART WRAPPER ── */
+.chart-wrap{
+  position:fixed;
+  top:var(--topbar);left:0;right:0;
+  bottom:calc(var(--bottomnav) + var(--tradepanel));
+  overflow:hidden;
+}
 #chart{width:100%;height:100%}
-.price-line-label{position:absolute;right:0;background:var(--green);color:#000;font-size:10px;font-weight:700;padding:2px 5px;border-radius:2px;pointer-events:none}
-.countdown-overlay{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.75);backdrop-filter:blur(6px);border:1px solid var(--border);border-radius:10px;padding:8px 18px;display:none;align-items:center;gap:10px;z-index:10}
-.countdown-overlay.show{display:flex}
-.co-label{font-size:11px;color:var(--text2)}
-.co-timer{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--gold)}
-.co-bar{width:100px;height:4px;background:var(--bg4);border-radius:2px;overflow:hidden}
-.co-bar-inner{height:100%;background:var(--gold);transition:width .1s linear;border-radius:2px}
 
-/* ── TRADE PANEL (RIGHT) ── */
-.trade-panel{width:var(--trade-w);background:var(--bg2);border-left:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;overflow-x:hidden}
-.trade-panel::-webkit-scrollbar{width:3px}
-.trade-panel::-webkit-scrollbar-thumb{background:var(--border2)}
-.tp-section{padding:14px;border-bottom:1px solid var(--border)}
-.tp-label{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.7px;font-weight:600;margin-bottom:8px}
-.payout-display{display:flex;align-items:center;justify-content:space-between;background:var(--bg4);border-radius:8px;padding:10px 14px;border:1px solid var(--border)}
-.pd-left{}
-.pd-pct{font-size:22px;font-weight:800;color:var(--green)}
-.pd-label{font-size:10px;color:var(--text3)}
-.pd-profit{text-align:right}
-.pd-profit-amt{font-size:16px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
-.pd-profit-label{font-size:10px;color:var(--text3)}
-.amount-controls{display:flex;flex-direction:column;gap:8px}
-.amount-row{display:flex;align-items:center;gap:8px}
-.amount-input-wrap{flex:1;position:relative}
-.amount-input-wrap .currency{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text2);font-weight:600;font-size:13px}
-.amount-input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:10px 10px 10px 28px;border-radius:8px;font-size:16px;font-weight:700;font-family:inherit;outline:none;font-variant-numeric:tabular-nums}
-.amount-input:focus{border-color:var(--blue)}
-.btn-amt{background:var(--bg4);border:1px solid var(--border);color:var(--text2);width:36px;height:36px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
-.btn-amt:hover{background:var(--bg3);color:var(--text);border-color:var(--border2)}
-.amt-presets{display:flex;gap:5px;flex-wrap:wrap}
-.amt-preset{background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s}
-.amt-preset:hover{border-color:var(--green);color:var(--green)}
-.time-selector{display:flex;flex-direction:column;gap:8px}
-.time-input-row{display:flex;align-items:center;gap:8px}
-.time-input{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:14px;font-weight:600;font-family:inherit;outline:none;text-align:center}
-.time-input:focus{border-color:var(--blue)}
-.time-presets{display:flex;gap:5px;flex-wrap:wrap}
-.time-preset{background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;flex-shrink:0}
-.time-preset:hover{border-color:var(--blue);color:var(--blue)}
-.time-preset.active{background:var(--bg3);border-color:var(--blue);color:var(--blue)}
-.trade-buttons{display:flex;gap:10px;padding:14px}
-.btn-trade{flex:1;padding:16px 8px;border:none;border-radius:10px;font-size:15px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;transition:.2s;letter-spacing:.3px}
+/* ── CHART OVERLAYS ── */
+.chart-top-row{position:absolute;top:8px;left:8px;right:8px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none;z-index:10}
+.chart-time-box{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text2);font-variant-numeric:tabular-nums;pointer-events:all}
+.chart-time-utc{font-size:10px;color:var(--text3);margin-top:1px}
+.chart-tf-row{display:flex;gap:4px;flex-wrap:wrap;pointer-events:all}
+.tf-pill{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:14px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s}
+.tf-pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.chart-asset-overlay{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--text);pointer-events:all;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:10}
+.asset-payout-badge{background:var(--green-bg);color:var(--green);font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px}
+/* Trade markers on chart */
+.trade-marker-begin{position:absolute;top:0;bottom:0;width:1px;background:rgba(59,130,246,.6);border-left:1px dashed rgba(59,130,246,.6);pointer-events:none;z-index:5}
+.trade-marker-begin::after{content:'Begin';position:absolute;top:8px;left:4px;font-size:9px;color:#60a5fa;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
+.trade-marker-end{position:absolute;top:0;bottom:0;width:1px;background:rgba(248,113,113,.6);border-left:1px dashed rgba(248,113,113,.6);pointer-events:none;z-index:5}
+.trade-marker-end::after{content:'End';position:absolute;top:8px;left:4px;font-size:9px;color:#f87171;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
+
+/* ── TRADE PANEL (bottom) ── */
+.trade-panel{
+  position:fixed;bottom:var(--bottomnav);left:0;right:0;
+  height:var(--tradepanel);
+  background:var(--bg2);border-top:1px solid var(--border);
+  z-index:150;display:flex;flex-direction:column;
+}
+.tp-top{display:flex;align-items:center;padding:8px 12px;gap:8px;border-bottom:1px solid var(--border)}
+.asset-selector{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1}
+.asset-flags{position:relative;width:32px;height:20px;flex-shrink:0}
+.flag1{position:absolute;left:0;top:0;width:20px;height:20px;border-radius:50%;border:1px solid var(--border);font-size:13px;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.flag2{position:absolute;right:0;bottom:0;width:18px;height:18px;border-radius:50%;border:1px solid var(--border);font-size:11px;display:flex;align-items:center;justify-content:center;background:var(--bg3)}
+.asset-name-tp{font-size:15px;font-weight:700}
+.asset-payout-tp{font-size:14px;font-weight:800;color:var(--green)}
+.asset-chevron{color:var(--text2);font-size:12px}
+.pending-wrap{display:flex;align-items:center;gap:6px;margin-left:auto}
+.pending-label{font-size:11px;font-weight:600;color:var(--blue)}
+.toggle-switch{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border2);border-radius:20px;transition:.2s}
+.toggle-slider::before{content:'';position:absolute;width:16px;height:16px;left:2px;bottom:2px;background:#fff;border-radius:50%;transition:.2s}
+.toggle-switch input:checked + .toggle-slider{background:var(--blue)}
+.toggle-switch input:checked + .toggle-slider::before{transform:translateX(16px)}
+
+.tp-mid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)}
+.tp-field{padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.tp-field:first-child{border-right:1px solid var(--border)}
+.tp-field-label{font-size:10px;color:var(--text3);font-weight:500;letter-spacing:.3px}
+.tp-field-val{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text);display:flex;align-items:center;gap:4px}
+.tp-field-val .btn-adj{background:var(--bg4);border:1px solid var(--border);color:var(--text2);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tp-field-val input[type=number]{background:none;border:none;color:var(--text);font-size:15px;font-weight:700;font-family:inherit;width:60px;outline:none;font-variant-numeric:tabular-nums}
+.timer-input{background:none;border:none;color:var(--text);font-size:15px;font-weight:700;font-family:inherit;width:50px;outline:none;text-align:center}
+
+.tp-switch-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:4px 12px;border-bottom:1px solid var(--border)}
+.switch-btn{background:none;border:none;font-size:11px;font-weight:700;color:var(--blue);cursor:pointer;font-family:inherit;text-transform:uppercase;letter-spacing:.5px}
+.payout-row{display:flex;align-items:center;justify-content:space-between;padding:4px 12px}
+.payout-label{font-size:11px;color:var(--text3)}
+.payout-val{font-size:14px;font-weight:800;color:var(--text)}
+
+.trade-btns{display:grid;grid-template-columns:1fr 1fr;gap:0;height:52px;flex-shrink:0}
+.btn-trade{border:none;font-size:17px;font-weight:800;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:.5px;transition:.1s}
 .btn-up{background:var(--green);color:#000}
-.btn-up:hover{background:var(--green2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,200,122,.3)}
-.btn-up:active{transform:scale(.97)}
+.btn-up:active{background:#009a5e;transform:scale(.98)}
 .btn-down{background:var(--red);color:#fff}
-.btn-down:hover{background:var(--red2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(255,77,77,.3)}
-.btn-down:active{transform:scale(.97)}
-.btn-trade:disabled{opacity:.4;cursor:not-allowed;transform:none!important;box-shadow:none!important}
-.trade-info-row{display:flex;justify-content:space-between;padding:0 14px 10px;font-size:11px;color:var(--text3)}
+.btn-down:active{background:#c41f1f;transform:scale(.98)}
+.btn-trade:disabled{opacity:.4;pointer-events:none}
+.btn-trade i{font-size:15px}
 
-/* ── BOTTOM PANEL ── */
-.bottom-panel{height:180px;background:var(--bg2);border-top:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow:hidden}
-.bp-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0}
-.bp-tab{padding:8px 16px;font-size:12px;font-weight:600;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;transition:.15s}
-.bp-tab.active{color:var(--green);border-bottom-color:var(--green)}
-.bp-tab:hover{color:var(--text)}
-.bp-count{background:var(--green);color:#000;font-size:9px;font-weight:800;padding:1px 5px;border-radius:10px;margin-left:5px;vertical-align:middle}
-.bp-content{flex:1;overflow-y:auto;padding:8px 12px}
-.bp-content::-webkit-scrollbar{width:3px}
-.bp-content::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.bp-empty{text-align:center;padding:24px;color:var(--text3);font-size:12px}
-.bp-empty i{font-size:24px;margin-bottom:8px;display:block;opacity:.4}
-.trade-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid var(--border)}
-.trade-row:last-child{border-bottom:none}
-.tr-dir{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
-.tr-dir.up{background:var(--green-dim);color:var(--green)}
-.tr-dir.down{background:var(--red-dim);color:var(--red)}
-.tr-info{flex:1;min-width:0}
-.tr-asset{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tr-meta{font-size:10px;color:var(--text3)}
-.tr-amount{text-align:right;flex-shrink:0}
-.tr-amt-val{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
-.tr-result{font-size:10px;font-weight:600}
-.tr-result.win{color:var(--green)}
-.tr-result.lose{color:var(--red)}
-.tr-result.pending{color:var(--gold)}
-.tr-timer{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--gold);flex-shrink:0;min-width:30px;text-align:right}
+/* ── BOTTOM NAV ── */
+.bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;height:var(--bottomnav);
+  background:var(--bg2);border-top:1px solid var(--border);
+  display:flex;z-index:200;
+}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;color:var(--text3);transition:.15s;position:relative}
+.bn-item.active{color:var(--green)}
+.bn-item i{font-size:18px}
+.bn-item span{font-size:9px;font-weight:600;letter-spacing:.3px}
+.bn-badge{position:absolute;top:6px;right:calc(50% - 14px);background:var(--red);color:#fff;font-size:8px;font-weight:800;min-width:14px;height:14px;border-radius:7px;display:flex;align-items:center;justify-content:center;padding:0 3px}
 
-/* ── MODALS ── */
-.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:16px}
-.modal-backdrop.show{display:flex}
-.modal{background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:420px;max-height:90dvh;overflow-y:auto;padding:24px}
-.modal::-webkit-scrollbar{width:4px}
-.modal::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
-.modal-title{font-size:18px;font-weight:700;margin-bottom:6px}
-.modal-sub{font-size:12px;color:var(--text2);margin-bottom:20px}
-.modal-close{float:right;background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;margin-top:-4px}
-.modal-close:hover{color:var(--text)}
-.form-group{margin-bottom:14px}
+/* ── FULL-SCREEN MODALS (sheets) ── */
+.sheet-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;display:none;align-items:flex-end}
+.sheet-backdrop.show{display:flex}
+.sheet{background:var(--bg2);border-radius:18px 18px 0 0;width:100%;max-height:85dvh;overflow-y:auto;padding-bottom:env(safe-area-inset-bottom)}
+.sheet-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:10px auto 0;flex-shrink:0}
+.sheet-title{font-size:16px;font-weight:700;padding:14px 16px 0}
+.sheet-close{position:absolute;right:16px;top:14px;background:var(--bg4);border:none;color:var(--text2);width:28px;height:28px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sheet-header{position:relative;flex-shrink:0}
+
+/* Asset list sheet */
+.asset-search-wrap{padding:10px 16px;border-bottom:1px solid var(--border)}
+.asset-search-wrap input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:9px 12px 9px 34px;border-radius:10px;font-size:13px;font-family:inherit;outline:none}
+.asset-search-icon{position:absolute;left:26px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px}
+.asset-cats-row{display:flex;padding:8px 16px;gap:6px;overflow-x:auto;flex-shrink:0}
+.asset-cats-row::-webkit-scrollbar{display:none}
+.cat-pill{background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.cat-pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.asset-list-scroll{overflow-y:auto;max-height:50dvh}
+.asset-list-item{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;transition:.1s;border-bottom:1px solid var(--border)}
+.asset-list-item:active{background:var(--bg4)}
+.asset-list-item.active{background:var(--bg3)}
+.ali-flags{position:relative;width:34px;height:22px;flex-shrink:0}
+.ali-flag1{position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;background:var(--bg4);border:1px solid var(--border)}
+.ali-flag2{position:absolute;right:0;bottom:0;width:18px;height:18px;border-radius:50%;font-size:11px;display:flex;align-items:center;justify-content:center;background:var(--bg4);border:1px solid var(--border)}
+.ali-info{flex:1}
+.ali-name{font-size:13px;font-weight:600}
+.ali-cat{font-size:10px;color:var(--text3)}
+.ali-right{text-align:right}
+.ali-price{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.ali-price.up{color:var(--green)}
+.ali-price.down{color:var(--red)}
+.ali-payout{font-size:10px;font-weight:700;color:var(--green)}
+
+/* Auth sheet */
+.auth-form{padding:16px}
+.form-group{margin-bottom:12px}
 .form-label{display:block;font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.form-input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:.15s}
+.form-input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:11px 14px;border-radius:10px;font-size:15px;font-family:inherit;outline:none}
 .form-input:focus{border-color:var(--blue)}
-.form-select{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px;font-size:14px;font-family:inherit;outline:none;cursor:pointer;appearance:none}
-.btn-primary{width:100%;background:var(--green);color:#000;border:none;padding:12px;border-radius:9px;font-size:14px;font-weight:700;font-family:inherit;cursor:pointer;transition:.2s}
-.btn-primary:hover{background:var(--green2)}
-.btn-secondary{width:100%;background:var(--bg4);color:var(--text);border:1px solid var(--border);padding:12px;border-radius:9px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;margin-top:8px;transition:.2s}
-.btn-secondary:hover{border-color:var(--border2);background:var(--bg3)}
-.or-divider{text-align:center;color:var(--text3);font-size:12px;margin:14px 0;position:relative}
-.or-divider::before,.or-divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
-.or-divider::before{left:0}
-.or-divider::after{right:0}
-.btn-google{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:11px;border-radius:9px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:.2s}
-.btn-google:hover{border-color:var(--border2);background:var(--bg3)}
-.btn-google img{width:18px}
-.auth-switch{text-align:center;margin-top:16px;font-size:12px;color:var(--text2)}
-.auth-switch a{color:var(--blue);cursor:pointer;text-decoration:none;font-weight:600}
-.auth-switch a:hover{text-decoration:underline}
-.payment-methods{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
-.pay-method{background:var(--bg4);border:2px solid var(--border);border-radius:9px;padding:12px 8px;cursor:pointer;text-align:center;transition:.15s}
-.pay-method:hover{border-color:var(--border2)}
-.pay-method.active{border-color:var(--green)}
-.pay-method-icon{font-size:20px;margin-bottom:5px}
-.pay-method-name{font-size:11px;font-weight:600;color:var(--text2)}
-.pay-method.active .pay-method-name{color:var(--green)}
-.crypto-address-box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:.15s}
-.crypto-address-box:hover{border-color:var(--border2)}
-.crypto-addr{font-size:11px;color:var(--text);font-family:monospace;word-break:break-all;flex:1}
-.btn-copy{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:6px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:inherit}
-.btn-copy:hover{color:var(--text)}
-.info-box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:11px;color:var(--text2);line-height:1.8;margin-bottom:12px}
-.info-box strong{color:var(--text);display:block;margin-bottom:4px}
-.amount-input-group{position:relative;display:flex}
-.amount-input-group .currency-label{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text2);font-weight:600}
-.amount-input-group input{width:100%;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:10px 12px 10px 32px;border-radius:8px;font-size:16px;font-weight:700;font-family:inherit;outline:none}
-.amount-input-group input:focus{border-color:var(--green)}
-.profit-summary{background:var(--green-dim);border:1px solid #1a5a35;border-radius:8px;padding:12px;margin-top:12px;font-size:12px}
-.profit-summary .ps-row{display:flex;justify-content:space-between;margin-bottom:4px}
-.profit-summary .ps-row:last-child{margin-bottom:0;font-weight:700;font-size:14px;color:var(--green)}
+.btn-full{width:100%;padding:13px;border-radius:12px;border:none;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px}
+.btn-green{background:var(--green);color:#000}
+.btn-dark{background:var(--bg4);border:1px solid var(--border);color:var(--text)}
+.divider{text-align:center;color:var(--text3);font-size:12px;margin:10px 0;position:relative}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:40%;height:1px;background:var(--border)}
+.divider::before{left:0}.divider::after{right:0}
+.auth-switch{text-align:center;font-size:12px;color:var(--text2);margin-top:10px;padding-bottom:20px}
+.auth-switch a{color:var(--blue);font-weight:600;cursor:pointer}
 
-/* ── NOTIFICATIONS ── */
-.notif-container{position:fixed;top:60px;right:12px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-.notif{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:13px;font-weight:500;max-width:280px;pointer-events:all;animation:notifIn .3s ease;display:flex;align-items:center;gap:10px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
-.notif.win{border-color:var(--green);background:#0d2a1a}
-.notif.lose{border-color:var(--red);background:#2a0d0d}
-.notif.info{border-color:var(--blue);background:#0d1a2a}
-@keyframes notifIn{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
-.notif-exit{animation:notifOut .3s ease forwards}
-@keyframes notifOut{to{opacity:0;transform:translateX(30px)}}
+/* Deposit sheet */
+.pay-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:0 16px;margin-bottom:14px}
+.pay-item{background:var(--bg4);border:2px solid var(--border);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer}
+.pay-item.active{border-color:var(--green)}
+.pay-item-icon{font-size:20px;margin-bottom:4px}
+.pay-item-name{font-size:10px;font-weight:600;color:var(--text2)}
+.pay-item.active .pay-item-name{color:var(--green)}
+.pay-addr-box{display:flex;align-items:center;gap:10px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:12px;margin:0 16px 12px}
+.pay-addr-text{flex:1;font-size:11px;font-family:monospace;color:var(--text);word-break:break-all}
+.btn-copy-sm{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:6px 10px;border-radius:7px;font-size:11px;cursor:pointer;flex-shrink:0;font-family:inherit}
+.amount-row-big{display:flex;align-items:center;gap:10px;padding:0 16px;margin-bottom:12px}
+.amount-input-big{flex:1;background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:12px 14px;border-radius:10px;font-size:18px;font-weight:700;font-family:inherit;outline:none;font-variant-numeric:tabular-nums}
+.amount-input-big:focus{border-color:var(--green)}
+.amount-presets{display:flex;gap:6px;padding:0 16px;margin-bottom:14px;flex-wrap:wrap}
+.amt-pre{background:var(--bg4);border:1px solid var(--border);color:var(--text2);padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.amt-pre:active{border-color:var(--green);color:var(--green)}
 
-/* ── USER DROPDOWN ── */
-.user-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--bg2);border:1px solid var(--border);border-radius:10px;min-width:180px;z-index:500;box-shadow:0 8px 30px rgba(0,0,0,.4);overflow:hidden}
-.ud-item{padding:11px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:.1s}
-.ud-item:hover{background:var(--bg4)}
-.ud-item i{width:16px;text-align:center;color:var(--text2)}
-.ud-sep{height:1px;background:var(--border);margin:4px 0}
-.ud-item.danger{color:var(--red)}
-.ud-item.danger i{color:var(--red)}
-.tb-user-wrap{position:relative}
+/* Tournament sheet */
+.tournament-wrap{padding:16px}
+.tc-card{background:var(--bg3);border-radius:14px;padding:16px;margin-bottom:12px;border:1px solid var(--border)}
+.tc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tc-name{font-size:15px;font-weight:700}
+.tc-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;background:#0d2a1a;color:var(--green);border:1px solid #1a4a2a}
+.tc-prize{font-size:28px;font-weight:800;color:var(--gold);text-align:center;margin:8px 0 4px}
+.tc-sub{font-size:11px;color:var(--text3);text-align:center;margin-bottom:12px}
+.tc-info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.tc-info-item{background:var(--bg4);border-radius:8px;padding:8px;text-align:center}
+.tc-info-val{font-size:14px;font-weight:700}
+.tc-info-label{font-size:9px;color:var(--text3);margin-top:2px}
+.leaderboard{margin-top:10px}
+.lb-title{font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;margin-bottom:8px;text-transform:uppercase}
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.lb-num{width:20px;font-size:12px;font-weight:700;text-align:center}
+.lb-num.g{color:var(--gold)}
+.lb-num.s{color:#c0c0c0}
+.lb-num.b{color:#cd7f32}
+.lb-name{flex:1;font-size:13px;font-weight:600}
+.lb-profit{font-size:13px;font-weight:700;color:var(--green)}
 
-/* ── SCROLLBARS ── */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* Trades / History sheet */
+.trades-wrap{padding:0 16px 16px}
+.trade-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.ti-dir{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.ti-dir.up{background:var(--green-bg);color:var(--green)}
+.ti-dir.down{background:var(--red-bg);color:var(--red)}
+.ti-info{flex:1}
+.ti-asset{font-size:13px;font-weight:600}
+.ti-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.ti-result{text-align:right}
+.ti-amount{font-size:13px;font-weight:700}
+.ti-profit{font-size:12px;font-weight:700;margin-top:2px}
+.ti-profit.win{color:var(--green)}
+.ti-profit.lose{color:var(--red)}
+.ti-profit.pending{color:var(--gold)}
+.ti-timer{font-size:14px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;flex-shrink:0;min-width:34px;text-align:right}
 
-/* ── TOAST ── */
-.toast-bar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:8px;font-size:13px;z-index:9999;pointer-events:none;opacity:0;transition:.3s;box-shadow:0 4px 20px rgba(0,0,0,.4)}
-.toast-bar.show{opacity:1}
-
-/* ── MOBILE ── */
-@media(max-width:900px){
-  .sidebar-left{display:none}
-  .trade-panel{width:100%;position:fixed;bottom:0;left:0;right:0;z-index:200;max-height:50dvh;border-left:none;border-top:1px solid var(--border);flex-direction:row;overflow-x:auto;padding:8px}
-  .main-layout{flex-direction:column}
-  .chart-area{height:calc(100dvh - 48px - 180px - 50dvh);min-height:200px}
-  .tp-section{flex-shrink:0;min-width:160px}
-  .trade-buttons{flex-direction:column;padding:8px}
-  .bottom-panel{display:none}
-}
-@media(max-width:600px){
-  .tb-asset-info{min-width:auto}
-  .tb-change{display:none}
-  .demo-badge,.real-badge{display:none}
-}
-
-/* ── CHART LOADING ── */
-.chart-loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:5;flex-direction:column;gap:10px}
-.chart-loader .spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.chart-loader p{color:var(--text3);font-size:12px}
-
-/* ── LEVERAGE ── */
-.leverage-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.lev-btn{padding:6px 4px;border-radius:6px;border:1px solid var(--border);background:none;color:var(--text2);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;text-align:center;transition:.15s}
-.lev-btn:hover{border-color:var(--gold);color:var(--gold)}
-.lev-btn.active{background:#2a2200;border-color:var(--gold);color:var(--gold)}
-.leverage-info{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:6px;padding:6px 10px;background:var(--bg4);border-radius:6px}
-.leverage-info span b{color:var(--text)}
-
-/* ── SIGNALS ── */
-.signal-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
-.signal-row:last-child{border-bottom:none}
-.sig-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.sig-icon.buy{background:var(--green-dim);color:var(--green)}
-.sig-icon.sell{background:var(--red-dim);color:var(--red)}
+/* Signals sheet */
+.signals-wrap{padding:0 16px 16px}
+.sig-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer}
+.sig-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.sig-icon.buy{background:var(--green-bg);color:var(--green)}
+.sig-icon.sell{background:var(--red-bg);color:var(--red)}
 .sig-icon.neutral{background:var(--bg4);color:var(--text3)}
-.sig-asset{flex:1;font-size:12px;font-weight:600}
-.sig-dir{font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px}
-.sig-dir.buy{background:var(--green-dim);color:var(--green)}
-.sig-dir.sell{background:var(--red-dim);color:var(--red)}
+.sig-info{flex:1}
+.sig-name{font-size:13px;font-weight:600}
+.sig-reason{font-size:10px;color:var(--text3);margin-top:2px}
+.sig-right{text-align:right}
+.sig-dir{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;margin-bottom:4px}
+.sig-dir.buy{background:var(--green-bg);color:var(--green)}
+.sig-dir.sell{background:var(--red-bg);color:var(--red)}
 .sig-dir.neutral{background:var(--bg4);color:var(--text3)}
-.sig-strength{display:flex;gap:2px}
-.sig-strength span{width:6px;height:6px;border-radius:50%;background:var(--border2)}
-.sig-strength span.active{background:var(--gold)}
-.sig-payout{font-size:11px;color:var(--text3);text-align:right}
-.sig-payout b{color:var(--green)}
+.sig-stars{display:flex;gap:2px;justify-content:flex-end;margin-top:3px}
+.sig-stars span{width:6px;height:6px;border-radius:50%;background:var(--border2)}
+.sig-stars span.on{background:var(--gold)}
 
-/* ── TOURNAMENTS ── */
-.tournament-card{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px}
-.tc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.tc-name{font-size:14px;font-weight:700}
-.tc-status{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px}
-.tc-status.live{background:#1a2e1a;color:var(--green);border:1px solid #1a5a2a}
-.tc-status.upcoming{background:#2a2200;color:var(--gold);border:1px solid #4a3a00}
-.tc-prize{font-size:22px;font-weight:800;color:var(--gold);text-align:center;margin:10px 0}
-.tc-prize small{font-size:12px;color:var(--text3);display:block;font-weight:400}
-.tc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
-.tc-stat{text-align:center;background:var(--bg3);border-radius:7px;padding:8px}
-.tc-stat-val{font-size:14px;font-weight:700}
-.tc-stat-label{font-size:10px;color:var(--text3)}
-.leaderboard-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
-.lb-rank{width:22px;font-size:12px;font-weight:700;text-align:center;flex-shrink:0}
-.lb-rank.gold{color:var(--gold)}
-.lb-rank.silver{color:#c0c0c0}
-.lb-rank.bronze{color:#cd7f32}
-.lb-name{flex:1;font-size:12px;font-weight:600}
-.lb-profit{font-size:12px;font-weight:700;color:var(--green)}
+/* Notifications */
+.notif-stack{position:fixed;top:calc(var(--topbar) + 8px);left:8px;right:8px;z-index:500;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.notif{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 14px;font-size:13px;display:flex;align-items:center;gap:10px;box-shadow:0 4px 20px rgba(0,0,0,.4);pointer-events:all;animation:slideIn .3s ease}
+@keyframes slideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.notif.win{border-color:var(--green);background:#0a1f12}
+.notif.lose{border-color:var(--red);background:#1f0a0a}
+.notif.info{border-color:var(--blue);background:#0a0f1f}
+.notif-exit{animation:slideOut .3s ease forwards}
+@keyframes slideOut{to{opacity:0;transform:translateY(-10px)}}
 
-/* ── REFERRAL ── */
-.ref-link-box{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:12px;display:flex;align-items:center;gap:10px;margin-bottom:12px}
-.ref-link{flex:1;font-size:11px;color:var(--blue);font-family:monospace;word-break:break-all;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ref-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}
-.ref-stat{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
-.ref-stat-val{font-size:18px;font-weight:800;color:var(--green)}
-.ref-stat-label{font-size:10px;color:var(--text3)}
-.ref-how{background:var(--bg4);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:2}
+/* Toast */
+.toast{position:fixed;bottom:calc(var(--bottomnav) + var(--tradepanel) + 10px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:9px 18px;border-radius:10px;font-size:12px;z-index:999;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.show{opacity:1}
 
-/* ── PWA install ── */
-.pwa-install-bar{display:none;align-items:center;gap:10px;padding:8px 14px;background:#0d2040;border-bottom:1px solid #1a3a6a;font-size:12px}
-.pwa-install-bar.show{display:flex}
-.pwa-install-bar button{background:var(--blue);color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
-.pwa-install-bar .pwa-close{background:none;color:var(--text2);padding:4px 8px;margin-left:auto}
+/* Desktop layout override */
+@media(min-width:768px){
+  :root{--tradepanel:160px;--bottomnav:0px}
+  .chart-wrap{right:320px;bottom:0}
+  .trade-panel{top:var(--topbar);right:0;width:320px;bottom:0;height:auto;border-top:none;border-left:1px solid var(--border)}
+  .trade-btns{height:64px}
+  .bottom-nav{display:none}
+  .sheet-backdrop{align-items:center;justify-content:center}
+  .sheet{border-radius:14px;max-width:480px;max-height:80vh}
+}
 </style>
 </head>
 <body>
 
-<!-- PWA INSTALL BAR -->
-<div class="pwa-install-bar" id="pwa-install-bar">
-  <i class="fas fa-mobile-alt" style="color:var(--blue)"></i>
-  <span>Install EX Trade as an app for faster access!</span>
-  <button onclick="installPWA()">Install</button>
-  <button class="pwa-close" onclick="document.getElementById('pwa-install-bar').classList.remove('show')"><i class="fas fa-times"></i></button>
-</div>
+<!-- SW CLEAR -->
+<script>
+if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()));}
+</script>
 
 <!-- TOP BAR -->
 <nav class="topbar">
-  <a class="tb-logo" href="index.html"><i class="fas fa-chart-line" style="color:var(--green)"></i> EX<span>Trade</span></a>
-  <div class="tb-asset-info">
-    <div>
-      <div class="tb-asset-name" id="tb-asset-name">EUR/USD OTC</div>
-      <div class="tb-change up" id="tb-change">+0.05%</div>
-    </div>
-    <div>
-      <div class="tb-price up" id="tb-price">1.08512</div>
-    </div>
+  <div class="tb-live" onclick="toggleAccountMode()">
+    <div class="tb-live-dot"></div>
+    <span class="tb-live-label" id="tb-live-label">LIVE</span>
+  </div>
+  <div class="tb-balance" onclick="toggleAccountMode()">
+    <span id="tb-balance-val">$10,000.00</span>
+    <span class="tb-mode demo" id="tb-mode-badge">DEMO</span>
   </div>
   <div class="tb-spacer"></div>
-  <button class="btn-toggle-account" onclick="openModal('modal-tournament')" style="color:var(--gold);border-color:#4a3a00;background:#1a1200" title="Tournaments"><i class="fas fa-trophy"></i> <span style="display:none" class="tb-text">Tournament</span></button>
-  <button class="btn-toggle-account" onclick="openModal('modal-referral')" style="color:#a78bfa;border-color:#3a2a6a;background:#120d20" title="Referral"><i class="fas fa-user-plus"></i> <span style="display:none" class="tb-text">Referral</span></button>
-  <div class="tb-account">
-    <div class="tb-balance" onclick="toggleAccountMode()" title="Switch Demo/Real">
-      <div class="tb-balance-label">Balance</div>
-      <div class="tb-balance-val" id="tb-balance">$10,000.00</div>
+  <div class="tb-notif" onclick="openSheet('sheet-trades')">
+    <i class="fas fa-bell" style="font-size:15px;color:var(--text2)"></i>
+    <div class="tb-notif-badge" id="notif-badge" style="display:none">0</div>
+  </div>
+  <button class="btn-deposit-top" onclick="openSheet('sheet-deposit')">Deposit</button>
+</nav>
+
+<!-- CHART -->
+<div class="chart-wrap" id="chart-wrap">
+  <!-- Overlays -->
+  <div class="chart-top-row">
+    <div class="chart-time-box">
+      <div id="utc-time" style="font-size:13px;font-weight:700;color:var(--text)">16:12:26</div>
+      <div class="chart-time-utc">UTC+5:30</div>
     </div>
-    <span id="tb-account-badge" class="demo-badge">DEMO</span>
-    <button class="btn-toggle-account" onclick="toggleAccountMode()">Switch</button>
-    <button class="btn-deposit-top" onclick="openModal('modal-deposit')"><i class="fas fa-plus"></i> Deposit</button>
-    <div class="tb-user-wrap">
-      <button class="btn-user" id="btn-user-top" onclick="toggleUserDropdown()"><i class="fas fa-user-circle" id="user-icon"></i></button>
-      <div class="user-dropdown" id="user-dropdown" style="display:none">
-        <div class="ud-item" id="ud-name"><i class="fas fa-user"></i> <span id="ud-name-text">Guest</span></div>
-        <div class="ud-sep"></div>
-        <div class="ud-item" onclick="openModal('modal-deposit')"><i class="fas fa-wallet"></i> Deposit</div>
-        <div class="ud-item" onclick="openModal('modal-withdraw')"><i class="fas fa-arrow-up"></i> Withdraw</div>
-        <div class="ud-item" onclick="openModal('modal-history')"><i class="fas fa-history"></i> History</div>
-        <div class="ud-sep"></div>
-        <div class="ud-item" id="btn-login-ud" onclick="openModal('modal-login')"><i class="fas fa-sign-in-alt"></i> Sign In</div>
-        <div class="ud-item danger" id="btn-logout-ud" style="display:none" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Logout</div>
+    <div class="chart-tf-row">
+      <div class="tf-pill" onclick="setTF(5,this)">5s</div>
+      <div class="tf-pill" onclick="setTF(15,this)">15s</div>
+      <div class="tf-pill active" onclick="setTF(60,this)">1m</div>
+      <div class="tf-pill" onclick="setTF(300,this)">5m</div>
+      <div class="tf-pill" onclick="setTF(900,this)">15m</div>
+    </div>
+  </div>
+  <div class="chart-asset-overlay" onclick="openSheet('sheet-assets')">
+    <span id="chart-asset-name">EUR/USD</span>
+    <span class="asset-payout-badge" id="chart-payout-badge">82%</span>
+    <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text3)"></i>
+  </div>
+  <!-- Trade markers (injected dynamically) -->
+  <div id="trade-markers"></div>
+  <div id="chart" style="width:100%;height:100%"></div>
+</div>
+
+<!-- TRADE PANEL -->
+<div class="trade-panel">
+  <!-- Asset + Pending -->
+  <div class="tp-top">
+    <div class="asset-selector" onclick="openSheet('sheet-assets')">
+      <div class="asset-flags" id="tp-flags">
+        <div class="flag1" id="tp-flag1">🇪🇺</div>
+        <div class="flag2" id="tp-flag2">🇺🇸</div>
+      </div>
+      <div class="asset-name-tp" id="tp-asset-name">EUR/USD</div>
+      <div class="asset-payout-tp" id="tp-payout-pct">82%</div>
+      <i class="fas fa-chevron-down asset-chevron"></i>
+    </div>
+    <div class="pending-wrap">
+      <span class="pending-label">PENDING</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="pending-toggle"/>
+        <div class="toggle-slider"></div>
+      </label>
+    </div>
+  </div>
+
+  <!-- Timer + Amount -->
+  <div class="tp-mid">
+    <div class="tp-field">
+      <div class="tp-field-label">Timer</div>
+      <div class="tp-field-val">
+        <input class="timer-input" id="timer-input" value="01:00" readonly onclick="openTimeSheet()"/>
       </div>
     </div>
+    <div class="tp-field" style="border-left:1px solid var(--border)">
+      <div class="tp-field-label">Investment</div>
+      <div class="tp-field-val">
+        <button class="btn-adj" onclick="changeAmt(-1)">−</button>
+        <input type="number" id="amt-input" value="10" min="1" max="10000" oninput="onAmtChange()"/>
+        <span style="font-size:13px;color:var(--text2);margin-left:2px">$</span>
+        <button class="btn-adj" onclick="changeAmt(1)">+</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payout row -->
+  <div class="payout-row">
+    <span class="payout-label">Payout</span>
+    <span class="payout-val" id="payout-val">92.50 $</span>
+  </div>
+
+  <!-- UP / DOWN -->
+  <div class="trade-btns">
+    <button class="btn-trade btn-up" id="btn-up" onclick="placeTrade('up')">
+      <i class="fas fa-arrow-up"></i> Up
+    </button>
+    <button class="btn-trade btn-down" id="btn-down" onclick="placeTrade('down')">
+      <i class="fas fa-arrow-down"></i> Down
+    </button>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <div class="bn-item active" id="nav-chart" onclick="switchNav('chart',this)">
+    <i class="fas fa-chart-candlestick"></i>
+    <span>Trade</span>
+  </div>
+  <div class="bn-item" id="nav-signals" onclick="switchNav('signals',this);openSheet('sheet-signals')">
+    <i class="fas fa-bolt"></i>
+    <span>Signals</span>
+  </div>
+  <div class="bn-item" id="nav-profile" onclick="switchNav('profile',this);openSheet('sheet-profile')">
+    <i class="fas fa-user"></i>
+    <span>Profile</span>
+  </div>
+  <div class="bn-item" id="nav-tournament" onclick="switchNav('tournament',this);openSheet('sheet-tournament')">
+    <i class="fas fa-trophy"></i>
+    <span>Cup</span>
+    <div class="bn-badge">4</div>
+  </div>
+  <div class="bn-item" id="nav-trades" onclick="switchNav('trades',this);openSheet('sheet-trades')">
+    <i class="fas fa-list"></i>
+    <span>Trades</span>
+    <div class="bn-badge" id="trades-badge" style="display:none">0</div>
   </div>
 </nav>
 
-<!-- MAIN LAYOUT -->
-<div class="main-layout">
+<!-- ════════════════ SHEETS ════════════════ -->
 
-  <!-- LEFT SIDEBAR: ASSETS -->
-  <aside class="sidebar-left">
-    <div class="sidebar-search">
-      <i class="fas fa-search"></i>
-      <input type="text" id="asset-search" placeholder="Search assets..." oninput="filterAssets(this.value)"/>
+<!-- ASSETS SHEET -->
+<div class="sheet-backdrop" id="sheet-assets" onclick="closeSheetIfBackdrop(event,'sheet-assets')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Select Asset</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-assets')"><i class="fas fa-times"></i></button>
     </div>
-    <div class="asset-cats" id="asset-cats">
-      <button class="asset-cat-btn active" data-cat="all" onclick="filterByCategory('all',this)">All</button>
-      <button class="asset-cat-btn" data-cat="forex" onclick="filterByCategory('forex',this)">Forex</button>
-      <button class="asset-cat-btn" data-cat="crypto" onclick="filterByCategory('crypto',this)">Crypto</button>
-      <button class="asset-cat-btn" data-cat="commodity" onclick="filterByCategory('commodity',this)">Commodity</button>
-      <button class="asset-cat-btn" data-cat="index" onclick="filterByCategory('index',this)">Indices</button>
+    <div class="asset-search-wrap" style="position:relative">
+      <i class="fas fa-search asset-search-icon"></i>
+      <input type="text" placeholder="Search assets..." oninput="filterAssetSheet(this.value)" id="asset-search-input"/>
     </div>
-    <div class="assets-list" id="assets-list"></div>
-  </aside>
-
-  <!-- CHART AREA -->
-  <section class="chart-area">
-    <div class="chart-controls">
-      <button class="tf-btn" data-tf="1" onclick="setTimeframe(1,this)">1s</button>
-      <button class="tf-btn" data-tf="5" onclick="setTimeframe(5,this)">5s</button>
-      <button class="tf-btn" data-tf="15" onclick="setTimeframe(15,this)">15s</button>
-      <button class="tf-btn" data-tf="30" onclick="setTimeframe(30,this)">30s</button>
-      <button class="tf-btn active" data-tf="60" onclick="setTimeframe(60,this)">1m</button>
-      <button class="tf-btn" data-tf="300" onclick="setTimeframe(300,this)">5m</button>
-      <button class="tf-btn" data-tf="900" onclick="setTimeframe(900,this)">15m</button>
-      <button class="tf-btn" data-tf="3600" onclick="setTimeframe(3600,this)">1h</button>
-      <div class="chart-sep"></div>
-      <button class="ct-btn active" data-ct="candlestick" onclick="setChartType('candlestick',this)"><i class="fas fa-chart-bar"></i> Candle</button>
-      <button class="ct-btn" data-ct="line" onclick="setChartType('line',this)"><i class="fas fa-chart-line"></i> Line</button>
-      <button class="ct-btn" data-ct="area" onclick="setChartType('area',this)"><i class="fas fa-mountain"></i> Area</button>
-      <div class="chart-spacer"></div>
-      <div class="payout-chip" id="chart-payout-chip">Payout: <strong id="payout-chip-val">82%</strong></div>
+    <div class="asset-cats-row" id="asset-cats-row">
+      <div class="cat-pill active" onclick="filterAssetCat('all',this)">All</div>
+      <div class="cat-pill" onclick="filterAssetCat('forex',this)">Forex</div>
+      <div class="cat-pill" onclick="filterAssetCat('crypto',this)">Crypto</div>
+      <div class="cat-pill" onclick="filterAssetCat('commodity',this)">Commodity</div>
+      <div class="cat-pill" onclick="filterAssetCat('index',this)">Indices</div>
     </div>
-    <div id="chart-container" style="position:relative;flex:1">
-      <div class="chart-loader" id="chart-loader">
-        <div class="spinner"></div>
-        <p>Loading chart...</p>
-      </div>
-      <div id="chart"></div>
-      <div class="countdown-overlay" id="countdown-overlay">
-        <div>
-          <div class="co-label">Trade closes in</div>
-          <div class="co-timer" id="co-timer">60s</div>
-        </div>
-        <div>
-          <div class="co-bar"><div class="co-bar-inner" id="co-bar-inner" style="width:100%"></div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- RIGHT: TRADE PANEL -->
-  <aside class="trade-panel">
-    <div class="tp-section">
-      <div class="tp-label">Payout</div>
-      <div class="payout-display">
-        <div class="pd-left">
-          <div class="pd-pct" id="payout-pct">82%</div>
-          <div class="pd-label">On winning trade</div>
-        </div>
-        <div class="pd-profit">
-          <div class="pd-profit-amt" id="profit-amount">+$8.20</div>
-          <div class="pd-profit-label">Profit</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="tp-section">
-      <div class="tp-label">Investment</div>
-      <div class="amount-controls">
-        <div class="amount-row">
-          <button class="btn-amt" onclick="changeAmount(-1)"><i class="fas fa-minus"></i></button>
-          <div class="amount-input-wrap">
-            <span class="currency">$</span>
-            <input class="amount-input" type="number" id="trade-amount" value="10" min="1" max="10000" oninput="onAmountChange()"/>
-          </div>
-          <button class="btn-amt" onclick="changeAmount(1)"><i class="fas fa-plus"></i></button>
-        </div>
-        <div class="amt-presets">
-          <button class="amt-preset" onclick="setAmount(1)">$1</button>
-          <button class="amt-preset" onclick="setAmount(5)">$5</button>
-          <button class="amt-preset" onclick="setAmount(10)">$10</button>
-          <button class="amt-preset" onclick="setAmount(25)">$25</button>
-          <button class="amt-preset" onclick="setAmount(50)">$50</button>
-          <button class="amt-preset" onclick="setAmount(100)">$100</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="tp-section">
-      <div class="tp-label">Trade Time</div>
-      <div class="time-selector">
-        <div class="time-input-row">
-          <input class="time-input" type="text" id="trade-time-display" value="1:00 min" readonly/>
-        </div>
-        <div class="time-presets">
-          <button class="time-preset" data-sec="30" onclick="setTradeTime(30,this)">30s</button>
-          <button class="time-preset active" data-sec="60" onclick="setTradeTime(60,this)">1m</button>
-          <button class="time-preset" data-sec="120" onclick="setTradeTime(120,this)">2m</button>
-          <button class="time-preset" data-sec="180" onclick="setTradeTime(180,this)">3m</button>
-          <button class="time-preset" data-sec="300" onclick="setTradeTime(300,this)">5m</button>
-          <button class="time-preset" data-sec="600" onclick="setTradeTime(600,this)">10m</button>
-          <button class="time-preset" data-sec="900" onclick="setTradeTime(900,this)">15m</button>
-          <button class="time-preset" data-sec="1800" onclick="setTradeTime(1800,this)">30m</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="tp-section">
-      <div class="tp-label">Leverage</div>
-      <div class="leverage-grid">
-        <button class="lev-btn active" data-lev="1" onclick="setLeverage(1,this)">1x</button>
-        <button class="lev-btn" data-lev="2" onclick="setLeverage(2,this)">2x</button>
-        <button class="lev-btn" data-lev="5" onclick="setLeverage(5,this)">5x</button>
-        <button class="lev-btn" data-lev="10" onclick="setLeverage(10,this)">10x</button>
-        <button class="lev-btn" data-lev="25" onclick="setLeverage(25,this)">25x</button>
-        <button class="lev-btn" data-lev="50" onclick="setLeverage(50,this)">50x</button>
-        <button class="lev-btn" data-lev="100" onclick="setLeverage(100,this)">100x</button>
-        <button class="lev-btn" data-lev="200" onclick="setLeverage(200,this)">200x</button>
-      </div>
-      <div class="leverage-info">
-        <span>Exposure: <b id="lev-exposure">$10</b></span>
-        <span>Payout: <b id="lev-payout" style="color:var(--green)">82%</b></span>
-        <span>Margin: <b id="lev-margin">$10</b></span>
-      </div>
-    </div>
-
-    <div class="trade-info-row">
-      <span>Min: $1</span>
-      <span id="trade-mode-label" style="color:var(--text2)">Demo Mode</span>
-      <span>Max: $10,000</span>
-    </div>
-
-    <div class="trade-buttons">
-      <button class="btn-trade btn-up" id="btn-up" onclick="placeTrade('up')">
-        <i class="fas fa-arrow-up"></i> UP
-      </button>
-      <button class="btn-trade btn-down" id="btn-down" onclick="placeTrade('down')">
-        <i class="fas fa-arrow-down"></i> DOWN
-      </button>
-    </div>
-  </aside>
+    <div class="asset-list-scroll" id="asset-list-scroll"></div>
+  </div>
 </div>
 
-<!-- BOTTOM PANEL -->
-<div class="bottom-panel">
-  <div class="bp-tabs">
-    <div class="bp-tab active" onclick="switchBPTab('active',this)">Active Trades <span class="bp-count" id="active-count">0</span></div>
-    <div class="bp-tab" onclick="switchBPTab('history',this)">Trade History</div>
-    <div class="bp-tab" onclick="switchBPTab('analytics',this)">Analytics</div>
-    <div class="bp-tab" onclick="switchBPTab('signals',this)"><i class="fas fa-bolt" style="color:var(--gold)"></i> Signals</div>
-  </div>
-  <div class="bp-content" id="bp-content">
-    <div class="bp-empty" id="bp-empty">
-      <i class="fas fa-chart-line"></i>
-      No active trades. Place a trade above!
+<!-- AUTH SHEET -->
+<div class="sheet-backdrop" id="sheet-profile" onclick="closeSheetIfBackdrop(event,'sheet-profile')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title" id="auth-sheet-title">Sign In</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-profile')"><i class="fas fa-times"></i></button>
     </div>
-    <div id="trades-list"></div>
+    <div id="auth-form-wrap" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" type="email" id="auth-email" placeholder="your@email.com"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input class="form-input" type="password" id="auth-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doSignIn()"/>
+      </div>
+      <button class="btn-full btn-green" onclick="doSignIn()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
+      <div class="divider">or</div>
+      <button class="btn-full btn-dark" onclick="doGoogleLogin()">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+        Continue with Google
+      </button>
+      <div class="auth-switch">No account? <a onclick="showRegisterForm()">Register free</a></div>
+    </div>
+    <!-- Logged in view -->
+    <div id="logged-in-wrap" class="auth-form" style="display:none">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="width:60px;height:60px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 10px;color:var(--green)"><i class="fas fa-user-check"></i></div>
+        <div style="font-size:16px;font-weight:700" id="logged-name">User</div>
+        <div style="font-size:12px;color:var(--text3)" id="logged-email">email@example.com</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:16px;font-weight:800;color:var(--green)" id="profile-balance">$0.00</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Balance</div>
+        </div>
+        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center">
+          <div style="font-size:16px;font-weight:800" id="profile-trades">0</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:2px">Trades</div>
+        </div>
+      </div>
+      <button class="btn-full btn-green" onclick="closeSheet('sheet-profile');openSheet('sheet-deposit')"><i class="fas fa-plus"></i> Deposit</button>
+      <button class="btn-full btn-dark" onclick="doLogout()" style="margin-top:6px"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </div>
+</div>
+
+<!-- DEPOSIT SHEET -->
+<div class="sheet-backdrop" id="sheet-deposit" onclick="closeSheetIfBackdrop(event,'sheet-deposit')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Deposit Funds</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-deposit')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="padding:14px 16px 0;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Payment Method</div>
+    <div class="pay-grid">
+      <div class="pay-item active" onclick="selPayMethod('usdt',this)"><div class="pay-item-icon">₮</div><div class="pay-item-name">USDT TRC20</div></div>
+      <div class="pay-item" onclick="selPayMethod('btc',this)"><div class="pay-item-icon">₿</div><div class="pay-item-name">Bitcoin</div></div>
+      <div class="pay-item" onclick="selPayMethod('eth',this)"><div class="pay-item-icon">Ξ</div><div class="pay-item-name">Ethereum</div></div>
+      <div class="pay-item" onclick="selPayMethod('bkash',this)"><div class="pay-item-icon" style="color:#e2136e"><i class="fas fa-mobile-alt"></i></div><div class="pay-item-name">bKash</div></div>
+      <div class="pay-item" onclick="selPayMethod('nagad',this)"><div class="pay-item-icon" style="color:#f5810a"><i class="fas fa-mobile-alt"></i></div><div class="pay-item-name">Nagad</div></div>
+      <div class="pay-item" onclick="selPayMethod('bank',this)"><div class="pay-item-icon"><i class="fas fa-university"></i></div><div class="pay-item-name">Bank</div></div>
+    </div>
+    <div id="deposit-details-area"></div>
+    <div style="padding:0 16px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Amount (USD)</div>
+    <div class="amount-row-big">
+      <input class="amount-input-big" type="number" id="deposit-amt" value="50" placeholder="50" oninput="updateDepositSummary()"/>
+      <span style="font-size:18px;font-weight:700;color:var(--text2)">$</span>
+    </div>
+    <div class="amount-presets">
+      <button class="amt-pre" onclick="setDepositAmt(10)">$10</button>
+      <button class="amt-pre" onclick="setDepositAmt(25)">$25</button>
+      <button class="amt-pre" onclick="setDepositAmt(50)">$50</button>
+      <button class="amt-pre" onclick="setDepositAmt(100)">$100</button>
+      <button class="amt-pre" onclick="setDepositAmt(500)">$500</button>
+    </div>
+    <div style="padding:0 16px 16px">
+      <div style="background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:12px;font-size:12px;color:var(--text2);display:flex;justify-content:space-between">
+        <span>You pay</span><span id="dep-pay-val" style="color:var(--text);font-weight:700">$50.00</span>
+      </div>
+      <button class="btn-full btn-green" onclick="submitDeposit()"><i class="fas fa-check-circle"></i> Confirm Deposit</button>
+    </div>
+  </div>
+</div>
+
+<!-- TRADES SHEET -->
+<div class="sheet-backdrop" id="sheet-trades" onclick="closeSheetIfBackdrop(event,'sheet-trades')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Trades</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-trades')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="display:flex;border-bottom:1px solid var(--border)">
+      <div class="bp-tab-btn active" id="ttab-active" onclick="switchTradeTab('active',this)" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid var(--green);color:var(--green)">Active</div>
+      <div class="bp-tab-btn" id="ttab-history" onclick="switchTradeTab('history',this)" style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;color:var(--text2)">History</div>
+    </div>
+    <div class="trades-wrap" id="trades-list-wrap" style="max-height:55dvh;overflow-y:auto">
+      <div style="text-align:center;padding:30px;color:var(--text3);font-size:13px" id="trades-empty"><i class="fas fa-chart-line" style="font-size:28px;display:block;margin-bottom:10px;opacity:.3"></i>No active trades</div>
+      <div id="trades-list-items"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SIGNALS SHEET -->
+<div class="sheet-backdrop" id="sheet-signals" onclick="closeSheetIfBackdrop(event,'sheet-signals')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title"><i class="fas fa-bolt" style="color:var(--gold)"></i> Trading Signals</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-signals')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="signals-wrap" id="signals-list" style="max-height:60dvh;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- TOURNAMENT SHEET -->
+<div class="sheet-backdrop" id="sheet-tournament" onclick="closeSheetIfBackdrop(event,'sheet-tournament')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title"><i class="fas fa-trophy" style="color:var(--gold)"></i> Tournament</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-tournament')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="tournament-wrap" style="max-height:70dvh;overflow-y:auto">
+      <div class="tc-card">
+        <div class="tc-top"><div class="tc-name">Daily Championship</div><div class="tc-badge">🔴 LIVE</div></div>
+        <div class="tc-prize">$500</div>
+        <div class="tc-sub">Prize Pool</div>
+        <div class="tc-info-row">
+          <div class="tc-info-item"><div class="tc-info-val" id="tc-count">247</div><div class="tc-info-label">Traders</div></div>
+          <div class="tc-info-item"><div class="tc-info-val" id="tc-timer">14:32:08</div><div class="tc-info-label">Time Left</div></div>
+          <div class="tc-info-item"><div class="tc-info-val">Free</div><div class="tc-info-label">Entry</div></div>
+        </div>
+        <button class="btn-full btn-green" id="btn-join-t" onclick="joinTournament()"><i class="fas fa-flag"></i> Join Tournament</button>
+      </div>
+      <div class="leaderboard">
+        <div class="lb-title">🏆 Leaderboard</div>
+        <div class="lb-row"><div class="lb-num g">1</div><div class="lb-name">Ahmad K.</div><div class="lb-profit">+$234.50</div></div>
+        <div class="lb-row"><div class="lb-num s">2</div><div class="lb-name">Sara M.</div><div class="lb-profit">+$198.20</div></div>
+        <div class="lb-row"><div class="lb-num b">3</div><div class="lb-name">Omar T.</div><div class="lb-profit">+$145.00</div></div>
+        <div class="lb-row"><div class="lb-num">4</div><div class="lb-name">Fatima R.</div><div class="lb-profit">+$122.75</div></div>
+        <div class="lb-row"><div class="lb-num">5</div><div class="lb-name">You</div><div class="lb-profit" id="your-rank">—</div></div>
+      </div>
+      <div style="background:var(--bg3);border-radius:10px;padding:12px;margin-top:12px;font-size:12px;color:var(--text2);line-height:2">
+        🥇 1st: <b style="color:var(--gold)">$250</b> &nbsp; 🥈 2nd: <b>$150</b> &nbsp; 🥉 3rd: <b>$75</b> &nbsp; 4th–5th: $12.50 each
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TIME SELECTOR SHEET -->
+<div class="sheet-backdrop" id="sheet-time" onclick="closeSheetIfBackdrop(event,'sheet-time')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Select Trade Time</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-time')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px">
+      ${[30,60,120,180,300,600,900,1800].map(s=>{
+        const l=s<60?s+'s':s<3600?(s/60)+'m':(s/3600)+'h';
+        return `<button onclick="setTradeTimeSec(${s})" style="background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit" id="tpre-${s}">${l}</button>`;
+      }).join('')}
+    </div>
   </div>
 </div>
 
 <!-- NOTIFICATIONS -->
-<div class="notif-container" id="notif-container"></div>
-<div class="toast-bar" id="toast-bar"></div>
+<div class="notif-stack" id="notif-stack"></div>
+<div class="toast" id="toast"></div>
 
-<!-- ═══════════════════ MODALS ═══════════════════ -->
-
-<!-- LOGIN MODAL -->
-<div class="modal-backdrop" id="modal-login">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-login')"><i class="fas fa-times"></i></button>
-    <div class="modal-title">Sign In</div>
-    <div class="modal-sub">Access real account & full features</div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="login-email" placeholder="your@email.com"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="login-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')loginUser()"/>
-    </div>
-    <button class="btn-primary" onclick="loginUser()"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-    <div class="or-divider">or</div>
-    <button class="btn-google" onclick="loginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Continue with Google
-    </button>
-    <div class="auth-switch">Don't have an account? <a onclick="switchModal('modal-login','modal-register')">Register</a></div>
-  </div>
-</div>
-
-<!-- REGISTER MODAL -->
-<div class="modal-backdrop" id="modal-register">
-  <div class="modal">
-    <button class="modal-close" onclick="closeModal('modal-register')"><i class="fas fa-times"></i></button>
-    <div class="modal-title">Create Account</div>
-    <div class="modal-sub">Start with $10,000 demo balance</div>
-    <div class="form-group">
-      <label class="form-label">Full Name</label>
-      <input class="form-input" type="text" id="reg-name" placeholder="Your name"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Email</label>
-      <input class="form-input" type="email" id="reg-email" placeholder="your@email.com"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Password</label>
-      <input class="form-input" type="password" id="reg-password" placeholder="Min 6 characters"/>
-    </div>
-    <button class="btn-primary" onclick="registerUser()"><i class="fas fa-user-plus"></i> Create Account</button>
-    <div class="or-divider">or</div>
-    <button class="btn-google" onclick="loginGoogle()">
-      <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
-      Continue with Google
-    </button>
-    <div class="auth-switch">Already have an account? <a onclick="switchModal('modal-register','modal-login')">Sign In</a></div>
-  </div>
-</div>
-
-<!-- DEPOSIT MODAL -->
-<div class="modal-backdrop" id="modal-deposit">
-  <div class="modal" style="max-width:480px">
-    <button class="modal-close" onclick="closeModal('modal-deposit')"><i class="fas fa-times"></i></button>
-    <div class="modal-title"><i class="fas fa-wallet" style="color:var(--green)"></i> Deposit Funds</div>
-    <div class="modal-sub">Choose a payment method to add funds</div>
-    <div class="tp-label" style="margin-bottom:10px">Payment Method</div>
-    <div class="payment-methods">
-      <div class="pay-method active" onclick="selectPayMethod('usdt',this)" data-method="usdt">
-        <div class="pay-method-icon">₮</div>
-        <div class="pay-method-name">USDT (TRC20)</div>
-      </div>
-      <div class="pay-method" onclick="selectPayMethod('btc',this)" data-method="btc">
-        <div class="pay-method-icon">₿</div>
-        <div class="pay-method-name">Bitcoin (BTC)</div>
-      </div>
-      <div class="pay-method" onclick="selectPayMethod('eth',this)" data-method="eth">
-        <div class="pay-method-icon">Ξ</div>
-        <div class="pay-method-name">Ethereum (ETH)</div>
-      </div>
-      <div class="pay-method" onclick="selectPayMethod('bkash',this)" data-method="bkash">
-        <div class="pay-method-icon" style="color:#e2136e"><i class="fas fa-mobile-alt"></i></div>
-        <div class="pay-method-name">bKash</div>
-      </div>
-      <div class="pay-method" onclick="selectPayMethod('nagad',this)" data-method="nagad">
-        <div class="pay-method-icon" style="color:#f5810a"><i class="fas fa-mobile-alt"></i></div>
-        <div class="pay-method-name">Nagad</div>
-      </div>
-      <div class="pay-method" onclick="selectPayMethod('bank',this)" data-method="bank">
-        <div class="pay-method-icon"><i class="fas fa-university"></i></div>
-        <div class="pay-method-name">Bank Transfer</div>
-      </div>
-    </div>
-    <div id="deposit-details"></div>
-    <div class="form-group" style="margin-top:12px">
-      <label class="form-label">Amount (USD)</label>
-      <div class="amount-input-group">
-        <span class="currency-label">$</span>
-        <input type="number" id="deposit-amount" value="50" min="10" placeholder="Min $10" oninput="updateDepositSummary()"/>
-      </div>
-    </div>
-    <div class="profit-summary" id="deposit-summary">
-      <div class="ps-row"><span>Deposit</span><span id="ds-amount">$50.00</span></div>
-      <div class="ps-row"><span>Fee</span><span>$0.00</span></div>
-      <div class="ps-row"><span>You receive</span><span id="ds-receive">$50.00</span></div>
-    </div>
-    <button class="btn-primary" style="margin-top:14px" onclick="submitDeposit()"><i class="fas fa-check"></i> Confirm Deposit</button>
-  </div>
-</div>
-
-<!-- WITHDRAW MODAL -->
-<div class="modal-backdrop" id="modal-withdraw">
-  <div class="modal" style="max-width:480px">
-    <button class="modal-close" onclick="closeModal('modal-withdraw')"><i class="fas fa-times"></i></button>
-    <div class="modal-title"><i class="fas fa-arrow-up" style="color:var(--blue)"></i> Withdraw Funds</div>
-    <div class="modal-sub">Withdrawals processed within 24 hours</div>
-    <div class="info-box">
-      <strong>Available Balance</strong>
-      <span id="withdraw-available" style="color:var(--green);font-size:16px;font-weight:700">$0.00</span>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Withdrawal Method</label>
-      <select class="form-select" id="withdraw-method">
-        <option value="usdt">USDT (TRC20)</option>
-        <option value="btc">Bitcoin (BTC)</option>
-        <option value="eth">Ethereum (ETH)</option>
-        <option value="bkash">bKash</option>
-        <option value="nagad">Nagad</option>
-        <option value="bank">Bank Transfer</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Wallet Address / Account Number</label>
-      <input class="form-input" type="text" id="withdraw-address" placeholder="Enter your wallet address or account number"/>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Amount (USD)</label>
-      <div class="amount-input-group">
-        <span class="currency-label">$</span>
-        <input type="number" id="withdraw-amount" min="10" placeholder="Min $10"/>
-      </div>
-    </div>
-    <button class="btn-primary" onclick="submitWithdraw()"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
-  </div>
-</div>
-
-<!-- HISTORY MODAL -->
-<div class="modal-backdrop" id="modal-history">
-  <div class="modal" style="max-width:560px">
-    <button class="modal-close" onclick="closeModal('modal-history')"><i class="fas fa-times"></i></button>
-    <div class="modal-title"><i class="fas fa-history" style="color:var(--blue)"></i> Trade History</div>
-    <div style="margin-bottom:14px" id="history-stats"></div>
-    <div id="history-list"></div>
-  </div>
-</div>
-
-<!-- TOURNAMENT MODAL -->
-<div class="modal-backdrop" id="modal-tournament">
-  <div class="modal" style="max-width:500px">
-    <button class="modal-close" onclick="closeModal('modal-tournament')"><i class="fas fa-times"></i></button>
-    <div class="modal-title"><i class="fas fa-trophy" style="color:var(--gold)"></i> Tournaments</div>
-    <div class="modal-sub">Compete with traders, win real prizes</div>
-    <div id="tournament-content">
-      <div class="tournament-card">
-        <div class="tc-header">
-          <div class="tc-name">Daily Championship</div>
-          <div class="tc-status live">🔴 LIVE</div>
-        </div>
-        <div class="tc-prize">$500 <small>Prize Pool</small></div>
-        <div class="tc-stats">
-          <div class="tc-stat"><div class="tc-stat-val" id="tc-participants">247</div><div class="tc-stat-label">Traders</div></div>
-          <div class="tc-stat"><div class="tc-stat-val" id="tc-timeleft">14:32:08</div><div class="tc-stat-label">Time Left</div></div>
-          <div class="tc-stat"><div class="tc-stat-val">Free</div><div class="tc-stat-label">Entry</div></div>
-        </div>
-        <button class="btn-primary" onclick="joinTournament()" id="btn-join-tournament"><i class="fas fa-flag"></i> Join Tournament</button>
-      </div>
-      <div style="margin-bottom:10px;font-size:12px;font-weight:700;color:var(--text2)">🏆 LEADERBOARD</div>
-      <div id="tournament-leaderboard">
-        <div class="leaderboard-row"><div class="lb-rank gold">1</div><div class="lb-name">Ahmad K.</div><div class="lb-profit">+$234.50</div></div>
-        <div class="leaderboard-row"><div class="lb-rank silver">2</div><div class="lb-name">Sara M.</div><div class="lb-profit">+$198.20</div></div>
-        <div class="leaderboard-row"><div class="lb-rank bronze">3</div><div class="lb-name">You</div><div class="lb-profit" id="your-tournament-rank">—</div></div>
-        <div class="leaderboard-row"><div class="lb-rank">4</div><div class="lb-name">Fatima R.</div><div class="lb-profit">+$145.00</div></div>
-        <div class="leaderboard-row"><div class="lb-rank">5</div><div class="lb-name">Omar T.</div><div class="lb-profit">+$122.75</div></div>
-      </div>
-      <div class="info-box" style="margin-top:12px;font-size:11px">
-        <strong>Prize Distribution</strong>
-        🥇 1st: $250 &nbsp; 🥈 2nd: $150 &nbsp; 🥉 3rd: $75 &nbsp; 4th-5th: $12.50 each
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- REFERRAL MODAL -->
-<div class="modal-backdrop" id="modal-referral">
-  <div class="modal" style="max-width:460px">
-    <button class="modal-close" onclick="closeModal('modal-referral')"><i class="fas fa-times"></i></button>
-    <div class="modal-title"><i class="fas fa-user-plus" style="color:#a78bfa"></i> Referral Program</div>
-    <div class="modal-sub">Earn 5% commission on every deposit your friends make</div>
-    <div class="tp-label" style="margin-bottom:8px">Your Referral Link</div>
-    <div class="ref-link-box">
-      <span class="ref-link" id="ref-link-text">https://exglobal.online/trade.html?ref=XXXXXX</span>
-      <button class="btn-copy" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy</button>
-    </div>
-    <div class="ref-stats">
-      <div class="ref-stat"><div class="ref-stat-val" id="ref-total">0</div><div class="ref-stat-label">Referred</div></div>
-      <div class="ref-stat"><div class="ref-stat-val" id="ref-active">0</div><div class="ref-stat-label">Active</div></div>
-      <div class="ref-stat"><div class="ref-stat-val" id="ref-earned">$0</div><div class="ref-stat-label">Earned</div></div>
-    </div>
-    <div class="ref-how">
-      <div style="font-weight:700;color:var(--text);margin-bottom:6px">How it works:</div>
-      1. Share your unique referral link<br/>
-      2. Friend registers & makes a deposit<br/>
-      3. You earn <b style="color:var(--green)">5% commission</b> instantly<br/>
-      4. No limit — earn from unlimited referrals
-    </div>
-    <button class="btn-primary" style="margin-top:12px" onclick="shareReferral()"><i class="fas fa-share-alt"></i> Share Link</button>
-  </div>
-</div>
-
-<!-- ═══════════════════ JAVASCRIPT ═══════════════════ -->
+<!-- ════════════════ JS ════════════════ -->
 <script>
-/* ────────────────────────────────────────────────────────
-   ASSETS CONFIG
-──────────────────────────────────────────────────────── */
-const ASSETS = [
-  // Forex OTC
-  {id:'EURUSD',name:'EUR/USD OTC',cat:'forex',price:1.08512,payout:82,vol:0.00008,icon:'🇪🇺',color:'#3b82f6',decimals:5},
-  {id:'GBPUSD',name:'GBP/USD OTC',cat:'forex',price:1.26540,payout:80,vol:0.00010,icon:'🇬🇧',color:'#8b5cf6',decimals:5},
-  {id:'USDJPY',name:'USD/JPY OTC',cat:'forex',price:149.520,payout:81,vol:0.012,icon:'🇯🇵',color:'#ef4444',decimals:3},
-  {id:'USDCAD',name:'USD/CAD OTC',cat:'forex',price:1.36012,payout:79,vol:0.00009,icon:'🇨🇦',color:'#f59e0b',decimals:5},
-  {id:'AUDUSD',name:'AUD/USD OTC',cat:'forex',price:0.65120,payout:78,vol:0.00007,icon:'🇦🇺',color:'#10b981',decimals:5},
-  {id:'EURGBP',name:'EUR/GBP OTC',cat:'forex',price:0.85780,payout:77,vol:0.00006,icon:'💶',color:'#6366f1',decimals:5},
-  {id:'USDCHF',name:'USD/CHF OTC',cat:'forex',price:0.89710,payout:78,vol:0.00007,icon:'🇨🇭',color:'#ec4899',decimals:5},
-  {id:'NZDUSD',name:'NZD/USD OTC',cat:'forex',price:0.59820,payout:76,vol:0.00007,icon:'🇳🇿',color:'#14b8a6',decimals:5},
-  // Crypto
-  {id:'BTCUSD',name:'BTC/USD',cat:'crypto',price:67420.0,payout:85,vol:8.0,icon:'₿',color:'#f59e0b',decimals:1,binance:'btcusdt'},
-  {id:'ETHUSD',name:'ETH/USD',cat:'crypto',price:3480.0,payout:83,vol:0.5,icon:'Ξ',color:'#a78bfa',decimals:2,binance:'ethusdt'},
-  {id:'BNBUSD',name:'BNB/USD',cat:'crypto',price:580.0,payout:80,vol:0.12,icon:'🟡',color:'#f0b90b',decimals:2,binance:'bnbusdt'},
-  {id:'SOLUSD',name:'SOL/USD',cat:'crypto',price:168.0,payout:82,vol:0.08,icon:'◎',color:'#9945ff',decimals:2,binance:'solusdt'},
-  {id:'XRPUSD',name:'XRP/USD',cat:'crypto',price:0.6120,payout:80,vol:0.0003,icon:'◉',color:'#0085c0',decimals:4,binance:'xrpusdt'},
-  {id:'DOGEUSD',name:'DOGE/USD',cat:'crypto',price:0.1580,payout:79,vol:0.0001,icon:'🐕',color:'#c2a633',decimals:4,binance:'dogeusdt'},
-  // Commodities
-  {id:'XAUUSD',name:'Gold/USD',cat:'commodity',price:2320.0,payout:80,vol:0.25,icon:'🥇',color:'#ffd700',decimals:2},
-  {id:'XAGUSD',name:'Silver/USD',cat:'commodity',price:27.50,payout:77,vol:0.015,icon:'🥈',color:'#c0c0c0',decimals:3},
-  {id:'WTIUSD',name:'Oil/USD (WTI)',cat:'commodity',price:78.40,payout:78,vol:0.04,icon:'🛢️',color:'#8b6914',decimals:2},
-  // Indices
-  {id:'SPX500',name:'S&P 500',cat:'index',price:5280.0,payout:75,vol:1.5,icon:'📊',color:'#22d3ee',decimals:1},
-  {id:'NAS100',name:'NASDAQ 100',cat:'index',price:18420.0,payout:74,vol:6.0,icon:'📈',color:'#60a5fa',decimals:1},
-  {id:'DJI',name:'Dow Jones',cat:'index',price:39200.0,payout:73,vol:5.0,icon:'🏦',color:'#4ade80',decimals:1},
+/* ── ASSETS ── */
+const ASSETS=[
+  {id:'EURUSD',name:'EUR/USD',f1:'🇪🇺',f2:'🇺🇸',cat:'forex',price:1.08512,payout:82,vol:0.00008,dec:5},
+  {id:'GBPUSD',name:'GBP/USD',f1:'🇬🇧',f2:'🇺🇸',cat:'forex',price:1.26540,payout:80,vol:0.00010,dec:5},
+  {id:'USDJPY',name:'USD/JPY',f1:'🇺🇸',f2:'🇯🇵',cat:'forex',price:149.520,payout:85,vol:0.012,dec:3},
+  {id:'AUDUSD',name:'AUD/USD',f1:'🇦🇺',f2:'🇺🇸',cat:'forex',price:0.65120,payout:78,vol:0.00007,dec:5},
+  {id:'AUDJPY',name:'AUD/JPY',f1:'🇦🇺',f2:'🇯🇵',cat:'forex',price:113.252,payout:85,vol:0.010,dec:3},
+  {id:'USDCAD',name:'USD/CAD',f1:'🇺🇸',f2:'🇨🇦',cat:'forex',price:1.36012,payout:79,vol:0.00009,dec:5},
+  {id:'EURGBP',name:'EUR/GBP',f1:'🇪🇺',f2:'🇬🇧',cat:'forex',price:0.85780,payout:77,vol:0.00006,dec:5},
+  {id:'USDCHF',name:'USD/CHF',f1:'🇺🇸',f2:'🇨🇭',cat:'forex',price:0.89710,payout:78,vol:0.00007,dec:5},
+  {id:'BTCUSD',name:'BTC/USD',f1:'₿',f2:'🇺🇸',cat:'crypto',price:67420.0,payout:85,vol:8.0,dec:1,bin:'btcusdt'},
+  {id:'ETHUSD',name:'ETH/USD',f1:'Ξ',f2:'🇺🇸',cat:'crypto',price:3480.0,payout:83,vol:0.5,dec:2,bin:'ethusdt'},
+  {id:'BNBUSD',name:'BNB/USD',f1:'🟡',f2:'🇺🇸',cat:'crypto',price:580.0,payout:80,vol:0.12,dec:2,bin:'bnbusdt'},
+  {id:'SOLUSD',name:'SOL/USD',f1:'◎',f2:'🇺🇸',cat:'crypto',price:168.0,payout:82,vol:0.08,dec:2,bin:'solusdt'},
+  {id:'XRPUSD',name:'XRP/USD',f1:'◉',f2:'🇺🇸',cat:'crypto',price:0.6120,payout:80,vol:0.0003,dec:4,bin:'xrpusdt'},
+  {id:'DOGEUSD',name:'DOGE/USD',f1:'🐕',f2:'🇺🇸',cat:'crypto',price:0.1580,payout:79,vol:0.0001,dec:4,bin:'dogeusdt'},
+  {id:'XAUUSD',name:'Gold/USD',f1:'🥇',f2:'🇺🇸',cat:'commodity',price:2320.0,payout:80,vol:0.25,dec:2},
+  {id:'XAGUSD',name:'Silver/USD',f1:'🥈',f2:'🇺🇸',cat:'commodity',price:27.50,payout:77,vol:0.015,dec:3},
+  {id:'WTIUSD',name:'Oil/USD',f1:'🛢️',f2:'🇺🇸',cat:'commodity',price:78.40,payout:78,vol:0.04,dec:2},
+  {id:'SPX500',name:'S&P 500',f1:'📊',f2:'🇺🇸',cat:'index',price:5280.0,payout:75,vol:1.5,dec:1},
+  {id:'NAS100',name:'NASDAQ 100',f1:'📈',f2:'🇺🇸',cat:'index',price:18420.0,payout:74,vol:6.0,dec:1},
 ];
 
-/* ────────────────────────────────────────────────────────
-   STATE
-──────────────────────────────────────────────────────── */
-const STATE = {
-  currentAsset: ASSETS[0],
-  accountMode: 'demo',
-  demoBalance: 10000,
-  realBalance: 0,
-  tradeAmount: 10,
-  tradeTimeSec: 60,
-  activeTrades: [],
-  tradeHistory: [],
-  timeframe: 60,
-  chartType: 'candlestick',
-  prices: {},
-  priceDirections: {},
-  bpTab: 'active',
-  currentUser: null,
-  wsConnections: {},
+/* ── STATE ── */
+const S={
+  asset:ASSETS[0],
+  demoBalance:10000,realBalance:0,mode:'demo',
+  amount:10,tradeTimeSec:60,
+  activeTrades:[],history:[],
+  prices:{},dirs:{},priceHist:{},
+  tradeTab:'active',user:null,
 };
+try{const sv=JSON.parse(localStorage.getItem('ext_s')||'{}');if(sv.demoBalance!==undefined)S.demoBalance=sv.demoBalance;if(sv.realBalance!==undefined)S.realBalance=sv.realBalance;if(sv.history)S.history=sv.history;if(sv.mode)S.mode=sv.mode;}catch(e){}
+ASSETS.forEach(a=>{S.prices[a.id]=a.price;});
 
-// Load saved state
-try {
-  const saved = JSON.parse(localStorage.getItem('extrade_state') || '{}');
-  if (saved.demoBalance !== undefined) STATE.demoBalance = saved.demoBalance;
-  if (saved.realBalance !== undefined) STATE.realBalance = saved.realBalance;
-  if (saved.tradeHistory) STATE.tradeHistory = saved.tradeHistory;
-  if (saved.accountMode) STATE.accountMode = saved.accountMode;
-} catch(e){}
+/* ── CHART ── */
+let chart,candle,line,area,candleData=[],lastCandleT=0,TF=60;
 
-// Init prices from ASSETS
-ASSETS.forEach(a => { STATE.prices[a.id] = a.price; });
-
-/* ────────────────────────────────────────────────────────
-   CHART ENGINE
-──────────────────────────────────────────────────────── */
-let chart, candleSeries, lineSeries, areaSeries, activeSeriesType = 'candlestick';
-const candleData = [];
-let lastCandleTime = 0;
-
-function initChart() {
-  const container = document.getElementById('chart');
-  const wrapper = document.getElementById('chart-container');
-
-  chart = LightweightCharts.createChart(container, {
-    width: wrapper.offsetWidth,
-    height: wrapper.offsetHeight,
-    layout: { background: { color: '#0d1117' }, textColor: '#8b949e' },
-    grid: { vertLines: { color: '#1c2128' }, horzLines: { color: '#1c2128' } },
-    crosshair: { mode: LightweightCharts.CrosshairMode.Normal },
-    rightPriceScale: { borderColor: '#30363d' },
-    timeScale: { borderColor: '#30363d', timeVisible: true, secondsVisible: true },
-    handleScroll: true,
-    handleScale: true,
+function initChart(){
+  const el=document.getElementById('chart');
+  const wrap=document.getElementById('chart-wrap');
+  chart=LightweightCharts.createChart(el,{
+    width:wrap.offsetWidth,height:wrap.offsetHeight,
+    layout:{background:{color:'#0a0e1a'},textColor:'#64748b'},
+    grid:{vertLines:{color:'#1a2233'},horzLines:{color:'#1a2233'}},
+    crosshair:{mode:LightweightCharts.CrosshairMode.Normal},
+    rightPriceScale:{borderColor:'#2a3547'},
+    timeScale:{borderColor:'#2a3547',timeVisible:true,secondsVisible:true},
   });
-
-  candleSeries = chart.addCandlestickSeries({
-    upColor: '#00c87a', downColor: '#ff4d4d',
-    borderVisible: false,
-    wickUpColor: '#00c87a', wickDownColor: '#ff4d4d',
-  });
-  lineSeries = chart.addLineSeries({ color: '#2f81f7', lineWidth: 2, visible: false });
-  areaSeries = chart.addAreaSeries({ topColor: 'rgba(47,129,247,.3)', bottomColor: 'rgba(47,129,247,0)', lineColor: '#2f81f7', lineWidth: 2, visible: false });
-
-  const resizeObs = new ResizeObserver(() => {
-    chart.applyOptions({ width: wrapper.offsetWidth, height: wrapper.offsetHeight });
-  });
-  resizeObs.observe(wrapper);
-
-  generateHistoricalData(STATE.currentAsset);
-  document.getElementById('chart-loader').style.display = 'none';
+  candle=chart.addCandlestickSeries({upColor:'#00c87a',downColor:'#ff3d3d',borderVisible:false,wickUpColor:'#00c87a',wickDownColor:'#ff3d3d'});
+  line=chart.addLineSeries({color:'#3b82f6',lineWidth:2,visible:false});
+  area=chart.addAreaSeries({topColor:'rgba(59,130,246,.25)',bottomColor:'rgba(59,130,246,0)',lineColor:'#3b82f6',lineWidth:2,visible:false});
+  new ResizeObserver(()=>chart.applyOptions({width:wrap.offsetWidth,height:wrap.offsetHeight})).observe(wrap);
+  buildHistoricalData(S.asset);
 }
 
-function generateHistoricalData(asset) {
-  candleData.length = 0;
-  const tf = STATE.timeframe;
-  const now = Math.floor(Date.now() / 1000);
-  const count = 200;
-  let price = asset.price;
-  const startTime = now - count * tf;
-
-  for (let i = 0; i < count; i++) {
-    const t = startTime + i * tf;
-    const o = price;
-    const change = (Math.random() - 0.495) * asset.vol * 4;
-    const close = parseFloat((o + change).toFixed(asset.decimals));
-    const hi = parseFloat((Math.max(o, close) + Math.abs(change) * Math.random() * 0.5).toFixed(asset.decimals));
-    const lo = parseFloat((Math.min(o, close) - Math.abs(change) * Math.random() * 0.5).toFixed(asset.decimals));
-    candleData.push({ time: t, open: o, high: hi, low: lo, close });
-    price = close;
+function buildHistoricalData(asset){
+  candleData=[];
+  const now=Math.floor(Date.now()/1000);
+  let price=S.prices[asset.id];
+  for(let i=200;i>=0;i--){
+    const t=now-i*TF;
+    const o=price;
+    const ch=(Math.random()-.495)*asset.vol*4;
+    const c=+(o+ch).toFixed(asset.dec);
+    const h=+(Math.max(o,c)+Math.abs(ch)*Math.random()*.5).toFixed(asset.dec);
+    const lo=+(Math.min(o,c)-Math.abs(ch)*Math.random()*.5).toFixed(asset.dec);
+    candleData.push({time:t,open:o,high:h,low:lo,close:c});
+    price=c;
   }
-
-  // Set current price close to last candle
-  STATE.prices[asset.id] = price;
-  lastCandleTime = now - (now % tf);
-  updateAllSeries();
+  S.prices[asset.id]=price;
+  lastCandleT=now-(now%TF);
+  try{candle.setData(candleData);line.setData(candleData.map(c=>({time:c.time,value:c.close})));area.setData(candleData.map(c=>({time:c.time,value:c.close})));}catch(e){}
 }
 
-function updateAllSeries() {
-  if (!chart) return;
-  const closes = candleData.map(c => ({ time: c.time, value: c.close }));
-  try {
-    candleSeries.setData(candleData);
-    lineSeries.setData(closes);
-    areaSeries.setData(closes);
-  } catch(e) {}
-}
-
-function tickChart(asset) {
-  if (!chart || !candleSeries) return;
-  const tf = STATE.timeframe;
-  const now = Math.floor(Date.now() / 1000);
-  const candleStart = now - (now % tf);
-  const prevPrice = STATE.prices[asset.id];
-  const change = (Math.random() - 0.495) * asset.vol;
-  const newPrice = parseFloat((prevPrice + change).toFixed(asset.decimals));
-  STATE.prices[asset.id] = newPrice;
-
-  // Direction
-  STATE.priceDirections[asset.id] = newPrice >= prevPrice ? 'up' : 'down';
-
-  if (candleStart > lastCandleTime) {
-    // New candle
-    lastCandleTime = candleStart;
-    const newCandle = {
-      time: candleStart,
-      open: prevPrice,
-      high: Math.max(prevPrice, newPrice),
-      low: Math.min(prevPrice, newPrice),
-      close: newPrice,
-    };
-    candleData.push(newCandle);
-    if (candleData.length > 500) candleData.shift();
-  } else {
-    // Update current candle
-    const last = candleData[candleData.length - 1];
-    if (last && last.time === candleStart) {
-      last.close = newPrice;
-      last.high = Math.max(last.high, newPrice);
-      last.low = Math.min(last.low, newPrice);
-    }
+function tickPrice(asset){
+  const prev=S.prices[asset.id];
+  const np=+(prev+(Math.random()-.495)*asset.vol).toFixed(asset.dec);
+  S.prices[asset.id]=np;
+  S.dirs[asset.id]=np>=prev?'up':'down';
+  if(!S.priceHist[asset.id])S.priceHist[asset.id]=[];
+  S.priceHist[asset.id].push(np);
+  if(S.priceHist[asset.id].length>50)S.priceHist[asset.id].shift();
+  if(asset.id===S.asset.id){
+    const now=Math.floor(Date.now()/1000);
+    const cs=now-(now%TF);
+    if(cs>lastCandleT){lastCandleT=cs;candleData.push({time:cs,open:prev,high:Math.max(prev,np),low:Math.min(prev,np),close:np});if(candleData.length>500)candleData.shift();}
+    else{const l=candleData[candleData.length-1];if(l&&l.time===cs){l.close=np;l.high=Math.max(l.high,np);l.low=Math.min(l.low,np);}}
+    try{const l=candleData[candleData.length-1];if(l){candle.update(l);line.update({time:l.time,value:l.close});area.update({time:l.time,value:l.close});}}catch(e){}
+    updateTopBarPrice(np);
   }
-
-  if (asset.id === STATE.currentAsset.id) {
-    try {
-      const last = candleData[candleData.length - 1];
-      if (!last) return;
-      candleSeries.update(last);
-      lineSeries.update({ time: last.time, value: last.close });
-      areaSeries.update({ time: last.time, value: last.close });
-    } catch(e){}
-    updateTopBar(asset, newPrice);
-  }
-  updateAssetListPrice(asset.id, newPrice);
+  updateAssetListPrice(asset.id,np);
 }
 
-function setChartType(type, btn) {
-  document.querySelectorAll('.ct-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  STATE.chartType = type;
-  activeSeriesType = type;
-  candleSeries.applyOptions({ visible: type === 'candlestick' });
-  lineSeries.applyOptions({ visible: type === 'line' });
-  areaSeries.applyOptions({ visible: type === 'area' });
+function startPriceEngine(){
+  setInterval(()=>{ASSETS.filter(a=>!a.bin).forEach(a=>tickPrice(a));updateActiveTimers();},1000);
+  ASSETS.filter(a=>a.bin).forEach(connectBinance);
 }
-
-function setTimeframe(tf, btn) {
-  document.querySelectorAll('.tf-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  STATE.timeframe = tf;
-  generateHistoricalData(STATE.currentAsset);
-}
-
-/* ────────────────────────────────────────────────────────
-   PRICE ENGINE — Binance WebSocket + Simulation
-──────────────────────────────────────────────────────── */
-let tickInterval;
-
-function startPriceEngine() {
-  // Simulate all assets
-  tickInterval = setInterval(() => {
-    ASSETS.forEach(a => {
-      if (!a.binance) tickChart(a);
-    });
-    updateActiveTrades();
-  }, 1000);
-
-  // Binance WebSocket for crypto
-  ASSETS.filter(a => a.binance).forEach(connectBinance);
-}
-
-function connectBinance(asset) {
-  try {
-    const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${asset.binance}@kline_1s`);
-    ws.onmessage = (e) => {
-      const d = JSON.parse(e.data);
-      if (!d.k) return;
-      const newPrice = parseFloat(d.k.c);
-      const prevPrice = STATE.prices[asset.id];
-      STATE.priceDirections[asset.id] = newPrice >= prevPrice ? 'up' : 'down';
-      STATE.prices[asset.id] = newPrice;
-
-      const tf = STATE.timeframe;
-      const now = Math.floor(Date.now() / 1000);
-      const candleStart = now - (now % tf);
-
-      if (candleStart > lastCandleTime && asset.id === STATE.currentAsset.id) {
-        lastCandleTime = candleStart;
-        candleData.push({ time: candleStart, open: prevPrice, high: Math.max(prevPrice,newPrice), low: Math.min(prevPrice,newPrice), close: newPrice });
-        if (candleData.length > 500) candleData.shift();
-      } else if (asset.id === STATE.currentAsset.id) {
-        const last = candleData[candleData.length - 1];
-        if (last) {
-          last.close = newPrice;
-          last.high = Math.max(last.high, newPrice);
-          last.low = Math.min(last.low, newPrice);
-        }
+function connectBinance(asset){
+  try{
+    const ws=new WebSocket(`wss://stream.binance.com:9443/ws/${asset.bin}@kline_1s`);
+    ws.onmessage=e=>{
+      const d=JSON.parse(e.data);if(!d.k)return;
+      const np=parseFloat(d.k.c),prev=S.prices[asset.id];
+      S.prices[asset.id]=np;S.dirs[asset.id]=np>=prev?'up':'down';
+      if(!S.priceHist[asset.id])S.priceHist[asset.id]=[];
+      S.priceHist[asset.id].push(np);if(S.priceHist[asset.id].length>50)S.priceHist[asset.id].shift();
+      if(asset.id===S.asset.id){
+        const now=Math.floor(Date.now()/1000),cs=now-(now%TF);
+        if(cs>lastCandleT){lastCandleT=cs;candleData.push({time:cs,open:prev,high:Math.max(prev,np),low:Math.min(prev,np),close:np});}
+        else{const l=candleData[candleData.length-1];if(l){l.close=np;l.high=Math.max(l.high,np);l.low=Math.min(l.low,np);}}
+        try{const l=candleData[candleData.length-1];if(l){candle.update(l);line.update({time:l.time,value:l.close});area.update({time:l.time,value:l.close});}}catch(e2){}
+        updateTopBarPrice(np);
       }
-
-      if (asset.id === STATE.currentAsset.id) {
-        try {
-          const last = candleData[candleData.length - 1];
-          if (last) {
-            candleSeries.update(last);
-            lineSeries.update({ time: last.time, value: last.close });
-            areaSeries.update({ time: last.time, value: last.close });
-          }
-        } catch(e2){}
-        updateTopBar(asset, newPrice);
-      }
-      updateAssetListPrice(asset.id, newPrice);
+      updateAssetListPrice(asset.id,np);
     };
-    ws.onerror = () => {};
-    ws.onclose = () => { setTimeout(() => connectBinance(asset), 3000); };
-    STATE.wsConnections[asset.id] = ws;
-  } catch(e) {}
+    ws.onclose=()=>setTimeout(()=>connectBinance(asset),3000);
+  }catch(e){}
 }
 
-/* ────────────────────────────────────────────────────────
-   ASSET LIST
-──────────────────────────────────────────────────────── */
-let currentCatFilter = 'all';
-let searchFilter = '';
+function setTF(tf,btn){
+  TF=tf;
+  document.querySelectorAll('.tf-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  buildHistoricalData(S.asset);
+}
 
-function renderAssetList() {
-  const container = document.getElementById('assets-list');
-  const filtered = ASSETS.filter(a => {
-    const matchCat = currentCatFilter === 'all' || a.cat === currentCatFilter;
-    const matchSearch = !searchFilter || a.name.toLowerCase().includes(searchFilter.toLowerCase());
-    return matchCat && matchSearch;
+/* ── ASSET SELECTION ── */
+let assetCatFilter='all',assetSearchQ='';
+function renderAssetList(){
+  const el=document.getElementById('asset-list-scroll');
+  const list=ASSETS.filter(a=>(assetCatFilter==='all'||a.cat===assetCatFilter)&&(!assetSearchQ||a.name.toLowerCase().includes(assetSearchQ.toLowerCase())));
+  el.innerHTML=list.map(a=>{
+    const p=S.prices[a.id],dir=S.dirs[a.id]||'up';
+    return `<div class="asset-list-item ${a.id===S.asset.id?'active':''}" id="ali-${a.id}" onclick="selectAsset('${a.id}')">
+      <div class="ali-flags"><div class="ali-flag1">${a.f1}</div><div class="ali-flag2">${a.f2}</div></div>
+      <div class="ali-info"><div class="ali-name">${a.name}</div><div class="ali-cat">${a.cat.charAt(0).toUpperCase()+a.cat.slice(1)}</div></div>
+      <div class="ali-right"><div class="ali-price ${dir}" id="ali-p-${a.id}">${p.toFixed(a.dec)}</div><div class="ali-payout">${a.payout}%</div></div>
+    </div>`;
+  }).join('')||'<div style="padding:20px;text-align:center;color:var(--text3)">No assets found</div>';
+}
+function filterAssetCat(cat,btn){
+  assetCatFilter=cat;
+  document.querySelectorAll('.cat-pill').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderAssetList();
+}
+function filterAssetSheet(q){assetSearchQ=q;renderAssetList();}
+function updateAssetListPrice(id,p){
+  const el=document.getElementById(`ali-p-${id}`);
+  if(!el)return;const a=ASSETS.find(x=>x.id===id);if(!a)return;
+  el.textContent=p.toFixed(a.dec);el.className=`ali-price ${S.dirs[id]||'up'}`;
+}
+function selectAsset(id){
+  const a=ASSETS.find(x=>x.id===id);if(!a)return;
+  S.asset=a;
+  closeSheet('sheet-assets');
+  buildHistoricalData(a);
+  updateTradePanelAsset();
+}
+function updateTradePanelAsset(){
+  const a=S.asset;
+  document.getElementById('tp-flag1').textContent=a.f1;
+  document.getElementById('tp-flag2').textContent=a.f2;
+  document.getElementById('tp-asset-name').textContent=a.name;
+  document.getElementById('chart-asset-name').textContent=a.name;
+  updatePayoutUI();
+}
+
+/* ── TOP BAR PRICE ── */
+function updateTopBarPrice(price){
+  // no separate price display in topbar — asset shown in chart overlay
+}
+
+/* ── BALANCE ── */
+function getBal(){return S.mode==='demo'?S.demoBalance:S.realBalance;}
+function setBal(v){if(S.mode==='demo')S.demoBalance=v;else S.realBalance=v;saveState();updateBalanceUI();}
+function updateBalanceUI(){
+  document.getElementById('tb-balance-val').textContent='$'+getBal().toLocaleString('en',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const badge=document.getElementById('tb-mode-badge');
+  badge.textContent=S.mode==='demo'?'DEMO':'REAL';
+  badge.className='tb-mode '+(S.mode==='demo'?'demo':'real');
+  const lbl=document.getElementById('tb-live-label');
+  lbl.textContent=S.mode==='demo'?'DEMO':'LIVE';
+  if(document.getElementById('profile-balance'))document.getElementById('profile-balance').textContent='$'+getBal().toLocaleString('en',{minimumFractionDigits:2});
+}
+function toggleAccountMode(){
+  S.mode=S.mode==='demo'?'real':'demo';
+  saveState();updateBalanceUI();
+  showToast('Switched to '+(S.mode==='demo'?'Demo':'Real')+' account');
+}
+
+/* ── PAYOUT ── */
+function updatePayoutUI(){
+  const a=S.asset,amt=S.amount;
+  const profit=+(amt*a.payout/100).toFixed(2);
+  const total=+(amt+profit).toFixed(2);
+  document.getElementById('tp-payout-pct').textContent=a.payout+'%';
+  document.getElementById('chart-payout-badge').textContent=a.payout+'%';
+  document.getElementById('payout-val').textContent=total.toFixed(2)+' $';
+}
+function onAmtChange(){
+  S.amount=parseFloat(document.getElementById('amt-input').value)||0;
+  updatePayoutUI();
+}
+function changeAmt(d){
+  let v=S.amount+d;if(v<1)v=1;
+  S.amount=v;document.getElementById('amt-input').value=v;
+  updatePayoutUI();
+}
+
+/* ── TRADE TIME ── */
+function openTimeSheet(){openSheet('sheet-time');}
+function setTradeTimeSec(s){
+  S.tradeTimeSec=s;
+  const m=Math.floor(s/60),sec=s%60;
+  document.getElementById('timer-input').value=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  closeSheet('sheet-time');
+}
+
+/* ── TRADE EXECUTION ── */
+function placeTrade(dir){
+  const amt=S.amount;
+  if(amt<1){showToast('Minimum $1');return;}
+  if(amt>getBal()){showToast('Insufficient balance');return;}
+  const a=S.asset,openP=S.prices[a.id],profit=+(amt*a.payout/100).toFixed(2);
+  const expiry=Date.now()+S.tradeTimeSec*1000;
+  setBal(+(getBal()-amt).toFixed(2));
+  const trade={id:'T'+Date.now()+Math.random().toString(36).slice(2,5).toUpperCase(),
+    asset:a.name,assetId:a.id,dir,amt,profit,payout:a.payout,
+    openP,closeP:null,expiry,sec:S.tradeTimeSec,
+    status:'pending',mode:S.mode,at:new Date().toISOString()};
+  S.activeTrades.push(trade);
+  updateBadges();updateBalanceUI();
+  disableTradeBtns(1500);
+  setTimeout(()=>resolveTrade(trade.id),S.tradeTimeSec*1000);
+  showTradeMarkers(S.tradeTimeSec);
+  showNotif(`${dir==='up'?'↑ UP':'↓ DOWN'} ${a.name} — $${amt}  |  ${a.payout}% payout`,'info');
+}
+
+function resolveTrade(id){
+  const idx=S.activeTrades.findIndex(t=>t.id===id);if(idx<0)return;
+  const t=S.activeTrades[idx];
+  t.closeP=S.prices[t.assetId];
+  const win=t.dir==='up'?t.closeP>t.openP:t.closeP<t.openP;
+  const draw=t.closeP===t.openP;
+  if(draw){t.status='draw';setBal(+(getBal()+t.amt).toFixed(2));showNotif('Draw! $'+t.amt+' refunded','info');}
+  else if(win){t.status='win';setBal(+(getBal()+t.amt+t.profit).toFixed(2));showNotif('WIN! +$'+t.profit.toFixed(2)+' on '+t.asset,'win');}
+  else{t.status='lose';showNotif('Lost $'+t.amt+' on '+t.asset,'lose');}
+  S.activeTrades.splice(idx,1);
+  S.history.unshift({...t});if(S.history.length>200)S.history.pop();
+  updateBadges();updateBalanceUI();saveState();
+  clearTradeMarkers();
+}
+
+function updateActiveTimers(){
+  S.activeTrades.forEach(t=>{
+    const rem=Math.max(0,Math.ceil((t.expiry-Date.now())/1000));
+    const el=document.getElementById('ti-timer-'+t.id);if(el)el.textContent=rem+'s';
   });
+}
 
-  container.innerHTML = filtered.map(a => {
-    const price = STATE.prices[a.id];
-    const dir = STATE.priceDirections[a.id] || 'up';
-    return `
-    <div class="asset-item ${a.id === STATE.currentAsset.id ? 'active' : ''}" id="asset-item-${a.id}" onclick="selectAsset('${a.id}')">
-      <div class="asset-icon" style="background:${a.color}22;color:${a.color}">${a.icon}</div>
-      <div class="asset-details">
-        <div class="asset-name">${a.name}</div>
-        <div class="asset-cat-tag">${a.cat.charAt(0).toUpperCase()+a.cat.slice(1)}</div>
+function disableTradeBtns(ms){
+  document.getElementById('btn-up').disabled=true;
+  document.getElementById('btn-down').disabled=true;
+  setTimeout(()=>{document.getElementById('btn-up').disabled=false;document.getElementById('btn-down').disabled=false;},ms);
+}
+
+/* ── TRADE MARKERS ON CHART ── */
+function showTradeMarkers(sec){
+  const wrap=document.getElementById('chart-wrap');
+  document.getElementById('trade-markers').innerHTML=`
+    <div class="trade-marker-begin" style="left:50%"></div>
+    <div class="trade-marker-end" style="left:${50+sec/2}%;max-left:95%"></div>`;
+}
+function clearTradeMarkers(){document.getElementById('trade-markers').innerHTML='';}
+
+/* ── TRADES UI ── */
+let tradeTabMode='active';
+function switchTradeTab(tab,btn){
+  tradeTabMode=tab;
+  document.querySelectorAll('.bp-tab-btn').forEach(b=>{
+    b.style.borderBottomColor='transparent';b.style.color='var(--text2)';});
+  btn.style.borderBottomColor='var(--green)';btn.style.color='var(--green)';
+  renderTradesList();
+}
+function renderTradesList(){
+  const items=tradeTabMode==='active'?S.activeTrades:S.history;
+  const listEl=document.getElementById('trades-list-items');
+  const emptyEl=document.getElementById('trades-empty');
+  if(!items.length){emptyEl.style.display='block';listEl.innerHTML='';return;}
+  emptyEl.style.display='none';
+  listEl.innerHTML=items.map(t=>{
+    const a=ASSETS.find(x=>x.id===t.assetId);
+    const rem=t.status==='pending'?Math.max(0,Math.ceil((t.expiry-Date.now())/1000)):null;
+    return `<div class="trade-item">
+      <div class="ti-dir ${t.dir}"><i class="fas fa-arrow-${t.dir}"></i></div>
+      <div class="ti-info">
+        <div class="ti-asset">${t.asset}</div>
+        <div class="ti-meta">${t.payout}% payout · $${t.amt} · ${(t.dir).toUpperCase()}</div>
       </div>
-      <div class="asset-price-col">
-        <div class="asset-price-val ${dir}" id="alp-${a.id}">${formatPrice(price, a.decimals)}</div>
-        <div class="asset-payout">Payout <span>${a.payout}%</span></div>
+      <div class="ti-result">
+        <div class="ti-amount">$${t.amt}</div>
+        <div class="ti-profit ${t.status}">${t.status==='win'?'+$'+t.profit.toFixed(2):t.status==='lose'?'-$'+t.amt:t.status==='draw'?'Draw':'Active'}</div>
+      </div>
+      ${rem!==null?`<div class="ti-timer" id="ti-timer-${t.id}">${rem}s</div>`:''}
+    </div>`;
+  }).join('');
+}
+function updateBadges(){
+  const n=S.activeTrades.length;
+  const badge=document.getElementById('trades-badge');
+  badge.style.display=n?'flex':'none';
+  badge.textContent=n;
+  const nb=document.getElementById('notif-badge');
+  nb.style.display=n?'flex':'none';
+  nb.textContent=n;
+}
+
+/* ── SIGNALS ── */
+function calcRSI(prices,period=14){
+  if(prices.length<period+1)return 50;
+  let g=0,l=0;
+  for(let i=prices.length-period;i<prices.length;i++){const d=prices[i]-prices[i-1];d>0?g+=d:l-=d;}
+  return 100-(100/(1+(g/(l||.0001))));
+}
+function calcMA(p,n){return p.length<n?p[p.length-1]:p.slice(-n).reduce((a,b)=>a+b,0)/n;}
+function genSignal(a){
+  const h=S.priceHist[a.id]||[];if(h.length<5)return{sig:'NEUTRAL',str:1,reason:'Gathering data...'};
+  const rsi=calcRSI(h),ma7=calcMA(h,Math.min(7,h.length)),ma20=calcMA(h,Math.min(20,h.length)),cur=h[h.length-1];
+  const mom=h.length>=5?(cur-h[h.length-5])/h[h.length-5]*100:0;
+  let sc=0;
+  if(rsi<35)sc+=2;else if(rsi<45)sc+=1;else if(rsi>65)sc-=2;else if(rsi>55)sc-=1;
+  if(ma7>ma20)sc+=1;else sc-=1;
+  if(mom>0.01)sc+=1;else if(mom<-.01)sc-=1;
+  if(sc>=2)return{sig:'BUY',str:Math.min(3,sc),reason:`RSI:${rsi.toFixed(0)} · MA↑ · Mom:+${mom.toFixed(3)}%`};
+  if(sc<=-2)return{sig:'SELL',str:Math.min(3,Math.abs(sc)),reason:`RSI:${rsi.toFixed(0)} · MA↓ · Mom:${mom.toFixed(3)}%`};
+  return{sig:'NEUTRAL',str:1,reason:`RSI:${rsi.toFixed(0)} · No clear trend`};
+}
+function renderSignals(){
+  const el=document.getElementById('signals-list');
+  el.innerHTML=ASSETS.map(a=>{
+    const s=genSignal(a),cls=s.sig==='BUY'?'buy':s.sig==='SELL'?'sell':'neutral';
+    const stars=[1,2,3].map(i=>`<span class="${i<=s.str?'on':''}">`+`</span>`).join('');
+    return `<div class="sig-item" onclick="selectAsset('${a.id}');closeSheet('sheet-signals')">
+      <div class="sig-icon ${cls}"><i class="fas fa-arrow-${s.sig==='BUY'?'up':s.sig==='SELL'?'down':'right'}"></i></div>
+      <div class="sig-info"><div class="sig-name">${a.name}</div><div class="sig-reason">${s.reason}</div></div>
+      <div class="sig-right">
+        <div class="sig-dir ${cls}">${s.sig}</div>
+        <div class="sig-stars">${stars}</div>
       </div>
     </div>`;
   }).join('');
 }
 
-function updateAssetListPrice(id, price) {
-  const el = document.getElementById(`alp-${id}`);
-  if (!el) return;
-  const dir = STATE.priceDirections[id] || 'up';
-  const asset = ASSETS.find(a => a.id === id);
-  if (!asset) return;
-  el.textContent = formatPrice(price, asset.decimals);
-  el.className = `asset-price-val ${dir}`;
-}
-
-function filterByCategory(cat, btn) {
-  currentCatFilter = cat;
-  document.querySelectorAll('.asset-cat-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderAssetList();
-}
-
-function filterAssets(q) {
-  searchFilter = q;
-  renderAssetList();
-}
-
-function selectAsset(id) {
-  const asset = ASSETS.find(a => a.id === id);
-  if (!asset || asset.id === STATE.currentAsset.id) return;
-  STATE.currentAsset = asset;
-
-  // Update active state
-  document.querySelectorAll('.asset-item').forEach(el => el.classList.remove('active'));
-  const el = document.getElementById(`asset-item-${id}`);
-  if (el) el.classList.add('active');
-
-  // Reload chart
-  document.getElementById('chart-loader').style.display = 'flex';
-  setTimeout(() => {
-    generateHistoricalData(asset);
-    document.getElementById('chart-loader').style.display = 'none';
-  }, 300);
-
-  // Update UI
-  document.getElementById('tb-asset-name').textContent = asset.name;
-  updatePayoutDisplay();
-  updateTopBar(asset, STATE.prices[asset.id]);
-}
-
-/* ────────────────────────────────────────────────────────
-   TOP BAR
-──────────────────────────────────────────────────────── */
-let lastDisplayedPrice = 0;
-
-function updateTopBar(asset, price) {
-  const el = document.getElementById('tb-price');
-  const changeEl = document.getElementById('tb-change');
-  const dir = STATE.priceDirections[asset.id] || 'up';
-  const prev = lastDisplayedPrice || price;
-  const changePct = prev ? ((price - prev) / prev * 100).toFixed(3) : 0;
-  lastDisplayedPrice = price;
-
-  el.textContent = formatPrice(price, asset.decimals);
-  el.className = `tb-price ${dir}`;
-  changeEl.textContent = `${dir === 'up' ? '+' : ''}${changePct}%`;
-  changeEl.className = `tb-change ${dir}`;
-}
-
-/* ────────────────────────────────────────────────────────
-   TRADE PANEL
-──────────────────────────────────────────────────────── */
-function onAmountChange() {
-  const val = parseFloat(document.getElementById('trade-amount').value) || 0;
-  STATE.tradeAmount = val;
-  updatePayoutDisplay();
-}
-
-function changeAmount(delta) {
-  let v = STATE.tradeAmount + delta;
-  if (v < 1) v = 1;
-  STATE.tradeAmount = v;
-  document.getElementById('trade-amount').value = v;
-  updatePayoutDisplay();
-}
-
-function setAmount(v) {
-  STATE.tradeAmount = v;
-  document.getElementById('trade-amount').value = v;
-  updatePayoutDisplay();
-}
-
-function setTradeTime(sec, btn) {
-  document.querySelectorAll('.time-preset').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  STATE.tradeTimeSec = sec;
-  const mins = Math.floor(sec / 60), secs = sec % 60;
-  document.getElementById('trade-time-display').value =
-    mins > 0 ? `${mins}:${String(secs).padStart(2,'0')} min` : `${sec}s`;
-}
-
-function updatePayoutDisplay() {
-  const asset = STATE.currentAsset;
-  const payout = asset.payout;
-  const profit = STATE.tradeAmount * payout / 100;
-  document.getElementById('payout-pct').textContent = `${payout}%`;
-  document.getElementById('profit-amount').textContent = `+$${profit.toFixed(2)}`;
-  document.getElementById('payout-chip-val').textContent = `${payout}%`;
-}
-
-/* ────────────────────────────────────────────────────────
-   BALANCE
-──────────────────────────────────────────────────────── */
-function getBalance() {
-  return STATE.accountMode === 'demo' ? STATE.demoBalance : STATE.realBalance;
-}
-
-function setBalance(v) {
-  if (STATE.accountMode === 'demo') STATE.demoBalance = v;
-  else STATE.realBalance = v;
-  saveState();
-  updateBalanceUI();
-}
-
-function updateBalanceUI() {
-  const bal = getBalance();
-  document.getElementById('tb-balance').textContent = `$${bal.toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2})}`;
-  document.getElementById('withdraw-available').textContent = `$${bal.toLocaleString('en', {minimumFractionDigits:2,maximumFractionDigits:2})}`;
-}
-
-function toggleAccountMode() {
-  if (STATE.accountMode === 'demo') {
-    STATE.accountMode = 'real';
-    document.getElementById('tb-account-badge').className = 'real-badge';
-    document.getElementById('tb-account-badge').textContent = 'REAL';
-    document.getElementById('trade-mode-label').textContent = 'Real Mode';
-  } else {
-    STATE.accountMode = 'demo';
-    document.getElementById('tb-account-badge').className = 'demo-badge';
-    document.getElementById('tb-account-badge').textContent = 'DEMO';
-    document.getElementById('trade-mode-label').textContent = 'Demo Mode';
-  }
-  saveState();
-  updateBalanceUI();
-  showToast(`Switched to ${STATE.accountMode.toUpperCase()} account`);
-}
-
-/* ────────────────────────────────────────────────────────
-   TRADE EXECUTION
-──────────────────────────────────────────────────────── */
-function placeTrade(direction) {
-  const amount = parseFloat(document.getElementById('trade-amount').value);
-  if (isNaN(amount) || amount < 1) { showToast('Min trade: $1'); return; }
-  if (amount > getBalance()) { showToast('Insufficient balance'); return; }
-
-  const asset = STATE.currentAsset;
-  const openPrice = STATE.prices[asset.id];
-  const payout = asset.payout;
-  const profit = parseFloat((amount * payout / 100).toFixed(2));
-  const expirySec = STATE.tradeTimeSec;
-  const expiryTime = Date.now() + expirySec * 1000;
-
-  // Deduct amount
-  setBalance(parseFloat((getBalance() - amount).toFixed(2)));
-
-  const trade = {
-    id: 'T' + Date.now() + Math.random().toString(36).slice(2,5).toUpperCase(),
-    asset: asset.name,
-    assetId: asset.id,
-    direction,
-    amount,
-    profit,
-    payout,
-    openPrice,
-    closePrice: null,
-    expiryTime,
-    expirySec,
-    status: 'pending',
-    mode: STATE.accountMode,
-    openedAt: new Date().toISOString(),
-  };
-
-  STATE.activeTrades.push(trade);
-  updateActiveTradesUI();
-  updateBalanceUI();
-
-  // Show countdown
-  startCountdown(expirySec, expiryTime);
-
-  // Disable buttons during trade on same asset
-  setTradeButtons(false);
-  setTimeout(() => setTradeButtons(true), 1500);
-
-  // Schedule resolution
-  setTimeout(() => resolveTrade(trade.id), expirySec * 1000);
-
-  showNotif(`Trade opened: ${direction.toUpperCase()} ${asset.name} — $${amount}`, 'info');
-}
-
-function resolveTrade(tradeId) {
-  const idx = STATE.activeTrades.findIndex(t => t.id === tradeId);
-  if (idx < 0) return;
-  const trade = STATE.activeTrades[idx];
-
-  const closePrice = STATE.prices[trade.assetId];
-  trade.closePrice = closePrice;
-
-  let win;
-  if (trade.direction === 'up') win = closePrice > trade.openPrice;
-  else win = closePrice < trade.openPrice;
-
-  // Exact same price = refund
-  if (closePrice === trade.openPrice) {
-    trade.status = 'draw';
-    setBalance(parseFloat((getBalance() + trade.amount).toFixed(2)));
-    showNotif(`Draw! $${trade.amount} refunded`, 'info');
-  } else if (win) {
-    trade.status = 'win';
-    setBalance(parseFloat((getBalance() + trade.amount + trade.profit).toFixed(2)));
-    showNotif(`WIN! +$${trade.profit.toFixed(2)} profit on ${trade.asset}`, 'win');
-  } else {
-    trade.status = 'lose';
-    showNotif(`Lost $${trade.amount} on ${trade.asset}`, 'lose');
-  }
-
-  STATE.activeTrades.splice(idx, 1);
-  STATE.tradeHistory.unshift({ ...trade });
-  if (STATE.tradeHistory.length > 200) STATE.tradeHistory.pop();
-
-  updateBalanceUI();
-  updateActiveTradesUI();
-  saveState();
-}
-
-function updateActiveTrades() {
-  // Called every second to update timers
-  if (STATE.activeTrades.length === 0) return;
-  STATE.activeTrades.forEach(t => {
-    const rem = Math.max(0, Math.ceil((t.expiryTime - Date.now()) / 1000));
-    const timerEl = document.getElementById(`trade-timer-${t.id}`);
-    if (timerEl) timerEl.textContent = rem + 's';
-  });
-}
-
-function setTradeButtons(enabled) {
-  document.getElementById('btn-up').disabled = !enabled;
-  document.getElementById('btn-down').disabled = !enabled;
-}
-
-/* ────────────────────────────────────────────────────────
-   COUNTDOWN OVERLAY
-──────────────────────────────────────────────────────── */
-let countdownInterval;
-
-function startCountdown(sec, expiryTime) {
-  clearInterval(countdownInterval);
-  const overlay = document.getElementById('countdown-overlay');
-  overlay.classList.add('show');
-  const timerEl = document.getElementById('co-timer');
-  const barEl = document.getElementById('co-bar-inner');
-
-  countdownInterval = setInterval(() => {
-    const rem = Math.max(0, Math.ceil((expiryTime - Date.now()) / 1000));
-    timerEl.textContent = rem + 's';
-    barEl.style.width = (rem / sec * 100) + '%';
-    if (rem <= 0) {
-      clearInterval(countdownInterval);
-      // Hide if no more active trades
-      if (STATE.activeTrades.length === 0) overlay.classList.remove('show');
-    }
-  }, 100);
-}
-
-/* ────────────────────────────────────────────────────────
-   BOTTOM PANEL
-──────────────────────────────────────────────────────── */
-function updateActiveTradesUI() {
-  const list = document.getElementById('trades-list');
-  const empty = document.getElementById('bp-empty');
-  const countEl = document.getElementById('active-count');
-
-  const trades = STATE.bpTab === 'active' ? STATE.activeTrades
-    : STATE.bpTab === 'history' ? STATE.tradeHistory
-    : [];
-
-  countEl.textContent = STATE.activeTrades.length;
-  countEl.style.display = STATE.activeTrades.length ? 'inline' : 'none';
-
-  if (trades.length === 0) {
-    empty.style.display = 'block';
-    empty.innerHTML = STATE.bpTab === 'active'
-      ? '<i class="fas fa-chart-line"></i>No active trades. Place a trade above!'
-      : '<i class="fas fa-history"></i>No trade history yet.';
-    list.innerHTML = '';
-    return;
-  }
-
-  empty.style.display = 'none';
-  list.innerHTML = trades.map(t => {
-    const isActive = t.status === 'pending';
-    const rem = isActive ? Math.max(0, Math.ceil((t.expiryTime - Date.now()) / 1000)) : null;
-    const asset = ASSETS.find(a => a.id === t.assetId);
-    return `
-    <div class="trade-row">
-      <div class="tr-dir ${t.direction}">
-        <i class="fas fa-arrow-${t.direction}"></i>
-      </div>
-      <div class="tr-info">
-        <div class="tr-asset">${t.asset}</div>
-        <div class="tr-meta">Open: ${formatPrice(t.openPrice, asset?.decimals||5)}
-          ${t.closePrice ? ` → ${formatPrice(t.closePrice, asset?.decimals||5)}` : ''}
-          · ${t.payout}% payout</div>
-      </div>
-      <div class="tr-amount">
-        <div class="tr-amt-val">$${t.amount}</div>
-        <div class="tr-result ${t.status === 'win' ? 'win' : t.status === 'lose' ? 'lose' : 'pending'}">
-          ${t.status === 'win' ? `+$${t.profit.toFixed(2)}` : t.status === 'lose' ? `-$${t.amount}` : t.status === 'draw' ? 'Draw' : 'Active'}
-        </div>
-      </div>
-      ${isActive ? `<div class="tr-timer" id="trade-timer-${t.id}">${rem}s</div>` : ''}
-    </div>`;
-  }).join('');
-}
-
-function switchBPTab(tab, btn) {
-  STATE.bpTab = tab;
-  document.querySelectorAll('.bp-tab').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-
-  if (tab === 'analytics') {
-    showAnalytics();
-  } else {
-    updateActiveTradesUI();
-  }
-}
-
-function showAnalytics() {
-  const list = document.getElementById('trades-list');
-  const empty = document.getElementById('bp-empty');
-  const hist = STATE.tradeHistory;
-
-  if (hist.length === 0) {
-    empty.style.display = 'block';
-    empty.innerHTML = '<i class="fas fa-chart-pie"></i>No trades yet to analyze.';
-    list.innerHTML = '';
-    return;
-  }
-
-  empty.style.display = 'none';
-  const wins = hist.filter(t => t.status === 'win').length;
-  const losses = hist.filter(t => t.status === 'lose').length;
-  const totalProfit = hist.reduce((s,t) => t.status === 'win' ? s + t.profit : t.status === 'lose' ? s - t.amount : s, 0);
-  const winRate = hist.length ? ((wins / hist.length) * 100).toFixed(1) : 0;
-
-  list.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;padding:8px 0">
-      ${[
-        ['Total Trades', hist.length],
-        ['Win Rate', winRate + '%'],
-        ['Wins', wins],
-        ['Net P/L', (totalProfit >= 0 ? '+' : '') + '$' + totalProfit.toFixed(2)],
-      ].map(([l,v]) => `
-        <div style="background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center">
-          <div style="font-size:10px;color:var(--text3);margin-bottom:4px">${l}</div>
-          <div style="font-size:16px;font-weight:700;color:${l==='Net P/L'?(totalProfit>=0?'var(--green)':'var(--red)'):'var(--text)'}">${v}</div>
-        </div>`).join('')}
-    </div>`;
-}
-
-/* ────────────────────────────────────────────────────────
-   DEPOSIT / WITHDRAW MODALS
-──────────────────────────────────────────────────────── */
-const DEPOSIT_INFO = {
-  usdt: { label: 'USDT TRC20', addr: 'TYourUSDTAddressHereReplace123456789', qr: null },
-  btc:  { label: 'Bitcoin',    addr: '1YourBTCAddressHereReplace1234567890', qr: null },
-  eth:  { label: 'Ethereum',   addr: '0xYourETHAddressHereReplace1234567890', qr: null },
-  bkash:{ label: 'bKash', number: '01XXXXXXXXXX', instructions: 'Send to the bKash number above. Use "Send Money" option. Include your email in the reference.' },
-  nagad:{ label: 'Nagad', number: '01XXXXXXXXXX', instructions: 'Send to the Nagad number above. Include your email in reference.' },
-  bank: { label: 'Bank Transfer', bank:'Your Bank Name', acc:'Your Account Number', routing:'Routing/SWIFT Code', instructions:'Transfer to the bank account above. Email payment confirmation to support@extrade.io' },
+/* ── DEPOSIT ── */
+const PAY_INFO={
+  usdt:{addr:'TYourUSDTAddressHere_TRC20_Replace'},
+  btc:{addr:'1YourBTCAddressHere_Replace_This'},
+  eth:{addr:'0xYourETHAddressHere_Replace_This'},
+  bkash:{number:'01XXXXXXXXXX',note:'Send via "Send Money". Put your email in reference.'},
+  nagad:{number:'01XXXXXXXXXX',note:'Send via Nagad. Put your email in reference.'},
+  bank:{details:'Bank: Your Bank · Account: 0000000000 · Routing: XXXXXXXXX'},
 };
-
-let selectedPayMethod = 'usdt';
-
-function selectPayMethod(method, btn) {
-  selectedPayMethod = method;
-  document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+let selPay='usdt';
+function selPayMethod(method,btn){
+  selPay=method;
+  document.querySelectorAll('.pay-item').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderDepositDetails();
 }
-
-function renderDepositDetails() {
-  const info = DEPOSIT_INFO[selectedPayMethod];
-  const el = document.getElementById('deposit-details');
-  if (!el) return;
-
-  if (['usdt','btc','eth'].includes(selectedPayMethod)) {
-    el.innerHTML = `
-      <div class="tp-label" style="margin-bottom:6px">${info.label} Address</div>
-      <div class="crypto-address-box" onclick="copyAddr('${info.addr}')">
-        <span class="crypto-addr">${info.addr}</span>
-        <button class="btn-copy" id="copy-btn"><i class="fas fa-copy"></i> Copy</button>
-      </div>
-      <div class="info-box" style="margin-top:10px">
-        <strong>Important</strong>
-        Send only ${info.label} to this address. Minimum deposit: $10. After sending, take a screenshot and email to support@extrade.io with your account email.
-      </div>`;
-  } else if (['bkash','nagad'].includes(selectedPayMethod)) {
-    el.innerHTML = `
-      <div class="info-box">
-        <strong>${info.label} Number</strong>
-        <span style="font-size:18px;font-weight:700;color:var(--text)">${info.number}</span>
-        <div style="margin-top:6px">${info.instructions}</div>
-      </div>`;
-  } else {
-    el.innerHTML = `
-      <div class="info-box">
-        <strong>Bank Details</strong>
-        Bank: ${info.bank}<br/>
-        Account: ${info.acc}<br/>
-        Routing: ${info.routing}<br/><br/>
-        ${info.instructions}
-      </div>`;
+function renderDepositDetails(){
+  const el=document.getElementById('deposit-details-area');
+  const i=PAY_INFO[selPay];
+  if(['usdt','btc','eth'].includes(selPay)){
+    el.innerHTML=`<div class="pay-addr-box"><span class="pay-addr-text">${i.addr}</span><button class="btn-copy-sm" onclick="copyText('${i.addr}')">Copy</button></div>`;
+  }else if(['bkash','nagad'].includes(selPay)){
+    el.innerHTML=`<div style="padding:0 16px 10px;background:var(--bg3);margin:0 16px 12px;border-radius:10px;border:1px solid var(--border);font-size:13px"><br/><b style="font-size:18px">${i.number}</b><br/><span style="color:var(--text3);font-size:11px">${i.note}</span></div>`;
+  }else{
+    el.innerHTML=`<div style="padding:12px 16px;font-size:12px;color:var(--text2);background:var(--bg3);margin:0 16px 12px;border-radius:10px;border:1px solid var(--border)">${i.details}</div>`;
   }
 }
-
-function copyAddr(addr) {
-  navigator.clipboard.writeText(addr).then(() => {
-    const btn = document.getElementById('copy-btn');
-    if (btn) { btn.innerHTML = '<i class="fas fa-check"></i> Copied!'; setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> Copy', 2000); }
-    showToast('Address copied!');
-  }).catch(() => showToast('Copy failed'));
+function updateDepositSummary(){
+  const v=parseFloat(document.getElementById('deposit-amt').value)||0;
+  document.getElementById('dep-pay-val').textContent='$'+v.toFixed(2);
 }
-
-function updateDepositSummary() {
-  const amt = parseFloat(document.getElementById('deposit-amount').value) || 0;
-  document.getElementById('ds-amount').textContent = '$' + amt.toFixed(2);
-  document.getElementById('ds-receive').textContent = '$' + amt.toFixed(2);
+function setDepositAmt(v){document.getElementById('deposit-amt').value=v;updateDepositSummary();}
+function submitDeposit(){
+  const amt=parseFloat(document.getElementById('deposit-amt').value)||0;
+  if(amt<10){showToast('Minimum deposit: $10');return;}
+  if(S.mode==='demo'){setBal(+(getBal()+amt).toFixed(2));closeSheet('sheet-deposit');showNotif('Demo balance added: +$'+amt,'win');}
+  else{closeSheet('sheet-deposit');showNotif('Deposit request submitted! Send $'+amt+' and email us.','info');}
 }
+function copyText(t){navigator.clipboard.writeText(t).then(()=>showToast('Copied!')).catch(()=>showToast('Copy failed'));}
 
-function submitDeposit() {
-  const amt = parseFloat(document.getElementById('deposit-amount').value) || 0;
-  if (amt < 10) { showToast('Minimum deposit: $10'); return; }
-  if (STATE.accountMode === 'demo') {
-    // Demo mode: directly add balance
-    setBalance(parseFloat((getBalance() + amt).toFixed(2)));
-    closeModal('modal-deposit');
-    showNotif(`Demo balance added: +$${amt}`, 'win');
-  } else {
-    closeModal('modal-deposit');
-    showNotif(`Deposit request submitted! Send $${amt} via ${DEPOSIT_INFO[selectedPayMethod].label}`, 'info');
+/* ── TOURNAMENT ── */
+function joinTournament(){
+  const btn=document.getElementById('btn-join-t');
+  btn.textContent='✓ Joined! Good luck!';btn.disabled=true;
+  document.getElementById('your-rank').textContent='$0.00';
+  showNotif('You joined the Daily Championship! 🏆','win');
+  closeSheet('sheet-tournament');
+}
+function startTournamentClock(){
+  function update(){
+    const now=new Date(),mid=new Date(now);mid.setUTCHours(24,0,0,0);
+    const d=mid-now,h=Math.floor(d/3600000),m=Math.floor((d%3600000)/60000),s=Math.floor((d%60000)/1000);
+    const el=document.getElementById('tc-timer');
+    if(el)el.textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
+  update();setInterval(update,1000);
+  setInterval(()=>{const el=document.getElementById('tc-count');if(el)el.textContent=parseInt(el.textContent)+(Math.random()<.3?1:0);},5000);
 }
 
-function submitWithdraw() {
-  const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-  const addr = (document.getElementById('withdraw-address').value || '').trim();
-  if (amt < 10) { showToast('Minimum withdrawal: $10'); return; }
-  if (!addr) { showToast('Enter wallet address/account number'); return; }
-  if (amt > getBalance()) { showToast('Insufficient balance'); return; }
-  setBalance(parseFloat((getBalance() - amt).toFixed(2)));
-  closeModal('modal-withdraw');
-  showNotif(`Withdrawal of $${amt} requested. Processing within 24h.`, 'info');
-}
-
-/* ────────────────────────────────────────────────────────
-   HISTORY MODAL
-──────────────────────────────────────────────────────── */
-function openHistoryModal() {
-  const hist = STATE.tradeHistory;
-  const statsEl = document.getElementById('history-stats');
-  const listEl = document.getElementById('history-list');
-
-  if (hist.length === 0) {
-    statsEl.innerHTML = '';
-    listEl.innerHTML = '<div style="text-align:center;color:var(--text3);padding:20px">No trade history yet.</div>';
-  } else {
-    const wins = hist.filter(t => t.status === 'win').length;
-    const totalP = hist.reduce((s,t) => t.status==='win'?s+t.profit:t.status==='lose'?s-t.amount:s, 0);
-    statsEl.innerHTML = `
-      <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px">
-        <span style="color:var(--text2)">Total: <strong style="color:var(--text)">${hist.length}</strong></span>
-        <span style="color:var(--text2)">Wins: <strong style="color:var(--green)">${wins}</strong></span>
-        <span style="color:var(--text2)">Win Rate: <strong style="color:var(--green)">${(wins/hist.length*100).toFixed(1)}%</strong></span>
-        <span style="color:var(--text2)">Net P/L: <strong style="color:${totalP>=0?'var(--green)':'var(--red)'}">${totalP>=0?'+':''}$${totalP.toFixed(2)}</strong></span>
-      </div>`;
-
-    listEl.innerHTML = hist.slice(0,50).map(t => {
-      const asset = ASSETS.find(a => a.id === t.assetId);
-      return `
-      <div style="display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--border)">
-        <div class="tr-dir ${t.direction}" style="width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0">
-          <i class="fas fa-arrow-${t.direction}"></i>
-        </div>
-        <div style="flex:1;min-width:0">
-          <div style="font-size:12px;font-weight:600">${t.asset}</div>
-          <div style="font-size:10px;color:var(--text3)">${new Date(t.openedAt).toLocaleString()} · ${t.expirySec}s · ${t.payout}%</div>
-        </div>
-        <div style="text-align:right">
-          <div style="font-size:12px;font-weight:700">$${t.amount}</div>
-          <div style="font-size:11px;font-weight:600;color:${t.status==='win'?'var(--green)':t.status==='lose'?'var(--red)':'var(--text2)'}">
-            ${t.status==='win'?`+$${t.profit.toFixed(2)}`:t.status==='lose'?`-$${t.amount}`:'Draw'}
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-}
-
-/* ────────────────────────────────────────────────────────
-   FIREBASE AUTH
-──────────────────────────────────────────────────────── */
-function initAuth() {
-  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
-  try {
-    firebase.auth().onAuthStateChanged(user => {
-      STATE.currentUser = user;
-      if (user) {
-        document.getElementById('ud-name-text').textContent = user.displayName || user.email.split('@')[0];
-        document.getElementById('btn-login-ud').style.display = 'none';
-        document.getElementById('btn-logout-ud').style.display = 'flex';
-        document.getElementById('user-icon').className = 'fas fa-user-check';
-        loadUserData(user.uid);
-      } else {
-        document.getElementById('ud-name-text').textContent = 'Guest';
-        document.getElementById('btn-login-ud').style.display = 'flex';
-        document.getElementById('btn-logout-ud').style.display = 'none';
-        document.getElementById('user-icon').className = 'fas fa-user-circle';
-      }
-    });
-  } catch(e){}
-}
-
-function loginUser() {
-  const email = document.getElementById('login-email').value.trim();
-  const password = document.getElementById('login-password').value;
-  if (!email || !password) { showToast('Enter email and password'); return; }
-  if (typeof firebase === 'undefined') { showToast('Firebase not configured'); return; }
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(() => { closeModal('modal-login'); showNotif('Signed in successfully!', 'win'); })
-    .catch(e => showToast(e.message));
-}
-
-function registerUser() {
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const password = document.getElementById('reg-password').value;
-  if (!name || !email || !password) { showToast('Fill all fields'); return; }
-  if (password.length < 6) { showToast('Password: min 6 characters'); return; }
-  if (typeof firebase === 'undefined') { showToast('Firebase not configured'); return; }
-  firebase.auth().createUserWithEmailAndPassword(email, password)
-    .then(c => {
-      c.user.updateProfile({ displayName: name });
-      closeModal('modal-register');
-      showNotif('Account created! Welcome to EX Trade.', 'win');
-    })
-    .catch(e => showToast(e.message));
-}
-
-function loginGoogle() {
-  if (typeof firebase === 'undefined') { showToast('Firebase not configured'); return; }
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-    .then(() => { closeModal('modal-login'); closeModal('modal-register'); showNotif('Signed in with Google!', 'win'); })
-    .catch(e => showToast(e.message));
-}
-
-function logoutUser() {
-  if (typeof firebase === 'undefined') return;
-  firebase.auth().signOut();
-  closeUserDropdown();
-  showToast('Signed out');
-}
-
-function loadUserData(uid) {
-  if (typeof firebase === 'undefined') return;
-  try {
-    firebase.firestore().collection('traders').doc(uid).get().then(doc => {
-      if (doc.exists) {
-        const d = doc.data();
-        if (d.realBalance !== undefined) { STATE.realBalance = d.realBalance; updateBalanceUI(); }
-      }
-    });
-  } catch(e){}
-}
-
-/* ────────────────────────────────────────────────────────
-   UI HELPERS
-──────────────────────────────────────────────────────── */
-function openModal(id) {
-  closeUserDropdown();
-  if (id === 'modal-history') openHistoryModal();
-  if (id === 'modal-deposit') { renderDepositDetails(); updateDepositSummary(); }
-  if (id === 'modal-withdraw') updateBalanceUI();
-  document.getElementById(id).classList.add('show');
-}
-
-function closeModal(id) {
-  document.getElementById(id).classList.remove('show');
-}
-
-function switchModal(from, to) {
-  closeModal(from);
-  openModal(to);
-}
-
-// Close modal on backdrop click
-document.querySelectorAll('.modal-backdrop').forEach(m => {
-  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
-});
-
-function toggleUserDropdown() {
-  const dd = document.getElementById('user-dropdown');
-  dd.style.display = dd.style.display === 'none' ? 'block' : 'none';
-}
-
-function closeUserDropdown() {
-  document.getElementById('user-dropdown').style.display = 'none';
-}
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('.tb-user-wrap')) closeUserDropdown();
-});
-
-function showNotif(msg, type = 'info') {
-  const container = document.getElementById('notif-container');
-  const el = document.createElement('div');
-  el.className = `notif ${type}`;
-  const icon = type === 'win' ? 'fa-trophy' : type === 'lose' ? 'fa-times-circle' : 'fa-info-circle';
-  const color = type === 'win' ? 'var(--green)' : type === 'lose' ? 'var(--red)' : 'var(--blue)';
-  el.innerHTML = `<i class="fas ${icon}" style="color:${color}"></i> ${msg}`;
-  container.appendChild(el);
-  setTimeout(() => {
-    el.classList.add('notif-exit');
-    setTimeout(() => el.remove(), 300);
-  }, 4000);
-}
-
-let toastT;
-function showToast(msg) {
-  const el = document.getElementById('toast-bar');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastT);
-  toastT = setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-function formatPrice(price, decimals = 5) {
-  return parseFloat(price).toFixed(decimals);
-}
-
-/* ────────────────────────────────────────────────────────
-   PERSIST STATE
-──────────────────────────────────────────────────────── */
-function saveState() {
-  try {
-    localStorage.setItem('extrade_state', JSON.stringify({
-      demoBalance: STATE.demoBalance,
-      realBalance: STATE.realBalance,
-      tradeHistory: STATE.tradeHistory.slice(0, 200),
-      accountMode: STATE.accountMode,
-    }));
-  } catch(e){}
-}
-
-/* ────────────────────────────────────────────────────────
-   INIT
-──────────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  renderAssetList();
-  initChart();
-  updatePayoutDisplay();
-  updateBalanceUI();
-  startPriceEngine();
-  initAuth();
-  setTradeTime(60, document.querySelector('.time-preset[data-sec="60"]'));
-
-  // Keyboard shortcuts
-  document.addEventListener('keydown', e => {
-    if (e.target.tagName === 'INPUT') return;
-    if (e.key === 'ArrowUp') placeTrade('up');
-    if (e.key === 'ArrowDown') placeTrade('down');
-  });
-
-  // PWA install
-  initPWA();
-  // Signals
-  initSignals();
-  // Referral code
-  initReferral();
-  // Tournament timer
-  startTournamentTimer();
-});
-
-/* ────────────────────────────────────────────────────────
-   LEVERAGE
-──────────────────────────────────────────────────────── */
-STATE.leverage = 1;
-
-function setLeverage(lev, btn) {
-  STATE.leverage = lev;
-  document.querySelectorAll('.lev-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  updateLeverageInfo();
-  updatePayoutDisplay();
-}
-
-function updateLeverageInfo() {
-  const amt = STATE.tradeAmount;
-  const lev = STATE.leverage;
-  const exposure = amt * lev;
-  const asset = STATE.currentAsset;
-  // Higher leverage = higher payout capped at 95%
-  const levPayout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
-  document.getElementById('lev-exposure').textContent = '$' + exposure.toLocaleString();
-  document.getElementById('lev-margin').textContent = '$' + amt;
-  document.getElementById('lev-payout').textContent = levPayout + '%';
-}
-
-// Override updatePayoutDisplay to include leverage
-const _origUpdatePayout = updatePayoutDisplay;
-function updatePayoutDisplay() {
-  const asset = STATE.currentAsset;
-  const lev = STATE.leverage || 1;
-  const payout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
-  const exposure = STATE.tradeAmount * lev;
-  const profit = parseFloat((exposure * payout / 100).toFixed(2));
-  document.getElementById('payout-pct').textContent = payout + '%';
-  document.getElementById('profit-amount').textContent = '+$' + profit.toFixed(2);
-  document.getElementById('payout-chip-val').textContent = payout + '%';
-  updateLeverageInfo();
-}
-
-// Override placeTrade to use leverage
-const _origPlaceTrade = placeTrade;
-function placeTrade(direction) {
-  const amount = parseFloat(document.getElementById('trade-amount').value);
-  if (isNaN(amount) || amount < 1) { showToast('Min trade: $1'); return; }
-  if (amount > getBalance()) { showToast('Insufficient balance'); return; }
-
-  const asset = STATE.currentAsset;
-  const lev = STATE.leverage || 1;
-  const exposure = amount * lev;
-  const payout = Math.min(95, Math.round(asset.payout + Math.log2(lev) * 4));
-  const openPrice = STATE.prices[asset.id];
-  const profit = parseFloat((exposure * payout / 100).toFixed(2));
-  const expirySec = STATE.tradeTimeSec;
-  const expiryTime = Date.now() + expirySec * 1000;
-
-  setBalance(parseFloat((getBalance() - amount).toFixed(2)));
-
-  const trade = {
-    id: 'T' + Date.now() + Math.random().toString(36).slice(2,5).toUpperCase(),
-    asset: asset.name, assetId: asset.id,
-    direction, amount, profit, payout, leverage: lev, exposure,
-    openPrice, closePrice: null,
-    expiryTime, expirySec,
-    status: 'pending', mode: STATE.accountMode,
-    openedAt: new Date().toISOString(),
-  };
-
-  STATE.activeTrades.push(trade);
-  updateActiveTradesUI();
-  updateBalanceUI();
-  startCountdown(expirySec, expiryTime);
-  setTradeButtons(false);
-  setTimeout(() => setTradeButtons(true), 1500);
-  setTimeout(() => resolveTrade(trade.id), expirySec * 1000);
-
-  const levText = lev > 1 ? ` (${lev}x leverage)` : '';
-  showNotif(`${direction.toUpperCase()} ${asset.name}${levText} — $${amount} → $${exposure} exposure`, 'info');
-
-  // Track for tournament
-  if (STATE.inTournament) STATE.tournamentTrades = (STATE.tournamentTrades||0) + 1;
-}
-
-/* ────────────────────────────────────────────────────────
-   SIGNALS ENGINE
-──────────────────────────────────────────────────────── */
-const priceHistory = {}; // assetId → last 20 prices
-
-function recordPriceHistory(assetId, price) {
-  if (!priceHistory[assetId]) priceHistory[assetId] = [];
-  priceHistory[assetId].push(price);
-  if (priceHistory[assetId].length > 50) priceHistory[assetId].shift();
-}
-
-function calcRSI(prices, period = 14) {
-  if (prices.length < period + 1) return 50;
-  let gains = 0, losses = 0;
-  for (let i = prices.length - period; i < prices.length; i++) {
-    const diff = prices[i] - prices[i-1];
-    if (diff > 0) gains += diff; else losses -= diff;
-  }
-  const rs = gains / (losses || 0.0001);
-  return 100 - (100 / (1 + rs));
-}
-
-function calcMA(prices, period) {
-  if (prices.length < period) return prices[prices.length-1];
-  return prices.slice(-period).reduce((a,b) => a+b, 0) / period;
-}
-
-function generateSignal(asset) {
-  const hist = priceHistory[asset.id] || [];
-  if (hist.length < 5) return { signal: 'NEUTRAL', strength: 0, reason: 'Gathering data...' };
-
-  const rsi = calcRSI(hist);
-  const ma7 = calcMA(hist, Math.min(7, hist.length));
-  const ma20 = calcMA(hist, Math.min(20, hist.length));
-  const current = hist[hist.length-1];
-  const momentum = hist.length >= 5 ? (current - hist[hist.length-5]) / hist[hist.length-5] * 100 : 0;
-
-  let score = 0;
-  if (rsi < 35) score += 2;
-  else if (rsi < 45) score += 1;
-  else if (rsi > 65) score -= 2;
-  else if (rsi > 55) score -= 1;
-  if (ma7 > ma20) score += 1; else score -= 1;
-  if (momentum > 0.01) score += 1; else if (momentum < -0.01) score -= 1;
-
-  if (score >= 2) return { signal: 'BUY', strength: Math.min(3, score), reason: `RSI:${rsi.toFixed(0)} MA↑ Mom:+${momentum.toFixed(3)}%` };
-  if (score <= -2) return { signal: 'SELL', strength: Math.min(3, Math.abs(score)), reason: `RSI:${rsi.toFixed(0)} MA↓ Mom:${momentum.toFixed(3)}%` };
-  return { signal: 'NEUTRAL', strength: 1, reason: `RSI:${rsi.toFixed(0)} — No clear trend` };
-}
-
-function initSignals() {
-  // Record prices every tick
-  const origTickChart = tickChart;
-  setInterval(() => {
-    ASSETS.forEach(a => recordPriceHistory(a.id, STATE.prices[a.id]));
-  }, 2000);
-}
-
-function renderSignalsTab() {
-  const list = document.getElementById('trades-list');
-  const empty = document.getElementById('bp-empty');
-  empty.style.display = 'none';
-
-  list.innerHTML = ASSETS.map(a => {
-    const sig = generateSignal(a);
-    const cls = sig.signal === 'BUY' ? 'buy' : sig.signal === 'SELL' ? 'sell' : 'neutral';
-    const stars = [1,2,3].map(i => `<span class="${i <= sig.strength ? 'active' : ''}"></span>`).join('');
-    return `
-    <div class="signal-row" onclick="selectAsset('${a.id}');switchBPTab('active',document.querySelector('.bp-tab'))">
-      <div class="sig-icon ${cls}">
-        <i class="fas fa-arrow-${sig.signal==='BUY'?'up':sig.signal==='SELL'?'down':'right'}"></i>
-      </div>
-      <div style="flex:1">
-        <div class="sig-asset">${a.name}</div>
-        <div style="font-size:10px;color:var(--text3)">${sig.reason}</div>
-      </div>
-      <div class="sig-strength">${stars}</div>
-      <div class="sig-dir ${cls}" style="margin:0 8px">${sig.signal}</div>
-      <div class="sig-payout"><b>${a.payout}%</b></div>
-    </div>`;
-  }).join('');
-}
-
-// Extend switchBPTab
-const _origSwitchBPTab = switchBPTab;
-function switchBPTab(tab, btn) {
-  STATE.bpTab = tab;
-  document.querySelectorAll('.bp-tab').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  if (tab === 'signals') { renderSignalsTab(); return; }
-  if (tab === 'analytics') { showAnalytics(); return; }
-  updateActiveTradesUI();
-}
-
-/* ────────────────────────────────────────────────────────
-   TOURNAMENTS
-──────────────────────────────────────────────────────── */
-STATE.inTournament = false;
-STATE.tournamentProfit = 0;
-
-function joinTournament() {
-  STATE.inTournament = true;
-  STATE.tournamentProfit = 0;
-  STATE.tournamentTrades = 0;
-  document.getElementById('btn-join-tournament').textContent = '✓ Joined!';
-  document.getElementById('btn-join-tournament').disabled = true;
-  document.getElementById('your-tournament-rank').textContent = '$0.00';
-  showNotif('You joined the Daily Championship! Good luck! 🏆', 'win');
-  closeModal('modal-tournament');
-}
-
-function startTournamentTimer() {
-  // Countdown to midnight UTC
-  function updateTimer() {
-    const now = new Date();
-    const midnight = new Date(now);
-    midnight.setUTCHours(24, 0, 0, 0);
-    const diff = midnight - now;
-    const h = Math.floor(diff / 3600000);
-    const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
-    const el = document.getElementById('tc-timeleft');
-    if (el) el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }
-  updateTimer();
-  setInterval(updateTimer, 1000);
-
-  // Simulate participant count growing
-  setInterval(() => {
-    const el = document.getElementById('tc-participants');
-    if (el) el.textContent = parseInt(el.textContent) + Math.floor(Math.random()*2);
-  }, 5000);
-}
-
-/* ────────────────────────────────────────────────────────
-   REFERRAL
-──────────────────────────────────────────────────────── */
-function initReferral() {
-  // Check URL for referral code
-  const params = new URLSearchParams(window.location.search);
-  const refCode = params.get('ref');
-  if (refCode) localStorage.setItem('extrade_ref', refCode);
-
-  // Generate user's own code
-  let myCode = localStorage.getItem('extrade_myref');
-  if (!myCode) {
-    myCode = 'EX' + Math.random().toString(36).slice(2,8).toUpperCase();
-    localStorage.setItem('extrade_myref', myCode);
-  }
-  STATE.myReferralCode = myCode;
-
-  const linkEl = document.getElementById('ref-link-text');
-  if (linkEl) linkEl.textContent = `https://exglobal.online/trade.html?ref=${myCode}`;
-
-  // Load referral stats from localStorage
-  const stats = JSON.parse(localStorage.getItem('extrade_ref_stats') || '{"total":0,"active":0,"earned":0}');
-  document.getElementById('ref-total').textContent = stats.total;
-  document.getElementById('ref-active').textContent = stats.active;
-  document.getElementById('ref-earned').textContent = '$' + stats.earned.toFixed(2);
-}
-
-function copyReferralLink() {
-  const code = STATE.myReferralCode || 'XXXXXX';
-  const link = `https://exglobal.online/trade.html?ref=${code}`;
-  navigator.clipboard.writeText(link).then(() => showToast('Referral link copied!')).catch(() => showToast('Copy failed'));
-}
-
-function shareReferral() {
-  const code = STATE.myReferralCode || 'XXXXXX';
-  const link = `https://exglobal.online/trade.html?ref=${code}`;
-  if (navigator.share) {
-    navigator.share({ title: 'Join EX Trade', text: 'Trade binary options and win! Use my referral link:', url: link });
-  } else {
-    copyReferralLink();
-  }
-}
-
-/* ────────────────────────────────────────────────────────
-   PWA
-──────────────────────────────────────────────────────── */
-let deferredInstallPrompt;
-
-function initPWA() {
-  window.addEventListener('beforeinstallprompt', e => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    if (!localStorage.getItem('extrade_pwa_dismissed')) {
-      document.getElementById('pwa-install-bar').classList.add('show');
+/* ── AUTH ── */
+function initAuth(){
+  if(typeof firebase==='undefined'||!firebase.apps||!firebase.apps.length)return;
+  try{firebase.auth().onAuthStateChanged(user=>{
+    S.user=user;
+    if(user){
+      document.getElementById('auth-form-wrap').style.display='none';
+      document.getElementById('logged-in-wrap').style.display='block';
+      document.getElementById('logged-name').textContent=user.displayName||user.email.split('@')[0];
+      document.getElementById('logged-email').textContent=user.email;
+      if(document.getElementById('profile-balance'))document.getElementById('profile-balance').textContent='$'+getBal().toLocaleString('en',{minimumFractionDigits:2});
+      if(document.getElementById('profile-trades'))document.getElementById('profile-trades').textContent=S.history.length;
+    }else{
+      document.getElementById('auth-form-wrap').style.display='block';
+      document.getElementById('logged-in-wrap').style.display='none';
     }
-  });
-  window.addEventListener('appinstalled', () => {
-    document.getElementById('pwa-install-bar').classList.remove('show');
-    showToast('EX Trade installed!');
-  });
+  });}catch(e){}
+}
+function doSignIn(){
+  const em=document.getElementById('auth-email').value.trim(),pw=document.getElementById('auth-pass').value;
+  if(!em||!pw){showToast('Enter email and password');return;}
+  if(typeof firebase==='undefined'){showToast('Firebase not configured');return;}
+  firebase.auth().signInWithEmailAndPassword(em,pw).then(()=>{closeSheet('sheet-profile');showNotif('Signed in!','win');}).catch(e=>showToast(e.message));
+}
+function doGoogleLogin(){
+  if(typeof firebase==='undefined'){showToast('Firebase not configured');return;}
+  firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(()=>{closeSheet('sheet-profile');showNotif('Signed in with Google!','win');}).catch(e=>showToast(e.message));
+}
+function doLogout(){if(typeof firebase!=='undefined')firebase.auth().signOut();closeSheet('sheet-profile');showToast('Logged out');}
+function showRegisterForm(){
+  document.getElementById('auth-sheet-title').textContent='Create Account';
+  document.getElementById('auth-form-wrap').innerHTML=`
+    <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" id="reg-name" placeholder="Your name"/></div>
+    <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="reg-email" placeholder="your@email.com"/></div>
+    <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="reg-pass" placeholder="Min 6 characters"/></div>
+    <button class="btn-full btn-green" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+    <div class="divider">or</div>
+    <button class="btn-full btn-dark" onclick="doGoogleLogin()">Continue with Google</button>
+    <div class="auth-switch">Already have account? <a onclick="location.reload()">Sign In</a></div>`;
+}
+function doRegister(){
+  const n=(document.getElementById('reg-name')||{}).value||'',em=(document.getElementById('reg-email')||{}).value||'',pw=(document.getElementById('reg-pass')||{}).value||'';
+  if(!n||!em||!pw){showToast('Fill all fields');return;}
+  if(typeof firebase==='undefined'){showToast('Firebase not configured');return;}
+  firebase.auth().createUserWithEmailAndPassword(em,pw).then(c=>{c.user.updateProfile({displayName:n});closeSheet('sheet-profile');showNotif('Account created!','win');}).catch(e=>showToast(e.message));
+}
 
-  // Register service worker
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+/* ── UTC CLOCK ── */
+function startUTCClock(){
+  function update(){
+    const d=new Date();
+    const h=String(d.getUTCHours()).padStart(2,'0'),m=String(d.getUTCMinutes()).padStart(2,'0'),s=String(d.getUTCSeconds()).padStart(2,'0');
+    const el=document.getElementById('utc-time');if(el)el.textContent=`${h}:${m}:${s}`;
   }
+  update();setInterval(update,1000);
 }
 
-function installPWA() {
-  if (!deferredInstallPrompt) { showToast('Use browser menu → Add to Home Screen'); return; }
-  deferredInstallPrompt.prompt();
-  deferredInstallPrompt.userChoice.then(r => {
-    if (r.outcome === 'accepted') showNotif('App installed!', 'win');
-    deferredInstallPrompt = null;
-    document.getElementById('pwa-install-bar').classList.remove('show');
-    localStorage.setItem('extrade_pwa_dismissed', '1');
-  });
+/* ── SHEETS ── */
+function openSheet(id){
+  document.getElementById(id).classList.add('show');
+  if(id==='sheet-assets')renderAssetList();
+  if(id==='sheet-signals')renderSignals();
+  if(id==='sheet-trades')renderTradesList();
+  if(id==='sheet-deposit'){renderDepositDetails();updateDepositSummary();}
 }
+function closeSheet(id){document.getElementById(id).classList.remove('show');}
+function closeSheetIfBackdrop(e,id){if(e.target.id===id)closeSheet(id);}
+
+/* ── BOTTOM NAV ── */
+function switchNav(tab,btn){
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+/* ── NOTIFICATIONS ── */
+function showNotif(msg,type='info'){
+  const s=document.getElementById('notif-stack');
+  const el=document.createElement('div');el.className=`notif ${type}`;
+  const icon=type==='win'?'fa-trophy':type==='lose'?'fa-times-circle':'fa-info-circle';
+  const color=type==='win'?'var(--green)':type==='lose'?'var(--red)':'var(--blue)';
+  el.innerHTML=`<i class="fas ${icon}" style="color:${color}"></i> ${msg}`;
+  s.appendChild(el);
+  setTimeout(()=>{el.classList.add('notif-exit');setTimeout(()=>el.remove(),300);},4000);
+}
+let toastT;
+function showToast(msg){
+  const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+/* ── SAVE STATE ── */
+function saveState(){
+  try{localStorage.setItem('ext_s',JSON.stringify({demoBalance:S.demoBalance,realBalance:S.realBalance,history:S.history.slice(0,200),mode:S.mode}));}catch(e){}
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  initChart();
+  updateBalanceUI();
+  updatePayoutUI();
+  updateTradePanelAsset();
+  startPriceEngine();
+  startUTCClock();
+  startTournamentClock();
+  initAuth();
+  renderDepositDetails();
+  // keyboard shortcuts
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT')return;
+    if(e.key==='ArrowUp')placeTrade('up');
+    if(e.key==='ArrowDown')placeTrade('down');
+  });
+  // SW clear
+  if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()));
+});
 </script>
 </body>
 </html>
