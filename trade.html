@@ -70,12 +70,19 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .trade-marker-end::after{content:'End';position:absolute;top:8px;left:4px;font-size:9px;color:#f87171;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
 
 /* ── CHART LEFT TOOLBAR ── */
-.chart-toolbar{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:20;pointer-events:all}
-.ct-btn{width:40px;height:40px;background:rgba(22,27,40,.92);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:15px;transition:.15s;user-select:none;flex-shrink:0}
-.ct-btn:active{background:var(--bg4)}
+.chart-toolbar{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:20;pointer-events:all}
+.ct-btn{width:44px;height:44px;background:rgba(18,24,38,.94);border:1px solid var(--border);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px;transition:.15s;user-select:none;flex-shrink:0;position:relative}
+.ct-btn:active{transform:scale(.92)}
 .ct-btn.ct-active{background:#1e3a5f;border-color:var(--blue);color:var(--blue)}
-.ct-btn.ct-menu-btn{background:#1565c0;border-color:#1976d2;color:#fff}
-.ct-btn.ct-tf-btn{font-size:13px;font-weight:800;color:var(--text)}
+.ct-btn.ct-menu-btn{background:#1565c0;border-color:#1976d2;color:#fff;font-size:18px}
+.ct-btn.ct-menu-btn.open{background:#c0392b;border-color:#e74c3c}
+.ct-btn.ct-tf-btn{font-size:14px;font-weight:800;color:var(--text)}
+/* Submenu — hidden by default, slides open */
+.ct-submenu{display:flex;flex-direction:column;align-items:center;gap:6px;overflow:hidden;max-height:0;opacity:0;transition:max-height .28s ease,opacity .2s ease}
+.chart-toolbar.open .ct-submenu{max-height:260px;opacity:1}
+/* Bag/trades button */
+.ct-bag-btn{position:relative}
+.ct-bag-badge{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;background:var(--blue);color:#fff;border-radius:8px;font-size:9px;font-weight:800;display:none;align-items:center;justify-content:center;padding:0 3px;border:1px solid var(--bg)}
 
 /* ── TIMEFRAME GRID POPUP ── */
 .tf-grid-popup{
@@ -366,21 +373,30 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
     <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text3)"></i>
   </div>
   <!-- Left vertical toolbar -->
-  <div class="chart-toolbar">
+  <div class="chart-toolbar" id="chart-toolbar">
+    <!-- Always visible: menu toggle -->
     <div class="ct-btn ct-menu-btn" id="ct-menu-btn" onclick="toggleChartMenu()">
-      <i class="fas fa-ellipsis-h"></i>
+      <i class="fas fa-ellipsis-h" id="ct-menu-icon"></i>
     </div>
-    <div class="ct-btn" id="ct-draw-btn" onclick="toggleDrawMode()" title="Draw tool">
-      <i class="fas fa-pencil-alt"></i>
+    <!-- Hidden sub-tools — revealed when ... is tapped -->
+    <div class="ct-submenu" id="ct-submenu">
+      <div class="ct-btn" id="ct-draw-btn" onclick="toggleDrawMode()" title="Draw">
+        <i class="fas fa-pencil-alt"></i>
+      </div>
+      <div class="ct-btn ct-tf-btn" id="ct-tf-btn" onclick="toggleTFGrid()" title="Timeframe">
+        <span id="ct-tf-label">1m</span>
+      </div>
+      <div class="ct-btn" id="ct-type-btn" onclick="cycleChartType()" title="Chart type">
+        <i class="fas fa-chart-bar"></i>
+      </div>
+      <div class="ct-btn" title="Indicators">
+        <i class="fas fa-satellite-dish" style="font-size:13px"></i>
+      </div>
     </div>
-    <div class="ct-btn ct-tf-btn" id="ct-tf-btn" onclick="toggleTFGrid()" title="Timeframe">
-      <span id="ct-tf-label">1m</span>
-    </div>
-    <div class="ct-btn" id="ct-type-btn" onclick="cycleChartType()" title="Chart type">
-      <i class="fas fa-chart-bar"></i>
-    </div>
-    <div class="ct-btn" title="Indicators">
-      <i class="fas fa-satellite-dish" style="font-size:13px"></i>
+    <!-- Always visible: active trades bag -->
+    <div class="ct-btn ct-bag-btn" id="ct-bag-btn" onclick="openSheet('sheet-trades')" title="Active trades">
+      <i class="fas fa-briefcase"></i>
+      <div class="ct-bag-badge" id="ct-bag-badge">0</div>
     </div>
   </div>
   <!-- Timeframe grid popup -->
@@ -886,9 +902,20 @@ function closeTFGrid(){
 let _chartMenuOpen=false;
 function toggleChartMenu(){
   _chartMenuOpen=!_chartMenuOpen;
-  const btn=document.getElementById('ct-menu-btn');if(!btn)return;
-  if(_chartMenuOpen){btn.innerHTML='<i class="fas fa-times"></i>';btn.style.background='#333';}
-  else{btn.innerHTML='<i class="fas fa-ellipsis-h"></i>';btn.style.background='';}
+  const tb=document.getElementById('chart-toolbar');
+  const btn=document.getElementById('ct-menu-btn');
+  const icon=document.getElementById('ct-menu-icon');
+  if(!tb||!btn)return;
+  if(_chartMenuOpen){
+    tb.classList.add('open');
+    btn.classList.add('open');
+    if(icon){icon.className='fas fa-times';}
+  }else{
+    tb.classList.remove('open');
+    btn.classList.remove('open');
+    if(icon){icon.className='fas fa-ellipsis-h';}
+    closeTFGrid();
+  }
 }
 let _drawMode=false;
 function toggleDrawMode(){
@@ -1150,11 +1177,11 @@ function renderTradesList(){
 function updateBadges(){
   const n=S.activeTrades.length;
   const badge=document.getElementById('trades-badge');
-  badge.style.display=n?'flex':'none';
-  badge.textContent=n;
+  if(badge){badge.style.display=n?'flex':'none';badge.textContent=n;}
   const nb=document.getElementById('notif-badge');
-  nb.style.display=n?'flex':'none';
-  nb.textContent=n;
+  if(nb){nb.style.display=n?'flex':'none';nb.textContent=n;}
+  const bb=document.getElementById('ct-bag-badge');
+  if(bb){bb.style.display=n?'flex':'none';bb.textContent=n;}
 }
 
 /* ── SIGNALS ── */
