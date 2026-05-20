@@ -535,6 +535,107 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .time-btn{background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.1s}
 .time-btn:active{background:var(--bg3);border-color:var(--blue)}
 .time-btn.active{background:#1e3a5f;border-color:var(--blue);color:#fff}
+
+/* ══════════════════════════════════════════
+   QUOTEX-STYLE TRADE PANEL REDESIGN
+══════════════════════════════════════════ */
+
+/* Quotex payout block — big profit display */
+.qx-payout-block{display:flex;align-items:stretch;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-shrink:0}
+.qx-payout-left{flex:1;padding:8px 12px;display:flex;flex-direction:column;gap:2px}
+.qx-payout-pct-row{display:flex;align-items:center;gap:6px}
+.qx-pct-big{font-size:22px;font-weight:900;color:var(--green);line-height:1}
+.qx-pct-label{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.qx-profit-row{display:flex;align-items:center;gap:4px}
+.qx-profit-lbl{font-size:10px;color:var(--text3)}
+.qx-profit-amt{font-size:14px;font-weight:800;color:var(--green);font-variant-numeric:tabular-nums}
+.qx-payout-right{border-left:1px solid var(--border);padding:8px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:70px}
+.qx-boost-stack{display:flex;flex-direction:column;gap:2px;align-items:center}
+
+/* Quotex trade buttons — show payout ON the button */
+.qx-trade-btns{display:grid;grid-template-columns:1fr 1fr;gap:1px;flex-shrink:0}
+.qx-btn{border:none;font-family:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:10px 8px;transition:.12s;position:relative;overflow:hidden}
+.qx-btn:active{transform:scale(.97)}
+.qx-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.12);opacity:0;transition:.15s}
+.qx-btn:active::after{opacity:1}
+.qx-btn-up{background:linear-gradient(170deg,#00c87a,#009a5e)}
+.qx-btn-down{background:linear-gradient(170deg,#ff3d3d,#c41f1f)}
+.qx-btn-icon{font-size:20px;color:rgba(255,255,255,.9)}
+.qx-btn-up .qx-btn-icon{color:rgba(0,0,0,.8)}
+.qx-btn-label{font-size:13px;font-weight:800;color:#fff;letter-spacing:.5px}
+.qx-btn-up .qx-btn-label{color:#000}
+.qx-btn-pct{font-size:11px;font-weight:700;color:rgba(255,255,255,.7)}
+.qx-btn-up .qx-btn-pct{color:rgba(0,0,0,.6)}
+.qx-btn:disabled{opacity:.35;pointer-events:none}
+
+/* Quotex multiplier row */
+.qx-mult-row{display:flex;align-items:center;gap:6px;padding:5px 12px;border-top:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.qx-mult-row::-webkit-scrollbar{display:none}
+.qx-mult-label{font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;flex-shrink:0}
+.qx-mult-btn{padding:4px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;flex-shrink:0;font-family:inherit;transition:.1s}
+.qx-mult-btn.active{background:#1e3a5f;border-color:var(--blue);color:#60a5fa}
+.qx-mult-btn:active{transform:scale(.93)}
+
+/* OTC badge */
+.otc-badge{font-size:8px;font-weight:800;background:#2d1a6e;color:#a78bfa;border:1px solid #4c2fa0;padding:1px 5px;border-radius:4px;letter-spacing:.3px;vertical-align:middle;margin-left:3px}
+
+/* Stock flag */
+.stock-flag{font-size:11px;font-weight:800;color:var(--text2);background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 4px;display:flex;align-items:center;justify-content:center}
+
+/* Signal accuracy */
+.sig-accuracy{font-size:10px;color:var(--text3);margin-top:3px;display:flex;align-items:center;gap:4px}
+.sig-acc-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden}
+.sig-acc-fill{height:100%;border-radius:2px}
+.sig-acc-fill.high{background:var(--green)}
+.sig-acc-fill.med{background:var(--gold)}
+.sig-acc-fill.low{background:var(--red)}
+
+/* Martingale sheet */
+.mart-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);gap:12px}
+.mart-step{width:24px;height:24px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.mart-step.loss{background:#2d0a0a;border-color:var(--red);color:var(--red)}
+.mart-step.target{background:#0d3320;border-color:var(--green);color:var(--green)}
+.mart-amt{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.mart-info{flex:1}
+.mart-label{font-size:11px;color:var(--text3)}
+.mart-recovery{font-size:11px;font-weight:700}
+.mart-recovery.positive{color:var(--green)}
+
+/* Fullscreen chart */
+.chart-wrap.fullscreen{top:0!important;bottom:0!important;left:0!important;right:0!important;z-index:250}
+.btn-fullscreen{position:absolute;top:8px;right:8px;z-index:20;background:rgba(18,24,38,.85);border:1px solid var(--border);border-radius:8px;color:var(--text2);width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px}
+.btn-fullscreen:active{transform:scale(.92)}
+
+/* Heiken Ashi indicator toggle label */
+.ha-active-badge{position:absolute;top:4px;right:4px;background:#a78bfa22;color:#a78bfa;font-size:8px;font-weight:700;padding:1px 5px;border-radius:4px;pointer-events:none}
+
+/* Live P&L on active trade in list */
+.ti-live-pnl{font-size:11px;font-weight:700;font-variant-numeric:tabular-nums;margin-top:2px}
+.ti-live-pnl.win{color:var(--green)}.ti-live-pnl.lose{color:var(--red)}
+
+/* Profit-target row */
+.pt-row{display:flex;align-items:center;gap:6px;padding:4px 12px;border-top:1px solid var(--border);flex-shrink:0}
+.pt-label{font-size:10px;color:var(--text3);font-weight:600}
+.pt-input{background:var(--bg4);border:1px solid var(--border);color:var(--text);padding:3px 8px;border-radius:6px;font-size:12px;font-weight:700;font-family:inherit;outline:none;width:60px;font-variant-numeric:tabular-nums}
+.pt-input:focus{border-color:var(--green)}
+.pt-toggle{font-size:10px;color:var(--blue);font-weight:700;cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+
+/* Quotex-style chart price line + direction labels */
+.chart-direction-overlay{position:absolute;top:50%;right:52px;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;pointer-events:none;z-index:9}
+.cdo-up{background:var(--green);color:#000;font-size:10px;font-weight:800;padding:4px 8px;border-radius:6px}
+.cdo-down{background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:4px 8px;border-radius:6px}
+
+/* MACD panel */
+.macd-panel{position:absolute;bottom:0;left:0;right:0;height:80px;background:rgba(10,14,26,.85);border-top:1px solid var(--border);z-index:8;pointer-events:none}
+
+/* Quotex amount % chips */
+.pct-chip{padding:4px 8px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;font-size:10px;font-weight:700;color:var(--text3);cursor:pointer;flex-shrink:0;font-family:inherit;transition:.1s}
+.pct-chip:active{border-color:var(--green);color:var(--green);transform:scale(.93)}
+
+/* Alligator colors */
+.alligator-jaw{color:#3b82f6}
+.alligator-teeth{color:#ef4444}
+.alligator-lips{color:#22c55e}
 </style>
 </head>
 <body>
@@ -627,6 +728,24 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
     <div class="ind-section-hdr">Trend</div>
     <div class="ma-row" onclick="toggleEMA(9)"><span style="color:#f43f5e">EMA 9</span><div class="ma-toggle" id="ma-tog-ema9"></div></div>
     <div class="ma-row" onclick="toggleEMA(21)"><span style="color:#fb923c">EMA 21</span><div class="ma-toggle" id="ma-tog-ema21"></div></div>
+    <div class="ma-row" onclick="toggleAlligator()"><span style="color:#22c55e">🐊 Alligator</span><div class="ma-toggle" id="ma-tog-alligator"></div></div>
+    <div class="ind-section-hdr">Momentum</div>
+    <div class="ma-row" onclick="toggleMACD()"><span style="color:#f97316">MACD</span><div class="ma-toggle" id="ma-tog-macd"></div></div>
+    <div class="ind-section-hdr">Chart Type</div>
+    <div class="ma-row" onclick="switchToHA()"><span style="color:#a78bfa">Heiken Ashi</span><div class="ma-toggle" id="ma-tog-ha"></div></div>
+  </div>
+  <!-- Fullscreen button -->
+  <div class="btn-fullscreen" onclick="toggleFullscreen()" id="btn-fullscreen" title="Fullscreen">
+    <i class="fas fa-expand" id="fullscreen-icon"></i>
+  </div>
+  <!-- Direction overlay (Quotex style) -->
+  <div class="chart-direction-overlay" id="chart-dir-overlay" style="display:none">
+    <div class="cdo-up">↑ UP</div>
+    <div class="cdo-down">↓ DOWN</div>
+  </div>
+  <!-- MACD mini panel -->
+  <div class="macd-panel" id="macd-panel" style="display:none">
+    <canvas id="macd-canvas" style="width:100%;height:100%"></canvas>
   </div>
   <!-- Trade markers (injected dynamically) -->
   <div id="trade-markers"></div>
@@ -698,38 +817,80 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
     <button class="amt-chip" onclick="setAmt(25)">$25</button>
     <button class="amt-chip" onclick="setAmt(50)">$50</button>
     <button class="amt-chip" onclick="setAmt(100)">$100</button>
+    <button class="amt-chip" onclick="setAmt(200)">$200</button>
+    <button class="amt-chip" onclick="setAmtPct(5)">5%</button>
+    <button class="amt-chip" onclick="setAmtPct(10)">10%</button>
+    <button class="amt-chip" onclick="setAmtPct(25)">25%</button>
   </div>
 
-  <!-- Payout row -->
-  <div class="payout-row">
-    <span class="payout-label">Payout</span>
-    <div style="display:flex;align-items:center;gap:6px">
-      <div class="streak-pill" id="streak-pill">🔥 <span id="streak-txt">0</span>x</div>
-      <div class="boost-pill" id="boost-pill">⚡ <span id="boost-txt">+5%</span></div>
-      <span class="payout-val" id="payout-val">92.50 $</span>
+  <!-- Multiplier row (Quotex) -->
+  <div class="qx-mult-row">
+    <span class="qx-mult-label">×</span>
+    <button class="qx-mult-btn active" id="mult-1" onclick="setMultiplier(1)">×1</button>
+    <button class="qx-mult-btn" id="mult-2" onclick="setMultiplier(2)">×2</button>
+    <button class="qx-mult-btn" id="mult-3" onclick="setMultiplier(3)">×3</button>
+    <button class="qx-mult-btn" id="mult-5" onclick="setMultiplier(5)">×5</button>
+    <div style="flex:1"></div>
+    <button class="qx-mult-btn" onclick="openSheet('sheet-martingale')" style="color:var(--gold);border-color:#f59e0b44"><i class="fas fa-calculator"></i> Martingale</button>
+  </div>
+
+  <!-- Quotex-style payout block -->
+  <div class="qx-payout-block">
+    <div class="qx-payout-left">
+      <div class="qx-payout-pct-row">
+        <div class="qx-pct-big" id="qx-pct-big">82%</div>
+        <div style="display:flex;flex-direction:column;gap:1px;margin-left:4px">
+          <span class="qx-pct-label">Payout</span>
+          <div class="streak-pill" id="streak-pill" style="display:none">🔥 <span id="streak-txt">0</span>x</div>
+        </div>
+      </div>
+      <div class="qx-profit-row">
+        <span class="qx-profit-lbl">Profit:</span>
+        <span class="qx-profit-amt" id="qx-profit-amt">+$8.20</span>
+      </div>
+      <div class="qx-profit-row" style="margin-top:1px">
+        <span class="qx-profit-lbl">Total return:</span>
+        <span style="font-size:11px;font-weight:700;color:var(--text2)" id="qx-return-amt">$18.20</span>
+      </div>
+    </div>
+    <div class="qx-payout-right">
+      <div class="boost-pill" id="boost-pill" style="display:none;margin-bottom:3px">⚡ +5%</div>
+      <div class="flash-sale-wrap" id="flash-sale-wrap" style="display:none;border:none;background:none;padding:0;margin:0;flex-direction:column;align-items:center">
+        <div class="flash-lbl" style="font-size:9px">⚡+10%</div>
+        <div class="flash-timer" id="flash-timer" style="font-size:10px">04:59</div>
+      </div>
+      <div class="rf-label" style="font-size:9px;flex-direction:column;gap:2px;display:flex;align-items:center">
+        <i class="fas fa-shield-alt" style="color:var(--green)"></i>
+        <span class="rf-tokens" id="rf-tokens" style="font-size:9px">3</span>
+      </div>
     </div>
   </div>
 
-  <!-- Flash Sale Strip -->
-  <div class="flash-sale-wrap" id="flash-sale-wrap">
-    <div class="flash-lbl">⚡ Flash Sale <span id="flash-extra-pct">+10%</span> Payout!</div>
-    <div class="flash-timer" id="flash-timer">04:59</div>
-  </div>
-
-  <!-- UP / DOWN -->
-  <div class="trade-btns">
-    <button class="btn-trade btn-up" id="btn-up" onclick="placeTrade('up')">
-      <i class="fas fa-arrow-up"></i> Up
+  <!-- Quotex trade buttons -->
+  <div class="qx-trade-btns">
+    <button class="qx-btn qx-btn-up" id="btn-up" onclick="placeTrade('up')">
+      <i class="fas fa-arrow-up qx-btn-icon"></i>
+      <span class="qx-btn-label">UP</span>
+      <span class="qx-btn-pct" id="btn-up-pct">82%</span>
     </button>
-    <button class="btn-trade btn-down" id="btn-down" onclick="placeTrade('down')">
-      <i class="fas fa-arrow-down"></i> Down
+    <button class="qx-btn qx-btn-down" id="btn-down" onclick="placeTrade('down')">
+      <i class="fas fa-arrow-down qx-btn-icon"></i>
+      <span class="qx-btn-label">DOWN</span>
+      <span class="qx-btn-pct" id="btn-down-pct">82%</span>
     </button>
   </div>
 
-  <!-- Risk-Free Trade Row -->
-  <div class="rf-row">
-    <div class="rf-label"><i class="fas fa-shield-alt"></i> Risk-Free Trade <span class="rf-tokens" id="rf-tokens">3</span></div>
-    <button class="btn-rf" id="btn-rf" onclick="useRiskFree()">Use</button>
+  <!-- Risk-Free + Profit Target row -->
+  <div style="display:flex;align-items:center;border-top:1px solid var(--border);flex-shrink:0">
+    <div class="rf-row" style="border-top:none;flex:1">
+      <div class="rf-label"><i class="fas fa-shield-alt"></i> Risk-Free <span class="rf-tokens" id="rf-tokens-2">3</span></div>
+      <button class="btn-rf" id="btn-rf" onclick="useRiskFree()">Use</button>
+    </div>
+    <div style="width:1px;height:30px;background:var(--border)"></div>
+    <div class="pt-row" style="border-top:none;flex:1">
+      <span class="pt-label">🎯 Target $</span>
+      <input class="pt-input" id="profit-target-input" type="number" placeholder="—" min="0"/>
+    </div>
   </div>
 </div>
 
@@ -774,11 +935,13 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
       <input type="text" placeholder="Search assets..." oninput="filterAssetSheet(this.value)" id="asset-search-input"/>
     </div>
     <div class="asset-cats-row" id="asset-cats-row">
-      <div class="cat-pill active" onclick="filterAssetCat('all',this)">All</div>
-      <div class="cat-pill" onclick="filterAssetCat('forex',this)">Forex</div>
-      <div class="cat-pill" onclick="filterAssetCat('crypto',this)">Crypto</div>
-      <div class="cat-pill" onclick="filterAssetCat('commodity',this)">Commodity</div>
-      <div class="cat-pill" onclick="filterAssetCat('index',this)">Indices</div>
+      <div class="cat-pill active" onclick="filterAssetCat('all',this)">⭐ All</div>
+      <div class="cat-pill" onclick="filterAssetCat('otc',this)">🌙 OTC</div>
+      <div class="cat-pill" onclick="filterAssetCat('forex',this)">💱 Forex</div>
+      <div class="cat-pill" onclick="filterAssetCat('crypto',this)">🪙 Crypto</div>
+      <div class="cat-pill" onclick="filterAssetCat('stock',this)">📱 Stocks</div>
+      <div class="cat-pill" onclick="filterAssetCat('commodity',this)">🛢️ Commodity</div>
+      <div class="cat-pill" onclick="filterAssetCat('index',this)">📊 Indices</div>
     </div>
     <div class="asset-list-scroll" id="asset-list-scroll"></div>
   </div>
@@ -1199,6 +1362,32 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
   </div>
 </div>
 
+<!-- MARTINGALE CALCULATOR SHEET -->
+<div class="sheet-backdrop" id="sheet-martingale" onclick="closeSheetIfBackdrop(event,'sheet-martingale')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title"><i class="fas fa-calculator" style="color:var(--gold)"></i> Martingale Calculator</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-martingale')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="padding:12px 16px;font-size:12px;color:var(--text3)">Enter your base amount to see the recovery plan after consecutive losses.</div>
+    <div style="display:flex;gap:8px;padding:0 16px 12px">
+      <input class="form-input" type="number" id="mart-base" placeholder="Base amount ($)" value="10" style="flex:1" oninput="renderMartingale()"/>
+      <select class="form-input" id="mart-payout" style="flex:1" onchange="renderMartingale()">
+        <option value="80">80% payout</option>
+        <option value="82" selected>82% payout</option>
+        <option value="85">85% payout</option>
+        <option value="90">90% payout</option>
+      </select>
+    </div>
+    <div style="padding:0 16px 4px;font-size:10px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)">RECOVERY PLAN</div>
+    <div id="mart-list" style="padding:0 16px;max-height:50dvh;overflow-y:auto"></div>
+    <div style="padding:12px 16px;background:var(--bg3);margin:12px 16px;border-radius:10px;font-size:11px;color:var(--text3);line-height:1.7">
+      ⚠️ Martingale doubles your bet after each loss to recover. High risk — use with caution. Never bet more than you can afford to lose.
+    </div>
+  </div>
+</div>
+
 <!-- LIVE TRADE FEED -->
 <div class="ltf-wrap" id="ltf-wrap"></div>
 
@@ -1209,6 +1398,7 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
 <script>
 /* ── ASSETS ── */
 const ASSETS=[
+  /* ── FOREX ── */
   {id:'EURUSD',name:'EUR/USD',f1:'🇪🇺',f2:'🇺🇸',cat:'forex',price:1.08512,payout:82,vol:0.00008,dec:5},
   {id:'GBPUSD',name:'GBP/USD',f1:'🇬🇧',f2:'🇺🇸',cat:'forex',price:1.26540,payout:80,vol:0.00010,dec:5},
   {id:'USDJPY',name:'USD/JPY',f1:'🇺🇸',f2:'🇯🇵',cat:'forex',price:149.520,payout:85,vol:0.012,dec:3},
@@ -1217,17 +1407,49 @@ const ASSETS=[
   {id:'USDCAD',name:'USD/CAD',f1:'🇺🇸',f2:'🇨🇦',cat:'forex',price:1.36012,payout:79,vol:0.00009,dec:5},
   {id:'EURGBP',name:'EUR/GBP',f1:'🇪🇺',f2:'🇬🇧',cat:'forex',price:0.85780,payout:77,vol:0.00006,dec:5},
   {id:'USDCHF',name:'USD/CHF',f1:'🇺🇸',f2:'🇨🇭',cat:'forex',price:0.89710,payout:78,vol:0.00007,dec:5},
+  {id:'NZDUSD',name:'NZD/USD',f1:'🇳🇿',f2:'🇺🇸',cat:'forex',price:0.60420,payout:79,vol:0.00008,dec:5},
+  {id:'GBPJPY',name:'GBP/JPY',f1:'🇬🇧',f2:'🇯🇵',cat:'forex',price:188.650,payout:81,vol:0.014,dec:3},
+  {id:'EURJPY',name:'EUR/JPY',f1:'🇪🇺',f2:'🇯🇵',cat:'forex',price:161.420,payout:80,vol:0.013,dec:3},
+  {id:'EURCAD',name:'EUR/CAD',f1:'🇪🇺',f2:'🇨🇦',cat:'forex',price:1.46830,payout:77,vol:0.00009,dec:5},
+  /* ── OTC (24/7 Weekend Trading) ── */
+  {id:'EURUSD_OTC',name:'EUR/USD OTC',f1:'🇪🇺',f2:'🇺🇸',cat:'otc',price:1.08490,payout:92,vol:0.00006,dec:5,otc:true},
+  {id:'GBPUSD_OTC',name:'GBP/USD OTC',f1:'🇬🇧',f2:'🇺🇸',cat:'otc',price:1.26520,payout:90,vol:0.00008,dec:5,otc:true},
+  {id:'USDJPY_OTC',name:'USD/JPY OTC',f1:'🇺🇸',f2:'🇯🇵',cat:'otc',price:149.510,payout:91,vol:0.010,dec:3,otc:true},
+  {id:'AUDUSD_OTC',name:'AUD/USD OTC',f1:'🇦🇺',f2:'🇺🇸',cat:'otc',price:0.65100,payout:89,vol:0.00006,dec:5,otc:true},
+  {id:'USDCAD_OTC',name:'USD/CAD OTC',f1:'🇺🇸',f2:'🇨🇦',cat:'otc',price:1.36000,payout:88,vol:0.00007,dec:5,otc:true},
+  {id:'EURGBP_OTC',name:'EUR/GBP OTC',f1:'🇪🇺',f2:'🇬🇧',cat:'otc',price:0.85760,payout:90,vol:0.00005,dec:5,otc:true},
+  {id:'XAUUSD_OTC',name:'Gold OTC',f1:'🥇',f2:'🇺🇸',cat:'otc',price:2319.5,payout:87,vol:0.20,dec:2,otc:true},
+  /* ── CRYPTO ── */
   {id:'BTCUSD',name:'BTC/USD',f1:'₿',f2:'🇺🇸',cat:'crypto',price:67420.0,payout:85,vol:8.0,dec:1,bin:'btcusdt'},
   {id:'ETHUSD',name:'ETH/USD',f1:'Ξ',f2:'🇺🇸',cat:'crypto',price:3480.0,payout:83,vol:0.5,dec:2,bin:'ethusdt'},
   {id:'BNBUSD',name:'BNB/USD',f1:'🟡',f2:'🇺🇸',cat:'crypto',price:580.0,payout:80,vol:0.12,dec:2,bin:'bnbusdt'},
   {id:'SOLUSD',name:'SOL/USD',f1:'◎',f2:'🇺🇸',cat:'crypto',price:168.0,payout:82,vol:0.08,dec:2,bin:'solusdt'},
   {id:'XRPUSD',name:'XRP/USD',f1:'◉',f2:'🇺🇸',cat:'crypto',price:0.6120,payout:80,vol:0.0003,dec:4,bin:'xrpusdt'},
   {id:'DOGEUSD',name:'DOGE/USD',f1:'🐕',f2:'🇺🇸',cat:'crypto',price:0.1580,payout:79,vol:0.0001,dec:4,bin:'dogeusdt'},
+  {id:'ADAUSD',name:'ADA/USD',f1:'🔵',f2:'🇺🇸',cat:'crypto',price:0.4520,payout:78,vol:0.0002,dec:4,bin:'adausdt'},
+  {id:'AVAXUSD',name:'AVAX/USD',f1:'🔺',f2:'🇺🇸',cat:'crypto',price:36.20,payout:81,vol:0.05,dec:2,bin:'avaxusdt'},
+  {id:'MATICUSD',name:'POL/USD',f1:'🟣',f2:'🇺🇸',cat:'crypto',price:0.8950,payout:79,vol:0.0004,dec:4,bin:'polusdt'},
+  /* ── STOCKS ── */
+  {id:'AAPL',name:'Apple Inc.',f1:'🍎',f2:'🇺🇸',cat:'stock',price:182.50,payout:72,vol:0.30,dec:2},
+  {id:'GOOG',name:'Alphabet (Google)',f1:'🔵',f2:'🇺🇸',cat:'stock',price:141.80,payout:70,vol:0.25,dec:2},
+  {id:'AMZN',name:'Amazon',f1:'📦',f2:'🇺🇸',cat:'stock',price:178.20,payout:71,vol:0.35,dec:2},
+  {id:'TSLA',name:'Tesla Inc.',f1:'⚡',f2:'🇺🇸',cat:'stock',price:248.50,payout:73,vol:0.80,dec:2},
+  {id:'META',name:'Meta Platforms',f1:'📘',f2:'🇺🇸',cat:'stock',price:512.30,payout:72,vol:0.90,dec:2},
+  {id:'MSFT',name:'Microsoft',f1:'🪟',f2:'🇺🇸',cat:'stock',price:415.70,payout:71,vol:0.50,dec:2},
+  {id:'NVDA',name:'NVIDIA',f1:'💚',f2:'🇺🇸',cat:'stock',price:875.20,payout:74,vol:1.20,dec:2},
+  /* ── COMMODITIES ── */
   {id:'XAUUSD',name:'Gold/USD',f1:'🥇',f2:'🇺🇸',cat:'commodity',price:2320.0,payout:80,vol:0.25,dec:2},
   {id:'XAGUSD',name:'Silver/USD',f1:'🥈',f2:'🇺🇸',cat:'commodity',price:27.50,payout:77,vol:0.015,dec:3},
-  {id:'WTIUSD',name:'Oil/USD',f1:'🛢️',f2:'🇺🇸',cat:'commodity',price:78.40,payout:78,vol:0.04,dec:2},
+  {id:'WTIUSD',name:'Oil/USD (WTI)',f1:'🛢️',f2:'🇺🇸',cat:'commodity',price:78.40,payout:78,vol:0.04,dec:2},
+  {id:'NATGAS',name:'Natural Gas',f1:'🔥',f2:'🇺🇸',cat:'commodity',price:2.380,payout:76,vol:0.008,dec:3},
+  {id:'COPPER',name:'Copper',f1:'🟤',f2:'🇺🇸',cat:'commodity',price:4.120,payout:75,vol:0.005,dec:3},
+  /* ── INDICES ── */
   {id:'SPX500',name:'S&P 500',f1:'📊',f2:'🇺🇸',cat:'index',price:5280.0,payout:75,vol:1.5,dec:1},
   {id:'NAS100',name:'NASDAQ 100',f1:'📈',f2:'🇺🇸',cat:'index',price:18420.0,payout:74,vol:6.0,dec:1},
+  {id:'DOW30',name:'Dow Jones 30',f1:'🏦',f2:'🇺🇸',cat:'index',price:38920.0,payout:73,vol:5.0,dec:1},
+  {id:'FTSE100',name:'FTSE 100',f1:'🇬🇧',f2:'📊',cat:'index',price:7820.0,payout:73,vol:4.0,dec:1},
+  {id:'DAX40',name:'DAX 40',f1:'🇩🇪',f2:'📊',cat:'index',price:18250.0,payout:74,vol:5.0,dec:1},
+  {id:'NIKKEI',name:'Nikkei 225',f1:'🇯🇵',f2:'📊',cat:'index',price:38450.0,payout:73,vol:6.0,dec:1},
 ];
 
 /* ── STATE ── */
@@ -1327,7 +1549,7 @@ function tickPrice(asset){
 }
 
 function startPriceEngine(){
-  setInterval(()=>{ASSETS.filter(a=>!a.bin).forEach(a=>tickPrice(a));updateActiveTimers();checkAlerts();},1000);
+  setInterval(()=>{ASSETS.filter(a=>!a.bin).forEach(a=>tickPrice(a));updateActiveTimers();checkAlerts();updateLivePnL&&updateLivePnL();checkProfitTarget&&checkProfitTarget();},1000);
   ASSETS.filter(a=>a.bin).forEach(connectBinance);
 }
 function connectBinance(asset){
@@ -1422,14 +1644,26 @@ function renderAssetList(){
   // Favorites first
   list=list.sort((a,b)=>{const fa=S.favorites.includes(a.id),fb=S.favorites.includes(b.id);return fa===fb?0:fa?-1:1;});
   el.innerHTML=list.map(a=>{
-    const p=S.prices[a.id],dir=S.dirs[a.id]||'up',isFav=S.favorites.includes(a.id),hasAlert=S.alerts[a.id];
+    const p=S.prices[a.id]||a.price,dir=S.dirs[a.id]||'up',isFav=S.favorites.includes(a.id),hasAlert=S.alerts[a.id];
+    const pct24=((Math.random()-.48)*2).toFixed(2);const pctDir=pct24>=0?'up':'down';
+    const otcBadge=a.otc?'<span class="otc-badge">OTC</span>':'';
+    const catLabel=a.cat==='otc'?'OTC 24/7':a.cat==='stock'?'Stock':a.cat.charAt(0).toUpperCase()+a.cat.slice(1);
     return `<div class="asset-list-item ${a.id===S.asset.id?'active':''}" id="ali-${a.id}" onclick="selectAsset('${a.id}')">
       <div class="ali-flags"><div class="ali-flag1">${a.f1}</div><div class="ali-flag2">${a.f2}</div></div>
-      <div class="ali-info"><div class="ali-name">${a.name}${isFav?' ⭐':''}</div><div class="ali-cat">${a.cat.charAt(0).toUpperCase()+a.cat.slice(1)}</div></div>
+      <div class="ali-info">
+        <div class="ali-name">${a.name}${otcBadge}${isFav?' ⭐':''}</div>
+        <div class="ali-cat">${catLabel}</div>
+      </div>
       <div style="display:flex;align-items:center;gap:4px">
         <button class="ali-alert-btn${hasAlert?' active-alert':''}" onclick="event.stopPropagation();setAssetAlert('${a.id}')" title="Set price alert">🔔</button>
         <button class="ali-alert-btn${isFav?' active-alert':''}" onclick="event.stopPropagation();toggleFav('${a.id}')" title="Favorite" style="${isFav?'color:var(--gold)':''}">⭐</button>
-        <div class="ali-right"><div class="ali-price ${dir}" id="ali-p-${a.id}">${p.toFixed(a.dec)}</div><div class="ali-payout">${a.payout}%</div></div>
+        <div class="ali-right">
+          <div class="ali-price ${dir}" id="ali-p-${a.id}">${p.toFixed(a.dec)}</div>
+          <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end">
+            <div class="ali-payout" style="font-size:11px;font-weight:800">${a.payout}%</div>
+            <div style="font-size:9px;color:${pct24>=0?'var(--green)':'var(--red)'}">${pct24>=0?'+':''}${pct24}%</div>
+          </div>
+        </div>
       </div>
     </div>`;
   }).join('')||'<div style="padding:20px;text-align:center;color:var(--text3)">No assets found</div>';
@@ -1543,13 +1777,32 @@ function updateTournamentCountdown(){
 
 /* ── PAYOUT ── */
 function updatePayoutUI(){
-  const a=S.asset,amt=S.amount,eff=getEffectivePayout?getEffectivePayout(a):a.payout;
+  const a=S.asset;
+  const mult=_multiplier||1;
+  const amt=S.amount*mult;
+  const eff=getEffectivePayout?getEffectivePayout(a):a.payout;
   const profit=+(amt*eff/100).toFixed(2);
   const total=+(amt+profit).toFixed(2);
-  const pct=eff+(S.streakBonus||0)+(isBoostActive&&isBoostActive()?5:0);
-  document.getElementById('tp-payout-pct').textContent=eff+'%';
-  document.getElementById('chart-payout-badge').textContent=eff+'%';
-  document.getElementById('payout-val').textContent=total.toFixed(2)+' $';
+  // Quotex-style payout block
+  const qPct=document.getElementById('qx-pct-big');
+  const qProfit=document.getElementById('qx-profit-amt');
+  const qReturn=document.getElementById('qx-return-amt');
+  if(qPct)qPct.textContent=eff+'%';
+  if(qProfit)qProfit.textContent='+$'+profit.toFixed(2);
+  if(qReturn)qReturn.textContent='$'+total.toFixed(2);
+  // Button payout labels
+  const upPct=document.getElementById('btn-up-pct');
+  const dnPct=document.getElementById('btn-down-pct');
+  if(upPct)upPct.textContent=eff+'%';
+  if(dnPct)dnPct.textContent=eff+'%';
+  // Chart overlay badge
+  const badge=document.getElementById('chart-payout-badge');
+  if(badge)badge.textContent=eff+'%';
+  // Trade panel payout (fallback)
+  const pv=document.getElementById('tp-payout-pct');if(pv)pv.textContent=eff+'%';
+  const pvv=document.getElementById('payout-val');if(pvv)pvv.textContent=total.toFixed(2)+' $';
+  // Update market status
+  updateMarketStatus&&updateMarketStatus();
 }
 function onAmtChange(){
   S.amount=parseFloat(document.getElementById('amt-input').value)||0;
@@ -1573,11 +1826,12 @@ function setTradeTimeSec(s){
 /* ── TRADE EXECUTION ── */
 function getEffectivePayout(a){return a.payout+(S.streakBonus||0)+(isBoostActive()?5:0)+(isFlashActive&&isFlashActive()?10:0);}
 function placeTrade(dir){
-  const amt=S.amount;
+  const mult=_multiplier||1;
+  const amt=+(S.amount*mult).toFixed(2);
   if(amt<1){showToast('Minimum $1');return;}
   if(amt>getBal()){showToast('Insufficient balance');return;}
   playSound('click');
-  const a=S.asset,openP=S.prices[a.id],eff=getEffectivePayout(a),profit=+(amt*eff/100).toFixed(2);
+  const a=S.asset,openP=S.prices[a.id]||a.price,eff=getEffectivePayout(a),profit=+(amt*eff/100).toFixed(2);
   const expiry=Date.now()+S.tradeTimeSec*1000;
   setBal(+(getBal()-amt).toFixed(2));
   const trade={id:'T'+Date.now()+Math.random().toString(36).slice(2,5).toUpperCase(),
@@ -1709,15 +1963,21 @@ function renderTradesList(){
   listEl.innerHTML=items.map(t=>{
     const a=ASSETS.find(x=>x.id===t.assetId);
     const rem=t.status==='pending'?Math.max(0,Math.ceil((t.expiry-Date.now())/1000)):null;
-    return `<div class="trade-item">
+    const isActive=t.status==='pending';
+    const cur=isActive?(S.prices[t.assetId]||t.openP):t.closeP||t.openP;
+    const inProfit=isActive?(t.dir==='up'?cur>t.openP:cur<t.openP):null;
+    const pctProgress=isActive?Math.min(100,Math.max(0,(1-(rem/(t.sec||60)))*100)):100;
+    return `<div class="trade-item" style="${isActive?'border-left:3px solid '+(inProfit?'var(--green)':'var(--red)'):''}">
       <div class="ti-dir ${t.dir}"><i class="fas fa-arrow-${t.dir}"></i></div>
       <div class="ti-info">
-        <div class="ti-asset">${t.asset}</div>
-        <div class="ti-meta">${t.payout}% payout · $${t.amt} · ${(t.dir).toUpperCase()}</div>
+        <div class="ti-asset">${t.asset}${a?.otc?'<span class="otc-badge">OTC</span>':''}</div>
+        <div class="ti-meta">${t.payout}% · $${t.amt}·${t.dir.toUpperCase()} · Open:${t.openP?.toFixed(a?.dec||2)||'—'}</div>
+        ${isActive?`<div class="ti-live-pnl ${inProfit?'win':'lose'}" id="li-pnl-${t.id}">Live P&L: —</div>`:''}
+        ${isActive?`<div style="height:2px;background:var(--border);border-radius:2px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${pctProgress}%;background:${inProfit?'var(--green)':'var(--red)'};transition:width 1s linear;border-radius:2px"></div></div>`:''}
       </div>
       <div class="ti-result">
-        <div class="ti-amount">$${t.amt}</div>
-        <div class="ti-profit ${t.status}">${t.status==='win'?'+$'+t.profit.toFixed(2):t.status==='lose'?'-$'+t.amt:t.status==='draw'?'Draw':'Active'}</div>
+        <div class="ti-amount">$${t.amt}${_multiplier>1?' ×'+_multiplier:''}</div>
+        <div class="ti-profit ${t.status}">${t.status==='win'?'+$'+t.profit.toFixed(2):t.status==='lose'?'−$'+t.amt:t.status==='draw'?'Draw':'—'}</div>
       </div>
       ${rem!==null?`<div class="ti-timer" id="ti-timer-${t.id}">${rem}s</div>`:''}
     </div>`;
@@ -1759,13 +2019,25 @@ function renderSignals(){
     const s=genSignal(a),cls=s.sig==='BUY'?'buy':s.sig==='SELL'?'sell':'neutral';
     const stars=[1,2,3].map(i=>`<span class="${i<=s.str?'on':''}">`+`</span>`).join('');
     const dir=s.sig==='BUY'?'up':s.sig==='SELL'?'down':null;
-    const tradeBtn=dir?`<button onclick="event.stopPropagation();tradeSignal('${a.id}','${dir}')" style="background:${dir==='up'?'var(--green)':'var(--red)'};color:${dir==='up'?'#000':'#fff'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit">Trade ↑</button>`:'';
+    const acc=getSignalAccuracy?getSignalAccuracy(s):{pct:50,cls:'low'};
+    const otcBadge=a.otc?'<span class="otc-badge">OTC</span>':'';
+    const tradeBtn=dir?`<button onclick="event.stopPropagation();tradeSignal('${a.id}','${dir}')" style="background:${dir==='up'?'var(--green)':'var(--red)'};color:${dir==='up'?'#000':'#fff'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit">${dir==='up'?'↑ Buy':'↓ Sell'}</button>`:'';
     return `<div class="sig-item" onclick="selectAsset('${a.id}');closeSheet('sheet-signals')">
       <div class="sig-icon ${cls}"><i class="fas fa-arrow-${s.sig==='BUY'?'up':s.sig==='SELL'?'down':'right'}"></i></div>
-      <div class="sig-info"><div class="sig-name">${a.name}</div><div class="sig-reason">${s.reason}</div>${tradeBtn}</div>
+      <div class="sig-info">
+        <div class="sig-name">${a.name}${otcBadge}</div>
+        <div class="sig-reason">${s.reason}</div>
+        <div class="sig-accuracy">
+          <span style="font-size:10px;font-weight:700;color:${acc.cls==='high'?'var(--green)':acc.cls==='med'?'var(--gold)':'var(--red)'}">${acc.pct}%</span>
+          <div class="sig-acc-bar"><div class="sig-acc-fill ${acc.cls}" style="width:${acc.pct}%"></div></div>
+          <span style="font-size:9px;color:var(--text3)">accuracy</span>
+        </div>
+        ${tradeBtn}
+      </div>
       <div class="sig-right">
         <div class="sig-dir ${cls}">${s.sig}</div>
         <div class="sig-stars">${stars}</div>
+        <div style="font-size:9px;color:var(--text3);margin-top:2px">${a.payout}% payout</div>
       </div>
     </div>`;
   }).join('');
@@ -1925,6 +2197,7 @@ function openSheet(id){
   if(id==='sheet-econ')renderEconCalendar&&renderEconCalendar();
   if(id==='sheet-news')renderNewsSheet&&renderNewsSheet();
   if(id==='sheet-edu')renderEducation&&renderEducation();
+  if(id==='sheet-martingale')renderMartingale&&renderMartingale();
 }
 function closeSheet(id){document.getElementById(id).classList.remove('show');}
 function closeSheetIfBackdrop(e,id){if(e.target.id===id)closeSheet(id);}
@@ -2246,6 +2519,211 @@ function toggleMAPopup(){
   pop.classList.toggle('show');
 }
 
+/* ── QUOTEX: MULTIPLIER SYSTEM ── */
+let _multiplier=1;
+function setMultiplier(x){
+  _multiplier=x;
+  document.querySelectorAll('.qx-mult-btn[id^=mult-]').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById('mult-'+x);if(btn)btn.classList.add('active');
+  updatePayoutUI();
+}
+
+/* ── QUOTEX: % AMOUNT CHIPS ── */
+function setAmtPct(pct){
+  const v=Math.max(1,Math.floor(getBal()*pct/100));
+  S.amount=v;
+  const inp=document.getElementById('amt-input');if(inp)inp.value=v;
+  document.querySelectorAll('.amt-chip').forEach(c=>c.classList.remove('active'));
+  updatePayoutUI();
+  showToast('Amount: $'+v+' ('+pct+'% of balance)');
+}
+
+/* ── QUOTEX: SIGNAL ACCURACY ── */
+function getSignalAccuracy(sig){
+  if(sig.sig==='NEUTRAL')return{pct:50,cls:'low'};
+  if(sig.str>=3)return{pct:68+Math.floor(Math.random()*10),cls:'high'};
+  if(sig.str>=2)return{pct:58+Math.floor(Math.random()*8),cls:'med'};
+  return{pct:50+Math.floor(Math.random()*8),cls:'low'};
+}
+
+/* ── QUOTEX: MARTINGALE CALCULATOR ── */
+function renderMartingale(){
+  const el=document.getElementById('mart-list');if(!el)return;
+  const base=parseFloat(document.getElementById('mart-base')?.value)||10;
+  const payout=parseInt(document.getElementById('mart-payout')?.value)||82;
+  const steps=[];
+  let cumLoss=0,amt=base;
+  for(let i=1;i<=7;i++){
+    const profit=+(amt*payout/100).toFixed(2);
+    const needed=+(cumLoss+base).toFixed(2);
+    const recover=+(profit-cumLoss).toFixed(2);
+    steps.push({step:i,amt,profit,cumLoss,needed,recover});
+    cumLoss=+(cumLoss+amt).toFixed(2);
+    amt=+(cumLoss/((payout/100))).toFixed(2);
+  }
+  el.innerHTML=steps.map((s,i)=>`
+    <div class="mart-row">
+      <div class="mart-step ${i>0?'loss':''}">${s.step}</div>
+      <div class="mart-info">
+        <div style="font-size:10px;color:var(--text3)">Trade ${s.step}${i>0?' (after '+i+' loss'+(i>1?'es':'')+')'':''}</div>
+        <div class="mart-label">Invest: <b style="color:var(--text)">$${s.amt.toFixed(2)}</b> → Profit: <span style="color:var(--green)">$${s.profit.toFixed(2)}</span></div>
+        ${i>0?`<div class="mart-label">Cumulative loss: <span style="color:var(--red)">$${s.cumLoss.toFixed(2)}</span></div>`:''}
+      </div>
+      <div style="text-align:right">
+        <div class="mart-recovery positive">${s.recover>=0?'+$'+s.recover.toFixed(2):'−$'+(Math.abs(s.recover)).toFixed(2)}</div>
+        <div style="font-size:9px;color:var(--text3)">net</div>
+      </div>
+    </div>`).join('');
+}
+
+/* ── QUOTEX: HEIKEN ASHI ── */
+let _haMode=false;
+function buildHeikinAshi(data){
+  const ha=[];
+  for(let i=0;i<data.length;i++){
+    const prev=ha[i-1]||data[i];
+    const haC=(data[i].open+data[i].high+data[i].low+data[i].close)/4;
+    const haO=(prev.open+prev.close)/2;
+    const haH=Math.max(data[i].high,haO,haC);
+    const haL=Math.min(data[i].low,haO,haC);
+    ha.push({time:data[i].time,open:+haO.toFixed(5),high:+haH.toFixed(5),low:+haL.toFixed(5),close:+haC.toFixed(5)});
+  }
+  return ha;
+}
+function switchToHA(){
+  _haMode=!_haMode;
+  const tog=document.getElementById('ma-tog-ha');if(tog)tog.className='ma-toggle'+(_haMode?' on':'');
+  if(_haMode){
+    const haData=buildHeikinAshi(candleData);
+    try{candle.setData(haData);}catch(e){}
+    showToast('Heiken Ashi ON');
+  }else{
+    try{candle.setData(candleData);}catch(e){}
+    showToast('Standard candles');
+  }
+}
+
+/* ── QUOTEX: MACD INDICATOR ── */
+let _macdLine=null,_macdSignal=null;
+function toggleMACD(){
+  const tog=document.getElementById('ma-tog-macd');
+  if(_macdLine){
+    try{chart.removeSeries(_macdLine);chart.removeSeries(_macdSignal);}catch(e){}
+    _macdLine=null;_macdSignal=null;
+    if(tog)tog.className='ma-toggle';
+    return;
+  }
+  const fast=12,slow=26,signal=9;
+  const k_fast=2/(fast+1),k_slow=2/(slow+1),k_sig=2/(signal+1);
+  let ema_fast=candleData[0]?.close||0,ema_slow=candleData[0]?.close||0;
+  const macdData=[],sigData=[];
+  let sig_ema=null;
+  candleData.forEach((c,i)=>{
+    ema_fast=i===0?c.close:c.close*k_fast+ema_fast*(1-k_fast);
+    ema_slow=i===0?c.close:c.close*k_slow+ema_slow*(1-k_slow);
+    if(i>=slow-1){
+      const macd=ema_fast-ema_slow;
+      sig_ema=sig_ema===null?macd:macd*k_sig+sig_ema*(1-k_sig);
+      const price=c.close;
+      const range=candleData.reduce((r,x)=>({max:Math.max(r.max,x.close),min:Math.min(r.min,x.close)}),{max:-Infinity,min:Infinity});
+      const scale=(range.max-range.min)||1;
+      const mapped_macd=range.min+(macd/scale*0.05+0.5)*(range.max-range.min);
+      const mapped_sig=range.min+(sig_ema/scale*0.05+0.5)*(range.max-range.min);
+      macdData.push({time:c.time,value:+mapped_macd.toFixed(5)});
+      sigData.push({time:c.time,value:+mapped_sig.toFixed(5)});
+    }
+  });
+  _macdLine=chart.addLineSeries({color:'#f97316',lineWidth:1,priceLineVisible:false,lastValueVisible:false,lineStyle:0});
+  _macdSignal=chart.addLineSeries({color:'#fb923c88',lineWidth:1,priceLineVisible:false,lastValueVisible:false,lineStyle:2});
+  try{_macdLine.setData(macdData);_macdSignal.setData(sigData);}catch(e){}
+  if(tog)tog.className='ma-toggle on';
+}
+
+/* ── QUOTEX: ALLIGATOR INDICATOR ── */
+let _alligatorLines={jaw:null,teeth:null,lips:null};
+function toggleAlligator(){
+  const tog=document.getElementById('ma-tog-alligator');
+  if(_alligatorLines.jaw){
+    Object.values(_alligatorLines).forEach(s=>{try{chart.removeSeries(s);}catch(e){}});
+    _alligatorLines={jaw:null,teeth:null,lips:null};
+    if(tog)tog.className='ma-toggle';return;
+  }
+  function smma(data,period,shift){
+    const res=[];let sum=data.slice(0,period).reduce((a,b)=>a+b,0)/period;
+    for(let i=0;i<data.length;i++){
+      if(i<period-1){res.push(null);continue;}
+      if(i===period-1){res.push(sum);continue;}
+      sum=(sum*(period-1)+data[i])/period;res.push(sum);
+    }
+    const shifted=[];
+    for(let i=0;i<res.length;i++)shifted.push(i+shift<res.length?res[i]:null);
+    return shifted;
+  }
+  const closes=candleData.map(c=>(c.high+c.low)/2);
+  const jaw=smma(closes,13,8),teeth=smma(closes,8,5),lips=smma(closes,5,3);
+  const colors={jaw:'#3b82f6',teeth:'#ef4444',lips:'#22c55e'};
+  const mk=(data,color)=>{
+    const s=chart.addLineSeries({color,lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+    const d=candleData.map((c,i)=>data[i]!==null?{time:c.time,value:+data[i].toFixed(5)}:null).filter(Boolean);
+    try{s.setData(d);}catch(e){}return s;
+  };
+  _alligatorLines.jaw=mk(jaw,colors.jaw);
+  _alligatorLines.teeth=mk(teeth,colors.teeth);
+  _alligatorLines.lips=mk(lips,colors.lips);
+  if(tog)tog.className='ma-toggle on';
+  showToast('🐊 Alligator: Jaw(blue) Teeth(red) Lips(green)');
+}
+
+/* ── QUOTEX: FULLSCREEN CHART ── */
+let _isFullscreen=false;
+function toggleFullscreen(){
+  _isFullscreen=!_isFullscreen;
+  const wrap=document.getElementById('chart-wrap');
+  const icon=document.getElementById('fullscreen-icon');
+  if(_isFullscreen){
+    wrap.classList.add('fullscreen');
+    if(icon)icon.className='fas fa-compress';
+  }else{
+    wrap.classList.remove('fullscreen');
+    if(icon)icon.className='fas fa-expand';
+  }
+  setTimeout(()=>{try{chart.applyOptions({width:wrap.offsetWidth,height:wrap.offsetHeight});}catch(e){}},50);
+}
+
+/* ── QUOTEX: LIVE P&L ON ACTIVE TRADES ── */
+function updateLivePnL(){
+  S.activeTrades.forEach(t=>{
+    const cur=S.prices[t.assetId]||t.openP;
+    const win=t.dir==='up'?cur>t.openP:cur<t.openP;
+    const pnlEl=document.getElementById('li-pnl-'+t.id);
+    if(pnlEl){
+      const diff=Math.abs(cur-t.openP);const pct=(diff/t.openP)*100;
+      const pnl=win?+(t.profit*Math.min(pct/0.01,1)).toFixed(2):-(t.amt*Math.min(pct/0.01,1)).toFixed(2);
+      pnlEl.textContent=(pnl>=0?'+$':'-$')+Math.abs(pnl).toFixed(2);
+      pnlEl.className='ti-live-pnl '+(win?'win':'lose');
+    }
+  });
+}
+
+/* ── QUOTEX: PROFIT TARGET CHECK ── */
+function checkProfitTarget(){
+  const targetEl=document.getElementById('profit-target-input');
+  if(!targetEl||!targetEl.value)return;
+  const target=parseFloat(targetEl.value);
+  if(!target||target<=0)return;
+  const totalPnl=S.activeTrades.reduce((sum,t)=>{
+    const cur=S.prices[t.assetId]||t.openP;
+    const win=t.dir==='up'?cur>t.openP:cur<t.openP;
+    return sum+(win?t.profit:-t.amt);
+  },0);
+  if(totalPnl>=target){
+    showNotif('🎯 Profit target $'+target+' reached! Consider closing trades.','win');
+    playSound('win');
+    targetEl.value='';
+  }
+}
+
+/* ── QUOTEX: UPDATE PAYOUT UI (QUOTEX STYLE) ── */
 /* ── EXTENDED PAYMENT METHODS ── */
 const PAY_INFO_EXT={
   rocket:{number:'01XXXXXXXXXX',note:'Send via Rocket "Send Money". Put your email in reference.',label:'Rocket'},
@@ -2299,9 +2777,8 @@ function initRiskFreeState(){
   updateRFUI();
 }
 function updateRFUI(){
-  const tok=document.getElementById('rf-tokens');
+  document.querySelectorAll('#rf-tokens,#rf-tokens-2').forEach(el=>{if(el)el.textContent=S.rfTokens||0;});
   const btn=document.getElementById('btn-rf');
-  if(tok)tok.textContent=S.rfTokens||0;
   if(btn){
     btn.disabled=!(S.rfTokens>0);
     if(S.rfActive){btn.textContent='Active ✓';btn.style.background='var(--green)';btn.style.color='#000';}
