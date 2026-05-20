@@ -22,7 +22,7 @@
   --red:#ff3d3d;--red2:#ff6060;--red-bg:#ff3d3d22;
   --blue:#3b82f6;--gold:#f59e0b;
   --text:#f1f5f9;--text2:#94a3b8;--text3:#64748b;
-  --topbar:44px;--bottomnav:56px;--tradepanel:210px;
+  --topbar:44px;--bottomnav:56px;--tradepanel:272px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Inter',sans-serif}
 html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;font-size:13px;touch-action:manipulation}
@@ -51,7 +51,7 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 /* ── CHART WRAPPER ── */
 .chart-wrap{
   position:fixed;
-  top:var(--topbar);left:0;right:0;
+  top:calc(var(--topbar) + 22px);left:0;right:0;
   bottom:calc(var(--bottomnav) + var(--tradepanel));
   overflow:hidden;
 }
@@ -331,9 +331,97 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .toast{position:fixed;bottom:calc(var(--bottomnav) + var(--tradepanel) + 10px);left:50%;transform:translateX(-50%);background:var(--bg4);border:1px solid var(--border2);color:var(--text);padding:9px 18px;border-radius:10px;font-size:12px;z-index:999;opacity:0;transition:.25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,.4)}
 .toast.show{opacity:1}
 
+/* ── ONLINE COUNTER ── */
+.tb-online{font-size:10px;font-weight:600;color:var(--text3);display:flex;align-items:center;gap:3px;white-space:nowrap}
+.tb-online-dot{width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block}
+
+/* ── HOT ASSETS STRIP ── */
+.hot-strip{display:flex;align-items:center;gap:6px;padding:5px 12px;border-bottom:1px solid var(--border);overflow-x:auto;flex-shrink:0}
+.hot-strip::-webkit-scrollbar{display:none}
+.hot-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+.hot-chip{display:flex;align-items:center;gap:5px;background:var(--bg4);border:1px solid var(--border);border-radius:16px;padding:3px 9px;cursor:pointer;flex-shrink:0;transition:.1s}
+.hot-chip:active{border-color:var(--green)}
+.hot-chip-flag{font-size:13px}
+.hot-chip-payout{font-size:10px;font-weight:800;color:var(--green)}
+.hot-chip-name{font-size:10px;font-weight:600;color:var(--text2)}
+
+/* ── AMOUNT QUICK CHIPS ── */
+.tp-chips{display:flex;gap:4px;padding:4px 12px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--border)}
+.tp-chips::-webkit-scrollbar{display:none}
+.amt-chip{padding:4px 10px;background:var(--bg4);border:1px solid var(--border);border-radius:12px;font-size:11px;font-weight:700;color:var(--text2);cursor:pointer;flex-shrink:0;transition:.1s;font-family:inherit}
+.amt-chip.active{background:#1e3a5f;border-color:var(--blue);color:#60a5fa}
+.amt-chip:active{transform:scale(.93)}
+
+/* ── STREAK / BOOST PILL ── */
+.streak-pill{background:#2d1a00;border:1px solid #f59e0b44;color:var(--gold);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:none;align-items:center;gap:3px}
+.streak-pill.show{display:flex}
+.boost-pill{background:#1a0d2e;border:1px solid #a78bfa44;color:#a78bfa;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;display:none;align-items:center;gap:3px;cursor:pointer}
+.boost-pill.show{display:flex}
+
+/* ── RESULT OVERLAY (WIN / LOSE) ── */
+.result-overlay{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;flex-direction:column;gap:12px;pointer-events:none}
+.result-overlay.show{display:flex;animation:roFade .3s ease}
+@keyframes roFade{from{opacity:0}to{opacity:1}}
+.result-overlay.win-ov{background:rgba(0,200,122,.18)}
+.result-overlay.lose-ov{background:rgba(255,61,61,.18)}
+.ro-badge{font-size:52px;font-weight:900;letter-spacing:2px;animation:roPop .3s cubic-bezier(.175,.885,.32,1.275)}
+@keyframes roPop{from{transform:scale(.4)}to{transform:scale(1)}}
+.ro-win .ro-badge{color:#00ff9d;text-shadow:0 0 40px #00c87a}
+.ro-lose .ro-badge{color:#ff6060;text-shadow:0 0 40px #ff3d3d}
+.ro-amount{font-size:28px;font-weight:800;color:#fff}
+.ro-asset{font-size:14px;color:rgba(255,255,255,.6)}
+
+/* ── SOCIAL TICKER ── */
+.social-ticker-wrap{background:rgba(10,14,26,.9);border-bottom:1px solid var(--border);height:22px;overflow:hidden;display:flex;align-items:center;z-index:190;position:fixed;top:var(--topbar);left:0;right:0}
+.social-ticker{display:flex;gap:40px;white-space:nowrap;animation:tickerScroll 25s linear infinite;padding-left:100%}
+.social-ticker:hover{animation-play-state:paused}
+@keyframes tickerScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-size:10px;color:var(--text2);display:inline-flex;align-items:center;gap:6px;flex-shrink:0}
+.ticker-win{color:var(--green);font-weight:700}
+.ticker-lose{color:var(--red);font-weight:700}
+
+/* ── ANALYTICS IN PROFILE ── */
+.analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 16px 14px}
+.an-cell{background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.an-val{font-size:18px;font-weight:800}
+.an-label{font-size:10px;color:var(--text3);margin-top:2px}
+.an-val.win-col{color:var(--green)}
+.an-val.gold-col{color:var(--gold)}
+
+/* ── VIP BADGE ── */
+.vip-badge{font-size:10px;font-weight:800;padding:2px 8px;border-radius:10px;display:inline-flex;align-items:center;gap:3px}
+.vip-bronze{background:#3d1f00;color:#cd7f32;border:1px solid #cd7f3244}
+.vip-silver{background:#1a1f28;color:#c0c0c0;border:1px solid #c0c0c044}
+.vip-gold{background:#2d2000;color:var(--gold);border:1px solid #f59e0b44}
+.vip-platinum{background:#1a002d;color:#a78bfa;border:1px solid #a78bfa44}
+
+/* ── REFERRAL BOX ── */
+.ref-box{display:flex;align-items:center;gap:8px;background:var(--bg4);border:1px solid var(--border);border-radius:10px;padding:10px 12px;margin:0 16px 14px}
+.ref-link{flex:1;font-size:10px;font-family:monospace;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ── COPY TRADE SHEET ── */
+.copy-trader-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border)}
+.ct-avatar{width:36px;height:36px;border-radius:50%;background:var(--bg4);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ct-info{flex:1}
+.ct-trader-name{font-size:13px;font-weight:700}
+.ct-stats{font-size:11px;color:var(--text3);margin-top:2px}
+.btn-copy-trade{background:var(--green);color:#000;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;flex-shrink:0;font-family:inherit}
+
+/* ── MA POPUP ── */
+.ma-popup{position:absolute;left:56px;top:50%;transform:translateY(-50%);background:rgba(28,35,51,.97);border:1px solid var(--border);border-radius:10px;padding:8px;display:none;z-index:25;min-width:130px}
+.ma-popup.show{display:block}
+.ma-row{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;gap:12px;cursor:pointer;border-radius:6px;font-size:13px;font-weight:600}
+.ma-row:active{background:rgba(255,255,255,.06)}
+.ma-toggle{width:14px;height:14px;border-radius:3px;border:2px solid var(--border2);flex-shrink:0}
+.ma-toggle.on{background:var(--blue);border-color:var(--blue)}
+
+/* ── PRICE ALERT ICON ── */
+.ali-alert-btn{font-size:11px;color:var(--text3);cursor:pointer;padding:4px;background:none;border:none;font-family:inherit}
+.ali-alert-btn.active-alert{color:var(--gold)}
+
 /* Desktop layout override */
 @media(min-width:768px){
-  :root{--tradepanel:160px;--bottomnav:0px}
+  :root{--tradepanel:210px;--bottomnav:0px}
   .chart-wrap{right:320px;bottom:0}
   .trade-panel{top:var(--topbar);right:0;width:320px;bottom:0;height:auto;border-top:none;border-left:1px solid var(--border)}
   .trade-btns{height:64px}
@@ -360,6 +448,8 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
     <span id="tb-balance-val">$10,000.00</span>
     <span class="tb-mode demo" id="tb-mode-badge">DEMO</span>
   </div>
+  <div class="tb-spacer"></div>
+  <div class="tb-online"><span class="tb-online-dot"></span>&nbsp;<span id="online-count">1,247</span></div>
   <div class="tb-spacer"></div>
   <div class="tb-notif" onclick="openSheet('sheet-trades')">
     <i class="fas fa-bell" style="font-size:15px;color:var(--text2)"></i>
@@ -400,7 +490,7 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
       <div class="ct-btn" id="ct-type-btn" onclick="cycleChartType()" title="Chart type">
         <i class="fas fa-chart-bar"></i>
       </div>
-      <div class="ct-btn" title="Indicators">
+      <div class="ct-btn" id="ct-ind-btn" onclick="toggleMAPopup()" title="Indicators">
         <i class="fas fa-satellite-dish" style="font-size:13px"></i>
       </div>
     </div>
@@ -414,13 +504,35 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
   <div class="tf-grid-popup" id="tf-grid-popup">
     <div class="tf-grid" id="tf-grid"></div>
   </div>
+  <!-- MA / Indicators popup -->
+  <div class="ma-popup" id="ma-popup">
+    <div class="ma-row" onclick="toggleMA(20)"><span style="color:#3b82f6">MA 20</span><div class="ma-toggle" id="ma-tog-20"></div></div>
+    <div class="ma-row" onclick="toggleMA(50)"><span style="color:#f59e0b">MA 50</span><div class="ma-toggle" id="ma-tog-50"></div></div>
+    <div class="ma-row" onclick="toggleMA(200)"><span style="color:#a78bfa">MA 200</span><div class="ma-toggle" id="ma-tog-200"></div></div>
+  </div>
   <!-- Trade markers (injected dynamically) -->
   <div id="trade-markers"></div>
   <div id="chart" style="width:100%;height:100%"></div>
 </div>
 
+<!-- SOCIAL TICKER -->
+<div class="social-ticker-wrap" id="social-ticker-wrap">
+  <div class="social-ticker" id="social-ticker"></div>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="result-overlay">
+  <div class="ro-badge" id="ro-badge">WIN</div>
+  <div class="ro-amount" id="ro-amount">+$0.00</div>
+  <div class="ro-asset" id="ro-asset">EUR/USD</div>
+</div>
+
 <!-- TRADE PANEL -->
 <div class="trade-panel">
+  <!-- Hot Assets Strip -->
+  <div class="hot-strip" id="hot-strip">
+    <span class="hot-label">🔥 Hot</span>
+  </div>
   <!-- Asset + Pending -->
   <div class="tp-top">
     <div class="asset-selector" onclick="openSheet('sheet-assets')">
@@ -460,10 +572,24 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
     </div>
   </div>
 
+  <!-- Amount quick chips -->
+  <div class="tp-chips" id="tp-chips">
+    <button class="amt-chip" onclick="setAmt(1)">$1</button>
+    <button class="amt-chip" onclick="setAmt(5)">$5</button>
+    <button class="amt-chip active" onclick="setAmt(10)">$10</button>
+    <button class="amt-chip" onclick="setAmt(25)">$25</button>
+    <button class="amt-chip" onclick="setAmt(50)">$50</button>
+    <button class="amt-chip" onclick="setAmt(100)">$100</button>
+  </div>
+
   <!-- Payout row -->
   <div class="payout-row">
     <span class="payout-label">Payout</span>
-    <span class="payout-val" id="payout-val">92.50 $</span>
+    <div style="display:flex;align-items:center;gap:6px">
+      <div class="streak-pill" id="streak-pill">🔥 <span id="streak-txt">0</span>x</div>
+      <div class="boost-pill" id="boost-pill">⚡ <span id="boost-txt">+5%</span></div>
+      <span class="payout-val" id="payout-val">92.50 $</span>
+    </div>
   </div>
 
   <!-- UP / DOWN -->
@@ -570,8 +696,38 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
           <div style="font-size:10px;color:var(--text3);margin-top:2px">Trades</div>
         </div>
       </div>
-      <button class="btn-full btn-green" onclick="closeSheet('sheet-profile');openSheet('sheet-deposit')"><i class="fas fa-plus"></i> Deposit</button>
-      <button class="btn-full btn-dark" onclick="doLogout()" style="margin-top:6px"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      <!-- VIP badge -->
+      <div style="text-align:center;margin-bottom:10px"><span class="vip-badge" id="vip-badge">🥉 Bronze</span></div>
+      <!-- Analytics -->
+      <div class="analytics-grid" id="analytics-grid">
+        <div class="an-cell"><div class="an-val win-col" id="an-winrate">—</div><div class="an-label">Win Rate</div></div>
+        <div class="an-cell"><div class="an-val gold-col" id="an-streak">0</div><div class="an-label">Best Streak 🔥</div></div>
+        <div class="an-cell"><div class="an-val" id="an-total">0</div><div class="an-label">Total Trades</div></div>
+        <div class="an-cell"><div class="an-val" id="an-pnl">$0</div><div class="an-label">Net P&L</div></div>
+      </div>
+      <!-- Daily Bonus -->
+      <div style="padding:0 16px;margin-bottom:8px">
+        <button class="btn-full" id="btn-daily-bonus" onclick="claimDailyBonus()" style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;margin-bottom:0">
+          <i class="fas fa-gift"></i> Claim Daily Bonus
+        </button>
+      </div>
+      <!-- Referral -->
+      <div style="padding:0 16px 4px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px">Your Referral Link</div>
+      <div class="ref-box">
+        <span class="ref-link" id="ref-link">exglobal.online/trade.html?ref=——</span>
+        <button class="btn-copy-sm" onclick="copyText(document.getElementById('ref-link').textContent)">Copy</button>
+      </div>
+      <div style="padding:0 16px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn-full btn-green" onclick="closeSheet('sheet-profile');openSheet('sheet-deposit')" style="margin-bottom:0"><i class="fas fa-plus"></i> Deposit</button>
+        <button class="btn-full btn-dark" onclick="closeSheet('sheet-profile');openSheet('sheet-withdraw')" style="margin-bottom:0"><i class="fas fa-arrow-up"></i> Withdraw</button>
+      </div>
+      <div style="padding:0 16px 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <button class="btn-full btn-dark" onclick="closeSheet('sheet-profile');openSheet('sheet-copy')" style="margin-bottom:0"><i class="fas fa-copy"></i> Copy Trade</button>
+        <button class="btn-full btn-dark" onclick="toggleSound()" id="btn-sound" style="margin-bottom:0"><i class="fas fa-volume-up"></i> Sound ON</button>
+      </div>
+      <div style="padding:0 16px 16px">
+        <button class="btn-full btn-dark" onclick="doLogout()" style="margin-bottom:0"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
     </div>
   </div>
 </div>
@@ -759,6 +915,53 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
 </div>
 
 <!-- NOTIFICATIONS -->
+<!-- WITHDRAW SHEET -->
+<div class="sheet-backdrop" id="sheet-withdraw" onclick="closeSheetIfBackdrop(event,'sheet-withdraw')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title">Withdraw Funds</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-withdraw')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="padding:14px 16px 0;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Payment Method</div>
+    <div class="pay-grid">
+      <div class="pay-item active" onclick="selWithdrawMethod('usdt',this)"><div class="pay-item-icon">₮</div><div class="pay-item-name">USDT TRC20</div></div>
+      <div class="pay-item" onclick="selWithdrawMethod('bkash',this)"><div class="pay-item-icon" style="color:#e2136e"><i class="fas fa-mobile-alt"></i></div><div class="pay-item-name">bKash</div></div>
+      <div class="pay-item" onclick="selWithdrawMethod('nagad',this)"><div class="pay-item-icon" style="color:#f5810a"><i class="fas fa-mobile-alt"></i></div><div class="pay-item-name">Nagad</div></div>
+      <div class="pay-item" onclick="selWithdrawMethod('bank',this)"><div class="pay-item-icon"><i class="fas fa-university"></i></div><div class="pay-item-name">Bank</div></div>
+    </div>
+    <div style="padding:0 16px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Your Account / Address</div>
+      <input class="form-input" type="text" id="withdraw-addr" placeholder="bKash/Nagad number or wallet address"/>
+    </div>
+    <div style="padding:0 16px;font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Amount (USD)</div>
+    <div class="amount-row-big">
+      <input class="amount-input-big" type="number" id="withdraw-amt" value="20" placeholder="20"/>
+      <span style="font-size:18px;font-weight:700;color:var(--text2)">$</span>
+    </div>
+    <div style="padding:0 16px;background:var(--bg3);margin:0 16px 12px;border-radius:10px;border:1px solid var(--border);padding:10px 12px;font-size:12px;color:var(--text3)">
+      Min withdrawal: $20 · Processing: 1–24h · Verified accounts only
+    </div>
+    <div style="padding:0 16px 20px">
+      <button class="btn-full btn-green" onclick="submitWithdraw()"><i class="fas fa-arrow-up"></i> Request Withdrawal</button>
+    </div>
+  </div>
+</div>
+
+<!-- COPY TRADE SHEET -->
+<div class="sheet-backdrop" id="sheet-copy" onclick="closeSheetIfBackdrop(event,'sheet-copy')">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div class="sheet-header" style="position:relative">
+      <div class="sheet-title"><i class="fas fa-users" style="color:var(--blue)"></i> Top Traders</div>
+      <button class="sheet-close" onclick="closeSheet('sheet-copy')"><i class="fas fa-times"></i></button>
+    </div>
+    <div style="padding:8px 16px;font-size:12px;color:var(--text3)">Copy a trader to automatically place their next trade</div>
+    <div id="copy-traders-list"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
 <div class="notif-stack" id="notif-stack"></div>
 <div class="toast" id="toast"></div>
 
@@ -796,8 +999,27 @@ const S={
   activeTrades:[],history:[],
   prices:{},dirs:{},priceHist:{},
   tradeTab:'active',user:null,
+  favorites:[],sound:true,lastBonus:null,
+  streak:0,bestStreak:0,streakBonus:0,
+  achievements:[],alerts:{},boostEnd:null,
+  withdrawals:[],
 };
-try{const sv=JSON.parse(localStorage.getItem('ext_s')||'{}');if(sv.demoBalance!==undefined)S.demoBalance=sv.demoBalance;if(sv.realBalance!==undefined)S.realBalance=sv.realBalance;if(sv.tournamentBalance!==undefined)S.tournamentBalance=sv.tournamentBalance;if(sv.history)S.history=sv.history;if(sv.mode)S.mode=sv.mode;if(sv.dailyLimit!==undefined)S.dailyLimit=sv.dailyLimit;}catch(e){}
+try{
+  const sv=JSON.parse(localStorage.getItem('ext_s')||'{}');
+  if(sv.demoBalance!==undefined)S.demoBalance=sv.demoBalance;
+  if(sv.realBalance!==undefined)S.realBalance=sv.realBalance;
+  if(sv.tournamentBalance!==undefined)S.tournamentBalance=sv.tournamentBalance;
+  if(sv.history)S.history=sv.history;
+  if(sv.mode)S.mode=sv.mode;
+  if(sv.dailyLimit!==undefined)S.dailyLimit=sv.dailyLimit;
+  if(sv.favorites)S.favorites=sv.favorites;
+  if(sv.sound!==undefined)S.sound=sv.sound;
+  if(sv.lastBonus)S.lastBonus=sv.lastBonus;
+  if(sv.streak)S.streak=sv.streak;
+  if(sv.bestStreak)S.bestStreak=sv.bestStreak;
+  if(sv.achievements)S.achievements=sv.achievements;
+  if(sv.alerts)S.alerts=sv.alerts;
+}catch(e){}
 ASSETS.forEach(a=>{S.prices[a.id]=a.price;});
 
 /* ── CHART ── */
@@ -860,7 +1082,7 @@ function tickPrice(asset){
 }
 
 function startPriceEngine(){
-  setInterval(()=>{ASSETS.filter(a=>!a.bin).forEach(a=>tickPrice(a));updateActiveTimers();},1000);
+  setInterval(()=>{ASSETS.filter(a=>!a.bin).forEach(a=>tickPrice(a));updateActiveTimers();checkAlerts();},1000);
   ASSETS.filter(a=>a.bin).forEach(connectBinance);
 }
 function connectBinance(asset){
@@ -951,13 +1173,19 @@ function cycleChartType(){
 let assetCatFilter='all',assetSearchQ='';
 function renderAssetList(){
   const el=document.getElementById('asset-list-scroll');
-  const list=ASSETS.filter(a=>(assetCatFilter==='all'||a.cat===assetCatFilter)&&(!assetSearchQ||a.name.toLowerCase().includes(assetSearchQ.toLowerCase())));
+  let list=ASSETS.filter(a=>(assetCatFilter==='all'||a.cat===assetCatFilter)&&(!assetSearchQ||a.name.toLowerCase().includes(assetSearchQ.toLowerCase())));
+  // Favorites first
+  list=list.sort((a,b)=>{const fa=S.favorites.includes(a.id),fb=S.favorites.includes(b.id);return fa===fb?0:fa?-1:1;});
   el.innerHTML=list.map(a=>{
-    const p=S.prices[a.id],dir=S.dirs[a.id]||'up';
+    const p=S.prices[a.id],dir=S.dirs[a.id]||'up',isFav=S.favorites.includes(a.id),hasAlert=S.alerts[a.id];
     return `<div class="asset-list-item ${a.id===S.asset.id?'active':''}" id="ali-${a.id}" onclick="selectAsset('${a.id}')">
       <div class="ali-flags"><div class="ali-flag1">${a.f1}</div><div class="ali-flag2">${a.f2}</div></div>
-      <div class="ali-info"><div class="ali-name">${a.name}</div><div class="ali-cat">${a.cat.charAt(0).toUpperCase()+a.cat.slice(1)}</div></div>
-      <div class="ali-right"><div class="ali-price ${dir}" id="ali-p-${a.id}">${p.toFixed(a.dec)}</div><div class="ali-payout">${a.payout}%</div></div>
+      <div class="ali-info"><div class="ali-name">${a.name}${isFav?' ⭐':''}</div><div class="ali-cat">${a.cat.charAt(0).toUpperCase()+a.cat.slice(1)}</div></div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="ali-alert-btn${hasAlert?' active-alert':''}" onclick="event.stopPropagation();setAssetAlert('${a.id}')" title="Set price alert">🔔</button>
+        <button class="ali-alert-btn${isFav?' active-alert':''}" onclick="event.stopPropagation();toggleFav('${a.id}')" title="Favorite" style="${isFav?'color:var(--gold)':''}">⭐</button>
+        <div class="ali-right"><div class="ali-price ${dir}" id="ali-p-${a.id}">${p.toFixed(a.dec)}</div><div class="ali-payout">${a.payout}%</div></div>
+      </div>
     </div>`;
   }).join('')||'<div style="padding:20px;text-align:center;color:var(--text3)">No assets found</div>';
 }
@@ -1070,11 +1298,12 @@ function updateTournamentCountdown(){
 
 /* ── PAYOUT ── */
 function updatePayoutUI(){
-  const a=S.asset,amt=S.amount;
-  const profit=+(amt*a.payout/100).toFixed(2);
+  const a=S.asset,amt=S.amount,eff=getEffectivePayout?getEffectivePayout(a):a.payout;
+  const profit=+(amt*eff/100).toFixed(2);
   const total=+(amt+profit).toFixed(2);
-  document.getElementById('tp-payout-pct').textContent=a.payout+'%';
-  document.getElementById('chart-payout-badge').textContent=a.payout+'%';
+  const pct=eff+(S.streakBonus||0)+(isBoostActive&&isBoostActive()?5:0);
+  document.getElementById('tp-payout-pct').textContent=eff+'%';
+  document.getElementById('chart-payout-badge').textContent=eff+'%';
   document.getElementById('payout-val').textContent=total.toFixed(2)+' $';
 }
 function onAmtChange(){
@@ -1097,15 +1326,17 @@ function setTradeTimeSec(s){
 }
 
 /* ── TRADE EXECUTION ── */
+function getEffectivePayout(a){return a.payout+(S.streakBonus||0)+(isBoostActive()?5:0);}
 function placeTrade(dir){
   const amt=S.amount;
   if(amt<1){showToast('Minimum $1');return;}
   if(amt>getBal()){showToast('Insufficient balance');return;}
-  const a=S.asset,openP=S.prices[a.id],profit=+(amt*a.payout/100).toFixed(2);
+  playSound('click');
+  const a=S.asset,openP=S.prices[a.id],eff=getEffectivePayout(a),profit=+(amt*eff/100).toFixed(2);
   const expiry=Date.now()+S.tradeTimeSec*1000;
   setBal(+(getBal()-amt).toFixed(2));
   const trade={id:'T'+Date.now()+Math.random().toString(36).slice(2,5).toUpperCase(),
-    asset:a.name,assetId:a.id,dir,amt,profit,payout:a.payout,
+    asset:a.name,assetId:a.id,dir,amt,profit,payout:eff,
     openP,closeP:null,expiry,sec:S.tradeTimeSec,dec:a.dec,
     status:'pending',mode:S.mode,at:new Date().toISOString()};
   S.activeTrades.push(trade);
@@ -1122,14 +1353,31 @@ function resolveTrade(id){
   t.closeP=S.prices[t.assetId];
   const win=t.dir==='up'?t.closeP>t.openP:t.closeP<t.openP;
   const draw=t.closeP===t.openP;
-  if(draw){t.status='draw';setBal(+(getBal()+t.amt).toFixed(2));showNotif('Draw! $'+t.amt+' refunded','info');}
-  else if(win){t.status='win';setBal(+(getBal()+t.amt+t.profit).toFixed(2));showNotif('WIN! +$'+t.profit.toFixed(2)+' on '+t.asset,'win');}
-  else{t.status='lose';showNotif('Lost $'+t.amt+' on '+t.asset,'lose');}
+  if(draw){
+    t.status='draw';setBal(+(getBal()+t.amt).toFixed(2));
+    showNotif('Draw! $'+t.amt+' refunded','info');
+    S.streak=0;S.streakBonus=0;
+  } else if(win){
+    t.status='win';setBal(+(getBal()+t.amt+t.profit).toFixed(2));
+    showNotif('WIN! +$'+t.profit.toFixed(2)+' on '+t.asset,'win');
+    showResult('win',t.profit);playSound('win');
+    S.streak++;if(S.streak>S.bestStreak)S.bestStreak=S.streak;
+    S.streakBonus=S.streak>=10?10:S.streak>=5?5:S.streak>=3?2:0;
+  } else{
+    t.status='lose';
+    const cb=S.mode==='real'?+(t.amt*0.05).toFixed(2):0;
+    if(cb>0){setBal(+(getBal()+cb).toFixed(2));showNotif('Lost $'+t.amt+' on '+t.asset+' · 5% Cashback +$'+cb,'lose');}
+    else{showNotif('Lost $'+t.amt+' on '+t.asset,'lose');}
+    showResult('lose',t.amt);playSound('lose');
+    S.streak=0;S.streakBonus=0;
+  }
   const tid=t.id;
   S.activeTrades.splice(idx,1);
   S.history.unshift({...t});if(S.history.length>200)S.history.pop();
   updateBadges();updateBalanceUI();saveState();
   clearTradeMarker(tid);
+  updateStreakUI();
+  checkAchievements();
 }
 
 function updateActiveTimers(){
@@ -1251,15 +1499,23 @@ function renderSignals(){
   el.innerHTML=ASSETS.map(a=>{
     const s=genSignal(a),cls=s.sig==='BUY'?'buy':s.sig==='SELL'?'sell':'neutral';
     const stars=[1,2,3].map(i=>`<span class="${i<=s.str?'on':''}">`+`</span>`).join('');
+    const dir=s.sig==='BUY'?'up':s.sig==='SELL'?'down':null;
+    const tradeBtn=dir?`<button onclick="event.stopPropagation();tradeSignal('${a.id}','${dir}')" style="background:${dir==='up'?'var(--green)':'var(--red)'};color:${dir==='up'?'#000':'#fff'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit">Trade ↑</button>`:'';
     return `<div class="sig-item" onclick="selectAsset('${a.id}');closeSheet('sheet-signals')">
       <div class="sig-icon ${cls}"><i class="fas fa-arrow-${s.sig==='BUY'?'up':s.sig==='SELL'?'down':'right'}"></i></div>
-      <div class="sig-info"><div class="sig-name">${a.name}</div><div class="sig-reason">${s.reason}</div></div>
+      <div class="sig-info"><div class="sig-name">${a.name}</div><div class="sig-reason">${s.reason}</div>${tradeBtn}</div>
       <div class="sig-right">
         <div class="sig-dir ${cls}">${s.sig}</div>
         <div class="sig-stars">${stars}</div>
       </div>
     </div>`;
   }).join('');
+}
+function tradeSignal(assetId,dir){
+  const a=ASSETS.find(x=>x.id===assetId);if(!a)return;
+  S.asset=a;updateTradePanelAsset();buildHistoricalData(a);
+  closeSheet('sheet-signals');
+  setTimeout(()=>placeTrade(dir),300);
 }
 
 /* ── DEPOSIT ── */
@@ -1386,6 +1642,8 @@ function openSheet(id){
   if(id==='sheet-trades')renderTradesList();
   if(id==='sheet-deposit'){renderDepositDetails();updateDepositSummary();}
   if(id==='sheet-account')renderAccountSheet();
+  if(id==='sheet-profile')renderProfileAnalytics();
+  if(id==='sheet-copy')renderCopyTraders();
 }
 function closeSheet(id){document.getElementById(id).classList.remove('show');}
 function closeSheetIfBackdrop(e,id){if(e.target.id===id)closeSheet(id);}
@@ -1412,9 +1670,309 @@ function showToast(msg){
   clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),2500);
 }
 
+/* ── SOUND ENGINE ── */
+let _audioCtx;
+function getAudioCtx(){if(!_audioCtx)_audioCtx=new(window.AudioContext||window.webkitAudioContext)();return _audioCtx;}
+function playSound(type){
+  if(!S.sound)return;
+  try{
+    const ctx=getAudioCtx();const o=ctx.createOscillator(),g=ctx.createGain();
+    o.connect(g);g.connect(ctx.destination);
+    if(type==='click'){o.frequency.value=800;g.gain.setValueAtTime(.15,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.08);o.start();o.stop(ctx.currentTime+.08);}
+    else if(type==='win'){o.type='sine';[523,659,784].forEach((f,i)=>{setTimeout(()=>{const o2=ctx.createOscillator(),g2=ctx.createGain();o2.frequency.value=f;o2.connect(g2);g2.connect(ctx.destination);g2.gain.setValueAtTime(.2,ctx.currentTime);g2.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.2);o2.start();o2.stop(ctx.currentTime+.2);},i*120);});}
+    else if(type==='lose'){o.type='sawtooth';o.frequency.value=150;g.gain.setValueAtTime(.2,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.4);o.start();o.stop(ctx.currentTime+.4);}
+    o.stop&&setTimeout(()=>{try{o.stop();}catch(e){}},500);
+  }catch(e){}
+}
+function toggleSound(){
+  S.sound=!S.sound;saveState();
+  const btn=document.getElementById('btn-sound');
+  if(btn)btn.innerHTML=`<i class="fas fa-volume-${S.sound?'up':'mute'}"></i> Sound ${S.sound?'ON':'OFF'}`;
+  showToast('Sound '+(S.sound?'ON':'OFF'));
+}
+
+/* ── RESULT OVERLAY ── */
+function showResult(type,amount){
+  const ov=document.getElementById('result-overlay');
+  const badge=document.getElementById('ro-badge');
+  const amt=document.getElementById('ro-amount');
+  const asset=document.getElementById('ro-asset');
+  if(!ov)return;
+  ov.className='result-overlay '+(type==='win'?'win-ov ro-win':'lose-ov ro-lose');
+  badge.textContent=type==='win'?'WIN':'LOSE';
+  amt.textContent=type==='win'?'+$'+amount.toFixed(2):'−$'+amount.toFixed(2);
+  asset.textContent=S.asset.name;
+  ov.classList.add('show');
+  setTimeout(()=>ov.classList.remove('show'),2200);
+}
+
+/* ── SOCIAL TICKER ── */
+const TICKER_NAMES=['Mike R.','Sarah K.','David L.','Ana P.','Tom W.','Wei Z.','Maria G.','John B.'];
+const TICKER_ASSETS=['EUR/USD','BTC/USD','Gold','ETH/USD','GBP/USD','S&P500','AUD/JPY','SOL/USD'];
+function genTickerItem(){
+  const name=TICKER_NAMES[Math.floor(Math.random()*TICKER_NAMES.length)];
+  const ast=TICKER_ASSETS[Math.floor(Math.random()*TICKER_ASSETS.length)];
+  const win=Math.random()>.4;
+  const amt=(Math.random()*200+5).toFixed(2);
+  const dir=Math.random()>.5?'↑':'↓';
+  return `<span class="ticker-item"><span class="${win?'ticker-win':'ticker-lose'}">${win?'✓':'✗'}</span> ${name} ${dir} ${ast} <span class="${win?'ticker-win':'ticker-lose'}">${win?'+':'−'}$${amt}</span></span>`;
+}
+function startSocialTicker(){
+  const el=document.getElementById('social-ticker');if(!el)return;
+  function fill(){
+    const items=Array(12).fill(0).map(genTickerItem).join('');
+    el.innerHTML=items+items;
+  }
+  fill();setInterval(fill,20000);
+}
+
+/* ── ONLINE COUNTER ── */
+function startOnlineCounter(){
+  let count=1100+Math.floor(Math.random()*400);
+  function update(){
+    count+=Math.floor((Math.random()-.45)*30);
+    count=Math.max(800,Math.min(2500,count));
+    const el=document.getElementById('online-count');
+    if(el)el.textContent=count.toLocaleString();
+  }
+  update();setInterval(update,5000);
+}
+
+/* ── DAILY BONUS ── */
+function claimDailyBonus(){
+  const today=new Date().toISOString().slice(0,10);
+  if(S.lastBonus===today){showToast('Already claimed today! Come back tomorrow 🌅');return;}
+  S.lastBonus=today;
+  S.demoBalance=+(S.demoBalance+500).toFixed(2);
+  saveState();updateBalanceUI();
+  document.getElementById('btn-daily-bonus').textContent='✓ Claimed! Come back tomorrow';
+  document.getElementById('btn-daily-bonus').disabled=true;
+  showNotif('Daily Bonus +$500 added to Demo account! 🎁','win');
+}
+function updateDailyBonusBtn(){
+  const btn=document.getElementById('btn-daily-bonus');if(!btn)return;
+  const today=new Date().toISOString().slice(0,10);
+  if(S.lastBonus===today){btn.innerHTML='✓ Claimed! Come back tomorrow';btn.disabled=true;}
+  else{btn.innerHTML='<i class="fas fa-gift"></i> Claim Daily $500 Bonus';btn.disabled=false;}
+}
+
+/* ── HOT ASSETS STRIP ── */
+function renderHotStrip(){
+  const el=document.getElementById('hot-strip');if(!el)return;
+  const top=[...ASSETS].sort((a,b)=>b.payout-a.payout).slice(0,4);
+  el.innerHTML='<span class="hot-label">🔥 Hot</span>'+top.map(a=>
+    `<div class="hot-chip" onclick="selectAssetQuick('${a.id}')">
+      <span class="hot-chip-flag">${a.f1}</span>
+      <span class="hot-chip-name">${a.name.split('/')[0]}</span>
+      <span class="hot-chip-payout">${a.payout}%</span>
+    </div>`
+  ).join('');
+}
+function selectAssetQuick(id){
+  const a=ASSETS.find(x=>x.id===id);if(!a)return;
+  S.asset=a;updateTradePanelAsset();buildHistoricalData(a);
+  showToast('Switched to '+a.name);
+}
+
+/* ── AMOUNT CHIPS ── */
+function setAmt(n){
+  S.amount=n;
+  document.getElementById('amt-input').value=n;
+  document.querySelectorAll('.amt-chip').forEach(c=>{
+    c.classList.toggle('active',c.textContent==='$'+n);
+  });
+  updatePayoutUI();
+}
+
+/* ── STREAK UI ── */
+function updateStreakUI(){
+  const pill=document.getElementById('streak-pill');
+  const txt=document.getElementById('streak-txt');
+  if(!pill)return;
+  if(S.streak>=3){pill.classList.add('show');if(txt)txt.textContent=S.streak;}
+  else{pill.classList.remove('show');}
+  const bp=document.getElementById('boost-pill');
+  if(bp)bp.classList.toggle('show',isBoostActive());
+  updatePayoutUI();
+}
+
+/* ── PAYOUT BOOST ── */
+function isBoostActive(){return S.boostEnd&&Date.now()<S.boostEnd;}
+function startBoostTimer(){
+  function scheduleNext(){
+    const delay=Math.random()*25*60000+10*60000;
+    setTimeout(()=>{
+      S.boostEnd=Date.now()+8*60000;
+      updateStreakUI();
+      showToast('⚡ Payout Boost activated! +5% for 8 minutes!');
+      setTimeout(()=>{S.boostEnd=null;updateStreakUI();scheduleNext();},8*60000);
+    },delay);
+  }
+  scheduleNext();
+}
+
+/* ── FAVORITES ── */
+function toggleFav(id){
+  const idx=S.favorites.indexOf(id);
+  if(idx>-1)S.favorites.splice(idx,1);else S.favorites.push(id);
+  saveState();renderAssetList();
+  showToast(S.favorites.includes(id)?'Added to favorites ⭐':'Removed from favorites');
+}
+
+/* ── PRICE ALERTS ── */
+function setAssetAlert(id){
+  const a=ASSETS.find(x=>x.id===id);if(!a)return;
+  const cur=S.prices[id]?.toFixed(a.dec)||'';
+  const v=prompt(`Set price alert for ${a.name}\nCurrent: ${cur}\nTarget price:`,S.alerts[id]||cur);
+  if(v===null)return;
+  if(v===''){delete S.alerts[id];saveState();showToast('Alert removed');renderAssetList();return;}
+  if(!isNaN(+v)&&+v>0){S.alerts[id]=+v;saveState();showToast(`Alert set: ${a.name} @ ${(+v).toFixed(a.dec)}`);renderAssetList();}
+}
+function checkAlerts(){
+  Object.keys(S.alerts).forEach(id=>{
+    const target=S.alerts[id],cur=S.prices[id];
+    if(!cur||!target)return;
+    const a=ASSETS.find(x=>x.id===id);if(!a)return;
+    const prev=S._alertPrev?.[id];
+    if(prev!==undefined&&((prev<target&&cur>=target)||(prev>target&&cur<=target))){
+      showNotif(`🔔 Alert! ${a.name} hit ${target.toFixed(a.dec)}!`,'win');
+      delete S.alerts[id];saveState();renderAssetList();
+    }
+    if(!S._alertPrev)S._alertPrev={};
+    S._alertPrev[id]=cur;
+  });
+}
+
+/* ── ACHIEVEMENTS ── */
+const ACHIEVEMENTS=[
+  {id:'first_trade',label:'🎯 First Trade!',check:()=>S.history.length>=1},
+  {id:'first_win',label:'💰 First Win!',check:()=>S.history.some(t=>t.status==='win')},
+  {id:'streak3',label:'🔥 3 Win Streak!',check:()=>S.streak>=3},
+  {id:'streak5',label:'🔥🔥 5 Win Streak!',check:()=>S.streak>=5},
+  {id:'trades10',label:'🏆 10 Trades!',check:()=>S.history.length>=10},
+  {id:'trades50',label:'💎 50 Trades!',check:()=>S.history.length>=50},
+];
+function checkAchievements(){
+  ACHIEVEMENTS.forEach(ach=>{
+    if(!S.achievements.includes(ach.id)&&ach.check()){
+      S.achievements.push(ach.id);saveState();
+      showNotif(ach.label+' Achievement Unlocked! 🎖️','win');
+      playSound('win');
+    }
+  });
+}
+
+/* ── VIP LEVEL ── */
+function getVipLevel(){
+  const n=S.history.length;
+  if(n>=200)return{l:'Platinum',cls:'vip-platinum',icon:'💎'};
+  if(n>=50)return{l:'Gold',cls:'vip-gold',icon:'🥇'};
+  if(n>=10)return{l:'Silver',cls:'vip-silver',icon:'🥈'};
+  return{l:'Bronze',cls:'vip-bronze',icon:'🥉'};
+}
+function updateVipBadge(){
+  const v=getVipLevel();
+  const el=document.getElementById('vip-badge');
+  if(el){el.textContent=v.icon+' '+v.l;el.className='vip-badge '+v.cls;}
+}
+
+/* ── PROFILE ANALYTICS ── */
+function renderProfileAnalytics(){
+  updateDailyBonusBtn();updateVipBadge();
+  const wins=S.history.filter(t=>t.status==='win').length;
+  const total=S.history.length;
+  const winrate=total?Math.round(wins/total*100):0;
+  const netPnl=S.history.reduce((sum,t)=>t.status==='win'?sum+t.profit:t.status==='lose'?sum-t.amt:sum,0);
+  const el=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  el('an-winrate',winrate+'%');
+  el('an-streak',S.bestStreak);
+  el('an-total',total);
+  el('an-pnl',(netPnl>=0?'+':'')+netPnl.toFixed(2));
+  document.getElementById('an-pnl')?.classList.toggle('win-col',netPnl>=0);
+  // Referral
+  const uid=S.user?.uid?.slice(0,8)||'GUEST';
+  const ref=document.getElementById('ref-link');
+  if(ref)ref.textContent='exglobal.online/trade.html?ref='+uid;
+}
+
+/* ── WITHDRAWAL ── */
+let selWithdrawPay='usdt';
+function selWithdrawMethod(method,btn){
+  selWithdrawPay=method;
+  document.querySelectorAll('#sheet-withdraw .pay-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitWithdraw(){
+  const amt=parseFloat(document.getElementById('withdraw-amt').value)||0;
+  const addr=document.getElementById('withdraw-addr').value.trim();
+  if(amt<20){showToast('Minimum withdrawal: $20');return;}
+  if(!addr){showToast('Please enter your account/address');return;}
+  if(amt>S.realBalance){showToast('Insufficient live balance');return;}
+  S.withdrawals.push({amt,addr,method:selWithdrawPay,at:new Date().toISOString()});
+  closeSheet('sheet-withdraw');
+  showNotif('Withdrawal request submitted! $'+amt+' · Processing 1–24h','info');
+}
+
+/* ── COPY TRADERS ── */
+const COPY_TRADERS=[
+  {name:'Alex Pro',avatar:'🦁',wr:78,profit:'+$12,450',dir:'up'},
+  {name:'Sarah FX',avatar:'🐯',wr:72,profit:'+$8,920',dir:'down'},
+  {name:'Kim Trader',avatar:'🦊',wr:81,profit:'+$21,300',dir:'up'},
+  {name:'Max Bull',avatar:'🐂',wr:69,profit:'+$5,670',dir:'up'},
+  {name:'Nina Bear',avatar:'🐻',wr:74,profit:'+$9,100',dir:'down'},
+];
+function renderCopyTraders(){
+  const el=document.getElementById('copy-traders-list');if(!el)return;
+  el.innerHTML=COPY_TRADERS.map(t=>`
+    <div class="copy-trader-item">
+      <div class="ct-avatar">${t.avatar}</div>
+      <div class="ct-info">
+        <div class="ct-trader-name">${t.name}</div>
+        <div class="ct-stats">Win Rate: ${t.wr}% · Profit: ${t.profit}</div>
+      </div>
+      <button class="btn-copy-trade" onclick="copyTrade('${t.dir}')">Copy</button>
+    </div>`).join('');
+}
+function copyTrade(dir){
+  closeSheet('sheet-copy');
+  setTimeout(()=>{placeTrade(dir);showToast('Trade copied!')},400);
+}
+
+/* ── MA INDICATORS ── */
+const _maLines={};
+function toggleMA(period){
+  if(_maLines[period]){
+    try{chart.removeSeries(_maLines[period]);}catch(e){}
+    delete _maLines[period];
+    const tog=document.getElementById('ma-tog-'+period);if(tog)tog.className='ma-toggle';
+  }else{
+    const colors={20:'#3b82f6',50:'#f59e0b',200:'#a78bfa'};
+    const s=chart.addLineSeries({color:colors[period]||'#fff',lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+    if(candleData.length>=period){
+      const data=candleData.map((c,i)=>{
+        if(i<period-1)return null;
+        const avg=candleData.slice(i-period+1,i+1).reduce((sum,x)=>sum+x.close,0)/period;
+        return{time:c.time,value:+avg.toFixed(5)};
+      }).filter(Boolean);
+      try{s.setData(data);}catch(e){}
+    }
+    _maLines[period]=s;
+    const tog=document.getElementById('ma-tog-'+period);if(tog)tog.className='ma-toggle on';
+  }
+}
+function toggleMAPopup(){
+  const pop=document.getElementById('ma-popup');if(!pop)return;
+  pop.classList.toggle('show');
+}
+
 /* ── SAVE STATE ── */
 function saveState(){
-  try{localStorage.setItem('ext_s',JSON.stringify({demoBalance:S.demoBalance,realBalance:S.realBalance,history:S.history.slice(0,200),mode:S.mode}));}catch(e){}
+  try{localStorage.setItem('ext_s',JSON.stringify({
+    demoBalance:S.demoBalance,realBalance:S.realBalance,tournamentBalance:S.tournamentBalance,
+    history:S.history.slice(0,200),mode:S.mode,dailyLimit:S.dailyLimit,
+    favorites:S.favorites,sound:S.sound,lastBonus:S.lastBonus,
+    streak:S.streak,bestStreak:S.bestStreak,achievements:S.achievements,alerts:S.alerts,
+  }));}catch(e){}
 }
 
 /* ── INIT ── */
@@ -1428,6 +1986,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   startTournamentClock();
   initAuth();
   renderDepositDetails();
+  startSocialTicker();
+  startOnlineCounter();
+  renderHotStrip();
+  startBoostTimer();
+  updateStreakUI();
+  buildTFGrid();
   // keyboard shortcuts
   document.addEventListener('keydown',e=>{
     if(e.target.tagName==='INPUT')return;
