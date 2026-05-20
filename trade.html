@@ -61,9 +61,6 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .chart-top-row{position:absolute;top:8px;left:8px;right:8px;display:flex;align-items:flex-start;justify-content:space-between;pointer-events:none;z-index:10}
 .chart-time-box{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:11px;color:var(--text2);font-variant-numeric:tabular-nums;pointer-events:all}
 .chart-time-utc{font-size:10px;color:var(--text3);margin-top:1px}
-.chart-tf-row{display:flex;gap:4px;flex-wrap:wrap;pointer-events:all}
-.tf-pill{background:rgba(0,0,0,.6);border:1px solid var(--border);border-radius:14px;padding:3px 9px;font-size:11px;font-weight:600;color:var(--text2);cursor:pointer;transition:.15s}
-.tf-pill.active{background:var(--blue);border-color:var(--blue);color:#fff}
 .chart-asset-overlay{position:absolute;top:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);border:1px solid var(--border);border-radius:8px;padding:4px 12px;font-size:12px;font-weight:700;color:var(--text);pointer-events:all;cursor:pointer;display:flex;align-items:center;gap:6px;z-index:10}
 .asset-payout-badge{background:var(--green-bg);color:var(--green);font-size:11px;font-weight:700;padding:1px 6px;border-radius:10px}
 /* Trade markers on chart */
@@ -71,6 +68,27 @@ html,body{background:var(--bg);color:var(--text);height:100%;overflow:hidden;fon
 .trade-marker-begin::after{content:'Begin';position:absolute;top:8px;left:4px;font-size:9px;color:#60a5fa;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
 .trade-marker-end{position:absolute;top:0;bottom:0;width:1px;background:rgba(248,113,113,.6);border-left:1px dashed rgba(248,113,113,.6);pointer-events:none;z-index:5}
 .trade-marker-end::after{content:'End';position:absolute;top:8px;left:4px;font-size:9px;color:#f87171;background:rgba(0,0,0,.7);padding:1px 4px;border-radius:3px}
+
+/* ── CHART LEFT TOOLBAR ── */
+.chart-toolbar{position:absolute;left:8px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:6px;z-index:20;pointer-events:all}
+.ct-btn{width:40px;height:40px;background:rgba(22,27,40,.92);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:15px;transition:.15s;user-select:none;flex-shrink:0}
+.ct-btn:active{background:var(--bg4)}
+.ct-btn.ct-active{background:#1e3a5f;border-color:var(--blue);color:var(--blue)}
+.ct-btn.ct-menu-btn{background:#1565c0;border-color:#1976d2;color:#fff}
+.ct-btn.ct-tf-btn{font-size:13px;font-weight:800;color:var(--text)}
+
+/* ── TIMEFRAME GRID POPUP ── */
+.tf-grid-popup{
+  position:absolute;left:56px;top:50%;transform:translateY(-50%);
+  background:rgba(28,35,51,.97);border:1px solid var(--border);
+  border-radius:10px;padding:10px 8px;
+  display:none;z-index:25;pointer-events:all;min-width:200px;
+}
+.tf-grid-popup.show{display:block}
+.tf-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px}
+.tf-cell{padding:9px 0;text-align:center;font-size:14px;font-weight:600;color:var(--text2);border-radius:7px;cursor:pointer;transition:.1s}
+.tf-cell:active{background:rgba(255,255,255,.08)}
+.tf-cell.active{background:rgba(59,130,246,.18);color:#fff;font-weight:700}
 
 /* ── TRADE PANEL (bottom) ── */
 .trade-panel{
@@ -334,24 +352,40 @@ if('serviceWorker'in navigator){navigator.serviceWorker.getRegistrations().then(
 
 <!-- CHART -->
 <div class="chart-wrap" id="chart-wrap">
-  <!-- Overlays -->
-  <div class="chart-top-row">
-    <div class="chart-time-box">
+  <!-- UTC Clock -->
+  <div class="chart-top-row" style="pointer-events:none">
+    <div class="chart-time-box" style="pointer-events:all">
       <div id="utc-time" style="font-size:13px;font-weight:700;color:var(--text)">16:12:26</div>
-      <div class="chart-time-utc">UTC+5:30</div>
-    </div>
-    <div class="chart-tf-row">
-      <div class="tf-pill" onclick="setTF(5,this)">5s</div>
-      <div class="tf-pill" onclick="setTF(15,this)">15s</div>
-      <div class="tf-pill active" onclick="setTF(60,this)">1m</div>
-      <div class="tf-pill" onclick="setTF(300,this)">5m</div>
-      <div class="tf-pill" onclick="setTF(900,this)">15m</div>
+      <div class="chart-time-utc">UTC</div>
     </div>
   </div>
+  <!-- Asset overlay (top center) -->
   <div class="chart-asset-overlay" onclick="openSheet('sheet-assets')">
     <span id="chart-asset-name">EUR/USD</span>
     <span class="asset-payout-badge" id="chart-payout-badge">82%</span>
     <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text3)"></i>
+  </div>
+  <!-- Left vertical toolbar -->
+  <div class="chart-toolbar">
+    <div class="ct-btn ct-menu-btn" id="ct-menu-btn" onclick="toggleChartMenu()">
+      <i class="fas fa-ellipsis-h"></i>
+    </div>
+    <div class="ct-btn" id="ct-draw-btn" onclick="toggleDrawMode()" title="Draw tool">
+      <i class="fas fa-pencil-alt"></i>
+    </div>
+    <div class="ct-btn ct-tf-btn" id="ct-tf-btn" onclick="toggleTFGrid()" title="Timeframe">
+      <span id="ct-tf-label">1m</span>
+    </div>
+    <div class="ct-btn" id="ct-type-btn" onclick="cycleChartType()" title="Chart type">
+      <i class="fas fa-chart-bar"></i>
+    </div>
+    <div class="ct-btn" title="Indicators">
+      <i class="fas fa-satellite-dish" style="font-size:13px"></i>
+    </div>
+  </div>
+  <!-- Timeframe grid popup -->
+  <div class="tf-grid-popup" id="tf-grid-popup">
+    <div class="tf-grid" id="tf-grid"></div>
   </div>
   <!-- Trade markers (injected dynamically) -->
   <div id="trade-markers"></div>
@@ -824,11 +858,55 @@ function connectBinance(asset){
   }catch(e){}
 }
 
-function setTF(tf,btn){
+const TF_LIST=[
+  {s:5,l:'5s'},{s:10,l:'10s'},{s:15,l:'15s'},{s:30,l:'30s'},
+  {s:60,l:'1m'},{s:120,l:'2m'},{s:180,l:'3m'},{s:300,l:'5m'},
+  {s:600,l:'10m'},{s:900,l:'15m'},{s:1800,l:'30m'},{s:3600,l:'1h'},
+  {s:14400,l:'4h'},{s:86400,l:'1d'}
+];
+function tfLabel(s){return(TF_LIST.find(t=>t.s===s)||{l:'1m'}).l;}
+function buildTFGrid(){
+  const el=document.getElementById('tf-grid');if(!el)return;
+  el.innerHTML=TF_LIST.map(t=>`<div class="tf-cell${TF===t.s?' active':''}" onclick="setTF(${t.s})">${t.l}</div>`).join('');
+}
+function setTF(tf){
   TF=tf;
-  document.querySelectorAll('.tf-pill').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  const lbl=document.getElementById('ct-tf-label');if(lbl)lbl.textContent=tfLabel(tf);
+  buildTFGrid();
   buildHistoricalData(S.asset);
+  closeTFGrid();
+}
+function toggleTFGrid(){
+  const pop=document.getElementById('tf-grid-popup');if(!pop)return;
+  if(pop.classList.contains('show')){closeTFGrid();}else{buildTFGrid();pop.classList.add('show');}
+}
+function closeTFGrid(){
+  const pop=document.getElementById('tf-grid-popup');if(pop)pop.classList.remove('show');
+}
+let _chartMenuOpen=false;
+function toggleChartMenu(){
+  _chartMenuOpen=!_chartMenuOpen;
+  const btn=document.getElementById('ct-menu-btn');if(!btn)return;
+  if(_chartMenuOpen){btn.innerHTML='<i class="fas fa-times"></i>';btn.style.background='#333';}
+  else{btn.innerHTML='<i class="fas fa-ellipsis-h"></i>';btn.style.background='';}
+}
+let _drawMode=false;
+function toggleDrawMode(){
+  _drawMode=!_drawMode;
+  const btn=document.getElementById('ct-draw-btn');if(btn)btn.className='ct-btn'+(_drawMode?' ct-active':'');
+  showToast(_drawMode?'Draw mode ON':'Draw mode OFF');
+}
+const CHART_TYPES=['candle','line','area'];let _ctIdx=0;
+function cycleChartType(){
+  _ctIdx=(_ctIdx+1)%CHART_TYPES.length;
+  const type=CHART_TYPES[_ctIdx];
+  const icons={candle:'fa-chart-bar',line:'fa-chart-line',area:'fa-chart-area'};
+  const btn=document.getElementById('ct-type-btn');
+  if(btn)btn.innerHTML=`<i class="fas ${icons[type]}"></i>`;
+  [candle,line,area].forEach(s=>{try{s.applyOptions({visible:false});}catch(e){}});
+  if(type==='candle')candle.applyOptions({visible:true});
+  else if(type==='line')line.applyOptions({visible:true});
+  else area.applyOptions({visible:true});
 }
 
 /* ── ASSET SELECTION ── */
@@ -1286,6 +1364,13 @@ document.addEventListener('DOMContentLoaded',()=>{
     if(e.target.tagName==='INPUT')return;
     if(e.key==='ArrowUp')placeTrade('up');
     if(e.key==='ArrowDown')placeTrade('down');
+    if(e.key==='Escape')closeTFGrid();
+  });
+  // close TF grid on outside tap
+  document.getElementById('chart-wrap').addEventListener('click',e=>{
+    const pop=document.getElementById('tf-grid-popup');
+    const btn=document.getElementById('ct-tf-btn');
+    if(pop&&btn&&!pop.contains(e.target)&&!btn.contains(e.target))closeTFGrid();
   });
   // SW clear
   if('serviceWorker'in navigator)navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.unregister()));
