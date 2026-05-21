@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=134" />
+  <link rel="stylesheet" href="styles.css?v=135" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -470,18 +470,36 @@
     <!-- SUPER DEALS + TRENDS -->
     <div class="two-col-banner">
       <div class="two-col-card">
-        <div class="two-col-head">
-          <span class="two-col-title" data-i18n="superDeals">⚡ Super Deals</span>
-          <a href="#" class="two-col-more"><span data-i18n="more">More</span> <i class="fas fa-chevron-right"></i></a>
+        <div class="two-col-head head-deals">
+          <span class="two-col-title">⚡ Super Deals</span>
+          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="superDeals"></div>
       </div>
       <div class="two-col-card">
-        <div class="two-col-head">
-          <span class="two-col-title" data-i18n="trending">🔥 Trending</span>
-          <a href="#" class="two-col-more"><span data-i18n="more">More</span> <i class="fas fa-chevron-right"></i></a>
+        <div class="two-col-head head-trend">
+          <span class="two-col-title">🔥 Trending</span>
+          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
         </div>
         <div class="two-col-products" id="trendingProducts"></div>
+      </div>
+    </div>
+
+    <!-- HOT SELLER + NEW ARRIVALS -->
+    <div class="two-col-banner" style="padding-top:2px">
+      <div class="two-col-card">
+        <div class="two-col-head head-hot">
+          <span class="two-col-title">🏆 Hot Seller</span>
+          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="two-col-products" id="hotSellerProducts"></div>
+      </div>
+      <div class="two-col-card">
+        <div class="two-col-head head-new">
+          <span class="two-col-title">✨ New In</span>
+          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
+        </div>
+        <div class="two-col-products" id="newArrivalsProducts"></div>
       </div>
     </div>
 
@@ -2242,6 +2260,6 @@
 
   <script src="translations.js?v=90"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=138"></script>
+  <script src="script.js?v=139"></script>
 </body>
 </html>
