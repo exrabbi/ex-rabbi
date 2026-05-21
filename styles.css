@@ -6124,26 +6124,6 @@ html, body { transition: background .35s, color .35s; }
   border: 1px solid rgba(255,255,255,.25); white-space: nowrap;
 }
 
-/* Social proof "just bought" toast */
-.social-toast {
-  position: fixed; bottom: 72px; left: 12px; z-index: 800;
-  background: #fff; border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,.18);
-  padding: 10px 14px; max-width: 260px;
-  font-size: 12px; color: #222; line-height: 1.4;
-  display: none; align-items: flex-start; gap: 10px;
-  border-left: 3px solid #e91e8c;
-  animation: socialSlideIn .35s cubic-bezier(.34,1.56,.64,1);
-}
-.social-toast.show { display: flex; }
-@keyframes socialSlideIn {
-  from { transform: translateX(-120%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
-}
-.social-toast-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.social-toast-text strong { display: block; font-weight: 700; color: #111; font-size: 12px; }
-.social-toast-time { font-size: 10px; color: #aaa; margin-top: 2px; }
-
 /* Welcome popup */
 .welcome-popup {
   max-width: 320px; text-align: center; padding: 28px 24px 20px;
@@ -6173,9 +6153,6 @@ html, body { transition: background .35s, color .35s; }
   padding: 5px 10px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
 }
 .welcome-copy-btn:active { background: #388e3c; }
-
-[data-theme="dark"] .social-toast { background: #1e1e1e; color: #eee; }
-[data-theme="dark"] .social-toast-text strong { color: #fff; }
 
 /* ===== VIP PRODUCT CARD LAYOUT ===== */
 .pc-price-row {
