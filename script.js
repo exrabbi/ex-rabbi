@@ -5999,3 +5999,110 @@ function exitGrabDeal() {
 }
 // Init after page load
 window.addEventListener('load', () => { setTimeout(_initExitIntent, 5000); });
+
+/* ===== TRENDING PAGE ===== */
+let _tpSort = 'default';
+let _tpCat  = 'all';
+
+const _TP_SUBCATS = [
+  { cat:'women',  name:'Women',  img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=120&h=120&fit=crop&q=80' },
+  { cat:'men',    name:'Men',    img:'https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=120&h=120&fit=crop&q=80' },
+  { cat:'kids',   name:'Kids',   img:'https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=120&h=120&fit=crop&q=80' },
+  { cat:'beauty', name:'Beauty', img:'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=120&h=120&fit=crop&q=80' },
+  { cat:'bags',   name:'Bags',   img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=120&h=120&fit=crop&q=80' },
+  { cat:'shoes',  name:'Shoes',  img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=120&h=120&fit=crop&q=80' },
+  { cat:'sports', name:'Sports', img:'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=120&h=120&fit=crop&q=80' },
+  { cat:'jewelry',name:'Jewelry',img:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=120&h=120&fit=crop&q=80' },
+];
+
+function openTrendingPage(cat) {
+  _tpCat = cat || 'all';
+  _tpSort = 'default';
+  document.getElementById('tpOverlay').style.display = 'block';
+  document.getElementById('tpPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _renderTpSubcats();
+  _renderTpGrid();
+  // reset chip active states
+  document.querySelectorAll('.tp-chip').forEach(c => c.classList.remove('active'));
+  const allChip = document.querySelector('.tp-chip');
+  if (allChip) allChip.classList.add('active');
+  document.querySelectorAll('.tp-sort-btn').forEach(b => b.classList.remove('active'));
+  const firstSort = document.querySelector('.tp-sort-btn');
+  if (firstSort) firstSort.classList.add('active');
+}
+
+function closeTrendingPage() {
+  document.getElementById('tpOverlay').style.display = 'none';
+  document.getElementById('tpPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _renderTpSubcats() {
+  const el = document.getElementById('tpSubcats');
+  if (!el) return;
+  el.innerHTML = _TP_SUBCATS.map(s => `
+    <div class="tp-subcat${_tpCat===s.cat?' active':''}" onclick="tpFilterCat(this,'${s.cat}')">
+      <div class="tp-subcat-img"><img src="${s.img}" loading="lazy" alt="" /></div>
+      <span class="tp-subcat-name">${s.name}</span>
+    </div>
+  `).join('');
+}
+
+function _renderTpGrid() {
+  let items = _tpCat === 'all'
+    ? [...PRODUCTS]
+    : PRODUCTS.filter(p => p.category === _tpCat);
+
+  if (_tpSort === 'popular')  items = items.sort((a,b) => b.ratingCount - a.ratingCount);
+  else if (_tpSort === 'price') items = items.sort((a,b) => a.price - b.price);
+  else if (_tpSort === 'new')   items = items.sort((a,b) => b.id - a.id);
+  else items = items.sort((a,b) => (b.tag==='bestseller'?1:0)-(a.tag==='bestseller'?1:0));
+
+  const el = document.getElementById('tpGrid');
+  if (!el) return;
+  el.innerHTML = items.slice(0, 30).map(p => {
+    const sold = p.ratingCount >= 1000
+      ? (p.ratingCount/1000).toFixed(1)+'k+'
+      : p.ratingCount+'+';
+    const stars = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5-Math.round(p.rating));
+    return `<div class="tp-card" onclick="openModal(${p.id})">
+      <div class="tp-card-img-wrap">
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/300/400'" ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''} />
+        <span class="tp-disc">-${p.discount}%</span>
+      </div>
+      <div class="tp-card-info">
+        <p class="tp-card-name">${getName(p)}</p>
+        <div class="tp-sold-row">
+          <span class="tp-sold">${sold} sold</span>
+          <span class="tp-stars">${stars}</span>
+        </div>
+        <div class="tp-price-row">
+          <div>
+            <span class="tp-orig">${fmt(p.originalPrice)} <span class="tp-disc-pct">-${p.discount}%</span></span>
+            <div class="tp-price">${fmt(p.price)}</div>
+            <div class="tp-coupon">after coupon</div>
+          </div>
+          <button class="tp-cart-btn" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'disabled style="opacity:.4"':''}>
+            <i class="fas fa-cart-plus"></i>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function tpSetSort(btn, sort) {
+  _tpSort = sort;
+  document.querySelectorAll('.tp-sort-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  _renderTpGrid();
+}
+
+function tpFilterCat(el, cat) {
+  _tpCat = cat;
+  document.querySelectorAll('.tp-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  _renderTpSubcats();
+  _renderTpGrid();
+}
