@@ -751,11 +751,12 @@ function renderProducts(searchTerm = '') {
 
 function productCardHTML(p) {
   const inWish = wishlist.includes(p.id);
+  const rcFmt = p.ratingCount >= 1000 ? (p.ratingCount/1000).toFixed(1)+'k' : p.ratingCount;
+  const soldFmt = p.sold >= 1000 ? (p.sold/1000).toFixed(1)+'k' : p.sold;
   return `
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        <span class="discount-badge">-${p.discount}%</span>
         ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : ''}
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
@@ -764,15 +765,17 @@ function productCardHTML(p) {
       </div>
       <div class="product-info">
         <p class="product-name">${getName(p)}</p>
-        <div class="product-prices">
+        <div class="pc-price-row">
           <span class="price-current">${fmt(p.price)}</span>
-          <span class="price-original">${fmt(p.originalPrice)}</span>
+          <span class="pc-disc-pill">-${p.discount}%</span>
         </div>
-        <div class="product-meta">
-          <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
-          <span class="product-sold sold-hot">🔥 ${p.sold >= 1000 ? (p.sold/1000).toFixed(1)+'k' : p.sold}+ ${t('soldText')}</span>
+        <div class="pc-meta-row">
+          <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
+          <span class="pc-sep">|</span>
+          <span class="pc-sold">${soldFmt} ${t('soldText')}</span>
         </div>
-        ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-lock"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok"><i class="fas fa-circle-check"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
+        <div class="pc-location"><i class="fas fa-location-dot"></i> Riyadh, KSA</div>
+        ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
       </div>
       <button class="add-cart-btn${p.stock === 0 ? ' disabled' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
         ${p.stock === 0 ? `<i class="fas fa-times-circle" style="margin-right:5px;opacity:.7"></i>${t('outOfStock')}` : `<i class="fas fa-bag-shopping" style="margin-right:5px;font-size:11px"></i>${t('addToCart')}`}
