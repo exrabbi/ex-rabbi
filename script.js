@@ -365,6 +365,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateCartBadge();
   _initTrendCircle(); // show video/image inside Trend circle button
   renderFlashDeals();
+  renderBrandDeals();
   renderSuperDeals();
   renderTrending();
   renderHotSeller();
@@ -6215,3 +6216,31 @@ function _startDealCountdowns() {
   // Deal countdowns
   _startDealCountdowns();
 })();
+
+/* ===== BRAND DEALS AUTO-SCROLL ===== */
+const _BRAND_DEALS = [
+  { brand: "Women's Fashion", offer: "30-70% OFF", cat: "women",  img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=300&h=280&fit=crop&q=80" },
+  { brand: "Bags",            offer: "Up to 50% OFF", cat: "bags",  img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300&h=280&fit=crop&q=80" },
+  { brand: "Shoes",           offer: "Under SAR 99",  cat: "shoes", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300&h=280&fit=crop&q=80" },
+  { brand: "Beauty",          offer: "Buy 2 Get 1",   cat: "beauty",img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=300&h=280&fit=crop&q=80" },
+  { brand: "Men's Style",     offer: "40-60% OFF",    cat: "men",   img: "https://images.unsplash.com/photo-1490578474895-699cd4e2cf59?w=300&h=280&fit=crop&q=80" },
+  { brand: "Jewelry",         offer: "Starting SAR 15",cat:"jewelry",img:"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300&h=280&fit=crop&q=80"},
+  { brand: "Electronics",     offer: "Best Deals",    cat: "electronics", img: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=300&h=280&fit=crop&q=80" },
+  { brand: "Kids' World",     offer: "Up to 45% OFF", cat: "kids",  img: "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=300&h=280&fit=crop&q=80" },
+];
+
+function renderBrandDeals() {
+  const track = document.getElementById('bdealTrack');
+  if (!track) return;
+  // Double for seamless infinite loop
+  const cards = [..._BRAND_DEALS, ..._BRAND_DEALS].map(d => `
+    <div class="bdeal-card" onclick="filterCategory('${d.cat}');document.querySelector('.tab-btn[data-tab=products]')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">
+      <img class="bdeal-card-img" src="${d.img}" loading="lazy" alt="${d.brand}" onerror="this.style.background='#f0f0f0'" />
+      <div class="bdeal-card-body">
+        <div class="bdeal-card-brand">${d.brand}</div>
+        <div class="bdeal-card-offer">${d.offer}</div>
+      </div>
+    </div>
+  `).join('');
+  track.innerHTML = cards;
+}
