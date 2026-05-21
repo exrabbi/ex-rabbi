@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=136" />
+  <link rel="stylesheet" href="styles.css?v=137" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -472,7 +472,7 @@
       <div class="two-col-card">
         <div class="two-col-head head-deals">
           <span class="two-col-title">⚡ Super Deals</span>
-          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
+          <div class="deal-countdown" id="dealCd1"></div>
         </div>
         <div class="two-col-products" id="superDeals"></div>
       </div>
@@ -490,7 +490,7 @@
       <div class="two-col-card">
         <div class="two-col-head head-hot">
           <span class="two-col-title">🏆 Hot Seller</span>
-          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
+          <div class="deal-countdown" id="dealCd2"></div>
         </div>
         <div class="two-col-products" id="hotSellerProducts"></div>
       </div>
@@ -2258,9 +2258,31 @@
     <button class="promo-skip" onclick="closeExitPopup()">No thanks, I'll pay full price</button>
   </div>
 
+  <!-- SOCIAL PROOF TOAST -->
+  <div class="social-toast" id="socialToast"></div>
+
+  <!-- WELCOME OFFER POPUP -->
+  <div class="promo-overlay" id="welcomeOverlay" onclick="closeWelcomePopup()"></div>
+  <div class="promo-popup welcome-popup" id="welcomePopup">
+    <button class="promo-close" onclick="closeWelcomePopup()"><i class="fas fa-times"></i></button>
+    <div class="promo-emoji">🎉</div>
+    <div class="promo-title">Welcome to EX GLOBAL!</div>
+    <div class="promo-sub">Get <b>10% OFF</b> your first order — exclusive for you!</div>
+    <div class="welcome-coupon-box">
+      <div class="welcome-coupon-pct">10<span>%</span></div>
+      <div class="welcome-coupon-right">
+        <div class="welcome-coupon-code">WELCOME10</div>
+        <div class="welcome-coupon-desc">First order · One time use</div>
+        <button class="welcome-copy-btn" onclick="navigator.clipboard.writeText('WELCOME10').then(()=>showToast('✅ Code copied!'))"><i class="fas fa-copy"></i> Copy Code</button>
+      </div>
+    </div>
+    <button class="promo-cta" onclick="closeWelcomePopup()"><i class="fas fa-bag-shopping"></i> Shop Now &amp; Save 10%</button>
+    <button class="promo-skip" onclick="closeWelcomePopup()">Maybe later</button>
+  </div>
+
   <script src="translations.js?v=90"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=141"></script>
+  <script src="script.js?v=142"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
