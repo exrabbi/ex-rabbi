@@ -773,7 +773,7 @@ function productCardHTML(p) {
         <div class="pc-meta-row">
           <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
           <span class="pc-sep">|</span>
-          <span class="pc-sold">${soldFmt} ${t('soldText')}</span>
+          <span class="pc-sold sold-hot">🔥 ${soldFmt}+ ${t('soldText')}</span>
         </div>
         <div class="pc-location"><i class="fas fa-location-dot"></i> Riyadh, KSA</div>
         ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
@@ -1843,11 +1843,18 @@ function openModal(id) {
       </div>
       <span class="modal-qty-price" id="modalQtyPrice">${fmt(p.price)}</span>
     </div>` : ''}
-    <div class="modal-actions">
-      <button class="btn-wishlist ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
+    <div class="modal-action-bar">
+      <button class="modal-wish-btn ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
         <i class="${inWish?'fas':'far'} fa-heart"></i>
       </button>
-      <button class="btn-add-cart${p.stock === 0 ? ' disabled' : ''}" id="modalAddCartBtn" onclick="${p.stock === 0 ? '' : `modalAddCart(${p.id})`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>${p.stock === 0 ? `<i class="fas fa-times-circle" style="margin-right:6px;opacity:.7"></i>${t('outOfStock')}` : `<i class="fas fa-bag-shopping" style="margin-right:7px"></i>${t('addToCart')}`}</button>
+      <button class="modal-cart-half${p.stock===0?' disabled':''}" id="modalAddCartBtn" onclick="${p.stock===0?'':'modalAddCart('+p.id+')'}" ${p.stock===0?'style="opacity:.45;cursor:not-allowed"':''}>
+        <i class="fas fa-bag-shopping"></i>
+        <span>${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
+      </button>
+      <button class="modal-order-half${p.stock===0?' disabled':''}" onclick="${p.stock===0?'':'buyNow('+p.id+')'}" ${p.stock===0?'style="opacity:.45;cursor:not-allowed"':''}>
+        <i class="fas fa-bolt"></i>
+        <span>${t('orderNow')||'Order'}</span>
+      </button>
     </div>
     ${_deliveryEstHTML()}
   `;
@@ -2028,6 +2035,11 @@ function modalAddCart(id) {
   updateCartBadge();
   _modalQty = 1;
   closeModal();
+}
+
+function buyNow(id) {
+  modalAddCart(id);
+  setTimeout(openCart, 650);
 }
 
 /* ===== COUPON SYSTEM ===== */
