@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=138" />
+  <link rel="stylesheet" href="styles.css?v=139" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -466,6 +466,16 @@
       <a href="#" class="flash-more"><span data-i18n="seeAll">See All</span> <i class="fas fa-chevron-right"></i></a>
     </div>
     <div class="flash-products" id="flashProducts"></div>
+
+    <!-- BRAND DEALS AUTO-SCROLL -->
+    <div class="bdeal-section">
+      <div class="bdeal-header-row">
+        <div class="bdeal-badge" id="bdealBadge">✦ EID DEALS ✦</div>
+      </div>
+      <div class="bdeal-viewport">
+        <div class="bdeal-track" id="bdealTrack"></div>
+      </div>
+    </div>
 
     <!-- SUPER DEALS + TRENDS -->
     <div class="two-col-banner">
@@ -2282,7 +2292,7 @@
 
   <script src="translations.js?v=90"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=143"></script>
+  <script src="script.js?v=144"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
