@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=135" />
+  <link rel="stylesheet" href="styles.css?v=136" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -479,9 +479,9 @@
       <div class="two-col-card">
         <div class="two-col-head head-trend">
           <span class="two-col-title">🔥 Trending</span>
-          <a href="#" class="two-col-more" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;">More <i class="fas fa-chevron-right"></i></a>
+          <a href="#" class="two-col-more" onclick="openTrendingPage('all');return false;">More <i class="fas fa-chevron-right"></i></a>
         </div>
-        <div class="two-col-products" id="trendingProducts"></div>
+        <div class="two-col-products" id="trendingProducts" onclick="openTrendingPage('all')"></div>
       </div>
     </div>
 
@@ -2260,6 +2260,40 @@
 
   <script src="translations.js?v=90"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=139"></script>
+  <script src="script.js?v=140"></script>
+
+  <!-- TRENDING PAGE PANEL -->
+  <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
+  <div class="tp-panel" id="tpPanel">
+    <!-- Header -->
+    <div class="tp-header">
+      <button class="tp-back" onclick="closeTrendingPage()"><i class="fas fa-arrow-left"></i></button>
+      <div class="tp-search-fake">
+        <i class="fas fa-fire" style="color:#e91e8c;font-size:13px"></i>
+        <span class="tp-search-kw" id="tpKeyword">Trending</span>
+        <i class="fas fa-camera" style="color:#aaa;font-size:12px;margin-left:auto"></i>
+      </div>
+      <button class="tp-hicon" onclick="closeTrendingPage();setTimeout(()=>document.getElementById('searchInput').focus(),300)"><i class="fas fa-search"></i></button>
+    </div>
+    <!-- Sub-category circles -->
+    <div class="tp-subcats" id="tpSubcats"></div>
+    <!-- Sort bar -->
+    <div class="tp-sortbar">
+      <button class="tp-sort-btn active" onclick="tpSetSort(this,'default')">Recommend <i class="fas fa-chevron-down"></i></button>
+      <button class="tp-sort-btn" onclick="tpSetSort(this,'popular')">Most Popular</button>
+      <button class="tp-sort-btn" onclick="tpSetSort(this,'price')">Price <i class="fas fa-sort"></i></button>
+      <button class="tp-sort-btn" onclick="tpSetSort(this,'new')">New <i class="fas fa-sparkles"></i></button>
+    </div>
+    <!-- Filter chips -->
+    <div class="tp-chips">
+      <span class="tp-chip active" onclick="tpFilterCat(this,'all')">Trends</span>
+      <span class="tp-chip" onclick="tpFilterCat(this,'women')">Women <i class="fas fa-chevron-down"></i></span>
+      <span class="tp-chip" onclick="tpFilterCat(this,'men')">Men <i class="fas fa-chevron-down"></i></span>
+      <span class="tp-chip" onclick="tpFilterCat(this,'beauty')">Beauty <i class="fas fa-chevron-down"></i></span>
+      <span class="tp-chip" onclick="tpFilterCat(this,'kids')">Kids <i class="fas fa-chevron-down"></i></span>
+    </div>
+    <!-- Products grid -->
+    <div class="tp-grid" id="tpGrid"></div>
+  </div>
 </body>
 </html>
