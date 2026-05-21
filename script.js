@@ -6157,38 +6157,6 @@ function closeWelcomePopup() {
   localStorage.setItem('exg_welcome_shown', '1');
 }
 
-// 2. "Just Bought" social proof toasts
-const _SP_NAMES = ['Ahmed','Mohammed','Sara','Fatima','Ali','Nora','Khalid','Reem','Omar','Lina','Hassan','Dana','Youssef','Mona','Tariq'];
-const _SP_CITIES = ['Riyadh','Jeddah','Dammam','Makkah','Madinah','Khobar','Taif','Tabuk'];
-let _spTimer = null;
-
-function _startSocialProof() {
-  const el = document.getElementById('socialToast');
-  if (!el) return;
-  const hotProds = PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'hot' || p.tag === 'sale');
-  if (!hotProds.length) return;
-
-  function _showNext() {
-    const p = hotProds[Math.floor(Math.random() * hotProds.length)];
-    const name = _SP_NAMES[Math.floor(Math.random() * _SP_NAMES.length)];
-    const city = _SP_CITIES[Math.floor(Math.random() * _SP_CITIES.length)];
-    const mins = Math.floor(Math.random() * 12) + 1;
-    const pname = (getName(p) || '').split(' ').slice(0,4).join(' ');
-    el.innerHTML = `<span class="social-toast-icon">🛒</span>
-      <div class="social-toast-text">
-        <strong>${name} from ${city}</strong>
-        just bought <em>${pname}</em>
-        <div class="social-toast-time">${mins} min ago</div>
-      </div>`;
-    el.classList.add('show');
-    setTimeout(() => { el.classList.remove('show'); }, 4500);
-    const next = 35000 + Math.random() * 25000;
-    _spTimer = setTimeout(_showNext, next);
-  }
-  // first show after 8 seconds
-  _spTimer = setTimeout(_showNext, 8000);
-}
-
 // 3. Deal countdown timers
 function _startDealCountdowns() {
   const ids = ['dealCd1', 'dealCd2'];
@@ -6223,8 +6191,6 @@ function _startDealCountdowns() {
 (function _initOfferElements() {
   // Welcome popup after 2.5s (only once per browser)
   setTimeout(_showWelcomePopup, 2500);
-  // Social proof toasts
-  _startSocialProof();
   // Deal countdowns
   _startDealCountdowns();
 })();
