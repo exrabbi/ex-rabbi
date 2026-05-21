@@ -672,7 +672,6 @@ function renderCategoryStrips() {
     return `<div class="cat-strip" style="--cs-bg:${cfg.color}">
       <div class="cat-strip-head">
         <div class="cat-strip-title-row">
-          <span class="cat-strip-icon">${cfg.icon}</span>
           <span class="cat-strip-title">${label}</span>
         </div>
         <button class="cat-strip-seeall" onclick="filterCategory('${cfg.cat}');document.querySelector('.tab-btn[data-tab=\\'products\\']')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">

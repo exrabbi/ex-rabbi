@@ -1993,9 +1993,13 @@ img { max-width: 100%; display: block; }
   display: flex; align-items: center; justify-content: space-between;
   padding: 14px 16px 8px;
 }
-.cat-strip-title-row { display: flex; align-items: center; gap: 8px; }
-.cat-strip-icon { font-size: 22px; line-height: 1; }
-.cat-strip-title { font-size: 17px; font-weight: 800; color: #111; }
+.cat-strip-title-row { display: flex; align-items: center; gap: 0; }
+.cat-strip-title {
+  font-size: 16px; font-weight: 800; color: #111;
+  padding-left: 10px;
+  border-left: 3px solid #e91e8c;
+  line-height: 1.1;
+}
 .cat-strip-seeall {
   font-size: 12px; font-weight: 700; color: #e91e8c;
   background: rgba(233,30,140,.08); border: none; cursor: pointer;
