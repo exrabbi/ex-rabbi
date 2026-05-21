@@ -713,7 +713,11 @@ function renderProducts(searchTerm = '') {
   if (searchTerm) {
     const s = searchTerm.toLowerCase();
     filtered = filtered.filter(p =>
-      getName(p).toLowerCase().includes(s) || p.category.includes(s)
+      getName(p).toLowerCase().includes(s) ||
+      p.category.includes(s) ||
+      (p.tag || '').toLowerCase().includes(s) ||
+      (p.colorNames || []).some(c => c.toLowerCase().includes(s)) ||
+      (p.description || '').toLowerCase().includes(s)
     );
   }
 
@@ -4682,7 +4686,11 @@ async function doAiSearch(q) {
   if (!workerUrl) return;
   const s = q.toLowerCase();
   const localMatches = PRODUCTS.filter(p =>
-    getName(p).toLowerCase().includes(s) || p.category.includes(s)
+    getName(p).toLowerCase().includes(s) ||
+    p.category.includes(s) ||
+    (p.tag || '').toLowerCase().includes(s) ||
+    (p.colorNames || []).some(c => c.toLowerCase().includes(s)) ||
+    (p.description || '').toLowerCase().includes(s)
   );
   if (localMatches.length > 0) return; // local results are enough
   // Show AI thinking in products grid
@@ -5712,6 +5720,8 @@ function _vspSearch(q) {
   const matches = PRODUCTS.filter(p =>
     getName(p).toLowerCase().includes(s) ||
     p.category.includes(s) ||
+    (p.tag || '').toLowerCase().includes(s) ||
+    (p.colorNames || []).some(c => c.toLowerCase().includes(s)) ||
     (p.description || '').toLowerCase().includes(s)
   ).slice(0, 12);
 
