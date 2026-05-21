@@ -316,6 +316,8 @@ function setLang(lang) {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
+  renderHotSeller();
+  renderNewArrivals();
   renderCategoryStrips();
   const si = document.getElementById('searchInput');
   renderProducts(si ? si.value : '');
@@ -365,6 +367,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
+  renderHotSeller();
+  renderNewArrivals();
   renderCategoryStrips();
   renderProducts();
   startHeroSlider();
@@ -600,28 +604,21 @@ function renderFlashDeals() {
   `).join('');
 }
 
+function _dealMiniCard(p) {
+  return `<div class="deal-mini-card" onclick="openModal(${p.id})">
+    <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/300/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+    <span class="deal-mini-badge">-${p.discount}%</span>
+    <div class="deal-mini-price">${fmt(p.price)}</div>
+  </div>`;
+}
+
 /* ===== RENDER SUPER DEALS ===== */
 function renderSuperDeals() {
   const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
-  document.getElementById('superDeals').innerHTML = items.map(p => `
-    <div class="product-card small" onclick="openModal(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        <span class="discount-badge">-${p.discount}%</span>
-      </div>
-      <div class="product-info">
-        <p class="product-name">${getName(p)}</p>
-        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
-      </div>
-      <button class="cat-strip-add-btn${p.stock===0?' disabled':''}" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'style="opacity:.5;cursor:not-allowed"':''}>
-        <i class="fas fa-${p.stock===0?'times-circle':'bag-shopping'}"></i>
-        ${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}
-      </button>
-    </div>
-  `).join('');
+  document.getElementById('superDeals').innerHTML = items.map(_dealMiniCard).join('');
 }
 
 /* ===== RENDER TRENDING ===== */
@@ -630,22 +627,25 @@ function renderTrending() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
-  document.getElementById('trendingProducts').innerHTML = items.map(p => `
-    <div class="product-card small" onclick="openModal(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        <span class="discount-badge">-${p.discount}%</span>
-      </div>
-      <div class="product-info">
-        <p class="product-name">${getName(p)}</p>
-        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
-      </div>
-      <button class="cat-strip-add-btn${p.stock===0?' disabled':''}" onclick="event.stopPropagation();${p.stock===0?'':` flyCartAdd(event,${p.id})`}" ${p.stock===0?'style="opacity:.5;cursor:not-allowed"':''}>
-        <i class="fas fa-${p.stock===0?'times-circle':'bag-shopping'}"></i>
-        ${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}
-      </button>
-    </div>
-  `).join('');
+  document.getElementById('trendingProducts').innerHTML = items.map(_dealMiniCard).join('');
+}
+
+/* ===== RENDER HOT SELLER ===== */
+function renderHotSeller() {
+  const pins = JSON.parse(localStorage.getItem('exg_hot_pins') || 'null');
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
+    : [...PRODUCTS].sort((a, b) => b.ratingCount - a.ratingCount).slice(0, 4);
+  document.getElementById('hotSellerProducts').innerHTML = items.map(_dealMiniCard).join('');
+}
+
+/* ===== RENDER NEW ARRIVALS ===== */
+function renderNewArrivals() {
+  const pins = JSON.parse(localStorage.getItem('exg_new_pins') || 'null');
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
+    : PRODUCTS.filter(p => p.tag === 'new').concat(PRODUCTS.filter(p => p.tag !== 'new')).slice(0, 4);
+  document.getElementById('newArrivalsProducts').innerHTML = items.map(_dealMiniCard).join('');
 }
 
 /* ===== RENDER CATEGORY STRIPS ===== */

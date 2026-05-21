@@ -574,22 +574,53 @@ img { max-width: 100%; display: block; }
 /* ===== TWO COL BANNER ===== */
 .two-col-banner {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 10px; padding: 6px 10px 10px;
+  gap: 8px; padding: 6px 10px 8px;
 }
 .two-col-card {
-  background: #fff; border-radius: 10px;
-  overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.08);
+  background: #fff; border-radius: 14px;
+  overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.08);
 }
 .two-col-head {
   display: flex; align-items: center;
-  justify-content: space-between; padding: 10px 10px 6px;
+  justify-content: space-between; padding: 9px 10px 7px;
 }
-.two-col-title { font-size: 13px; font-weight: 700; }
-.two-col-more { font-size: 11px; color: #e91e8c; font-weight: 600; }
+.two-col-head.head-deals  { background: linear-gradient(135deg,#ff5722,#ff9800); }
+.two-col-head.head-trend  { background: linear-gradient(135deg,#7c3aed,#e91e8c); }
+.two-col-head.head-hot    { background: linear-gradient(135deg,#059669,#10b981); }
+.two-col-head.head-new    { background: linear-gradient(135deg,#2563eb,#7c3aed); }
+.two-col-title {
+  font-size: 13px; font-weight: 900; font-style: italic;
+  color: #fff; letter-spacing: .1px;
+}
+.two-col-more { font-size: 11px; color: rgba(255,255,255,.9); font-weight: 600; }
 .two-col-products {
   display: grid; grid-template-columns: 1fr 1fr;
-  gap: 4px; padding: 0 4px 8px;
+  gap: 3px; padding: 3px 3px 6px;
 }
+
+/* ===== DEAL MINI CARD (image-focused, no add-to-cart) ===== */
+.deal-mini-card {
+  position: relative; cursor: pointer; border-radius: 6px; overflow: hidden;
+  background: #f8f8f8;
+  transition: transform .15s;
+}
+.deal-mini-card:active { transform: scale(.97); }
+.deal-mini-card img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block;
+  transition: transform .3s;
+}
+.deal-mini-card:active img { transform: scale(1.04); }
+.deal-mini-badge {
+  position: absolute; top: 5px; left: 5px;
+  background: #e91e8c; color: #fff;
+  font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 4px;
+  letter-spacing: .2px;
+}
+.deal-mini-price {
+  padding: 4px 6px 5px; font-size: 13px; font-weight: 800; color: #e91e8c;
+}
+[data-theme="dark"] .deal-mini-card { background: #1e1e1e; }
+[data-theme="dark"] .two-col-card { background: #1a1a1a; }
 
 /* ===== COLLECTION SHOWCASE ===== */
 .col-showcase-section {
