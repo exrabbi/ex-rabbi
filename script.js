@@ -756,6 +756,7 @@ function productCardHTML(p) {
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         <span class="discount-badge">-${p.discount}%</span>
+        ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : ''}
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
@@ -769,7 +770,7 @@ function productCardHTML(p) {
         </div>
         <div class="product-meta">
           <span class="product-rating">★ ${p.rating} (${p.ratingCount.toLocaleString()})</span>
-          <span class="product-sold">${p.sold} ${t('soldText')}</span>
+          <span class="product-sold sold-hot">🔥 ${p.sold >= 1000 ? (p.sold/1000).toFixed(1)+'k' : p.sold}+ ${t('soldText')}</span>
         </div>
         ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-lock"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : p.stock !== undefined ? `<div class="stock-badge ok"><i class="fas fa-circle-check"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>` : ''}
       </div>
@@ -1781,7 +1782,11 @@ function openModal(id) {
       </div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
-        <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · ${p.sold} ${t('soldText')}</span>
+        <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${p.sold >= 1000 ? (p.sold/1000).toFixed(1)+'k' : p.sold}+ ${t('soldText')}</span>
+      </div>
+      <div class="modal-viewing">
+        <span class="modal-view-dot"></span>
+        <span>${15 + ((p.id * 7 + p.ratingCount) % 70)} ${t('peopleViewing') || 'people are viewing this'}</span>
       </div>
       ${p.stock === 0
         ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>`
@@ -6116,3 +6121,94 @@ function tpFilterCat(el, cat) {
   _renderTpSubcats();
   _renderTpGrid();
 }
+
+/* ===== SOCIAL PROOF & OFFER ELEMENTS ===== */
+
+// 1. Welcome popup
+function _showWelcomePopup() {
+  if (localStorage.getItem('exg_welcome_shown')) return;
+  const ov = document.getElementById('welcomeOverlay');
+  const pp = document.getElementById('welcomePopup');
+  if (!ov || !pp) return;
+  ov.style.display = 'block';
+  pp.style.display = 'block';
+}
+function closeWelcomePopup() {
+  const ov = document.getElementById('welcomeOverlay');
+  const pp = document.getElementById('welcomePopup');
+  if (ov) ov.style.display = 'none';
+  if (pp) pp.style.display = 'none';
+  localStorage.setItem('exg_welcome_shown', '1');
+}
+
+// 2. "Just Bought" social proof toasts
+const _SP_NAMES = ['Ahmed','Mohammed','Sara','Fatima','Ali','Nora','Khalid','Reem','Omar','Lina','Hassan','Dana','Youssef','Mona','Tariq'];
+const _SP_CITIES = ['Riyadh','Jeddah','Dammam','Makkah','Madinah','Khobar','Taif','Tabuk'];
+let _spTimer = null;
+
+function _startSocialProof() {
+  const el = document.getElementById('socialToast');
+  if (!el) return;
+  const hotProds = PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'hot' || p.tag === 'sale');
+  if (!hotProds.length) return;
+
+  function _showNext() {
+    const p = hotProds[Math.floor(Math.random() * hotProds.length)];
+    const name = _SP_NAMES[Math.floor(Math.random() * _SP_NAMES.length)];
+    const city = _SP_CITIES[Math.floor(Math.random() * _SP_CITIES.length)];
+    const mins = Math.floor(Math.random() * 12) + 1;
+    const pname = (getName(p) || '').split(' ').slice(0,4).join(' ');
+    el.innerHTML = `<span class="social-toast-icon">🛒</span>
+      <div class="social-toast-text">
+        <strong>${name} from ${city}</strong>
+        just bought <em>${pname}</em>
+        <div class="social-toast-time">${mins} min ago</div>
+      </div>`;
+    el.classList.add('show');
+    setTimeout(() => { el.classList.remove('show'); }, 4500);
+    const next = 35000 + Math.random() * 25000;
+    _spTimer = setTimeout(_showNext, next);
+  }
+  // first show after 8 seconds
+  _spTimer = setTimeout(_showNext, 8000);
+}
+
+// 3. Deal countdown timers
+function _startDealCountdowns() {
+  const ids = ['dealCd1', 'dealCd2'];
+  const offsets = [18400, 12600]; // seconds offset so each section shows different time
+
+  ids.forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const stored = localStorage.getItem('exg_deal_end_' + i);
+    let endTs = stored ? parseInt(stored) : 0;
+    if (!endTs || endTs < Date.now()) {
+      endTs = Date.now() + (4 * 3600 + offsets[i]) * 1000;
+      localStorage.setItem('exg_deal_end_' + i, endTs);
+    }
+    function _tick() {
+      const rem = Math.max(0, Math.floor((endTs - Date.now()) / 1000));
+      if (rem === 0) {
+        endTs = Date.now() + 4 * 3600 * 1000;
+        localStorage.setItem('exg_deal_end_' + i, endTs);
+      }
+      const h = String(Math.floor(rem / 3600)).padStart(2,'0');
+      const m = String(Math.floor((rem % 3600) / 60)).padStart(2,'0');
+      const s = String(rem % 60).padStart(2,'0');
+      el.textContent = `⏱ ${h}:${m}:${s}`;
+    }
+    _tick();
+    setInterval(_tick, 1000);
+  });
+}
+
+// Init all offer elements
+(function _initOfferElements() {
+  // Welcome popup after 2.5s (only once per browser)
+  setTimeout(_showWelcomePopup, 2500);
+  // Social proof toasts
+  _startSocialProof();
+  // Deal countdowns
+  _startDealCountdowns();
+})();
