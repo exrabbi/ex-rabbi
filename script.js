@@ -3366,11 +3366,13 @@ async function signInWithFacebook() {
     }
   } catch (e) {
     if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      showToast('Please allow popups for Facebook Login, or try Google login.');
+      showToast('Popup blocked — please use Google login instead.');
+    } else if (e.code === 'auth/web-storage-unsupported' || (e.message && e.message.includes('storage'))) {
+      showToast('Browser storage blocked — please use Google login or enable cookies in your browser settings.');
     } else if (e.code === 'auth/operation-not-allowed') {
       showToast(t('facebookNotEnabled'));
     } else if (e.code !== 'auth/cancelled-popup-request') {
-      showToast(t('facebookLoginFailed'));
+      showToast('Facebook login failed — please try Google login instead.');
     }
   }
 }
