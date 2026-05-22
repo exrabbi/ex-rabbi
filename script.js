@@ -378,6 +378,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderFilterRow();
   renderRecentlyViewed();
   _renderVipBlock();
+  _renderCheckinBlock();
+  _renderReferralBlock();
   renderProducts();
   startHeroSlider();
   // Deep link: auto-open product from URL ?p=ID
@@ -999,6 +1001,7 @@ function renderCart() {
               ${hasDiscount ? `<span class="cart-item-disc-badge">-${discPct}%</span>` : ''}
             </div>
           </div>
+          <button class="save-later-btn" onclick="saveForLater(${item.id})"><i class="fas fa-bookmark"></i> ${t('saveLater')||'Save for Later'}</button>
         </div>
       </div>`;
   }).join('');
@@ -1803,14 +1806,18 @@ function openModal(id) {
         <span>${15 + ((p.id * 7 + p.ratingCount) % 70)} ${t('peopleViewing') || 'people are viewing this'}</span>
       </div>
       ${p.stock === 0
-        ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>`
+        ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>
+           <button class="notify-stock-btn" onclick="notifyStock(${p.id})"><i class="fas fa-bell"></i> ${t('notifyBack')||'Notify Me When Back in Stock'}</button>`
         : p.stock !== undefined && p.stock <= 5
           ? `<div class="modal-stock low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>`
           : p.stock !== undefined
             ? `<div class="modal-stock ok"><i class="fas fa-check-circle"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>`
             : ''}
       <div class="modal-divider"></div>
-      <p class="modal-section-title">${t('sizeSelect')}</p>
+      <div class="modal-size-header">
+        <p class="modal-section-title">${t('sizeSelect')}</p>
+        <button class="size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> ${t('sizeGuide')||'Size Guide'}</button>
+      </div>
       <div class="size-options">
         ${p.sizes.map(s => `<div class="size-opt ${s===selectedSize?'active':''}" onclick="selectSize('${s}',this)">${s}</div>`).join('')}
       </div>
@@ -1826,6 +1833,7 @@ function openModal(id) {
       </div>
       <div class="modal-divider"></div>
       ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
+      ${_qaHTML(p)}
       ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="pd-coupon-row" onclick="openPdCoupons()"><div class="pd-coupon-icon"><i class="fas fa-percent"></i></div><span class="pd-coupon-text">Extra ${av[0][1].pct}% off — CODE: ${av[0][0]}</span><i class="fas fa-chevron-right pd-coupon-chev"></i></div>`:'';})()}
       <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
         <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
@@ -1844,6 +1852,17 @@ function openModal(id) {
       </div>
     </div>
     ${p.stock !== 0 ? `
+    <div class="bundle-deal-row">
+      <div class="bundle-deal-opt ${1===1?'active':''}" onclick="setBundleQty(1,${p.id},this)">
+        <span class="bd-qty">×1</span><span class="bd-label">${t('bundleOne')||'Regular'}</span>
+      </div>
+      <div class="bundle-deal-opt" onclick="setBundleQty(2,${p.id},this)">
+        <span class="bd-qty">×2</span><span class="bd-label">10% ${t('extraOff')||'extra off'}</span>
+      </div>
+      <div class="bundle-deal-opt" onclick="setBundleQty(3,${p.id},this)">
+        <span class="bd-qty">×3</span><span class="bd-save">🔥 Best Value</span><span class="bd-label">15% ${t('extraOff')||'extra off'}</span>
+      </div>
+    </div>
     <div class="modal-qty-row">
       <span class="modal-qty-label">${t('qtyLabel')||'Quantity'}</span>
       <div class="modal-qty-ctrl">
@@ -2557,8 +2576,10 @@ function renderMyOrders() {
         <span class="mo-total-val">${total}</span>
       </div>
       ${confirmBar}
+      <button class="mo-order-again-btn" onclick="orderAgain('${o.id}')"><i class="fas fa-rotate-right"></i> ${t('orderAgain')||'Order Again'}</button>
     </div>`;
   }).join('');
+  _renderSavedLater();
 }
 
 function confirmDelivery(orderId) {
@@ -6499,4 +6520,260 @@ function renderActiveFilters() {
   if (currentPriceMax < 9999) chips.push(`<span class="af-chip">≤ SAR ${currentPriceMax} <button onclick="filterByPrice(500)"><i class="fas fa-xmark"></i></button></span>`);
   currentColors.forEach(c => chips.push(`<span class="af-chip"><span class="af-chip-swatch" style="background:${c}"></span> <button onclick="filterByColor('${c}')"><i class="fas fa-xmark"></i></button></span>`));
   el.innerHTML = chips.length ? `<div class="active-filters-row">${chips.join('')}</div>` : '';
+}
+
+/* ===== SIZE GUIDE ===== */
+const _SIZE_CHARTS = {
+  women: { cols:['Size','Chest (cm)','Waist (cm)','Hips (cm)'], rows:[['XS','80-83','62-65','88-91'],['S','84-87','66-69','92-95'],['M','88-91','70-73','96-99'],['L','92-95','74-77','100-103'],['XL','96-99','78-81','104-107'],['XXL','100-104','82-86','108-112']] },
+  men:   { cols:['Size','Chest (cm)','Waist (cm)','Shoulder (cm)'], rows:[['S','88-92','76-80','42-43'],['M','92-96','80-84','43-44'],['L','96-100','84-88','44-45'],['XL','100-104','88-92','45-46'],['XXL','104-108','92-96','46-47']] },
+  kids:  { cols:['Size','Age','Height (cm)','Weight (kg)'], rows:[['2Y','2-3 yrs','92-98','13-15'],['3Y','3-4 yrs','98-104','15-17'],['4Y','4-5 yrs','104-110','17-19'],['5Y','5-6 yrs','110-116','19-21'],['6Y','6-7 yrs','116-122','21-24']] },
+  shoes: { cols:['EU','UK','US (Women)','US (Men)','Foot (cm)'], rows:[['36','3.5','5.5','4','23'],['37','4','6','5','23.5'],['38','5','7','6','24'],['39','6','8','7','25'],['40','6.5','8.5','7.5','25.5'],['41','7','9','8','26'],['42','8','10','9','27'],['43','9','11','10','27.5'],['44','9.5','11.5','10.5','28']] },
+  default:{ cols:['Size','Chest (cm)','Waist (cm)'], rows:[['S','84-87','66-69'],['M','88-91','70-73'],['L','92-95','74-77'],['XL','96-99','78-81'],['XXL','100-104','82-86']] }
+};
+function openSizeGuide(cat) {
+  const chart = _SIZE_CHARTS[cat] || _SIZE_CHARTS[(cat==='bags'||cat==='jewelry'||cat==='beauty')?'default':cat] || _SIZE_CHARTS.default;
+  const ov = document.getElementById('sizeGuideOverlay');
+  const content = document.getElementById('sizeGuideContent');
+  if (!ov || !content) return;
+  content.innerHTML = `
+    <div class="sg-title"><i class="fas fa-ruler"></i> ${t('sizeGuide')||'Size Guide'}</div>
+    <div class="sg-hint">${t('sgHint')||'Measure yourself and compare with the chart below'}</div>
+    <div class="sg-table-wrap">
+      <table class="sg-table">
+        <thead><tr>${chart.cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>${chart.rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+      </table>
+    </div>
+    <div class="sg-tips">
+      <div class="sg-tip"><i class="fas fa-tape"></i> ${t('sgTip1')||'Measure your chest at the fullest point'}</div>
+      <div class="sg-tip"><i class="fas fa-child"></i> ${t('sgTip2')||'Measure waist at the narrowest point'}</div>
+      <div class="sg-tip"><i class="fas fa-info-circle"></i> ${t('sgTip3')||'If between sizes, go one size up'}</div>
+    </div>
+    <button class="sg-close-btn" onclick="closeSizeGuide()"><i class="fas fa-times"></i> ${t('close')||'Close'}</button>
+  `;
+  ov.classList.add('open');
+}
+function closeSizeGuide() {
+  document.getElementById('sizeGuideOverlay')?.classList.remove('open');
+}
+
+/* ===== BACK IN STOCK NOTIFY ===== */
+function notifyStock(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  if (!p) return;
+  const key = 'exg_notify_' + id;
+  if (localStorage.getItem(key)) {
+    showToast('✅ ' + (t('alreadyNotify')||"You're already on the waitlist!"));
+    return;
+  }
+  localStorage.setItem(key, Date.now());
+  const btn = document.querySelector('.notify-stock-btn');
+  if (btn) { btn.innerHTML = '<i class="fas fa-check-circle"></i> ' + (t('notifySet')||"We'll notify you!"); btn.style.background='#10b981'; btn.style.color='#fff'; }
+  showToast('🔔 ' + (t('notifySuccess')||"Added to waitlist! We'll notify you when back in stock."));
+}
+
+/* ===== SAVE FOR LATER ===== */
+let savedLater = JSON.parse(localStorage.getItem('exg_saved_later') || '[]');
+function saveForLater(id) {
+  if (!savedLater.includes(id)) savedLater.push(id);
+  cart = cart.filter(i => i.id !== id);
+  _saveCart();
+  localStorage.setItem('exg_saved_later', JSON.stringify(savedLater));
+  renderCart();
+  showToast('🔖 ' + (t('savedLater')||'Saved for later'));
+}
+function moveToCart(id) {
+  savedLater = savedLater.filter(x => x !== id);
+  localStorage.setItem('exg_saved_later', JSON.stringify(savedLater));
+  addToCart(id, '', '');
+  renderCart();
+}
+function _renderSavedLater() {
+  const el = document.getElementById('savedLaterSection');
+  if (!el) return;
+  if (!savedLater.length) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  const items = savedLater.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean);
+  el.innerHTML = `<div class="sl-head"><i class="fas fa-bookmark"></i> ${t('savedLater')||'Saved for Later'} (${items.length})</div>` +
+    items.map(p => `<div class="sl-item">
+      <img class="sl-img" src="${p.image}" loading="lazy"/>
+      <div class="sl-info">
+        <div class="sl-name">${getName(p)}</div>
+        <div class="sl-price">${fmt(p.price)}</div>
+        <button class="sl-move-btn" onclick="moveToCart(${p.id})"><i class="fas fa-cart-plus"></i> ${t('moveToCart')||'Move to Cart'}</button>
+      </div>
+    </div>`).join('');
+}
+
+/* ===== GIFT WRAPPING IN CART ===== */
+let _giftWrap = false;
+const GIFT_WRAP_SAR = 5;
+function toggleGiftWrap() {
+  _giftWrap = !_giftWrap;
+  const el = document.getElementById('giftWrapRow');
+  const tot = document.getElementById('cartTotal');
+  const gw = document.getElementById('giftWrapCheck');
+  if (gw) gw.checked = _giftWrap;
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const fmtD = v => lang.currency + Math.round(v).toLocaleString();
+  if (el) el.style.display = _giftWrap ? '' : 'none';
+  showToast(_giftWrap ? '🎁 ' + (t('giftWrapAdded')||'Gift wrapping added!') : (t('giftWrapRemoved')||'Gift wrap removed'));
+}
+
+/* ===== BUNDLE DEAL ===== */
+function setBundleQty(qty, id, el) {
+  document.querySelectorAll('.bundle-deal-opt').forEach(b => b.classList.remove('active'));
+  if (el) el.classList.add('active');
+  _modalQty = qty;
+  const price = document.getElementById('modalQtyPrice');
+  const p = PRODUCTS.find(x => x.id === id);
+  if (p && price) {
+    let disc = qty === 2 ? 0.10 : qty === 3 ? 0.15 : 0;
+    const total = p.price * qty * (1 - disc);
+    const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    price.textContent = lang.currency + Math.round(total * lang.rate).toLocaleString();
+  }
+  const qn = document.getElementById('modalQtyNum');
+  if (qn) qn.textContent = qty;
+}
+
+/* ===== PRODUCT Q&A ===== */
+const _QA_DATA = {
+  women: [
+    {q:'What is the fabric material?', a:'Premium quality polyester blend, soft and breathable.'},
+    {q:'Does this run true to size?', a:'Yes, please refer to the Size Guide for accurate measurements.'},
+    {q:'Is this suitable for formal occasions?', a:'Yes, perfect for both casual and semi-formal events.'}
+  ],
+  men: [
+    {q:'What fabric is used?', a:'High-quality cotton or cotton-poly blend, depending on the item.'},
+    {q:'How should I wash this?', a:'Machine wash cold with similar colors. Do not bleach or tumble dry.'},
+    {q:'Is this wrinkle-resistant?', a:'This fabric is easy-care and minimally wrinkle-prone.'}
+  ],
+  shoes: [
+    {q:'Do shoes fit true to size?', a:'We recommend ordering your regular size. See the Size Guide for EU/US conversions.'},
+    {q:'What is the sole material?', a:'Durable rubber sole for comfort and grip.'},
+    {q:'Are these shoes waterproof?', a:'Not fully waterproof, but water-resistant for light rain.'}
+  ],
+  beauty: [
+    {q:'Is this product halal-certified?', a:'Yes, all our beauty products are halal-certified and cruelty-free.'},
+    {q:'What is the shelf life?', a:'24 months unopened, 12 months after opening.'},
+    {q:'Is this suitable for sensitive skin?', a:'Yes, formulated for all skin types including sensitive skin.'}
+  ],
+  default: [
+    {q:'What is the return policy?', a:'30-day hassle-free returns. Item must be unused and in original packaging.'},
+    {q:'How long does delivery take?', a:'2–5 business days within Saudi Arabia. Express delivery available.'},
+    {q:'Is this product authentic?', a:'100% authentic product. We guarantee the quality of all items.'}
+  ]
+};
+function _qaHTML(p) {
+  const qa = _QA_DATA[p.category] || _QA_DATA.default;
+  return `
+    <div class="modal-qa">
+      <div class="modal-qa-title"><i class="fas fa-circle-question"></i> ${t('qaTitle')||'Questions & Answers'}</div>
+      ${qa.map((item, i) => `
+        <div class="qa-item" id="qa_${p.id}_${i}">
+          <div class="qa-question" onclick="toggleQa('qa_${p.id}_${i}')">
+            <span>${item.q}</span><i class="fas fa-chevron-down qa-chev"></i>
+          </div>
+          <div class="qa-answer">${item.a}</div>
+        </div>`).join('')}
+    </div>
+    <div class="modal-divider"></div>`;
+}
+function toggleQa(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+}
+
+/* ===== DAILY CHECK-IN ===== */
+function _checkDailyCheckin() {
+  const today = new Date().toDateString();
+  const last = localStorage.getItem('exg_checkin_date');
+  const streak = parseInt(localStorage.getItem('exg_checkin_streak') || '0');
+  if (last === today) return { done: true, streak, pts: 50 };
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+  const newStreak = last === yesterday ? streak + 1 : 1;
+  return { done: false, streak: newStreak, pts: newStreak >= 7 ? 100 : 50 };
+}
+function doCheckin() {
+  const { done, streak, pts } = _checkDailyCheckin();
+  if (done) { showToast('✅ ' + (t('checkinDone')||'Already checked in today!')); return; }
+  const today = new Date().toDateString();
+  localStorage.setItem('exg_checkin_date', today);
+  localStorage.setItem('exg_checkin_streak', streak);
+  _addVipPoints(pts);
+  showToast('🎉 +' + pts + ' ' + (t('points')||'pts') + ' — ' + (t('checkinSuccess')||'Daily check-in complete!') + (streak >= 7 ? ' 🔥 7-day bonus!' : ''));
+  _renderCheckinBlock();
+}
+function _renderCheckinBlock() {
+  const el = document.getElementById('checkinBlock');
+  if (!el) return;
+  const { done, streak, pts } = _checkDailyCheckin();
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const todayIdx = (new Date().getDay() + 6) % 7;
+  el.innerHTML = `
+    <div class="checkin-block">
+      <div class="checkin-head">
+        <span class="checkin-title"><i class="fas fa-calendar-check"></i> ${t('dailyCheckin')||'Daily Check-in'}</span>
+        <span class="checkin-streak">🔥 ${streak} ${t('dayStreak')||'day streak'}</span>
+      </div>
+      <div class="checkin-days">${days.map((d,i) => `
+        <div class="checkin-day ${i<todayIdx?'done':i===todayIdx?(done?'done today':'today'):''}">
+          <div class="cd-dot"><i class="fas fa-${i<=todayIdx&&done?'check':i<todayIdx?'check':'star'}"></i></div>
+          <div class="cd-label">${d}</div>
+        </div>`).join('')}
+      </div>
+      <button class="checkin-btn${done?' done':''}" onclick="doCheckin()" ${done?'disabled':''}>
+        <i class="fas fa-${done?'check-circle':'gift'}"></i>
+        ${done ? (t('checkinDone')||'Checked In!') : `+${pts} ${t('points')||'pts'} — ${t('checkIn')||'Check In Now'}`}
+      </button>
+    </div>
+  `;
+}
+
+/* ===== ORDER AGAIN ===== */
+function orderAgain(orderId) {
+  const orders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  const order = orders.find(o => o.id === orderId);
+  if (!order) return;
+  let added = 0;
+  (order.items || []).forEach(i => {
+    const p = PRODUCTS.find(x => x.id === i.id);
+    if (p && p.stock !== 0) { addToCart(i.id, i.size || '', i.color || ''); added++; }
+  });
+  if (added > 0) { openCart(); showToast('🛒 ' + added + ' ' + (t('itemsAddedCart')||'items added to cart')); }
+  else showToast('❌ ' + (t('noItemsAvail')||'These items are no longer available'));
+}
+
+/* ===== REFERRAL PROGRAM ===== */
+function _renderReferralBlock() {
+  const el = document.getElementById('referralBlock');
+  if (!el) return;
+  const code = currentUser ? ('EXG' + (currentUser.email || 'GUEST').split('@')[0].toUpperCase().slice(0, 6)) : 'EXG' + Math.random().toString(36).slice(2,7).toUpperCase();
+  const pts = _getVipPoints();
+  const referralCount = parseInt(localStorage.getItem('exg_referrals') || '0');
+  el.innerHTML = `
+    <div class="referral-block">
+      <div class="ref-head">
+        <span class="ref-title"><i class="fas fa-users"></i> ${t('referFriend')||'Refer & Earn'}</span>
+      </div>
+      <div class="ref-body">
+        <div class="ref-reward-line">
+          <i class="fas fa-gift" style="color:#e91e8c"></i>
+          <span>${t('refReward')||'You & your friend each earn <b>150 pts</b> (≈ SAR 15)'}</span>
+        </div>
+        <div class="ref-code-row">
+          <span class="ref-code">${code}</span>
+          <button class="ref-copy-btn" onclick="navigator.clipboard.writeText('${code}').then(()=>showToast('✅ Code copied!'))"><i class="fas fa-copy"></i></button>
+        </div>
+        <div class="ref-share-row">
+          <button class="ref-wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent('Join EX GLOBAL and get 10% off your first order! Use my code: '+code+' — https://exrabbi.github.io/ex-rabbi/')}','_blank')">
+            <i class="fab fa-whatsapp"></i> ${t('shareWhatsApp')||'Share via WhatsApp'}
+          </button>
+        </div>
+        <div class="ref-count"><i class="fas fa-users-line"></i> ${referralCount} ${t('friendsJoined')||'friends joined'}</div>
+      </div>
+    </div>
+  `;
 }

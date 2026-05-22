@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=142" />
+  <link rel="stylesheet" href="styles.css?v=143" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -923,11 +923,23 @@
           <span class="cart-srow-label"><i class="fas fa-truck"></i> <span data-i18n="deliveryCharge">Delivery</span></span>
           <span class="cart-srow-val" id="cartDeliveryDisp"></span>
         </div>
+        <div class="cart-gift-wrap-row">
+          <label class="gift-wrap-label">
+            <input type="checkbox" id="giftWrapCheck" onchange="toggleGiftWrap()">
+            <i class="fas fa-gift" style="color:#e91e8c"></i>
+            <span data-i18n="giftWrap">Gift wrapping (+SAR 5)</span>
+          </label>
+        </div>
+        <div class="cart-srow" id="giftWrapRow" style="display:none">
+          <span class="cart-srow-label" data-i18n="giftWrapLabel">Gift Wrap</span>
+          <span class="cart-srow-val">SAR 5</span>
+        </div>
         <div class="cart-total-row">
           <span class="cart-total-label" data-i18n="totalLabel">Total:</span>
           <span class="cart-total-val" id="cartTotal">0</span>
         </div>
       </div>
+      <div id="savedLaterSection" style="display:none;padding:0 16px 8px"></div>
       <button class="btn-checkout" onclick="openPayment()">
         <i class="fas fa-lock" style="font-size:13px;opacity:.85"></i>
         <span data-i18n="checkout">Checkout</span>
@@ -1224,6 +1236,16 @@
     <!-- VIP Loyalty -->
     <div class="me-card-block" style="padding:0">
       <div id="vipBlock"></div>
+    </div>
+
+    <!-- Daily Check-in -->
+    <div class="me-card-block" style="padding:0">
+      <div id="checkinBlock"></div>
+    </div>
+
+    <!-- Referral -->
+    <div class="me-card-block" style="padding:0">
+      <div id="referralBlock"></div>
     </div>
 
     <!-- Follow Us -->
@@ -2299,6 +2321,14 @@
     <button class="promo-skip" onclick="closeWelcomePopup()">Maybe later</button>
   </div>
 
+  <!-- SIZE GUIDE -->
+  <div class="sg-overlay" id="sizeGuideOverlay" onclick="if(event.target===this)closeSizeGuide()">
+    <div class="sg-popup">
+      <button class="sg-close" onclick="closeSizeGuide()"><i class="fas fa-times"></i></button>
+      <div id="sizeGuideContent"></div>
+    </div>
+  </div>
+
   <!-- SPIN TO WIN -->
   <div class="spin-overlay" id="spinOverlay">
     <div class="spin-popup">
@@ -2315,9 +2345,9 @@
     </div>
   </div>
 
-  <script src="translations.js?v=92"></script>
+  <script src="translations.js?v=93"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=147"></script>
+  <script src="script.js?v=148"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
