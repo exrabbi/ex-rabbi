@@ -1602,7 +1602,7 @@ img { max-width: 100%; display: block; }
 
 /* Floating button */
 .hc-fab {
-  position: fixed; right: 14px; bottom: 80px; z-index: 200;
+  position: fixed; right: 14px; bottom: 80px; z-index: 1099;
   background: linear-gradient(135deg, #e91e8c, #9c27b0);
   color: #fff; border: none; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
@@ -6678,6 +6678,17 @@ html, body { transition: background .35s, color .35s; }
   -webkit-user-select: none;
 }
 .wa-float-btn:active { cursor: grabbing; transform: scale(1.08); box-shadow: 0 8px 28px rgba(37,211,102,.6); }
+
+/* Hide WA + AI buttons when cart/checkout is open */
+body:has(.cart-sidebar.open) .wa-float-btn,
+body:has(.cart-sidebar.open) .hc-fab,
+body:has(.modal-overlay.open) .wa-float-btn,
+body:has(.modal-overlay.open) .hc-fab {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.7);
+  transition: opacity .2s, transform .2s;
+}
 @keyframes waBounce {
   0%   { transform: scale(0); opacity: 0; }
   60%  { transform: scale(1.15); opacity: 1; }
