@@ -376,6 +376,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderNewArrivals();
   renderCategoryStrips();
   renderFilterRow();
+  renderReviewsStrip();
   renderRecentlyViewed();
   _renderVipBlock();
   _renderCheckinBlock();
@@ -6776,4 +6777,64 @@ function _renderReferralBlock() {
       </div>
     </div>
   `;
+}
+
+/* ===== CUSTOMER REVIEWS STRIP ===== */
+const _STRIP_REVIEWS = [
+  { name: 'Fatima Al-Zahrani', city: 'Riyadh', stars: 5, text: 'Amazing quality! Exactly as described. Fast delivery too 🙌', avatar: 'https://i.pravatar.cc/60?img=47' },
+  { name: 'Mohammed Al-Otaibi', city: 'Jeddah', stars: 5, text: 'Best online shopping experience in Saudi. Love EX GLOBAL! 💯', avatar: 'https://i.pravatar.cc/60?img=12' },
+  { name: 'Sara Al-Qahtani', city: 'Dammam', stars: 5, text: 'Received in 2 days, perfect packaging, beautiful product ✨', avatar: 'https://i.pravatar.cc/60?img=49' },
+  { name: 'Ahmed Al-Rashidi', city: 'Mecca', stars: 5, text: 'Very professional store. Will definitely order again 🛍️', avatar: 'https://i.pravatar.cc/60?img=8' },
+  { name: 'Nora Al-Harbi', city: 'Medina', stars: 5, text: 'Great prices and super fast shipping. Highly recommend! ⭐', avatar: 'https://i.pravatar.cc/60?img=44' },
+  { name: 'Khalid Al-Shammari', city: 'Tabuk', stars: 5, text: 'My wife loved the gift! Beautiful wrapping, on time 🎁', avatar: 'https://i.pravatar.cc/60?img=15' },
+  { name: 'Reem Al-Dosari', city: 'Khobar', stars: 5, text: 'Quality exceeds expectation. Customer service is amazing 💕', avatar: 'https://i.pravatar.cc/60?img=51' },
+  { name: 'Omar Al-Ghamdi', city: 'Riyadh', stars: 5, text: 'Fast, reliable, premium. This is my go-to Saudi store 🔥', avatar: 'https://i.pravatar.cc/60?img=19' },
+];
+
+let _revIdx = 0, _revTimer = null;
+
+function renderReviewsStrip() {
+  const el = document.getElementById('reviewsStrip');
+  if (!el) return;
+
+  const dots = _STRIP_REVIEWS.map((_, i) =>
+    `<button class="rstrip-dot ${i === 0 ? 'active' : ''}" onclick="_revGo(${i})"></button>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="rstrip-wrap">
+      <div class="rstrip-header">
+        <span class="rstrip-title">⭐ ${t('customerReviews') || 'Customer Reviews'}</span>
+        <span class="rstrip-verified"><i class="fas fa-shield-check"></i> ${t('verifiedBuyer') || 'Verified Buyers'}</span>
+      </div>
+      <div class="rstrip-track" id="rstripTrack">
+        ${_STRIP_REVIEWS.map((r, i) => `
+          <div class="rstrip-card ${i === 0 ? 'active' : ''}" data-idx="${i}">
+            <img class="rstrip-avatar" src="${r.avatar}" onerror="this.src='https://picsum.photos/seed/rv${i}/60/60'" alt="">
+            <div class="rstrip-body">
+              <div class="rstrip-top">
+                <span class="rstrip-name">${r.name}</span>
+                <span class="rstrip-city"><i class="fas fa-location-dot"></i> ${r.city}</span>
+              </div>
+              <div class="rstrip-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</div>
+              <p class="rstrip-text">${r.text}</p>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="rstrip-dots">${dots}</div>
+    </div>
+  `;
+
+  _revIdx = 0;
+  clearInterval(_revTimer);
+  _revTimer = setInterval(() => _revGo((_revIdx + 1) % _STRIP_REVIEWS.length), 4000);
+}
+
+function _revGo(idx) {
+  _revIdx = idx;
+  const track = document.getElementById('rstripTrack');
+  if (!track) return;
+  track.querySelectorAll('.rstrip-card').forEach((c, i) => c.classList.toggle('active', i === idx));
+  document.querySelectorAll('.rstrip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
 }
