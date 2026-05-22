@@ -7140,3 +7140,74 @@ body.dark-mode .zatca-row { color: #aaa; border-color: rgba(255,255,255,.05); }
 body.dark-mode .price-current, body.dark-mode .modal-price-current {
   color: #f0c040 !important;
 }
+
+/* ===== SECURITY IN-APP INPUT SHEET ===== */
+.sec-input-sheet {
+  position: fixed; inset: 0; z-index: 3000;
+  display: none; align-items: flex-end; justify-content: center;
+}
+.sis-bg {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(6px);
+}
+.sis-card {
+  position: relative; z-index: 1; width: 100%;
+  max-width: 480px;
+  background: var(--card-bg, #fff);
+  border-radius: 24px 24px 0 0;
+  padding: 8px 22px 48px;
+  transform: translateY(100%);
+  transition: transform .32s cubic-bezier(.32,1,.56,1);
+  box-shadow: 0 -8px 40px rgba(0,0,0,.18);
+}
+body.dark-mode .sis-card { background: #1a1040; }
+.sis-card.open { transform: translateY(0); }
+
+.sis-handle {
+  width: 40px; height: 4px;
+  background: rgba(0,0,0,.12); border-radius: 2px;
+  margin: 0 auto 20px;
+}
+body.dark-mode .sis-handle { background: rgba(255,255,255,.15); }
+.sis-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: linear-gradient(135deg,#e91e8c,#7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff; margin: 0 auto 14px;
+}
+.sis-title {
+  font-size: 18px; font-weight: 800;
+  color: var(--text-main, #1a1a2e);
+  text-align: center; margin: 0 0 6px;
+}
+.sis-sub {
+  font-size: 12.5px; color: #888;
+  text-align: center; margin: 0 0 18px; line-height: 1.5;
+}
+.sis-input {
+  width: 100%; box-sizing: border-box;
+  background: var(--input-bg, #f8f8f8);
+  border: 1.5px solid rgba(233,30,140,.2);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 16px;
+  color: var(--text-main, #1a1a2e);
+  outline: none;
+  transition: border-color .2s;
+}
+.sis-input:focus { border-color: #e91e8c; }
+body.dark-mode .sis-input { background: #0d0a1e; color: #f0f0f0; border-color: rgba(233,30,140,.35); }
+.sis-btns {
+  display: flex; gap: 10px; margin-top: 16px;
+}
+.sis-cancel {
+  flex: 1; background: rgba(0,0,0,.06); color: #666;
+  border: none; border-radius: 14px; padding: 14px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+}
+body.dark-mode .sis-cancel { background: rgba(255,255,255,.1); color: #aaa; }
+.sis-save {
+  flex: 2; background: linear-gradient(135deg,#e91e8c,#7c3aed);
+  color: #fff; border: none; border-radius: 14px; padding: 14px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+}
