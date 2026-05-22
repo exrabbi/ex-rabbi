@@ -6971,81 +6971,65 @@ body.dark-mode .rstrip-name { color: #f0f0f0; }
   margin: 8px 0 4px;
 }
 
-/* ===== PREMIUM TRUST MARQUEE ===== */
-.tmq-wrap {
-  background: linear-gradient(90deg, #08060f 0%, #12082a 40%, #0a1020 70%, #08060f 100%);
-  border-top: 1px solid rgba(197,151,42,.18);
-  border-bottom: 1px solid rgba(197,151,42,.18);
-  overflow: hidden;
-  position: relative;
-}
-.tmq-wrap::before,
-.tmq-wrap::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0;
-  width: 48px;
-  z-index: 2;
-  pointer-events: none;
-}
-.tmq-wrap::before {
-  left: 0;
-  background: linear-gradient(to right, #08060f, transparent);
-}
-.tmq-wrap::after {
-  right: 0;
-  background: linear-gradient(to left, #08060f, transparent);
-}
-.tmq-inner {
-  overflow: hidden;
-}
-.tmq-track {
+/* ===== CLEAN TRUST BENEFITS BAR ===== */
+.trust-bar {
   display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  width: max-content;
-  padding: 10px 0;
-  animation: tmqScroll 30s linear infinite;
-  will-change: transform;
+  align-items: stretch;
+  background: #fff;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 8px;
 }
-.tmq-track:hover { animation-play-state: paused; }
-@keyframes tmqScroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+body.dark-mode .trust-bar {
+  background: #140f28;
+  border-color: rgba(255,255,255,.06);
 }
-.tmq-item {
-  display: inline-flex;
-  flex-direction: row;
+.trust-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 6px 18px;
+  justify-content: center;
+  padding: 12px 4px;
+  gap: 6px;
+  text-align: center;
+}
+.trust-icon-wrap {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
   flex-shrink: 0;
 }
-.tmq-item b {
-  font-size: 12px;
+body.dark-mode .trust-icon-wrap {
+  opacity: .85;
+}
+.trust-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.trust-text b {
+  font-size: 10.5px;
   font-weight: 800;
-  color: #fff;
+  color: #1a1a2e;
   display: block;
-  white-space: nowrap;
+  line-height: 1.2;
 }
-.tmq-item small {
-  font-size: 10px;
-  color: rgba(255,255,255,.45);
+body.dark-mode .trust-text b { color: #f0f0f0; }
+.trust-text span {
+  font-size: 9.5px;
+  color: #888;
   display: block;
-  white-space: nowrap;
 }
-.tmq-ic {
-  font-size: 20px;
-  line-height: 1;
+.trust-divider {
+  width: 1px;
+  background: #f0f0f0;
+  margin: 10px 0;
   flex-shrink: 0;
 }
-.tmq-sep {
-  color: rgba(197,151,42,.4);
-  font-size: 9px;
-  padding: 0 6px;
-  flex-shrink: 0;
-}
+body.dark-mode .trust-divider { background: rgba(255,255,255,.07); }
 
 /* ===== PREMIUM FOOTER ===== */
 .site-footer {
