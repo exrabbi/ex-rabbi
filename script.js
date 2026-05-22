@@ -415,7 +415,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyCatImages();
   _applyColTiles();
   initColScroll();
-  _startLiveActivity();
   initScrollReveal();
 });
 
