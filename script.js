@@ -7232,3 +7232,39 @@ function _deliveryRange() {
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   return `${days[d1.getDay()]}, ${months[d1.getMonth()]} ${d1.getDate()} – ${days[d2.getDay()]}, ${months[d2.getMonth()]} ${d2.getDate()}`;
 }
+
+/* ══════════════════════════════════════════════
+   EX GLOBAL LUXURY BRAND UPGRADE  (JS v160)
+   ══════════════════════════════════════════════ */
+
+/* ── LIVE VISITOR COUNTER ── */
+function _startLiveCounter() {
+  const bar = document.getElementById('liveCounterBar');
+  const txt = document.getElementById('liveCountText');
+  if (!bar || !txt) return;
+  let count = 38 + Math.floor(Math.random() * 40);
+  txt.textContent = count + ' people viewing now';
+  setInterval(() => {
+    const delta = Math.floor(Math.random() * 7) - 3;
+    count = Math.max(18, Math.min(count + delta, 120));
+    txt.textContent = count + ' people viewing now';
+  }, 4500);
+}
+
+/* ── CURSOR GLOW (desktop only) ── */
+function _initCursorGlow() {
+  if (!matchMedia('(hover: hover)').matches) return;
+  const el = document.createElement('div');
+  el.className = 'cursor-glow';
+  document.body.appendChild(el);
+  document.addEventListener('mousemove', e => {
+    el.style.left = e.clientX + 'px';
+    el.style.top  = e.clientY + 'px';
+  }, { passive: true });
+}
+
+/* ── INIT LUXURY FEATURES ── */
+document.addEventListener('DOMContentLoaded', () => {
+  _startLiveCounter();
+  _initCursorGlow();
+});

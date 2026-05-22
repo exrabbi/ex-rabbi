@@ -8248,3 +8248,191 @@ img, video, iframe { max-width: 100%; }
 
 /* Hero overlay hidden — show clean images only */
 .hero-overlay { display: none !important; }
+
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║  EX GLOBAL — LUXURY BRAND VISUAL UPGRADE  (CSS v164)        ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+/* ── 1. INTER PREMIUM FONT ── */
+body, button, input, select, textarea {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+[dir="rtl"] body, [dir="rtl"] * {
+  font-family: 'Noto Sans Arabic', 'Inter', sans-serif;
+}
+
+/* ── 2. DARK LUXURY HEADER ── */
+.header {
+  background: linear-gradient(135deg, #08071a 0%, #130523 100%) !important;
+  border-bottom: 1px solid rgba(233,30,140,.28) !important;
+  box-shadow: 0 4px 28px rgba(0,0,0,.6) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.header-top { border-bottom: 1px solid rgba(255,255,255,.06); }
+.cat-tabs { background: rgba(255,255,255,.03); border-top: 1px solid rgba(255,255,255,.05); }
+.cat-tab { color: rgba(255,255,255,.72) !important; font-weight: 600; font-size: 13px; }
+.cat-tab.active, .cat-tab:hover {
+  background: linear-gradient(135deg, rgba(233,30,140,.85), rgba(124,58,237,.75)) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 14px rgba(233,30,140,.38);
+}
+.search-bar {
+  background: rgba(255,255,255,.07) !important;
+  border-color: rgba(233,30,140,.35) !important;
+}
+#searchInput { color: #fff !important; background: transparent !important; }
+#searchInput::placeholder { color: rgba(255,255,255,.42) !important; }
+.search-bar button { color: rgba(255,255,255,.7) !important; }
+
+/* ── 3. ANNOUNCEMENT BANNER DARK LUXURY ── */
+#announceBanner {
+  background: linear-gradient(90deg, #08071a, #1c0535, #08071a) !important;
+  background-size: 200% 100% !important;
+  animation: annBgMove 8s linear infinite !important;
+  border-bottom: 1px solid rgba(233,30,140,.22) !important;
+  font-weight: 700 !important; letter-spacing: .5px !important;
+}
+@keyframes annBgMove {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ── 4. TRUST BAR DARK ── */
+.tbar {
+  background: linear-gradient(135deg, #0c0b1e 0%, #150728 100%) !important;
+  border-bottom: 1px solid rgba(233,30,140,.18) !important;
+}
+.tbar-pill {
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  backdrop-filter: blur(6px);
+}
+.tbar-pill i { filter: brightness(1.4); }
+.tbar-pill span { color: rgba(255,255,255,.88) !important; }
+
+/* ── 5. LIVE VISITOR COUNTER ── */
+.live-counter-bar {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  background: linear-gradient(135deg, #0d0d1a, #1a0535, #0d0d1a);
+  color: rgba(255,255,255,.82); font-size: 10.5px; font-weight: 700;
+  padding: 5px 16px; letter-spacing: .5px;
+  border-bottom: 1px solid rgba(233,30,140,.15);
+}
+.live-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+  background: #ff4444;
+  box-shadow: 0 0 0 0 rgba(255,68,68,.7);
+  animation: livePulse 1.6s ease-in-out infinite;
+}
+@keyframes livePulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,68,68,.65); }
+  50%      { box-shadow: 0 0 0 5px rgba(255,68,68,.0); }
+}
+
+/* ── 6. HERO CINEMATIC OVERLAY ── */
+.hero-slide {
+  position: relative;
+}
+.hero-slide::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(8,7,26,.52) 0%,
+    rgba(8,7,26,.22) 45%,
+    transparent 72%
+  );
+  pointer-events: none; z-index: 1;
+}
+
+/* ── 7. PREMIUM BACKGROUND ── */
+body { background: #f4f3fb !important; }
+[data-theme="dark"] body, body[data-theme="dark"] { background: #07061a !important; }
+
+/* ── 8. LUXURY SCROLLBAR ── */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e91e8c, #7c3aed);
+  border-radius: 3px;
+}
+html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
+
+/* ── 9. PREMIUM SECTION TITLES ── */
+.section-title {
+  font-size: 18px !important; font-weight: 800 !important;
+  letter-spacing: -.4px !important; line-height: 1.2 !important;
+  background: linear-gradient(135deg, #1a1a2e 0%, #5a1a8e 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
+}
+[data-theme="dark"] .section-title {
+  background: linear-gradient(135deg, #ffffff 0%, #d8b4fe 100%);
+  -webkit-background-clip: text; background-clip: text;
+}
+
+/* ── 10. CURSOR GLOW (desktop only) ── */
+.cursor-glow {
+  pointer-events: none; position: fixed; z-index: 99998;
+  width: 340px; height: 340px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.055) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: left .12s ease, top .12s ease;
+  will-change: left, top;
+}
+@media (hover: none) { .cursor-glow { display: none !important; } }
+
+/* ── 11. SECTION HEADER DIVIDER PREMIUM ── */
+.section-header {
+  border-bottom: 2px solid transparent;
+  background-image: linear-gradient(#fff, #fff),
+    linear-gradient(90deg, #e91e8c, #7c3aed);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  padding-bottom: 10px !important;
+}
+[data-theme="dark"] .section-header {
+  background-image: linear-gradient(#07061a, #07061a),
+    linear-gradient(90deg, #e91e8c, #7c3aed);
+}
+
+/* ── 12. HERO BOTTOM FADE INTO BODY ── */
+.hero-slider {
+  position: relative;
+}
+.hero-slider::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
+  background: linear-gradient(to bottom, transparent, #f4f3fb);
+  pointer-events: none; z-index: 4;
+}
+[data-theme="dark"] .hero-slider::after {
+  background: linear-gradient(to bottom, transparent, #07061a);
+}
+
+/* ── 13. PREMIUM PRODUCT CARD GLOW ON HOVER ── */
+.product-card:hover {
+  box-shadow: 0 20px 56px rgba(124,58,237,.12), 0 8px 24px rgba(233,30,140,.08) !important;
+}
+
+/* ── 14. BOTTOM NAV DARK LUXURY ── */
+.bottom-nav {
+  background: rgba(8,7,26,.96) !important;
+  border-top: 1px solid rgba(233,30,140,.2) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.bot-btn { color: rgba(255,255,255,.45) !important; }
+.bot-btn.active i, .bot-btn.active span { color: #e91e8c !important; }
+
+/* ── 15. PRICE CURRENT GOLD GRADIENT ── */
+.price-current {
+  background: linear-gradient(135deg, #e91e8c 0%, #c2185b 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800 !important;
+}
