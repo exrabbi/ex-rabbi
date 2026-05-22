@@ -1900,6 +1900,8 @@ function openModal(id) {
     </div>
   </div>`:''}
 
+  ${p.video?`<button class="modal-video-btn lux-reveal" onclick="_openProductVideo('${p.video}')"><i class="fas fa-play-circle"></i> Watch Video</button>`:''}
+
   ${videoEmbed?`<div class="lux-section lux-reveal">${videoEmbed}</div>`:''}
 
   <div class="lux-accordion lux-reveal">
@@ -1975,13 +1977,23 @@ function openModal(id) {
     <div class="lux-trust-item"><i class="fas fa-truck-fast"></i><span>Fast Ship</span></div>
   </div>
 
+  <div class="lux-policy-row lux-reveal">
+    <div class="lux-policy-item"><i class="fas fa-truck-fast"></i>Free Delivery<br>Over SAR 100</div>
+    <div class="lux-policy-item"><i class="fas fa-rotate-left"></i>7-Day<br>Returns</div>
+    <div class="lux-policy-item"><i class="fas fa-shield-halved"></i>100%<br>Authentic</div>
+    <div class="lux-policy-item"><i class="fas fa-lock"></i>Secure<br>Payment</div>
+  </div>
+
   ${_fbtHTML(p)}
   ${_qaHTML(p)}
   ${_relatedHTML(p)}
 
   <div class="lux-share-bar lux-reveal">
     <span class="lux-share-url">${shareUrl}</span>
-    <button class="lux-share-copy" onclick="shareProduct(${id})"><i class="fas fa-copy"></i> Copy</button>
+    <div class="lux-share-actions">
+      <button class="lux-share-wa" onclick="window.open('https://wa.me/?text='+encodeURIComponent(document.title+' '+location.href),'_blank')"><i class="fab fa-whatsapp"></i></button>
+      <button class="lux-share-copy" onclick="shareProduct(${id})"><i class="fas fa-copy"></i> Copy</button>
+    </div>
   </div>
 
   <div style="height:90px"></div>
