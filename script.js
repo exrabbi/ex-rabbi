@@ -1813,128 +1813,208 @@ function openModal(id) {
     : `<img class="modal-img" src="${p.image}" alt="" onclick="_openImgZoom(this.src)" style="cursor:zoom-in" />`;
 
   document.getElementById('modalBody').innerHTML = `
-    ${galleryHtml}
-    ${videoEmbed}
-    <div class="modal-info">
-      <div class="modal-top-row">
-        <h2 class="modal-name">${getName(p)}</h2>
-        <button class="modal-share-btn" onclick="shareProduct(${id})" title="Share">
-          <i class="fas fa-share-nodes"></i>
-        </button>
-      </div>
-      <div class="modal-prices">
-        <span class="modal-price-current">${fmt(p.price)}</span>
-        <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
-        <span class="modal-discount">-${p.discount}%</span>
-      </div>
-      <div class="modal-bnpl-row">${_tamaraHTML(p.price,true)}${_tabbyHTML(p.price,true)}</div>
-      <div class="modal-rating">
-        <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
-        <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${String(p.sold).replace(/\++$/,'')}+ ${t('soldText')}</span>
-      </div>
-      <div class="modal-delivery-est">
-        <div class="mde-left"><span class="mde-truck">🚚</span></div>
-        <div class="mde-right"><span class="mde-label">Estimated Arrival</span><span class="mde-date">${_deliveryRange()}</span></div>
-        <div class="mde-free">FREE</div>
-      </div>
-      <div class="modal-viewing">
-        <span class="modal-view-dot"></span>
-        <span><b>${15 + ((p.id * 7 + p.ratingCount) % 70)}</b> ${t('peopleViewing') || 'people viewing now'}</span>
-      </div>
-      ${p.stock === 0
-        ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>
-           <button class="notify-stock-btn" onclick="notifyStock(${p.id})"><i class="fas fa-bell"></i> ${t('notifyBack')||'Notify Me When Back in Stock'}</button>`
-        : p.stock !== undefined && p.stock <= 5
-          ? `<div class="modal-stock low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>`
-          : p.stock !== undefined
-            ? `<div class="modal-stock ok"><i class="fas fa-check-circle"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>`
-            : ''}
-      <div class="modal-divider"></div>
-      <div class="modal-size-header">
-        <p class="modal-section-title">${t('sizeSelect')}</p>
-        <button class="size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> ${t('sizeGuide')||'Size Guide'}</button>
-      </div>
-      <div class="size-options">
-        ${p.sizes.map(s => `<div class="size-opt ${s===selectedSize?'active':''}" onclick="selectSize('${s}',this)">${s}</div>`).join('')}
-      </div>
-      <div class="color-label-row">
-        <p class="modal-section-title">${t('colorSelect')}</p>
-        <span class="color-selected-label" id="colorSelectedLabel">${p.colorNames ? p.colorNames[0] || '' : ''}</span>
-      </div>
-      <div class="color-options">
-        ${p.colors.map((c,i) => p.colorImages && p.colorImages[i]
-          ? `<div class="color-img-opt ${i===0?'active':''}" onclick="selectColor('${c}',this,${p.id},${i})" data-img="${p.colorImages[i]}" data-name="${p.colorNames?.[i]||''}"><img src="${p.colorImages[i]}" alt="" loading="lazy" /></div>`
-          : `<div class="color-opt ${i===0?'active':''}" style="background:${c}" onclick="selectColor('${c}',this,${p.id},-1)"></div>`
-        ).join('')}
-      </div>
-      <div class="modal-divider"></div>
-      ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
-      ${_fbtHTML(p)}
-      ${_qaHTML(p)}
-      ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="pd-coupon-row" onclick="openPdCoupons()"><div class="pd-coupon-icon"><i class="fas fa-percent"></i></div><span class="pd-coupon-text">Extra ${av[0][1].pct}% off — CODE: ${av[0][0]}</span><i class="fas fa-chevron-right pd-coupon-chev"></i></div>`:'';})()}
-      <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
-        <span><i class="fas fa-truck" style="color:#e91e8c"></i> ${t('freeDeliveryInfo')}</span>
-        <span><i class="fas fa-undo" style="color:#e91e8c"></i> ${t('returnInfo')}</span>
-      </div>
-      ${p.video ? `<button class="modal-video-btn" onclick="_openProductVideo('${p.video}')">
-        <i class="fas fa-play-circle"></i> <span data-i18n="watchVideo">Watch Video</span>
-      </button>` : ''}
-      <!-- Share link bar -->
-      <div class="modal-link-bar">
-        <i class="fas fa-link modal-link-icon"></i>
-        <span class="modal-link-text">${shareUrl}</span>
-        <button class="modal-link-copy" onclick="shareProduct(${id})">
-          <i class="fas fa-copy"></i> <span data-i18n="copyCode">Copy</span>
-        </button>
-      </div>
+<div class="lux-modal-wrap">
+
+  <div class="lux-gallery" id="luxGal">
+    <div class="lux-slides" id="luxSlides">
+      ${allImgs.map((u,i)=>`<div class="lux-slide" data-idx="${i}"><img src="${u}" alt="" loading="${i===0?'eager':'lazy'}" onclick="_openImgZoom(this.src)"/></div>`).join('')}
     </div>
-    ${p.stock !== 0 ? `
-    <div class="bundle-deal-row">
-      <div class="bundle-deal-opt ${1===1?'active':''}" onclick="setBundleQty(1,${p.id},this)">
-        <span class="bd-qty">×1</span><span class="bd-label">${t('bundleOne')||'Regular'}</span>
-      </div>
-      <div class="bundle-deal-opt" onclick="setBundleQty(2,${p.id},this)">
-        <span class="bd-qty">×2</span><span class="bd-label">10% ${t('extraOff')||'extra off'}</span>
-      </div>
-      <div class="bundle-deal-opt" onclick="setBundleQty(3,${p.id},this)">
-        <span class="bd-qty">×3</span><span class="bd-save">🔥 Best Value</span><span class="bd-label">15% ${t('extraOff')||'extra off'}</span>
-      </div>
+    <div class="lux-dots" id="luxDots">
+      ${allImgs.map((_,i)=>`<span class="lux-dot${i===0?' active':''}" onclick="_luxGotoSlide(${i})"></span>`).join('')}
     </div>
-    <div class="modal-qty-row">
-      <span class="modal-qty-label">${t('qtyLabel')||'Quantity'}</span>
-      <div class="modal-qty-ctrl">
-        <button class="mq-btn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
-        <span class="mq-num" id="modalQtyNum">1</span>
-        <button class="mq-btn" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
-      </div>
-      <span class="modal-qty-price" id="modalQtyPrice">${fmt(p.price)}</span>
-    </div>` : ''}
-    <div class="modal-action-bar">
-      <button class="modal-wish-btn ${inWish?'active':''}" id="modalWishBtn" onclick="modalToggleWish(${p.id})">
-        <i class="${inWish?'fas':'far'} fa-heart"></i>
+    <button class="lux-gal-back" onclick="closeModal()"><i class="fas fa-arrow-left"></i></button>
+    <button class="lux-gal-share" onclick="shareProduct(${id})"><i class="fas fa-share-nodes"></i></button>
+    <button class="lux-gal-wish ${inWish?'active':''}" id="luxGalWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
+    ${allImgs.length>1?`<div class="lux-img-count"><span id="luxImgCurr">1</span>/${allImgs.length}</div>`:''}
+  </div>
+
+  <div class="lux-info-card lux-reveal">
+    <div class="lux-brand-row">
+      <span class="lux-category-pill">${p.category?p.category.toUpperCase():'PREMIUM'}</span>
+      ${p.discount>=30?`<span class="lux-hot-pill">🔥 HOT</span>`:''}
+    </div>
+    <h2 class="lux-product-name">${getName(p)}</h2>
+    <div class="lux-prices-row">
+      <span class="lux-price-current">${fmt(p.price)}</span>
+      <span class="lux-price-orig">${fmt(p.originalPrice)}</span>
+      <span class="lux-discount-badge">-${p.discount}%</span>
+    </div>
+    <div class="lux-rating-row">
+      <span class="lux-stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
+      <span class="lux-rating-num">${p.rating}</span>
+      <span class="lux-rating-count">(${p.ratingCount.toLocaleString()})</span>
+      <span class="lux-dot-sep">·</span>
+      <span class="lux-sold-count">🔥 ${String(p.sold).replace(/\++$/,'')}+ sold</span>
+    </div>
+    <div class="lux-meta-row">
+      <div class="lux-viewing-chip"><span class="lux-view-pulse"></span><span><b>${15+((p.id*7+p.ratingCount)%70)}</b> viewing now</span></div>
+      ${p.stock===0
+        ?`<div class="lux-stock-chip out"><i class="fas fa-times-circle"></i> Out of Stock</div>`
+        :p.stock!==undefined&&p.stock<=5
+          ?`<div class="lux-stock-chip low"><i class="fas fa-fire"></i> Only ${p.stock} left</div>`
+          :`<div class="lux-stock-chip ok"><i class="fas fa-check-circle"></i> In Stock</div>`}
+    </div>
+    <div class="lux-bnpl-row">${_tamaraHTML(p.price,true)}${_tabbyHTML(p.price,true)}</div>
+  </div>
+
+  <div class="lux-delivery-card lux-reveal">
+    <div class="lux-del-icon"><i class="fas fa-truck-fast"></i></div>
+    <div class="lux-del-info">
+      <span class="lux-del-title">FREE Delivery</span>
+      <span class="lux-del-date">Estimated ${_deliveryRange()}</span>
+    </div>
+    <div class="lux-del-free-badge">FREE</div>
+  </div>
+
+  ${p.sizes&&p.sizes.length>0?`
+  <div class="lux-section lux-reveal">
+    <div class="lux-section-header">
+      <span class="lux-section-title">${t('sizeSelect')||'Select Size'}</span>
+      <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> Size Guide</button>
+    </div>
+    <div class="lux-size-grid">
+      ${p.sizes.map(s=>`<button class="lux-size-opt${s===selectedSize?' active':''}" onclick="selectSize('${s}',this)">${s}</button>`).join('')}
+    </div>
+  </div>`:''}
+
+  ${p.colors&&p.colors.length>0?`
+  <div class="lux-section lux-reveal">
+    <div class="lux-section-header">
+      <span class="lux-section-title">${t('colorSelect')||'Select Color'}</span>
+      <span class="lux-color-selected-name" id="luxColorName">${p.colorNames?(p.colorNames[0]||''):''}</span>
+    </div>
+    <div class="lux-color-grid">
+      ${p.colors.map((c,i)=>p.colorImages&&p.colorImages[i]
+        ?`<button class="lux-color-img-opt${i===0?' active':''}" onclick="selectColor('${c}',this,${p.id},${i})" data-img="${p.colorImages[i]}" data-name="${p.colorNames?.[i]||''}"><img src="${p.colorImages[i]}" alt="" loading="lazy"/></button>`
+        :`<button class="lux-color-opt${i===0?' active':''}" style="--c:${c}" onclick="selectColor('${c}',this,${p.id},-1)"></button>`
+      ).join('')}
+    </div>
+  </div>`:''}
+
+  ${videoEmbed?`<div class="lux-section lux-reveal">${videoEmbed}</div>`:''}
+
+  <div class="lux-accordion lux-reveal">
+    ${p.description?`
+    <div class="lux-accordion-item">
+      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+        <span><i class="fas fa-info-circle"></i> Product Details</span>
+        <i class="fas fa-chevron-down lux-chev"></i>
       </button>
-      <button class="modal-cart-half${p.stock===0?' disabled':''}" id="modalAddCartBtn" onclick="${p.stock===0?'':'modalAddCart('+p.id+')'}" ${p.stock===0?'style="opacity:.45;cursor:not-allowed"':''}>
-        <i class="fas fa-bag-shopping"></i>
-        <span>${p.stock===0?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
+      <div class="lux-accordion-body">
+        <div class="lux-accordion-content">${p.description.replace(/\n/g,'<br>')}</div>
+      </div>
+    </div>`:''}
+    <div class="lux-accordion-item">
+      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+        <span><i class="fas fa-truck"></i> Delivery &amp; Returns</span>
+        <i class="fas fa-chevron-down lux-chev"></i>
       </button>
-      <button class="modal-order-half${p.stock===0?' disabled':''}" onclick="${p.stock===0?'':'buyNow('+p.id+')'}" ${p.stock===0?'style="opacity:.45;cursor:not-allowed"':''}>
-        <i class="fas fa-bolt"></i>
-        <span>${t('orderNow')||'Order'}</span>
+      <div class="lux-accordion-body">
+        <div class="lux-accordion-content">
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> Free delivery on orders over SAR 100</p>
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> 7-day hassle-free returns</p>
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> 100% authentic guaranteed</p>
+        </div>
+      </div>
+    </div>
+    <div class="lux-accordion-item">
+      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+        <span><i class="fas fa-shield-halved"></i> Secure Payment</span>
+        <i class="fas fa-chevron-down lux-chev"></i>
       </button>
+      <div class="lux-accordion-body">
+        <div class="lux-accordion-content">
+          <p><i class="fas fa-lock" style="color:#e91e8c"></i> SSL encrypted checkout</p>
+          <p><i class="fas fa-credit-card" style="color:#e91e8c"></i> Visa, Mastercard, Apple Pay, STC Pay</p>
+          <p><i class="fas fa-shield-halved" style="color:#e91e8c"></i> Buyer protection on all orders</p>
+        </div>
+      </div>
     </div>
-    <div class="modal-trust-row">
-      <span><i class="fas fa-lock"></i> ${t('securePayment')||'Secure'}</span>
-      <span><i class="fas fa-rotate-left"></i> ${t('returns30')||'30-Day Returns'}</span>
-      <span><i class="fas fa-shield-halved"></i> ${t('authentic')||'Authentic'}</span>
+  </div>
+
+  ${p.stock!==0?`
+  <div class="lux-section lux-reveal">
+    <div class="lux-section-title-full">💰 Bundle &amp; Save More</div>
+    <div class="lux-bundle-row">
+      <div class="lux-bundle-opt active" onclick="setBundleQty(1,${p.id},this)">
+        <span class="lux-bq">×1</span><span class="lux-bl">Regular</span>
+      </div>
+      <div class="lux-bundle-opt" onclick="setBundleQty(2,${p.id},this)">
+        <span class="lux-bq">×2</span><span class="lux-bl">10% off</span>
+      </div>
+      <div class="lux-bundle-opt best" onclick="setBundleQty(3,${p.id},this)">
+        <span class="lux-bq">×3</span><span class="lux-bl">🔥 Best</span><span class="lux-bsave">15% off</span>
+      </div>
     </div>
-    ${_deliveryEstHTML()}
-    ${_relatedHTML(p)}
-  `;
+    <div class="lux-qty-row">
+      <span class="lux-qty-label">${t('qtyLabel')||'Quantity'}</span>
+      <div class="lux-qty-ctrl">
+        <button class="lux-qbtn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
+        <span class="lux-qnum" id="modalQtyNum">1</span>
+        <button class="lux-qbtn" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
+      </div>
+      <span class="lux-qty-total" id="modalQtyPrice">${fmt(p.price)}</span>
+    </div>
+  </div>`:''}
+
+  ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="lux-coupon-strip lux-reveal" onclick="openPdCoupons()"><i class="fas fa-percent lux-coupon-icon"></i><span>Extra ${av[0][1].pct}% off — Code: <b>${av[0][0]}</b></span><i class="fas fa-chevron-right"></i></div>`:''})()}
+
+  <div class="lux-static-trust lux-reveal">
+    <div class="lux-trust-item"><i class="fas fa-lock"></i><span>${t('securePayment')||'Secure'}</span></div>
+    <div class="lux-trust-item"><i class="fas fa-rotate-left"></i><span>${t('returns30')||'30-Day Returns'}</span></div>
+    <div class="lux-trust-item"><i class="fas fa-shield-halved"></i><span>${t('authentic')||'Authentic'}</span></div>
+    <div class="lux-trust-item"><i class="fas fa-truck-fast"></i><span>Fast Ship</span></div>
+  </div>
+
+  ${_fbtHTML(p)}
+  ${_qaHTML(p)}
+  ${_relatedHTML(p)}
+
+  <div class="lux-share-bar lux-reveal">
+    <span class="lux-share-url">${shareUrl}</span>
+    <button class="lux-share-copy" onclick="shareProduct(${id})"><i class="fas fa-copy"></i> Copy</button>
+  </div>
+
+  <div style="height:90px"></div>
+</div>
+
+${p.stock!==0?`
+<div class="lux-atc-bar" id="luxAtcBar">
+  <div class="lux-trust-strip">
+    <div class="lux-trust-strip-inner">
+      <span class="lux-trust-pill">🔥 Selling Fast</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">⚡ Limited Stock</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🛡 Secure Checkout</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🚚 Fast Delivery</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🔥 Selling Fast</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">⚡ Limited Stock</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🛡 Secure Checkout</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🚚 Fast Delivery</span><span class="lux-sep">·</span>
+    </div>
+  </div>
+  <div class="lux-atc-btns">
+    <button class="lux-atc-wish ${inWish?'active':''}" id="luxAtcWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
+    <button class="lux-atc-main" id="luxAtcMain" onclick="_luxAddCart(${p.id})">
+      <span class="lux-atc-default"><i class="fas fa-bag-shopping"></i> ${t('addToCart')||'Add to Cart'}</span>
+      <span class="lux-atc-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
+      <span class="lux-atc-done" style="display:none"><i class="fas fa-check"></i> Added!</span>
+    </button>
+    <button class="lux-atc-now" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i></button>
+  </div>
+</div>`:`
+<div class="lux-atc-bar" id="luxAtcBar">
+  <div class="lux-atc-btns">
+    <button class="lux-atc-main lux-atc-oos" disabled><i class="fas fa-times-circle"></i> ${t('outOfStock')||'Out of Stock'}</button>
+    <button class="lux-notify-btn" onclick="notifyStock(${p.id})"><i class="fas fa-bell"></i> Notify Me</button>
+  </div>
+</div>`}
+  `
   _trackView(id);
   history.replaceState({}, '', '?p=' + id);
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
+  _luxModalReady(allImgs);
 }
 function _openProductVideo(videoId) {
   const overlay = document.createElement('div');
@@ -1986,6 +2066,7 @@ function closeModal() {
   document.getElementById('productModal').classList.remove('open');
   document.getElementById('modalOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  document.body.classList.remove('modal-open');
   history.replaceState({}, '', location.pathname);
 }
 
@@ -7263,8 +7344,100 @@ function _initCursorGlow() {
   }, { passive: true });
 }
 
+/* ── LUX GALLERY: swipe + dot sync ── */
+function _initLuxGallery(imgs) {
+  const slides = document.getElementById('luxSlides');
+  const dots = document.getElementById('luxDots');
+  const counter = document.getElementById('luxImgCurr');
+  if (!slides || !imgs.length) return;
+  let cur = 0;
+
+  function goTo(i) {
+    cur = Math.max(0, Math.min(i, imgs.length - 1));
+    slides.scrollTo({ left: cur * slides.offsetWidth, behavior: 'smooth' });
+    if (dots) dots.querySelectorAll('.lux-dot').forEach((d,j) => d.classList.toggle('active', j===cur));
+    if (counter) counter.textContent = cur + 1;
+  }
+
+  let tx = 0;
+  slides.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  slides.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 42) goTo(dx < 0 ? cur + 1 : cur - 1);
+  }, { passive: true });
+
+  let ticking = false;
+  slides.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const idx = Math.round(slides.scrollLeft / slides.offsetWidth);
+      if (idx !== cur) { cur = idx; if (dots) dots.querySelectorAll('.lux-dot').forEach((d,j)=>d.classList.toggle('active',j===idx)); if (counter) counter.textContent = idx+1; }
+      ticking = false;
+    });
+  }, { passive: true });
+
+  const timer = setInterval(() => goTo((cur + 1) % imgs.length), 4500);
+  slides.addEventListener('touchstart', () => clearInterval(timer), { passive: true, once: true });
+
+  window._luxGotoSlide = goTo;
+}
+
+/* ── LUX ACCORDION ── */
+function _luxToggleAccordion(btn) {
+  const item = btn.closest('.lux-accordion-item');
+  if (!item) return;
+  const isOpen = item.classList.contains('open');
+  item.closest('.lux-accordion').querySelectorAll('.lux-accordion-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ── LUX ADD TO CART ── */
+function _luxAddCart(productId) {
+  const btn = document.getElementById('luxAtcMain');
+  if (!btn || btn.classList.contains('lux-loading')) return;
+  const def  = btn.querySelector('.lux-atc-default');
+  const load = btn.querySelector('.lux-atc-loading');
+  const done = btn.querySelector('.lux-atc-done');
+
+  btn.classList.add('lux-loading');
+  if (def)  def.style.display  = 'none';
+  if (load) load.style.display = 'flex';
+  if (navigator.vibrate) navigator.vibrate([15, 30, 15]);
+
+  setTimeout(() => {
+    modalAddCart(productId);
+    if (load) load.style.display = 'none';
+    if (done) done.style.display = 'flex';
+    btn.classList.remove('lux-loading');
+    btn.classList.add('lux-success');
+    setTimeout(() => {
+      btn.classList.remove('lux-success');
+      if (def)  def.style.display = '';
+      if (done) done.style.display = 'none';
+    }, 1600);
+  }, 380);
+}
+
+/* ── SCROLL REVEAL ── */
+function _initScrollReveal() {
+  if (!window.IntersectionObserver) return;
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('lux-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.lux-reveal').forEach(el => io.observe(el));
+}
+
+/* ── RE-INIT REVEALS AFTER MODAL OPEN ── */
+function _luxModalReady(imgs) {
+  _initLuxGallery(imgs);
+  setTimeout(_initScrollReveal, 60);
+  document.body.classList.add('modal-open');
+}
+
 /* ── INIT LUXURY FEATURES ── */
 document.addEventListener('DOMContentLoaded', () => {
   _startLiveCounter();
   _initCursorGlow();
+  _initScrollReveal();
 });
