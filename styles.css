@@ -7785,3 +7785,39 @@ body.dark-mode .fbt-total-row b { color: #f0f0f0; }
   background-clip: padding-box;
   box-shadow: 0 0 0 2px #c5972a, 0 3px 12px rgba(197,151,42,.35);
 }
+
+/* ===== AI CHAT CHIPS ===== */
+.ai-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 8px 4px 4px;
+}
+.ai-chip {
+  background: linear-gradient(135deg, #fce4f3, #f3eeff);
+  border: 1.5px solid #e91e8c33;
+  border-radius: 20px;
+  padding: 6px 13px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #7c3aed;
+  cursor: pointer;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  white-space: nowrap;
+}
+.ai-chip:hover, .ai-chip:active {
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(233,30,140,.25);
+}
+body.dark-mode .ai-chip {
+  background: rgba(124,58,237,.18);
+  border-color: rgba(233,30,140,.3);
+  color: #d8b4fe;
+}
+body.dark-mode .ai-chip:hover {
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff;
+}
