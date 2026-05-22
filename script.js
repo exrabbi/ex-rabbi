@@ -773,6 +773,7 @@ function renderProducts(searchTerm = '') {
   if (loadText) { loadText.style.display = allLoaded ? 'none' : 'block'; loadText.textContent = t('loadingMore') || 'Loading...'; }
   if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
   if (allDoneSpan) allDoneSpan.textContent = t('allProductsShown') || 'All shown';
+  _gsapCardEntrance();
 }
 
 function productCardHTML(p) {
@@ -7487,4 +7488,63 @@ document.addEventListener('DOMContentLoaded', () => {
   _startLiveCounter();
   _initCursorGlow();
   _initScrollReveal();
+  _initRecentlyPurchasedPopup();
 });
+
+/* ===== GSAP PRODUCT CARD STAGGER ENTRANCE ===== */
+function _gsapCardEntrance() {
+  if (typeof gsap === 'undefined') return;
+  const cards = document.querySelectorAll('#productsGrid .product-card');
+  if (!cards.length) return;
+  gsap.fromTo(cards,
+    { opacity: 0, y: 28, scale: .97 },
+    {
+      opacity: 1, y: 0, scale: 1,
+      duration: .48, stagger: .065,
+      ease: 'power2.out',
+      clearProps: 'transform,opacity'
+    }
+  );
+}
+
+/* ===== RECENTLY PURCHASED SOCIAL PROOF POPUP ===== */
+function _initRecentlyPurchasedPopup() {
+  if (typeof PRODUCTS === 'undefined' || !PRODUCTS.length) return;
+  const popup = document.createElement('div');
+  popup.className = 'rp-popup';
+  popup.id = 'rpPopup';
+  popup.innerHTML = `
+    <img class="rp-popup-img" id="rpImg" src="" alt="" loading="lazy" />
+    <div class="rp-popup-text">
+      <div class="rp-popup-name" id="rpName"></div>
+      <div class="rp-popup-meta"><span class="rp-popup-dot"></span><span id="rpMeta"></span></div>
+    </div>
+    <span class="rp-popup-close" onclick="document.getElementById('rpPopup').classList.remove('show')">✕</span>`;
+  document.body.appendChild(popup);
+
+  const cities = ['Riyadh','Jeddah','Dammam','Mecca','Al Khobar','Medina','Tabuk','Abha'];
+  const names  = ['Ahmed M.','Sara K.','Omar A.','Fatima R.','Ali H.','Noor S.','Khalid T.','Lina Q.'];
+  const mins   = [1,2,3,4,5,7,8,10,12,15];
+
+  function _show() {
+    if (document.body.classList.contains('modal-open')) return;
+    const p = PRODUCTS[Math.floor(Math.random() * Math.min(PRODUCTS.length, 40))];
+    if (!p) return;
+    const img    = document.getElementById('rpImg');
+    const nameEl = document.getElementById('rpName');
+    const metaEl = document.getElementById('rpMeta');
+    if (!img || !nameEl || !metaEl) return;
+    img.src = p.image || '';
+    img.onerror = () => { img.src = 'https://picsum.photos/seed/rp' + p.id + '/80/80'; };
+    nameEl.textContent = (typeof getName === 'function' ? getName(p) : (p.names?.en || p.name || 'Product')).substring(0, 34);
+    const city = cities[Math.floor(Math.random() * cities.length)];
+    const name = names[Math.floor(Math.random() * names.length)];
+    const min  = mins[Math.floor(Math.random() * mins.length)];
+    metaEl.textContent = `${name} · ${city} · ${min}m ago`;
+    popup.classList.add('show');
+    setTimeout(() => popup.classList.remove('show'), 4800);
+  }
+
+  setTimeout(_show, 9000);
+  setInterval(_show, 28000 + Math.random() * 12000);
+}
