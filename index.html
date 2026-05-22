@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=144" />
+  <link rel="stylesheet" href="styles.css?v=146" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -106,8 +106,26 @@
     document.documentElement.style.opacity='0';
     setTimeout(function(){document.documentElement.style.opacity='1';},2500);
   </script>
+
+  <!-- Google Analytics 4 (replace G-XXXXXXXXXX with your GA4 Measurement ID) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  <!-- Meta Pixel (replace XXXXXXXXXXXXXXX with your Pixel ID) -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','XXXXXXXXXXXXXXX');fbq('track','PageView');</script>
+  <!-- TikTok Pixel (replace CXXXXXXXXXXXXXXX with your TikTok Pixel ID) -->
+  <script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify','instances','debug','on','off','once','ready','alias','group','enableCookie','disableCookie'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e};ttq.load=function(e,n){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._i[e]._u=i;ttq._t=ttq._t||{};ttq._t[e]=+new Date;ttq._o=ttq._o||{};ttq._o[e]=n||{};var o=document.createElement('script');o.type='text/javascript';o.async=!0;o.src=i+'?sdkid='+e+'&lib='+t;var a=document.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load('CXXXXXXXXXXXXXXX');ttq.page();}(window,document,'ttq');</script>
+  <!-- Snapchat Pixel (replace SNAP-PIXEL-ID with your Snapchat Pixel ID) -->
+  <script>(function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var s='script';r=t.createElement(s);r.async=!0;r.src=n;var u=t.getElementsByTagName(s)[0];u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js');snaptr('init','SNAP-PIXEL-ID');snaptr('track','PAGE_VIEW');</script>
 </head>
 <body>
+
+<!-- TOP TICKER -->
+<div class="top-ticker" id="topTicker">
+  <div class="ticker-inner">
+    ⚡ FLASH SALE NOW &nbsp;•&nbsp; Free delivery above SAR 100 &nbsp;•&nbsp; Use WELCOME10 for 10% off &nbsp;•&nbsp; 👑 VIP Gold members get exclusive deals daily &nbsp;•&nbsp; 🔥 Up to 70% OFF today &nbsp;•&nbsp; ✨ New arrivals added daily &nbsp;•&nbsp;
+    ⚡ FLASH SALE NOW &nbsp;•&nbsp; Free delivery above SAR 100 &nbsp;•&nbsp; Use WELCOME10 for 10% off &nbsp;•&nbsp; 👑 VIP Gold members get exclusive deals daily &nbsp;•&nbsp; 🔥 Up to 70% OFF today &nbsp;•&nbsp; ✨ New arrivals added daily &nbsp;•&nbsp;
+  </div>
+</div>
 
 <!-- ===== VIP SPLASH SCREEN ===== -->
 <div id="exSplash">
@@ -178,6 +196,7 @@
     </div>
     <div class="search-bar" id="searchBar">
       <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="" autocomplete="off" />
+      <button class="voice-search-btn" id="voiceSearchBtn" onclick="startVoiceSearch()" title="Voice Search"><i class="fas fa-microphone"></i></button>
       <button id="searchSubmit"><i class="fas fa-search"></i></button>
       <div class="search-dropdown" id="searchDropdown"></div>
     </div>
@@ -266,6 +285,22 @@
         <span class="hero-dot"></span>
       </div>
     </section>
+
+    <!-- OCCASION BANNER (Saudi National Day, Eid, Ramadan, White Wednesday) -->
+    <div id="occasionBanner" style="display:none"></div>
+
+    <!-- STORIES ROW -->
+    <div class="stories-row" id="storiesRow">
+      <div class="story-item" onclick="openStory(0)"><div class="story-ring"><span class="story-emoji">⚡</span></div><span class="story-label">Flash Sale</span></div>
+      <div class="story-item" onclick="openStory(1)"><div class="story-ring"><span class="story-emoji">✨</span></div><span class="story-label">New In</span></div>
+      <div class="story-item" onclick="openStory(2)"><div class="story-ring"><span class="story-emoji">👑</span></div><span class="story-label">VIP Club</span></div>
+      <div class="story-item" onclick="openStory(3)"><div class="story-ring"><span class="story-emoji">🎁</span></div><span class="story-label">Gifts</span></div>
+      <div class="story-item" onclick="openStory(4)"><div class="story-ring"><span class="story-emoji">☀️</span></div><span class="story-label">Summer</span></div>
+      <div class="story-item" onclick="openStory(5)"><div class="story-ring"><span class="story-emoji">🌙</span></div><span class="story-label">Ramadan</span></div>
+      <div class="story-item" onclick="openStory(6)"><div class="story-ring"><span class="story-emoji">🏅</span></div><span class="story-label">Bestsellers</span></div>
+      <div class="story-item" onclick="openStory(7)"><div class="story-ring"><span class="story-emoji">📱</span></div><span class="story-label">TikTok</span></div>
+    </div>
+    <div id="storyViewer" style="display:none;position:fixed;inset:0;z-index:99000;"></div>
 
     <!-- SAUDI PRIDE BANNER -->
     <div class="saudi-pride-wrap">
@@ -479,6 +514,18 @@
 
     <!-- RECENTLY VIEWED -->
     <section class="rv-section" id="rvSection" style="display:none"></section>
+
+    <!-- FOR YOU SECTION -->
+    <section class="rv-section" id="forYouSection" style="display:none"></section>
+
+    <!-- INFLUENCER PICKS -->
+    <section id="influencerSection" style="display:none"></section>
+
+    <!-- TIKTOK VIRAL -->
+    <section id="tiktokSection" style="display:none"></section>
+
+    <!-- HOMEPAGE REVIEWS SLIDER -->
+    <section id="hrevSection" style="display:none"></section>
 
     <!-- SUPER DEALS + TRENDS -->
     <div class="two-col-banner">
@@ -783,6 +830,11 @@
 
   </main>
 
+  <!-- FLOATING WHATSAPP BUTTON -->
+  <a class="wa-float-btn" href="https://wa.me/966500000000?text=Hello%20EX%20GLOBAL%20%F0%9F%91%8B%20I%20need%20help" target="_blank" rel="noopener" title="WhatsApp Support">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="bot-btn active" data-sound="shop" onclick="setBottomActive(this)">
@@ -872,6 +924,8 @@
         <div class="cc-tline"></div>
         <div class="cc-step"><div class="cc-dot"><i class="fas fa-house"></i></div><div class="cc-slabel" data-i18n="trackDelivered">Delivered</div></div>
       </div>
+      <!-- ZATCA Tax Invoice QR -->
+      <div id="zatcaInvoiceBox" style="display:none;margin:16px 0"></div>
       <!-- Buttons -->
       <div class="cc-btns">
         <button class="cc-track-btn" onclick="closeCart();setTimeout(()=>{openMe();},200)">
@@ -2209,6 +2263,18 @@
     <div class="page-body" id="pageBody"></div>
   </aside>
 
+  <!-- ===== SUBSCRIBE / NEWSLETTER SECTION ===== -->
+  <section class="subscribe-section">
+    <div class="sub-inner">
+      <div class="sub-icon"><i class="fab fa-whatsapp"></i></div>
+      <div class="sub-title" data-i18n="subscribeTitle">Get VIP Deals</div>
+      <div class="sub-sub" data-i18n="subscribeSub">Receive exclusive offers directly on WhatsApp</div>
+      <a class="sub-wa-btn" href="https://wa.me/966500000000?text=Subscribe%20me%20to%20EX%20GLOBAL%20VIP%20deals%20%F0%9F%9B%8D" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i> <span data-i18n="subscribeWA">Subscribe on WhatsApp</span>
+      </a>
+    </div>
+  </section>
+
   <!-- ===== SITE FOOTER ===== -->
   <footer class="site-footer">
     <div class="site-footer-logo">EX GLOBAL</div>
@@ -2345,9 +2411,14 @@
     </div>
   </div>
 
-  <script src="translations.js?v=93"></script>
+  <!-- Compare Bar + Modal -->
+  <div id="compareBar" class="compare-bar" style="display:none"></div>
+  <div id="compareModal" class="cmp-overlay" style="display:none" onclick="if(event.target===this)closeCompare()"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="translations.js?v=95"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=149"></script>
+  <script src="script.js?v=151"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
