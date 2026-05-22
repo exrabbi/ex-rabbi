@@ -6681,15 +6681,26 @@ html, body { transition: background .35s, color .35s; }
 }
 .wa-float-btn:active { cursor: grabbing; transform: scale(1.08); box-shadow: 0 8px 28px rgba(37,211,102,.6); }
 
-/* Hide WA + AI buttons when cart/checkout is open */
+/* Hide WA + AI floating buttons when cart or payment is open */
 body:has(.cart-sidebar.open) .wa-float-btn,
 body:has(.cart-sidebar.open) .hc-fab,
+body:has(.cart-sidebar.open) .ai-chat-fab,
+body:has(#cartSidebar.open) .wa-float-btn,
+body:has(#cartSidebar.open) .hc-fab,
+body:has(#cartSidebar.open) .ai-chat-fab,
+body:has(#payOverlay.open) .wa-float-btn,
+body:has(#payOverlay.open) .hc-fab,
+body:has(#payOverlay.open) .ai-chat-fab,
+body:has(#payModal.open) .wa-float-btn,
+body:has(#payModal.open) .hc-fab,
+body:has(#payModal.open) .ai-chat-fab,
 body:has(.modal-overlay.open) .wa-float-btn,
-body:has(.modal-overlay.open) .hc-fab {
-  opacity: 0;
-  pointer-events: none;
-  transform: scale(0.7);
-  transition: opacity .2s, transform .2s;
+body:has(.modal-overlay.open) .hc-fab,
+body:has(.modal-overlay.open) .ai-chat-fab {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.6) !important;
+  transition: opacity .25s, transform .25s;
 }
 @keyframes waBounce {
   0%   { transform: scale(0); opacity: 0; }
