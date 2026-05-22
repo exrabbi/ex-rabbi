@@ -8436,3 +8436,52 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   background-clip: text;
   font-weight: 800 !important;
 }
+
+/* ── 16. FLOATING LUXURY NAV v2 ── */
+.bottom-nav {
+  left: 14px !important; right: 14px !important;
+  bottom: 16px !important; width: auto !important;
+  height: 68px !important; border-radius: 28px !important;
+  background: rgba(8,7,26,.87) !important;
+  backdrop-filter: blur(28px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
+  border: 1px solid rgba(233,30,140,.32) !important;
+  border-top: none !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.55), 0 8px 24px rgba(0,0,0,.3),
+    0 0 0 0.5px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  overflow: visible;
+}
+@media (max-width: 1199px) {
+  body { padding-bottom: calc(68px + 28px + env(safe-area-inset-bottom, 0px)) !important; }
+}
+.bot-btn { color: rgba(255,255,255,.35) !important; height: 68px !important; }
+.bot-btn i { color: rgba(255,255,255,.38) !important; font-size: 20px !important; transition: color .2s, filter .2s, font-size .2s; }
+.bot-btn span { color: rgba(255,255,255,.3) !important; font-weight: 700 !important; letter-spacing: .3px; }
+.bot-btn.active i { color: #e91e8c !important; filter: drop-shadow(0 0 8px rgba(233,30,140,.65)) !important; font-size: 22px !important; }
+.bot-btn.active span { color: #e91e8c !important; }
+.bot-btn.active .bot-icon-wrap { transform: translateY(-4px) scale(1.08) !important; }
+.bot-btn:not(.bot-center-btn).active::after {
+  content: '' !important; display: block !important;
+  position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: #e91e8c; box-shadow: 0 0 7px rgba(233,30,140,.9);
+}
+.bot-btn:active .bot-icon-wrap { transform: scale(.82) !important; transition-duration: .07s !important; }
+.bot-center-btn .bot-icon-wrap {
+  width: 62px !important; height: 62px !important; margin-top: -38px !important;
+  background: linear-gradient(145deg, #ff0a9f 0%, #c800e8 45%, #6400d4 100%) !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.5), 0 0 0 6px rgba(233,30,140,.12),
+    0 14px 36px rgba(233,30,140,.7), 0 6px 18px rgba(108,0,212,.5),
+    inset 0 2px 0 rgba(255,255,255,.28) !important;
+  animation: trendGlow 2.5s ease-in-out infinite !important;
+}
+@keyframes trendGlow {
+  0%,100% { box-shadow: 0 0 0 3px rgba(233,30,140,.5), 0 0 0 6px rgba(233,30,140,.12), 0 14px 36px rgba(233,30,140,.7), 0 6px 18px rgba(108,0,212,.5), inset 0 2px 0 rgba(255,255,255,.28); }
+  50%      { box-shadow: 0 0 0 4px rgba(233,30,140,.75), 0 0 0 9px rgba(233,30,140,.15), 0 18px 44px rgba(233,30,140,.85), 0 8px 22px rgba(108,0,212,.65), inset 0 2px 0 rgba(255,255,255,.28); }
+}
+.bot-center-btn.active .bot-icon-wrap { transform: scale(1.14) translateY(-6px) !important; }
+.bot-nav-badge {
+  background: linear-gradient(135deg, #e91e8c, #7c3aed) !important;
+  border-color: #08071a !important;
+  font-size: 9px !important;
+}
