@@ -1191,6 +1191,12 @@ function flyCartAdd(e, id) {
     _playCartSound();
     _bounceCartIcon();
     addToCart(id, '', '');
+    if (btn) {
+      const origHTML = btn.innerHTML;
+      btn.classList.add('atc-success');
+      btn.innerHTML = `<i class="fas fa-check-circle" style="position:relative;z-index:2"></i><span style="position:relative;z-index:2">Added ✓</span>`;
+      setTimeout(() => { btn.classList.remove('atc-success'); btn.innerHTML = origHTML; }, 1300);
+    }
   }
   requestAnimationFrame(step);
 }
