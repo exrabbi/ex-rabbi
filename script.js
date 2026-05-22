@@ -4880,13 +4880,125 @@ function closeAiChat() {
 }
 
 function _aiRenderWelcome() {
-  const lang = getCurrentLang ? getCurrentLang() : 'BN';
-  const msgs = {
-    BN: 'আসসালামু আলাইকুম! 👋 আমি EX GLOBAL-এর AI সহকারী। পণ্য, অর্ডার বা যেকোনো বিষয়ে সাহায্য করতে পারি।',
-    EN: 'Hello! 👋 I\'m EX GLOBAL\'s AI assistant. I can help you with products, orders, or anything else!',
-    AR: 'السلام عليكم! 👋 أنا مساعد EX GLOBAL الذكي. يمكنني مساعدتك في المنتجات والطلبات وأي شيء آخر!'
+  const box = document.getElementById('aiChatMessages');
+  if (!box) return;
+  const greets = {
+    bn: 'আসসালামু আলাইকুম! 👋 আমি EX GLOBAL-এর AI সহকারী। নিচের বিষয়গুলো সরাসরি জিজ্ঞেস করুন:',
+    en: 'Hello! 👋 I\'m EX GLOBAL\'s AI Assistant. Ask me anything:',
+    ar: 'السلام عليكم! 👋 أنا مساعد EX GLOBAL. اسألني عن أي شيء:',
+    hi: 'नमस्ते! 👋 मैं EX GLOBAL का AI Assistant हूं। कुछ भी पूछें:'
   };
-  _aiAppendMsg('assistant', msgs[lang] || msgs['EN']);
+  _aiAppendMsg('assistant', greets[currentLang] || greets.en);
+  const chips = [
+    { en:'📦 Track My Order', ar:'📦 تتبع طلبي', bn:'📦 অর্ডার ট্র্যাক', hi:'📦 ऑर्डर ट्रैक' },
+    { en:'🔥 Best Deals Today', ar:'🔥 أفضل العروض', bn:'🔥 আজকের অফার', hi:'🔥 आज के ऑफर' },
+    { en:'🚚 Delivery Info', ar:'🚚 معلومات التوصيل', bn:'🚚 ডেলিভারি তথ্য', hi:'🚚 डिलीवरी जानकारी' },
+    { en:'↩️ Return Policy', ar:'↩️ سياسة الإرجاع', bn:'↩️ রিটার্ন পলিসি', hi:'↩️ वापसी नीति' },
+    { en:'💳 Payment Methods', ar:'💳 طرق الدفع', bn:'💳 পেমেন্ট পদ্ধতি', hi:'💳 भुगतान विधि' },
+    { en:'🎁 Coupon Codes', ar:'🎁 كودات الخصم', bn:'🎁 কুপন কোড', hi:'🎁 कूपन कोड' },
+  ];
+  const chipDiv = document.createElement('div');
+  chipDiv.className = 'ai-chips';
+  chipDiv.innerHTML = chips.map(c =>
+    `<button class="ai-chip" onclick="this.closest('.ai-chips').remove();sendAiQuick('${(c[currentLang]||c.en).replace(/'/g,"\\'")}')">${c[currentLang]||c.en}</button>`
+  ).join('');
+  box.appendChild(chipDiv);
+  box.scrollTop = box.scrollHeight;
+}
+
+function sendAiQuick(text) {
+  const inp = document.getElementById('aiChatInput');
+  if (inp) { inp.value = text; }
+  sendAiMessage();
+}
+
+/* ===== LOCAL AI SMART ENGINE ===== */
+function _localAiReply(text) {
+  const q = text.toLowerCase();
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+
+  // ── ORDER TRACKING ──
+  if (/order|track|deliver|where|طلب|أين|توصيل|অর্ডার|ট্র্যাক|ডেলিভারি|ऑर्डर/.test(q)) {
+    const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
+    if (orders.length > 0) {
+      const last = orders[orders.length - 1];
+      const statusMap = { pending:'Pending ⏳', confirmed:'Confirmed ✅', shipped:'Shipped 🚚', delivered:'Delivered ✅' };
+      return `📦 **Your Latest Order**\n\nOrder ID: #${last.id}\nStatus: ${statusMap[last.status] || last.status}\nTotal: ${cur}${(last.total * rate).toFixed(0)}\n\nExpected delivery: 2–4 business days from order date.\n\n📞 For real-time updates WhatsApp: +966 546 224 029`;
+    }
+    return `📦 I don't see any recent orders on this device.\n\nPlease share your **Order ID** on WhatsApp for instant tracking:\n👉 wa.me/966546224029`;
+  }
+
+  // ── PRODUCT SEARCH ──
+  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|جلابية|عباية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
+    const words = q.split(/\s+/).filter(w => w.length > 3);
+    const matches = PRODUCTS.filter(p => {
+      const n = (p.names?.en || '').toLowerCase();
+      return words.some(w => n.includes(w));
+    }).slice(0, 4);
+    if (matches.length) {
+      return `🛍️ **Found ${matches.length} products:**\n\n` +
+        matches.map(p => `• ${p.names?.en} — ${cur}${(p.price*rate).toFixed(0)} (-${p.discount}%)`).join('\n') +
+        '\n\nTap any product card to view & buy!';
+    }
+  }
+
+  // ── BEST DEALS / OFFERS ──
+  if (/deal|offer|sale|discount|cheap|best|price|offer|عرض|خصم|أرخص|ডিল|অফার|ছাড়|डील|ऑफर/.test(q)) {
+    const top = [...PRODUCTS].sort((a,b) => b.discount - a.discount).slice(0, 4);
+    return `🔥 **Today's Best Deals:**\n\n` +
+      top.map(p => `• ${p.names?.en}: ${cur}${(p.price*rate).toFixed(0)} **-${p.discount}%** off`).join('\n') +
+      `\n\nAll prices include 15% VAT. Use code **EXG10** for extra 10% off!`;
+  }
+
+  // ── DELIVERY ──
+  if (/ship|deliver|how long|days|fast|كم يوم|توصيل|متى|শিপিং|ডেলিভারি|कितने दिन/.test(q)) {
+    return `🚚 **Delivery Information:**\n\n• Standard: 2–4 business days\n• Express: 1–2 days (+SAR 15)\n• **Free delivery** on orders over SAR 100\n• Coverage: All Saudi Arabia 🇸🇦\n• Riyadh & Jeddah: sometimes same-day!\n\nTrack your order anytime on WhatsApp.`;
+  }
+
+  // ── RETURNS ──
+  if (/return|refund|exchange|back|إرجاع|استبدال|রিটার্ন|ফেরত|वापसी|रिफंड/.test(q)) {
+    return `↩️ **Return & Refund Policy:**\n\n✅ 7 days from delivery date\n✅ Item must be unused & original packaging\n✅ Free returns for defective items\n✅ Refund within 3–5 business days\n\n📞 Start a return: WhatsApp +966 546 224 029\nMention your order ID for faster processing.`;
+  }
+
+  // ── PAYMENT ──
+  if (/pay|card|cash|mada|visa|tamara|tabby|apple|stc|كيف أدفع|دفع|পেমেন্ট|भुगतान/.test(q)) {
+    return `💳 **Payment Methods:**\n\n• 💵 Cash on Delivery (COD)\n• 💳 Mada, Visa, Mastercard\n• 📱 Apple Pay, STC Pay\n• 🟣 Tamara — 4 payments, 0% interest\n• 🟤 Tabby — 4 payments, 0% interest\n\n🔒 All payments SSL encrypted & ZATCA compliant.`;
+  }
+
+  // ── COUPONS ──
+  if (/coupon|code|promo|كوبون|خصم|كود|কুপন|কোড|कूपन/.test(q)) {
+    return `🎁 **Active Coupon Codes:**\n\n• **EXG10** — 10% off any order\n• **NEWUSER** — 15% off your first order\n• **EID2025** — 20% off Eid collection\n• **VIP5OFF** — 5% extra (loyalty reward)\n\nEnter the code in your cart before checkout!`;
+  }
+
+  // ── SIZE ──
+  if (/size|fit|measure|مقاس|حجم|سايز|সাইজ|माप/.test(q)) {
+    return `📏 **Size Guide:**\n\n• XS = 34–36 | S = 36–38\n• M = 38–40 | L = 40–42\n• XL = 42–44 | XXL = 44–46\n\nFor custom fit advice, send your measurements on WhatsApp and we'll recommend the perfect size! 👗`;
+  }
+
+  // ── CONTACT ──
+  if (/contact|support|help|phone|whatsapp|تواصل|دعم|رقم|সাপোর্ট|যোগাযোগ|संपर्क/.test(q)) {
+    return `📞 **Contact EX GLOBAL:**\n\n• WhatsApp: +966 546 224 029\n• Hours: 9AM–11PM (SAT–THU)\n• Response time: ~5 minutes ⚡\n• Email: support@exglobal.online\n\n📍 Riyadh, Saudi Arabia 🇸🇦`;
+  }
+
+  // ── VAT ──
+  if (/vat|tax|ضريبة|zatca|فاتورة|ভ্যাট|कर/.test(q)) {
+    return `🧾 **Tax & Invoice:**\n\n• VAT: 15% included in all prices\n• CR No: 7034567890\n• VAT No: 310000000000003\n• ZATCA Phase 1 compliant\n• Tax invoice auto-generated after each order with QR code`;
+  }
+
+  // ── ABOUT ──
+  if (/about|who|brand|company|store|شركة|متجر|عن|সম্পর্কে|ব্র্যান্ড/.test(q)) {
+    return `👑 **About EX GLOBAL:**\n\nSaudi Arabia's premium fashion destination serving 50,000+ customers since 2021.\n\n📍 HQ: Riyadh, Saudi Arabia 🇸🇦\n🌍 Offices: China 🇨🇳 · UAE 🇦🇪 · Iraq 🇮🇶\n📋 CR: 7034567890 | VAT: 310000000000003\n✅ 100% genuine products guaranteed`;
+  }
+
+  // ── ARABIC / HELLO ──
+  if (/^(hi|hello|hey|مرحبا|هلا|السلام|আমি|হ্যালো|নমস্কার)/.test(q)) {
+    const greet = { bn:'ওয়া আলাইকুম সালাম! 😊 কীভাবে সাহায্য করতে পারি?', en:'Hello! How can I help you today? 😊', ar:'وعليكم السلام! كيف يمكنني مساعدتك؟ 😊', hi:'नमस्ते! आज मैं आपकी कैसे मदद कर सकता हूं? 😊' };
+    return greet[currentLang] || greet.en;
+  }
+
+  return null; // no local match → try external API
 }
 
 function _aiAppendMsg(role, text) {
@@ -4930,9 +5042,27 @@ async function sendAiMessage() {
     return;
   }
 
+  // Try local smart engine first — instant, no API quota
+  const localReply = _localAiReply(text);
+  if (localReply) {
+    inp.value = '';
+    _aiAppendMsg('user', text);
+    aiChatHistory.push({ role: 'user', content: text });
+    _aiShowTyping();
+    setTimeout(() => {
+      _aiRemoveTyping();
+      _aiAppendMsg('assistant', localReply);
+      aiChatHistory.push({ role: 'assistant', content: localReply });
+    }, 500);
+    return;
+  }
+
   const workerUrl = getAiWorkerUrl();
   if (!workerUrl) {
-    showToast('AI chatbot not configured yet.');
+    inp.value = '';
+    _aiAppendMsg('user', text);
+    aiChatHistory.push({ role: 'user', content: text });
+    _aiAppendMsg('assistant', "I'm here to help! You can ask me about products, delivery, returns, payment methods, or coupons. 😊");
     return;
   }
   inp.value = '';
