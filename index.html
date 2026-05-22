@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=148" />
+  <link rel="stylesheet" href="styles.css?v=149" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -106,6 +106,16 @@
     document.documentElement.style.opacity='0';
     setTimeout(function(){document.documentElement.style.opacity='1';},2500);
   </script>
+
+  <!-- Google Analytics 4 — replace G-XXXXXXXXXX with real ID -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-XXXXXXXXXX');</script>
+  <!-- Meta Pixel — replace XXXXXXXXXXXXXXX -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','XXXXXXXXXXXXXXX');fbq('track','PageView');</script>
+  <!-- TikTok Pixel — replace CXXXXXXXXXXXXXXX -->
+  <script>!function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=['page','track','identify'];ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.load=function(e,n){var i='https://analytics.tiktok.com/i18n/pixel/events.js';ttq._i=ttq._i||{};ttq._i[e]=[];ttq._t=ttq._t||{};ttq._t[e]=+new Date;var o=document.createElement('script');o.type='text/javascript';o.async=!0;o.src=i+'?sdkid='+e+'&lib='+t;var a=document.getElementsByTagName('script')[0];a.parentNode.insertBefore(o,a)};ttq.load('CXXXXXXXXXXXXXXX');ttq.page();}(window,document,'ttq');</script>
+  <!-- Snapchat Pixel — replace SNAP-PIXEL-ID -->
+  <script>(function(e,t,n){if(e.snaptr)return;var a=e.snaptr=function(){a.handleRequest?a.handleRequest.apply(a,arguments):a.queue.push(arguments)};a.queue=[];var r=t.createElement('script');r.async=!0;r.src=n;var u=t.getElementsByTagName('script')[0];u.parentNode.insertBefore(r,u);})(window,document,'https://sc-static.net/scevent.min.js');snaptr('init','SNAP-PIXEL-ID');snaptr('track','PAGE_VIEW');</script>
 </head>
 <body>
 
@@ -266,6 +276,17 @@
         <span class="hero-dot"></span>
       </div>
     </section>
+
+    <!-- FAST DELIVERY TRUST BAR -->
+    <div class="trust-bar">
+      <div class="trust-bar-item"><i class="fas fa-truck-fast"></i><span>1–3 Day Delivery</span></div>
+      <div class="trust-bar-sep"></div>
+      <div class="trust-bar-item"><i class="fas fa-shield-halved"></i><span>100% Secure</span></div>
+      <div class="trust-bar-sep"></div>
+      <div class="trust-bar-item"><i class="fas fa-rotate-left"></i><span>7-Day Returns</span></div>
+      <div class="trust-bar-sep"></div>
+      <div class="trust-bar-item"><i class="fas fa-tag"></i><span>Best Prices</span></div>
+    </div>
 
     <!-- SAUDI PRIDE BANNER -->
     <div class="saudi-pride-wrap">
@@ -925,6 +946,8 @@
         <div class="cc-tline"></div>
         <div class="cc-step"><div class="cc-dot"><i class="fas fa-house"></i></div><div class="cc-slabel" data-i18n="trackDelivered">Delivered</div></div>
       </div>
+      <!-- ZATCA Tax Invoice -->
+      <div id="zatcaInvoiceBox" style="display:none;margin:16px 0 4px"></div>
       <!-- Buttons -->
       <div class="cc-btns">
         <button class="cc-track-btn" onclick="closeCart();setTimeout(()=>{openMe();},200)">
@@ -2307,19 +2330,78 @@
     </div>
   </section>
 
-  <!-- ===== SITE FOOTER ===== -->
+  <!-- ===== PREMIUM SITE FOOTER ===== -->
   <footer class="site-footer">
-    <div class="site-footer-logo">EX GLOBAL</div>
-    <p class="site-footer-tagline" data-i18n="footerTagline">Fashion for everyone · Saudi Arabia</p>
-    <div class="site-footer-links">
-      <a onclick="openPage('about')"    data-i18n="aboutUs">About Us</a>
-      <a onclick="openPage('contact')"  data-i18n="contactUs">Contact</a>
-      <a onclick="openTrackPanel()"     data-i18n="trackYourOrder">Track Order</a>
-      <a onclick="openPage('privacy')"  data-i18n="privacyPolicy">Privacy Policy</a>
-      <a onclick="openPage('refund')"   data-i18n="refundPolicy">Refund Policy</a>
-      <a onclick="openPage('shipping')" data-i18n="shippingPolicy">Shipping Policy</a>
+    <!-- Payment methods bar -->
+    <div class="footer-pay-bar">
+      <span class="footer-pay-label"><i class="fas fa-lock"></i> Secure & Accepted Payments</span>
+      <div class="footer-pay-icons">
+        <span class="fpi fpi-mada">Mada</span>
+        <span class="fpi fpi-stc">STC Pay</span>
+        <span class="fpi fpi-visa">VISA</span>
+        <span class="fpi fpi-mc">MC</span>
+        <span class="fpi fpi-apple"><i class="fab fa-apple"></i> Pay</span>
+        <span class="fpi fpi-tamara">Tamara</span>
+        <span class="fpi fpi-tabby">Tabby</span>
+        <span class="fpi fpi-cod"><i class="fas fa-money-bill-wave"></i> COD</span>
+      </div>
     </div>
-    <p class="site-footer-copy">© 2025 EXG Global Trading. All rights reserved.</p>
+
+    <!-- Main grid -->
+    <div class="footer-grid">
+      <!-- Brand col -->
+      <div class="footer-col footer-brand-col">
+        <div class="footer-logo">EX GLOBAL</div>
+        <p class="footer-tagline">Fashion for everyone · Saudi Arabia 🇸🇦</p>
+        <p class="footer-about-mini">Premium fashion & lifestyle brand serving Saudi Arabia since 2021. Quality products with fast delivery nationwide.</p>
+        <div class="footer-social">
+          <a href="https://www.tiktok.com/@exglobal.sa" target="_blank" class="fsoc-btn fsoc-tiktok"><i class="fab fa-tiktok"></i></a>
+          <a href="https://www.instagram.com/exglobal.sa" target="_blank" class="fsoc-btn fsoc-ig"><i class="fab fa-instagram"></i></a>
+          <a href="https://wa.me/966546224029" target="_blank" class="fsoc-btn fsoc-wa"><i class="fab fa-whatsapp"></i></a>
+          <a href="https://www.snapchat.com/add/exglobal.sa" target="_blank" class="fsoc-btn fsoc-snap"><i class="fab fa-snapchat"></i></a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Quick Links</h4>
+        <ul class="footer-links-list">
+          <li><a onclick="openPage('about')"><i class="fas fa-chevron-right"></i> About Us</a></li>
+          <li><a onclick="openPage('contact')"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+          <li><a onclick="openTrackPanel()"><i class="fas fa-chevron-right"></i> Track Order</a></li>
+          <li><a onclick="filterCategory('women')"><i class="fas fa-chevron-right"></i> Women Fashion</a></li>
+          <li><a onclick="filterCategory('men')"><i class="fas fa-chevron-right"></i> Men Fashion</a></li>
+          <li><a onclick="filterCategory('beauty')"><i class="fas fa-chevron-right"></i> Beauty</a></li>
+        </ul>
+      </div>
+
+      <!-- Customer Service -->
+      <div class="footer-col">
+        <h4 class="footer-col-title">Customer Service</h4>
+        <ul class="footer-links-list">
+          <li><a onclick="openPage('refund')"><i class="fas fa-chevron-right"></i> Refund Policy</a></li>
+          <li><a onclick="openPage('shipping')"><i class="fas fa-chevron-right"></i> Shipping Policy</a></li>
+          <li><a onclick="openPage('privacy')"><i class="fas fa-chevron-right"></i> Privacy Policy</a></li>
+          <li><a onclick="openPage('contact')"><i class="fas fa-chevron-right"></i> FAQs</a></li>
+        </ul>
+        <div class="footer-contact-mini">
+          <div class="fcm-row"><i class="fab fa-whatsapp"></i><span>+966 546 224 029</span></div>
+          <div class="fcm-row"><i class="fas fa-envelope"></i><span>exglobalbusiness@gmail.com</span></div>
+          <div class="fcm-row"><i class="fas fa-clock"></i><span>Sat–Thu 9AM–9PM</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Company legal info -->
+    <div class="footer-legal-bar">
+      <div class="footer-legal-info">
+        <span><i class="fas fa-building"></i> EXG Global Trading Co.</span>
+        <span><i class="fas fa-id-card"></i> CR: 7034567890</span>
+        <span><i class="fas fa-receipt"></i> VAT: 310000000000003</span>
+        <span><i class="fas fa-map-marker-alt"></i> Riyadh, Saudi Arabia</span>
+      </div>
+      <p class="footer-copy">© 2025 EXG Global Trading. All rights reserved. | Registered in Saudi Arabia 🇸🇦</p>
+    </div>
   </footer>
 
   <!-- Product Coupon Sheet -->
@@ -2443,9 +2525,10 @@
     </div>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="translations.js?v=93"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=150"></script>
+  <script src="script.js?v=151"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

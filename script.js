@@ -279,6 +279,20 @@ function fmt(price) {
   return T.currency + val.toLocaleString();
 }
 
+/* ===== TAMARA + TABBY BNPL HELPERS ===== */
+function _tamaraHTML(price, large) {
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const sar = Math.round(price * T.rate);
+  const each = Math.round(sar / 4);
+  return `<div class="tamara-pill${large?' tamara-large':''}"><span class="tamara-t">t</span><span>4 × ${T.currency}${each}</span><span class="tamara-info" onclick="event.stopPropagation();showToast('Pay in 4 interest-free installments with Tamara')">ⓘ</span></div>`;
+}
+function _tabbyHTML(price, large) {
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const sar = Math.round(price * T.rate);
+  const each = Math.round(sar / 4);
+  return `<div class="tabby-pill${large?' tabby-large':''}"><span class="tabby-t">T</span><span>4 × ${T.currency}${each} with Tabby</span></div>`;
+}
+
 function getName(p) {
   if (!p.names) return '';
   return p.names[currentLang] || p.names.en || p.names.bn || p.names.ar || p.names.hi || '';
@@ -783,6 +797,7 @@ function productCardHTML(p) {
           <span class="price-current">${fmt(p.price)}</span>
           <span class="pc-disc-pill">-${p.discount}%</span>
         </div>
+        ${_tamaraHTML(p.price)}
         <div class="pc-meta-row">
           <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
           <span class="pc-sep">|</span>
@@ -1239,6 +1254,8 @@ function addToCart(id, size, color) {
   if (existing) existing.qty++;
   else cart.push({ id, qty: 1, size, color });
   _saveCart();
+  if(typeof gtag==='function')gtag('event','add_to_cart',{currency:'SAR',value:p?p.price:0,items:[{item_id:id,item_name:p?(p.names?.en||'Product'):'Product',price:p?p.price:0,quantity:1}]});
+  if(typeof fbq==='function')fbq('track','AddToCart',{content_ids:[id],value:p?p.price:0,currency:'SAR'});
   updateCartBadge();
   _abandonedCartReset();
   if (!localStorage.getItem('exg_spin_shown') && cart.length === 1) setTimeout(_showSpinWheel, 900);
@@ -1798,6 +1815,7 @@ function openModal(id) {
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
       </div>
+      <div class="modal-bnpl-row">${_tamaraHTML(p.price,true)}${_tabbyHTML(p.price,true)}</div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${String(p.sold).replace(/\++$/,'')}+ ${t('soldText')}</span>
@@ -3391,6 +3409,8 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
+    if(typeof gtag==='function')gtag('event','purchase',{currency:'SAR',transaction_id:newOrder.id,value:totalSAR,tax:+(totalSAR*0.15).toFixed(2)});
+    if(typeof fbq==='function')fbq('track','Purchase',{value:totalSAR,currency:'SAR'});
     _addVipPoints(Math.round(totalSAR) * 10);
     // Reduce stock for each ordered item
     const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
@@ -3405,7 +3425,10 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
   // Fire automations (non-blocking)
-  if (newOrder) setTimeout(() => _automationFire(newOrder), 500);
+  if (newOrder) {
+    setTimeout(() => _automationFire(newOrder), 500);
+    setTimeout(() => _showZatcaInvoice(newOrder.id, totalSAR), 800);
+  }
   return newOrder;
 }
 
@@ -6837,4 +6860,33 @@ function _revGo(idx) {
   if (!track) return;
   track.querySelectorAll('.rstrip-card').forEach((c, i) => c.classList.toggle('active', i === idx));
   document.querySelectorAll('.rstrip-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+
+/* ===== ZATCA PHASE 1 QR INVOICE ===== */
+function _zatcaQR(total, vat) {
+  function tlv(tag, v) { const e=new TextEncoder().encode(v); return [tag,e.length,...e]; }
+  const b=[...tlv(1,'EXG Global Trading'),...tlv(2,'310000000000003'),...tlv(3,new Date().toISOString()),...tlv(4,total.toFixed(2)),...tlv(5,vat.toFixed(2))];
+  return btoa(String.fromCharCode(...b));
+}
+function _showZatcaInvoice(orderId, totalSAR) {
+  const el = document.getElementById('zatcaInvoiceBox');
+  if (!el) return;
+  const vat = +(totalSAR * 0.15).toFixed(2);
+  const excl = +(totalSAR - vat).toFixed(2);
+  const qid = 'zqr_' + orderId;
+  el.innerHTML = `<div class="zatca-invoice">
+    <div class="zatca-header"><span class="zatca-logo">EXG Global Trading</span><span class="zatca-inv-label">فاتورة ضريبية · Tax Invoice</span></div>
+    <div class="zatca-details">
+      <div class="zatca-row"><span>VAT No.</span><span>310000000000003</span></div>
+      <div class="zatca-row"><span>CR No.</span><span>7034567890</span></div>
+      <div class="zatca-row"><span>Invoice #</span><span>${orderId}</span></div>
+      <div class="zatca-row"><span>Date</span><span>${new Date().toLocaleDateString('en-SA')}</span></div>
+      <div class="zatca-row"><span>Excl. VAT</span><span>SAR ${excl.toFixed(2)}</span></div>
+      <div class="zatca-row"><span>VAT 15%</span><span>SAR ${vat.toFixed(2)}</span></div>
+      <div class="zatca-row zatca-total"><b>Total</b><b>SAR ${totalSAR.toFixed(2)}</b></div>
+    </div>
+    <div class="zatca-qr-wrap"><div id="${qid}"></div><p class="zatca-scan">Scan to verify · ZATCA Phase 1</p></div>
+  </div>`;
+  el.style.display = 'block';
+  try { if(typeof QRCode!=='undefined') new QRCode(document.getElementById(qid),{text:_zatcaQR(totalSAR,vat),width:120,height:120,correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
 }
