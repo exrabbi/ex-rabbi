@@ -3357,6 +3357,7 @@ async function signInWithFacebook() {
     showToast(t('firebaseNotSetup')); return;
   }
   const provider = new firebase.auth.FacebookAuthProvider();
+  provider.addScope('email');
   try {
     const result = await firebase.auth().signInWithPopup(provider);
     if (result.user) {
@@ -3366,7 +3367,7 @@ async function signInWithFacebook() {
     }
   } catch (e) {
     if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      try { await firebase.auth().signInWithRedirect(provider); } catch(e2) {}
+      showToast('Please allow popups for Facebook Login, or try Google login.');
     } else if (e.code === 'auth/operation-not-allowed') {
       showToast(t('facebookNotEnabled'));
     } else if (e.code !== 'auth/cancelled-popup-request') {
