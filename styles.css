@@ -8261,6 +8261,13 @@ img, video, iframe { max-width: 100%; }
 /* Hero overlay hidden — show clean images only */
 .hero-overlay { display: none !important; }
 
+/* Hero banner: pure clean display, no overlays, no fades */
+.hero-slide img {
+  display: block; width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  image-rendering: -webkit-optimize-contrast;
+}
+
 /* ╔══════════════════════════════════════════════════════════════╗
    ║  EX GLOBAL — LUXURY BRAND VISUAL UPGRADE  (CSS v164)        ║
    ╚══════════════════════════════════════════════════════════════╝ */
@@ -8407,13 +8414,7 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   position: relative;
 }
 .hero-slider::after {
-  content: '';
-  position: absolute; bottom: 0; left: 0; right: 0; height: 48px;
-  background: linear-gradient(to bottom, transparent, #f4f3fb);
-  pointer-events: none; z-index: 4;
-}
-[data-theme="dark"] .hero-slider::after {
-  background: linear-gradient(to bottom, transparent, #07061a);
+  display: none;
 }
 
 /* ── 13. PREMIUM PRODUCT CARD GLOW ON HOVER ── */
