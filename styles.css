@@ -8164,3 +8164,87 @@ img, video, iframe { max-width: 100%; }
 [data-theme="dark"] .del-mini-row { color: #ccc; }
 [data-theme="dark"] .del-mini-track { background: #1e1e3a; }
 [data-theme="dark"] .del-free-strip { background: rgba(5,166,96,.08); border-color: rgba(5,166,96,.2); }
+
+/* ===== LUXURY BUTTON — ALL VARIANTS UNIFIED ===== */
+
+/* Category strip add button */
+.cat-strip-add-btn {
+  position: relative;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  width: calc(100% - 16px);
+  margin: 0 8px 10px; padding: 10px 6px;
+  background: linear-gradient(135deg, #09091a 0%, #1c0535 55%, #09091a 100%);
+  color: #fff !important; font-weight: 800; font-size: 11px;
+  border-radius: 50px;
+  border: 1.5px solid rgba(233,30,140,.55);
+  letter-spacing: .6px; text-transform: uppercase;
+  overflow: hidden; cursor: pointer;
+  transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .28s, border-color .28s;
+  box-shadow: 0 3px 16px rgba(233,30,140,.25), inset 0 1px 0 rgba(255,255,255,.07);
+  animation: atcGlow 2.8s ease-in-out infinite;
+  -webkit-tap-highlight-color: transparent;
+}
+.cat-strip-add-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #e91e8c 0%, #7c3aed 55%, #c2185b 100%);
+  opacity: 0; transition: opacity .28s ease; z-index: 0;
+}
+.cat-strip-add-btn::after {
+  content: '';
+  position: absolute; top: -50%; left: -90%;
+  width: 45%; height: 200%;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.22) 50%, transparent 70%);
+  transition: left .55s ease; pointer-events: none; z-index: 1;
+}
+.cat-strip-add-btn i, .cat-strip-add-btn span { position: relative; z-index: 2; }
+.cat-strip-add-btn i { font-size: 11px; }
+.cat-strip-add-btn:not(.disabled):hover {
+  transform: translateY(-2px) scale(1.02);
+  animation: none;
+  border-color: rgba(233,30,140,.9);
+  box-shadow: 0 10px 30px rgba(233,30,140,.5), 0 0 0 2px rgba(233,30,140,.2);
+}
+.cat-strip-add-btn:not(.disabled):hover::before { opacity: 1; }
+.cat-strip-add-btn:not(.disabled):hover::after { left: 150%; }
+.cat-strip-add-btn:active { transform: scale(.94) !important; transition-duration: .07s !important; }
+[data-theme="dark"] .cat-strip-add-btn {
+  background: linear-gradient(135deg, #09091a 0%, #1c0535 55%, #09091a 100%);
+  border-color: rgba(233,30,140,.6); color: #fff !important;
+}
+
+/* Wishlist add button */
+.wish-add-cart {
+  position: relative;
+  flex: 1; padding: 9px 14px;
+  background: linear-gradient(135deg, #09091a 0%, #1c0535 55%, #09091a 100%) !important;
+  color: #fff !important; border-radius: 50px;
+  font-size: 11px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+  letter-spacing: .5px; text-transform: uppercase;
+  position: relative; overflow: hidden;
+  border: 1.5px solid rgba(233,30,140,.55) !important;
+  box-shadow: 0 3px 14px rgba(233,30,140,.28) !important;
+  animation: atcGlow 2.8s ease-in-out infinite;
+}
+.wish-add-cart::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, #e91e8c 0%, #7c3aed 55%, #c2185b 100%);
+  opacity: 0; transition: opacity .28s; z-index: 0;
+}
+.wish-add-cart::after {
+  content: '';
+  position: absolute; top: -50%; left: -90%;
+  width: 45%; height: 200%;
+  background: linear-gradient(105deg, transparent 30%, rgba(255,255,255,.2) 50%, transparent 70%);
+  transition: left .5s ease; pointer-events: none; z-index: 1;
+}
+.wish-add-cart i, .wish-add-cart span { position: relative; z-index: 2; }
+.wish-add-cart:not(.disabled):hover::before { opacity: 1; }
+.wish-add-cart:not(.disabled):hover::after { left: 150%; }
+.wish-add-cart:not(.disabled):hover { transform: translateY(-2px) scale(1.02); animation: none; box-shadow: 0 10px 28px rgba(233,30,140,.5) !important; border-color: rgba(233,30,140,.9) !important; }
+.wish-add-cart:active { transform: scale(.94) !important; }
+
+/* Hero overlay hidden — show clean images only */
+.hero-overlay { display: none !important; }
