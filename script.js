@@ -152,6 +152,8 @@ let wishlist = JSON.parse(localStorage.getItem('exglobal_wishlist') || '[]');
 let currentFilter = 'all';
 let currentSort = 'default';
 let visibleCount = 8;
+let currentPriceMax = 9999;
+let currentColors = [];
 let currentLang = 'en';
 let selectedSize = '';
 let selectedColor = '';
@@ -319,6 +321,8 @@ function setLang(lang) {
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
+  renderFilterRow();
+  renderRecentlyViewed();
   const si = document.getElementById('searchInput');
   renderProducts(si ? si.value : '');
   renderCart();
@@ -371,6 +375,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
+  renderFilterRow();
+  renderRecentlyViewed();
+  _renderVipBlock();
   renderProducts();
   startHeroSlider();
   // Deep link: auto-open product from URL ?p=ID
@@ -722,6 +729,8 @@ function renderProducts(searchTerm = '') {
     );
   }
 
+  if (currentPriceMax < 9999) filtered = filtered.filter(p => p.price <= currentPriceMax);
+  if (currentColors.length > 0) filtered = filtered.filter(p => (p.colors || []).some(c => currentColors.includes(c)));
   if (currentSort === 'low') filtered = [...filtered].sort((a, b) => a.price - b.price);
   else if (currentSort === 'high') filtered = [...filtered].sort((a, b) => b.price - a.price);
   else if (currentSort === 'popular') filtered = [...filtered].sort((a, b) => b.ratingCount - a.ratingCount);
@@ -758,7 +767,7 @@ function productCardHTML(p) {
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : ''}
+        ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : p.tag === 'bestseller' ? `<span class="best-badge">🏅BEST</span>` : p.tag === 'new' ? `<span class="new-badge">✨NEW</span>` : ''}
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
@@ -1228,6 +1237,7 @@ function addToCart(id, size, color) {
   _saveCart();
   updateCartBadge();
   _abandonedCartReset();
+  if (!localStorage.getItem('exg_spin_shown') && cart.length === 1) setTimeout(_showSpinWheel, 900);
 }
 function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
@@ -1762,12 +1772,12 @@ function openModal(id) {
   const allImgs = [p.image, ...(p.extraImages || [])].filter(Boolean);
   const galleryHtml = allImgs.length > 1
     ? `<div class="modal-gallery" id="mgal" data-idx="0" data-images='${JSON.stringify(allImgs)}'>
-        <img class="modal-img" id="mgalMain" src="${allImgs[0]}" alt="" />
+        <img class="modal-img" id="mgalMain" src="${allImgs[0]}" alt="" onclick="_openImgZoom(this.src)" style="cursor:zoom-in" />
         <div class="modal-thumbs">
           ${allImgs.map((u, i) => `<img class="modal-thumb${i===0?' active':''}" src="${u}" onclick="switchGalleryImg(${i})" loading="lazy"/>`).join('')}
         </div>
        </div>`
-    : `<img class="modal-img" src="${p.image}" alt="" />`;
+    : `<img class="modal-img" src="${p.image}" alt="" onclick="_openImgZoom(this.src)" style="cursor:zoom-in" />`;
 
   document.getElementById('modalBody').innerHTML = `
     ${galleryHtml}
@@ -1856,8 +1866,15 @@ function openModal(id) {
         <span>${t('orderNow')||'Order'}</span>
       </button>
     </div>
+    <div class="modal-trust-row">
+      <span><i class="fas fa-lock"></i> ${t('securePayment')||'Secure'}</span>
+      <span><i class="fas fa-rotate-left"></i> ${t('returns30')||'30-Day Returns'}</span>
+      <span><i class="fas fa-shield-halved"></i> ${t('authentic')||'Authentic'}</span>
+    </div>
     ${_deliveryEstHTML()}
+    ${_relatedHTML(p)}
   `;
+  _trackView(id);
   history.replaceState({}, '', '?p=' + id);
   document.getElementById('productModal').classList.add('open');
   document.getElementById('modalOverlay').classList.add('open');
@@ -3352,6 +3369,7 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
+    _addVipPoints(Math.round(totalSAR) * 10);
     // Reduce stock for each ordered item
     const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
     items.forEach(i => {
@@ -6221,4 +6239,264 @@ function renderBrandDeals() {
     </div>
   `).join('');
   track.innerHTML = cards;
+}
+
+/* ===== VIP LOYALTY SYSTEM ===== */
+const _VIP_TIERS = [
+  {name:'Bronze', min:0,    icon:'🥉', color:'#cd7f32', perks:['5% off every 5th order','Early access deals']},
+  {name:'Silver', min:1000, icon:'🥈', color:'#a8a9ad', perks:['8% off every 3rd order','Free ship over SAR 100','Priority support']},
+  {name:'Gold',   min:5000, icon:'🥇', color:'#ffd700', perks:['12% VIP discount','Free shipping always','Exclusive products','Birthday bonus']}
+];
+function _getVipPoints() { return parseInt(localStorage.getItem('exg_vip_pts') || '0'); }
+function _addVipPoints(pts) {
+  const cur = _getVipPoints() + Math.round(pts);
+  localStorage.setItem('exg_vip_pts', cur);
+  _renderVipBlock();
+}
+function _getVipTier(pts) {
+  let tier = _VIP_TIERS[0];
+  for (const ti of _VIP_TIERS) { if (pts >= ti.min) tier = ti; }
+  return tier;
+}
+function _renderVipBlock() {
+  const el = document.getElementById('vipBlock');
+  if (!el) return;
+  const pts = _getVipPoints();
+  const tier = _getVipTier(pts);
+  const nextTier = _VIP_TIERS.find(ti => ti.min > pts);
+  const pct = nextTier ? Math.min(100, Math.round((pts - tier.min) / (nextTier.min - tier.min) * 100)) : 100;
+  const canRedeem = pts >= 500;
+  el.innerHTML = `
+    <div class="vip-block">
+      <div class="vip-top-row">
+        <div class="vip-tier-badge" style="background:linear-gradient(135deg,${tier.color}22,${tier.color}44);border:1.5px solid ${tier.color}">
+          <span class="vip-tier-icon">${tier.icon}</span>
+          <span class="vip-tier-name" style="color:${tier.color}">${tier.name} VIP</span>
+        </div>
+        <div class="vip-pts-box">
+          <span class="vip-pts-num">${pts.toLocaleString()}</span>
+          <span class="vip-pts-label">${t('points')||'Points'}</span>
+        </div>
+      </div>
+      ${nextTier ? `
+      <div class="vip-progress-wrap">
+        <div class="vip-progress-bar"><div class="vip-progress-fill" style="width:${pct}%;background:linear-gradient(90deg,${tier.color},${nextTier.color})"></div></div>
+        <div class="vip-progress-label">${pts.toLocaleString()} / ${nextTier.min.toLocaleString()} pts → ${nextTier.icon} ${nextTier.name}</div>
+      </div>` : `<div class="vip-top-achieved">🏆 ${t('topTier')||'Highest Tier!'}</div>`}
+      <div class="vip-perks">
+        ${tier.perks.map(pk => `<span class="vip-perk"><i class="fas fa-check-circle"></i> ${pk}</span>`).join('')}
+      </div>
+      <button class="vip-redeem-btn${canRedeem?'':' disabled'}" onclick="${canRedeem?'redeemVipPoints()':''}" ${canRedeem?'':'disabled'}>
+        <i class="fas fa-gift"></i> ${canRedeem ? (t('redeemPoints')||'Redeem 500 pts → 5% OFF') : (t('needMore')||'Need 500 pts to redeem')}
+      </button>
+      <div class="vip-earn-hint"><i class="fas fa-circle-info"></i> ${t('earnHint')||'Earn 10 pts per SAR spent on every order'}</div>
+    </div>
+  `;
+}
+function redeemVipPoints() {
+  const pts = _getVipPoints();
+  if (pts < 500) return;
+  localStorage.setItem('exg_vip_pts', pts - 500);
+  COUPONS['VIP5OFF'] = { pct: 5, oneTime: false };
+  showToast('🎁 ' + (t('redeemSuccess')||'VIP5OFF coupon added — 5% off your next order!'));
+  _renderVipBlock();
+}
+
+/* ===== RECENTLY VIEWED ===== */
+function _trackView(id) {
+  let viewed = JSON.parse(localStorage.getItem('exg_viewed') || '[]');
+  viewed = [id, ...viewed.filter(v => v !== id)].slice(0, 10);
+  localStorage.setItem('exg_viewed', JSON.stringify(viewed));
+  renderRecentlyViewed();
+}
+function renderRecentlyViewed() {
+  const el = document.getElementById('rvSection');
+  if (!el) return;
+  const ids = JSON.parse(localStorage.getItem('exg_viewed') || '[]');
+  const prods = ids.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 8);
+  if (prods.length < 2) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="rv-head">
+      <span class="rv-title"><i class="fas fa-clock-rotate-left"></i> ${t('recentlyViewed')||'Recently Viewed'}</span>
+    </div>
+    <div class="rv-strip">${prods.map(p => _dealMiniCard(p)).join('')}</div>
+  `;
+}
+
+/* ===== RELATED PRODUCTS ===== */
+function _relatedHTML(p) {
+  const related = PRODUCTS.filter(x => x.category === p.category && x.id !== p.id)
+    .sort(() => 0.5 - Math.random()).slice(0, 8);
+  if (!related.length) return '';
+  return `
+    <div class="modal-related">
+      <div class="modal-related-title"><i class="fas fa-thumbs-up"></i> ${t('youMayLike')||'You May Also Like'}</div>
+      <div class="rp-strip">${related.map(r => `
+        <div class="rp-card" onclick="closeModal();setTimeout(()=>openModal(${r.id}),120)">
+          <img class="rp-img" src="${r.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/r${r.id}/160/160'" />
+          <div class="rp-price">${fmt(r.price)}</div>
+          <div class="rp-disc">-${r.discount}%</div>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+}
+
+/* ===== SPIN TO WIN ===== */
+const _SPIN_SEGMENTS = [
+  {label:'5% OFF',    code:'SPIN5',    pct:5,  color:'#e91e8c'},
+  {label:'FREE SHIP', code:'FREESHIP', pct:0,  color:'#9415f5'},
+  {label:'10% OFF',   code:'SPIN10',   pct:10, color:'#ff8c00'},
+  {label:'Try Again', code:null,       pct:0,  color:'#888'},
+  {label:'WELCOME10', code:'WELCOME10',pct:10, color:'#e83e8c'},
+  {label:'8% OFF',    code:'SPIN8',    pct:8,  color:'#00b894'},
+  {label:'Mystery 🎁',code:'MYSTERY15',pct:15, color:'#6c5ce7'},
+  {label:'15% OFF',   code:'SPIN15',   pct:15, color:'#d63031'}
+];
+function _showSpinWheel() {
+  if (localStorage.getItem('exg_spin_shown')) return;
+  const ov = document.getElementById('spinOverlay');
+  if (ov) { ov.classList.add('open'); _drawSpinWheel(); }
+}
+function closeSpinWheel() {
+  localStorage.setItem('exg_spin_shown', '1');
+  const ov = document.getElementById('spinOverlay');
+  if (ov) ov.classList.remove('open');
+}
+function _drawSpinWheel() {
+  const canvas = document.getElementById('spinCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = canvas.width = canvas.height = 260;
+  const cx = size / 2, cy = size / 2, r = cx - 6;
+  const seg = (2 * Math.PI) / _SPIN_SEGMENTS.length;
+  _SPIN_SEGMENTS.forEach((s, i) => {
+    const start = i * seg - Math.PI / 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, start + seg);
+    ctx.fillStyle = s.color; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.save(); ctx.translate(cx, cy); ctx.rotate(start + seg / 2);
+    ctx.fillStyle = '#fff'; ctx.font = 'bold 10.5px sans-serif';
+    ctx.textAlign = 'right'; ctx.fillText(s.label, r - 8, 4);
+    ctx.restore();
+  });
+  ctx.beginPath(); ctx.arc(cx, cy, 20, 0, 2 * Math.PI);
+  ctx.fillStyle = '#fff'; ctx.fill();
+  ctx.fillStyle = '#e91e8c'; ctx.font = 'bold 9px sans-serif';
+  ctx.textAlign = 'center'; ctx.fillText('EX', cx, cy + 3);
+}
+let _spinning = false;
+function doSpin() {
+  if (_spinning) return;
+  _spinning = true;
+  const btn = document.getElementById('spinBtn');
+  if (btn) btn.disabled = true;
+  const canvas = document.getElementById('spinCanvas');
+  if (!canvas) return;
+  const seg = 360 / _SPIN_SEGMENTS.length;
+  const winner = Math.floor(Math.random() * _SPIN_SEGMENTS.length);
+  const totalDeg = 1440 + (360 - winner * seg - seg / 2);
+  let start = null;
+  const dur = 4200;
+  function ease(t) { return 1 - Math.pow(1 - t, 4); }
+  (function step(ts) {
+    if (!start) start = ts;
+    const prog = Math.min((ts - start) / dur, 1);
+    canvas.style.transform = `rotate(${ease(prog) * totalDeg}deg)`;
+    if (prog < 1) { requestAnimationFrame(step); return; }
+    _spinning = false;
+    localStorage.setItem('exg_spin_shown', '1');
+    _applySpinPrize(_SPIN_SEGMENTS[winner]);
+  })(performance.now());
+}
+function _applySpinPrize(prize) {
+  const disp = document.getElementById('spinPrizeDisplay');
+  if (prize.code && prize.pct > 0) {
+    COUPONS[prize.code] = { pct: prize.pct, oneTime: false };
+    if (disp) disp.innerHTML = `<div class="spin-prize-win">🎉 ${t('youWon')||'You Won!'}<br><b>${prize.label}</b><br><small>${t('couponCode')||'Code'}: <b>${prize.code}</b></small></div>`;
+    showToast('🎉 ' + prize.label + ' — ' + (t('couponAdded')||'Coupon added!'));
+  } else if (prize.code === 'FREESHIP') {
+    localStorage.setItem('exg_free_ship', '1');
+    if (disp) disp.innerHTML = `<div class="spin-prize-win">🎉 ${t('youWon')||'You Won!'}<br><b>Free Shipping!</b></div>`;
+    showToast('🎉 Free Shipping unlocked!');
+  } else {
+    if (disp) disp.innerHTML = `<div class="spin-prize-try">😅 ${t('tryAgain')||'Better luck next time!'}</div>`;
+  }
+}
+
+/* ===== IMAGE ZOOM ===== */
+function _openImgZoom(src) {
+  const ov = document.createElement('div');
+  ov.className = 'img-zoom-overlay';
+  ov.innerHTML = `<img class="img-zoom-img" src="${src}" /><button class="img-zoom-close" onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>`;
+  let scale = 1, startDist = 0;
+  const img = ov.querySelector('img');
+  ov.addEventListener('touchstart', e => {
+    if (e.touches.length === 2) startDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+  }, {passive:true});
+  ov.addEventListener('touchmove', e => {
+    if (e.touches.length === 2) {
+      const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+      scale = Math.min(4, Math.max(1, scale * (d / startDist)));
+      img.style.transform = `scale(${scale})`;
+      startDist = d;
+    }
+  }, {passive:true});
+  ov.addEventListener('click', e => { if (e.target === ov) ov.remove(); });
+  document.body.appendChild(ov);
+}
+
+/* ===== ENHANCED FILTERS ===== */
+function renderFilterRow() {
+  const el = document.getElementById('filterRow');
+  if (!el) return;
+  const allColors = [...new Set(PRODUCTS.flatMap(p => p.colors || []))].slice(0, 18);
+  const maxPrice = currentPriceMax >= 9999 ? 500 : currentPriceMax;
+  el.innerHTML = `
+    <div class="filter-row">
+      <div class="filter-section">
+        <span class="filter-label">${t('maxPrice')||'Max Price'}</span>
+        <input type="range" class="filter-price-slider" min="50" max="500" value="${maxPrice}" step="10"
+          oninput="document.getElementById('priceVal').textContent='SAR '+this.value;filterByPrice(parseInt(this.value))" />
+        <span class="filter-price-val" id="priceVal">${currentPriceMax >= 9999 ? (t('any')||'Any') : 'SAR '+currentPriceMax}</span>
+      </div>
+      <div class="filter-section filter-color-section">
+        <span class="filter-label">${t('color')||'Color'}</span>
+        <div class="filter-swatches">${allColors.map(c => `<button class="filter-swatch${currentColors.includes(c)?' active':''}" style="background:${c}" onclick="filterByColor('${c}')" title="${c}"></button>`).join('')}</div>
+      </div>
+      <button class="filter-clear-btn" onclick="clearFilters()"><i class="fas fa-xmark"></i> ${t('clearAll')||'Clear'}</button>
+    </div>
+  `;
+}
+function filterByPrice(max) {
+  currentPriceMax = max >= 500 ? 9999 : max;
+  visibleCount = 8;
+  renderProducts();
+  renderActiveFilters();
+}
+function filterByColor(hex) {
+  if (currentColors.includes(hex)) currentColors = currentColors.filter(c => c !== hex);
+  else currentColors.push(hex);
+  visibleCount = 8;
+  renderProducts();
+  renderFilterRow();
+  renderActiveFilters();
+}
+function clearFilters() {
+  currentPriceMax = 9999;
+  currentColors = [];
+  visibleCount = 8;
+  renderProducts();
+  renderFilterRow();
+  renderActiveFilters();
+}
+function renderActiveFilters() {
+  const el = document.getElementById('activeFilters');
+  if (!el) return;
+  const chips = [];
+  if (currentPriceMax < 9999) chips.push(`<span class="af-chip">≤ SAR ${currentPriceMax} <button onclick="filterByPrice(500)"><i class="fas fa-xmark"></i></button></span>`);
+  currentColors.forEach(c => chips.push(`<span class="af-chip"><span class="af-chip-swatch" style="background:${c}"></span> <button onclick="filterByColor('${c}')"><i class="fas fa-xmark"></i></button></span>`));
+  el.innerHTML = chips.length ? `<div class="active-filters-row">${chips.join('')}</div>` : '';
 }
