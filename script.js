@@ -794,7 +794,9 @@ function productCardHTML(p) {
         <div class="card-qv-overlay"><span class="card-qv-tag"><i class="fas fa-eye"></i> Quick View</span></div>
       </div>
       <div class="product-info">
+        ${p.category ? `<span class="desk-card-cat">${p.category.toUpperCase()}</span>` : ''}
         <p class="product-name">${getName(p)}</p>
+        ${p.description ? `<p class="desk-card-desc">${p.description.replace(/<[^>]+>/g,'').substring(0,90)}</p>` : ''}
         <div class="pc-price-row">
           <span class="price-current">${fmt(p.price)}</span>
           ${origPrice ? `<span class="price-original">${origPrice}</span>` : ''}
@@ -817,6 +819,13 @@ function productCardHTML(p) {
   `;
 }
 
+/* ===== DESKTOP NAV ACTIVE STATE ===== */
+function _updateDeskNav(cat) {
+  document.querySelectorAll('.desk-nav-link[data-desk-cat]').forEach(a => {
+    a.classList.toggle('active', a.dataset.deskCat === cat);
+  });
+}
+
 /* ===== FILTER ===== */
 function filterCategory(cat) {
   currentFilter = cat;
@@ -824,6 +833,7 @@ function filterCategory(cat) {
   currentSort = 'default';
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
   document.querySelector('[data-sort="default"]').classList.add('active');
+  _updateDeskNav(cat);
   renderProducts();
   document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }

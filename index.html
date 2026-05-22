@@ -200,6 +200,21 @@
       <button class="cat-tab" data-cat="beauty" data-i18n="tabBeauty">Beauty</button>
       <button class="cat-tab" data-cat="home" data-i18n="tabHome">Home</button>
     </nav>
+
+    <!-- Desktop Premium Nav Bar (hidden on mobile via CSS) -->
+    <nav class="desk-nav-bar" id="deskNavBar">
+      <a class="desk-nav-link active" data-desk-cat="all" onclick="filterCategory('all');return false;" href="#">All Products</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="women" onclick="filterCategory('women');return false;" href="#">Women</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="men" onclick="filterCategory('men');return false;" href="#">Men</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="kids" onclick="filterCategory('kids');return false;" href="#">Kids</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="beauty" onclick="filterCategory('beauty');return false;" href="#">Beauty</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="home" onclick="filterCategory('home');return false;" href="#">Home &amp; Decor</a>
+    </nav>
   </header>
 
   <!-- DRAWER -->
@@ -2550,7 +2565,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=165"></script>
+  <script src="script.js?v=166"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
