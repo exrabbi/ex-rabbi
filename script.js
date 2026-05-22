@@ -5618,49 +5618,140 @@ function _secRefresh() {
   document.getElementById('secFbBtn').classList.toggle('linked', fbLinked);
 }
 
+function _showSecInputSheet(opts) {
+  let sheet = document.getElementById('secInputSheet');
+  if (!sheet) {
+    sheet = document.createElement('div');
+    sheet.id = 'secInputSheet';
+    sheet.className = 'sec-input-sheet';
+    document.body.appendChild(sheet);
+  }
+  sheet.innerHTML = `
+    <div class="sis-bg" onclick="_closeSecSheet()"></div>
+    <div class="sis-card">
+      <div class="sis-handle"></div>
+      <div class="sis-icon"><i class="${opts.icon}"></i></div>
+      <h3 class="sis-title">${opts.title}</h3>
+      ${opts.sub ? `<p class="sis-sub">${opts.sub}</p>` : ''}
+      <input class="sis-input" id="sisInput" type="${opts.inputType||'text'}" placeholder="${opts.placeholder||''}" value="${opts.value||''}" autocomplete="off" />
+      ${opts.input2 ? `<input class="sis-input" id="sisInput2" type="${opts.input2Type||'text'}" placeholder="${opts.input2Placeholder||''}" autocomplete="off" style="margin-top:10px" />` : ''}
+      <div class="sis-btns">
+        <button class="sis-cancel" onclick="_closeSecSheet()">${t('cancel')||'Cancel'}</button>
+        <button class="sis-save" onclick="_saveSecSheet()">${t('save')||'Save'}</button>
+      </div>
+    </div>
+  `;
+  sheet._onSave = opts.onSave;
+  sheet.style.display = 'flex';
+  setTimeout(() => sheet.querySelector('.sis-card').classList.add('open'), 10);
+  setTimeout(() => document.getElementById('sisInput')?.focus(), 300);
+}
+
+function _closeSecSheet() {
+  const sheet = document.getElementById('secInputSheet');
+  if (!sheet) return;
+  sheet.querySelector('.sis-card')?.classList.remove('open');
+  setTimeout(() => { sheet.style.display = 'none'; }, 280);
+}
+
+function _saveSecSheet() {
+  const sheet = document.getElementById('secInputSheet');
+  if (sheet && sheet._onSave) {
+    const v1 = document.getElementById('sisInput')?.value || '';
+    const v2 = document.getElementById('sisInput2')?.value || '';
+    sheet._onSave(v1, v2);
+  }
+}
+
 function secPhoneEdit() {
   const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
-  const current = sec.phone || '';
-  const val = prompt(t('enterPhone'), current);
-  if (val === null) return;
-  const clean = val.trim();
-  if (clean && !/^\+?[\d\s\-]{7,16}$/.test(clean)) { showToast('❌ ' + t('invalidPhone')); return; }
-  sec.phone = clean;
-  localStorage.setItem('exg_security', JSON.stringify(sec));
-  _secRefresh();
-  showToast('✓ ' + t('phoneAdded'));
+  _showSecInputSheet({
+    icon: 'fas fa-mobile-screen',
+    title: t('phoneNumber') || 'Phone Number',
+    sub: 'Enter your Saudi or international phone number',
+    placeholder: '+966 5XX XXX XXXX',
+    inputType: 'tel',
+    value: sec.phone || '',
+    onSave(val) {
+      const clean = val.trim();
+      if (clean && !/^\+?[\d\s\-]{7,16}$/.test(clean)) { showToast('❌ ' + (t('invalidPhone')||'Invalid phone number')); return; }
+      sec.phone = clean;
+      localStorage.setItem('exg_security', JSON.stringify(sec));
+      _closeSecSheet();
+      _secRefresh();
+      showToast('✓ ' + (t('phoneAdded')||'Phone saved'));
+    }
+  });
 }
 
 function secEmailEdit() {
   const user = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
-  const current = (user && user.email) || '';
-  const val = prompt(t('enterNewEmail'), current);
-  if (val === null) return;
-  const clean = val.trim();
-  if (clean && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { showToast('❌ ' + t('enterValidEmail')); return; }
-  if (user) { user.email = clean; localStorage.setItem('exglobal_user', JSON.stringify(user)); }
-  _secRefresh();
-  showToast('✓ ' + t('emailUpdated'));
+  _showSecInputSheet({
+    icon: 'fas fa-envelope',
+    title: t('emailLabel') || 'Email Address',
+    sub: 'Update your account email',
+    placeholder: 'example@email.com',
+    inputType: 'email',
+    value: (user && user.email) || '',
+    onSave(val) {
+      const clean = val.trim();
+      if (clean && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean)) { showToast('❌ ' + (t('enterValidEmail')||'Invalid email')); return; }
+      if (user) { user.email = clean; localStorage.setItem('exglobal_user', JSON.stringify(user)); }
+      _closeSecSheet();
+      _secRefresh();
+      showToast('✓ ' + (t('emailUpdated')||'Email updated'));
+    }
+  });
 }
 
 function secPasswordEdit() {
   const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
-  const val = prompt(t('enterNewPassword'));
-  if (val === null) return;
-  if (val.length < 6) { showToast('❌ ' + t('passwordTooShort')); return; }
-  sec.hasPassword = true;
-  sec.passwordAt = Date.now();
-  localStorage.setItem('exg_security', JSON.stringify(sec));
-  _secRefresh();
-  showToast('✓ ' + t('passwordChanged'));
+  _showSecInputSheet({
+    icon: 'fas fa-key',
+    title: t('passwordLabel') || 'Password',
+    sub: 'Set a strong password (min 6 characters)',
+    placeholder: 'New password',
+    inputType: 'password',
+    input2: true,
+    input2Type: 'password',
+    input2Placeholder: 'Confirm password',
+    onSave(val, val2) {
+      if (!val || val.length < 6) { showToast('❌ ' + (t('passwordTooShort')||'Password too short')); return; }
+      if (val !== val2) { showToast('❌ Passwords do not match'); return; }
+      sec.hasPassword = true;
+      sec.passwordAt = Date.now();
+      localStorage.setItem('exg_security', JSON.stringify(sec));
+      _closeSecSheet();
+      _secRefresh();
+      showToast('✓ ' + (t('passwordChanged')||'Password set'));
+    }
+  });
 }
 
 function sec2FAToggle() {
   const sec = JSON.parse(localStorage.getItem('exg_security') || '{}');
-  sec.twoFA = !sec.twoFA;
-  localStorage.setItem('exg_security', JSON.stringify(sec));
-  _secRefresh();
-  showToast(t(sec.twoFA ? 'twoFactorEnabled' : 'twoFactorDisabled'));
+  if (!sec.twoFA) {
+    _showSecInputSheet({
+      icon: 'fas fa-lock',
+      title: '2FA Verification',
+      sub: 'Enter the 6-digit code from your authenticator app to enable 2FA',
+      placeholder: '000000',
+      inputType: 'number',
+      onSave(val) {
+        if (!/^\d{6}$/.test(val.trim())) { showToast('❌ Enter valid 6-digit code'); return; }
+        sec.twoFA = true;
+        localStorage.setItem('exg_security', JSON.stringify(sec));
+        _closeSecSheet();
+        _secRefresh();
+        showToast('✅ 2FA enabled — account secured!');
+      }
+    });
+  } else {
+    sec.twoFA = false;
+    localStorage.setItem('exg_security', JSON.stringify(sec));
+    _secRefresh();
+    showToast(t('twoFactorDisabled') || '2FA disabled');
+  }
 }
 
 function secGoogleLink() {
