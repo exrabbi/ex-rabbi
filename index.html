@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=141" />
+  <link rel="stylesheet" href="styles.css?v=142" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -477,6 +477,9 @@
       </div>
     </div>
 
+    <!-- RECENTLY VIEWED -->
+    <section class="rv-section" id="rvSection" style="display:none"></section>
+
     <!-- SUPER DEALS + TRENDS -->
     <div class="two-col-banner">
       <div class="two-col-card">
@@ -555,6 +558,10 @@
 
     <!-- CATEGORY STRIPS -->
     <div id="catShowcaseStrips"></div>
+
+    <!-- FILTER ROW -->
+    <div id="filterRow"></div>
+    <div id="activeFilters"></div>
 
     <!-- PRODUCTS GRID -->
     <section class="section" id="productsSection">
@@ -1212,6 +1219,11 @@
         <span id="meOrderCount" style="font-size:11px;font-weight:700;color:#fff;background:linear-gradient(135deg,#e91e8c,#8b2be2);padding:2px 9px;border-radius:20px;display:none"></span>
       </div>
       <div id="meOrdersList"></div>
+    </div>
+
+    <!-- VIP Loyalty -->
+    <div class="me-card-block" style="padding:0">
+      <div id="vipBlock"></div>
     </div>
 
     <!-- Follow Us -->
@@ -2287,9 +2299,25 @@
     <button class="promo-skip" onclick="closeWelcomePopup()">Maybe later</button>
   </div>
 
-  <script src="translations.js?v=91"></script>
+  <!-- SPIN TO WIN -->
+  <div class="spin-overlay" id="spinOverlay">
+    <div class="spin-popup">
+      <button class="spin-close" onclick="closeSpinWheel()"><i class="fas fa-times"></i></button>
+      <div class="spin-title">🎰 Spin & Win!</div>
+      <div class="spin-sub">Spin the wheel for an exclusive discount!</div>
+      <div class="spin-wheel-wrap">
+        <div class="spin-needle"></div>
+        <canvas id="spinCanvas"></canvas>
+      </div>
+      <button class="spin-btn" id="spinBtn" onclick="doSpin()"><i class="fas fa-play"></i> SPIN!</button>
+      <div class="spin-prize-display" id="spinPrizeDisplay"></div>
+      <button class="spin-later" onclick="closeSpinWheel()">No thanks</button>
+    </div>
+  </div>
+
+  <script src="translations.js?v=92"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=146"></script>
+  <script src="script.js?v=147"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
