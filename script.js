@@ -785,7 +785,7 @@ function productCardHTML(p) {
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : p.tag === 'bestseller' ? `<span class="best-badge">🏅BEST</span>` : p.tag === 'new' ? `<span class="new-badge">✨NEW</span>` : ''}
+        ${p.discount >= 40 ? `<span class="badge-ribbon flash-badge"><i class="fas fa-bolt"></i> FLASH</span>` : p.tag === 'bestseller' ? `<span class="badge-ribbon best-badge"><i class="fas fa-trophy"></i> BEST</span>` : p.tag === 'new' ? `<span class="badge-ribbon new-badge"><i class="fas fa-sparkles"></i> NEW</span>` : p.discount >= 20 ? `<span class="badge-ribbon hot-badge">-${p.discount}%</span>` : ''}
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
@@ -1858,6 +1858,7 @@ function openModal(id) {
       </div>
       <div class="modal-divider"></div>
       ${p.description ? `<div class="modal-desc">${p.description.replace(/\n/g,'<br>')}</div><div class="modal-divider"></div>` : ''}
+      ${_fbtHTML(p)}
       ${_qaHTML(p)}
       ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="pd-coupon-row" onclick="openPdCoupons()"><div class="pd-coupon-icon"><i class="fas fa-percent"></i></div><span class="pd-coupon-text">Extra ${av[0][1].pct}% off — CODE: ${av[0][0]}</span><i class="fas fa-chevron-right pd-coupon-chev"></i></div>`:'';})()}
       <div style="display:flex;gap:12px;font-size:13px;color:#666;flex-wrap:wrap">
@@ -6982,6 +6983,31 @@ function _showZatcaInvoice(orderId, totalSAR) {
   </div>`;
   el.style.display = 'block';
   try { if(typeof QRCode!=='undefined') new QRCode(document.getElementById(qid),{text:_zatcaQR(totalSAR,vat),width:120,height:120,correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
+}
+
+/* ===== FREQUENTLY BOUGHT TOGETHER ===== */
+function _fbtHTML(p) {
+  const same = PRODUCTS.filter(x => x.id !== p.id && x.category === p.category).slice(0, 2);
+  if (same.length < 1) return '';
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const bundleTotal = (p.price + same.reduce((s,x)=>s+x.price,0)) * (T.rate||1);
+  const items = [p, ...same];
+  return `<div class="fbt-wrap">
+    <div class="fbt-title"><i class="fas fa-layer-group"></i> Frequently Bought Together</div>
+    <div class="fbt-row">
+      ${items.map((x,i)=>`<div class="fbt-item" onclick="closeModal();setTimeout(()=>openModal(${x.id}),120)">
+        <img src="${x.image}" class="fbt-img" onerror="this.src='https://picsum.photos/seed/fbt${x.id}/80/80'">
+        <div class="fbt-name">${(x.names?.en||'Product').slice(0,18)}…</div>
+        <div class="fbt-price">${T.currency}${(x.price*(T.rate||1)).toFixed(0)}</div>
+      </div>${i<items.length-1?'<span class="fbt-plus">+</span>':''}`).join('')}
+    </div>
+    <div class="fbt-total-row">
+      <span>Bundle Total: <b>${T.currency}${bundleTotal.toFixed(0)}</b></span>
+      <button class="fbt-add-all" onclick="${items.map(x=>`addToCart(${x.id})`).join(';')};showToast('${items.length} items added!')">
+        <i class="fas fa-cart-plus"></i> Add All
+      </button>
+    </div>
+  </div><div class="modal-divider"></div>`;
 }
 
 /* ===== LIVE ACTIVITY NOTIFICATIONS ===== */

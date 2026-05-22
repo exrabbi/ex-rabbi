@@ -7604,3 +7604,184 @@ body.dark-mode .mde-date { color: #f0f0f0; }
   gap: 5px;
 }
 .sub-features i { color: #c5972a; }
+
+/* ===== HERO OVERLAY TEXT ===== */
+.hero-slide { position: relative; overflow: hidden; }
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.3) 55%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 22px;
+  z-index: 2;
+}
+.hero-tag {
+  display: inline-block;
+  background: rgba(233,30,140,.85);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1.2px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  width: fit-content;
+}
+.hero-heading {
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  margin: 0 0 6px;
+  text-shadow: 0 2px 12px rgba(0,0,0,.4);
+}
+.hero-heading em {
+  color: #ffd700;
+  font-style: normal;
+}
+.hero-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,.8);
+  margin: 0 0 14px;
+  line-height: 1.4;
+}
+.hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg,#e91e8c,#7c3aed);
+  color: #fff;
+  border-radius: 24px;
+  padding: 9px 20px;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+  width: fit-content;
+  box-shadow: 0 4px 16px rgba(233,30,140,.45);
+  transition: transform .2s, box-shadow .2s;
+}
+.hero-cta:active { transform: scale(.96); }
+
+/* ===== MODERN PRODUCT BADGES ===== */
+.badge-ribbon {
+  position: absolute;
+  top: 8px; left: 0;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .5px;
+  color: #fff;
+  padding: 4px 10px 4px 8px;
+  border-radius: 0 10px 10px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  z-index: 3;
+  box-shadow: 2px 2px 8px rgba(0,0,0,.18);
+}
+.flash-badge { background: linear-gradient(135deg,#ff6b00,#ff9500); }
+.best-badge  { background: linear-gradient(135deg,#c5972a,#f0c040); color: #1a1a00; }
+.new-badge   { background: linear-gradient(135deg,#7c3aed,#a855f7); }
+.hot-badge   { background: linear-gradient(135deg,#e91e8c,#f43f5e); }
+
+/* ===== FREQUENTLY BOUGHT TOGETHER ===== */
+.fbt-wrap {
+  background: #fafafa;
+  border: 1.5px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 8px 0;
+}
+body.dark-mode .fbt-wrap { background: #120e24; border-color: rgba(255,255,255,.08); }
+.fbt-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: #1a1a2e;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+body.dark-mode .fbt-title { color: #e0e0f0; }
+.fbt-title i { color: #e91e8c; }
+.fbt-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.fbt-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.fbt-img {
+  width: 64px; height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1.5px solid #eee;
+}
+body.dark-mode .fbt-img { border-color: rgba(255,255,255,.1); }
+.fbt-name {
+  font-size: 9px;
+  color: #666;
+  text-align: center;
+  max-width: 64px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.dark-mode .fbt-name { color: #aaa; }
+.fbt-price {
+  font-size: 10px;
+  font-weight: 800;
+  color: #c5972a;
+}
+.fbt-plus {
+  font-size: 18px;
+  color: #ccc;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+.fbt-total-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #f0f0f0;
+  font-size: 12px;
+  color: #666;
+}
+body.dark-mode .fbt-total-row { border-color: rgba(255,255,255,.08); color: #aaa; }
+.fbt-total-row b { color: #1a1a2e; font-size: 14px; }
+body.dark-mode .fbt-total-row b { color: #f0f0f0; }
+.fbt-add-all {
+  background: linear-gradient(135deg,#e91e8c,#7c3aed);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ===== HEADER LOGO GOLD UPGRADE ===== */
+.header-logo-wrap {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #fff;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 0 2px #c5972a, 0 3px 12px rgba(197,151,42,.35);
+}
