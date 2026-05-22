@@ -335,7 +335,6 @@ function setLang(lang) {
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
-  renderFilterRow();
   renderRecentlyViewed();
   const si = document.getElementById('searchInput');
   renderProducts(si ? si.value : '');
@@ -389,8 +388,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
-  renderFilterRow();
-  renderReviewsStrip();
   renderRecentlyViewed();
   _renderVipBlock();
   _renderCheckinBlock();
