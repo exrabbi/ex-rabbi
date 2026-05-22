@@ -415,6 +415,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyCatImages();
   _applyColTiles();
   initColScroll();
+  _startLiveActivity();
+  initScrollReveal();
 });
 
 /* ===== COLLECTION TILES — apply saved admin data ===== */
@@ -789,6 +791,7 @@ function productCardHTML(p) {
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
         </button>
+        <button class="cmp-card-btn" onclick="event.stopPropagation();addToCompare(${p.id})" title="Compare"><i class="fas fa-code-compare"></i></button>
       </div>
       <div class="product-info">
         <p class="product-name">${getName(p)}</p>
@@ -1819,6 +1822,7 @@ function openModal(id) {
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${String(p.sold).replace(/\++$/,'')}+ ${t('soldText')}</span>
       </div>
+      <div class="modal-delivery-est"><span class="mde-icon">🚚</span><span class="mde-text"><b>Estimated Arrival:</b> ${_deliveryRange()}</span></div>
       <div class="modal-viewing">
         <span class="modal-view-dot"></span>
         <span>${15 + ((p.id * 7 + p.ratingCount) % 70)} ${t('peopleViewing') || 'people are viewing this'}</span>
@@ -6975,4 +6979,86 @@ function _showZatcaInvoice(orderId, totalSAR) {
   </div>`;
   el.style.display = 'block';
   try { if(typeof QRCode!=='undefined') new QRCode(document.getElementById(qid),{text:_zatcaQR(totalSAR,vat),width:120,height:120,correctLevel:QRCode.CorrectLevel.M}); } catch(e){}
+}
+
+/* ===== LIVE ACTIVITY NOTIFICATIONS ===== */
+const _LIVE_NAMES = ['Fatima','Aisha','Maryam','Noura','Hessa','Sara','Lina','Reem','Dana','Nadia','Omar','Ahmed','Mohammed','Abdullah','Khalid','Faisal','Yousef','Ali','Hassan','Ibrahim'];
+const _LIVE_CITIES = ['Riyadh','Jeddah','Dammam','Mecca','Medina','Khobar','Abha','Taif','Tabuk','Najran'];
+let _liveActTimer = null;
+
+function _startLiveActivity() {
+  if (!PRODUCTS || !PRODUCTS.length) return;
+  const box = document.getElementById('liveActivityBox');
+  if (!box) return;
+  function _show() {
+    const p = PRODUCTS[Math.floor(Math.random() * Math.min(PRODUCTS.length, 30))];
+    const name = _LIVE_NAMES[Math.floor(Math.random() * _LIVE_NAMES.length)];
+    const city = _LIVE_CITIES[Math.floor(Math.random() * _LIVE_CITIES.length)];
+    const pname = p.names?.en || p.nameEn || 'a product';
+    box.innerHTML = `<div class="la-inner"><span class="la-avatar">${name[0]}</span><span class="la-text"><b>${name}</b> from <b>${city}</b> just ordered<br><em>${pname.length>32?pname.slice(0,32)+'…':pname}</em></span><span class="la-check">✓</span></div>`;
+    box.classList.add('la-show');
+    setTimeout(() => box.classList.remove('la-show'), 4500);
+  }
+  _show();
+  _liveActTimer = setInterval(_show, 9000);
+}
+
+/* ===== PRODUCT COMPARISON ===== */
+let compareList = [];
+function addToCompare(id) {
+  if (compareList.includes(id)) { showToast('Already in compare list'); return; }
+  if (compareList.length >= 2) { showToast('Select only 2 products to compare'); return; }
+  compareList.push(id);
+  _renderCompareBar();
+  if (compareList.length === 2) openCompare();
+}
+function _renderCompareBar() {
+  const bar = document.getElementById('compareBar');
+  if (!bar) return;
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const names = compareList.map(id => { const p = PRODUCTS.find(x => x.id === id); return p ? (p.names?.en || 'Product') : '?'; });
+  bar.style.display = compareList.length === 0 ? 'none' : 'flex';
+  bar.innerHTML = `<span class="cmpbar-text">⚖ Compare: ${names.join(' vs ')}</span><button class="cmpbar-go" onclick="if(compareList.length===2)openCompare()">Compare</button><button class="cmpbar-x" onclick="clearCompare()">✕</button>`;
+}
+function openCompare() {
+  const [a, b] = compareList.map(id => PRODUCTS.find(x => x.id === id));
+  if (!a || !b) return;
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const overlay = document.getElementById('compareModal');
+  if (!overlay) return;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+  const row = (label, va, vb) => `<tr><td class="cmpt-label">${label}</td><td>${va}</td><td>${vb}</td></tr>`;
+  overlay.innerHTML = `<div class="compare-modal"><button class="cmp-close" onclick="closeCompare()">✕</button><h3 class="cmp-title">⚖ Compare Products</h3><div class="compare-table-wrap"><table class="compare-table"><thead><tr><th></th><th><img src="${a.image}" class="cmp-img" onerror="this.src='https://picsum.photos/seed/ca/80/80'"><div class="cmp-pname">${(a.names?.en||'Product').slice(0,28)}</div></th><th><img src="${b.image}" class="cmp-img" onerror="this.src='https://picsum.photos/seed/cb/80/80'"><div class="cmp-pname">${(b.names?.en||'Product').slice(0,28)}</div></th></tr></thead><tbody>${row('Price', cur+(a.price*rate).toFixed(0), cur+(b.price*rate).toFixed(0))}${row('Discount', a.discount?'-'+a.discount+'%':'-', b.discount?'-'+b.discount+'%':'-')}${row('Rating', '⭐ '+a.rating, '⭐ '+b.rating)}${row('Reviews', (a.ratingCount||0).toLocaleString(), (b.ratingCount||0).toLocaleString())}${row('Sold', (a.sold||'-')+'+ sold', (b.sold||'-')+'+ sold')}${row('Category', a.category||'-', b.category||'-')}${row('Stock', a.stock===0?'Out of Stock':a.stock<=5?'Only '+a.stock+' left':'In Stock', b.stock===0?'Out of Stock':b.stock<=5?'Only '+b.stock+' left':'In Stock')}</tbody></table></div><div class="cmp-actions"><button class="cmp-add-btn" onclick="closeCompare();addToCart(${a.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button><button class="cmp-add-btn" onclick="closeCompare();addToCart(${b.id})"><i class="fas fa-cart-plus"></i> Add to Cart</button></div></div>`;
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+function closeCompare() {
+  const overlay = document.getElementById('compareModal');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+function clearCompare() {
+  compareList = [];
+  _renderCompareBar();
+}
+
+/* ===== SCROLL REVEAL ===== */
+function initScrollReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if (!els.length) return;
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  els.forEach(el => obs.observe(el));
+}
+
+/* ===== ESTIMATED DELIVERY ===== */
+function _deliveryRange() {
+  const now = new Date();
+  const d1 = new Date(now); d1.setDate(d1.getDate() + 2);
+  const d2 = new Date(now); d2.setDate(d2.getDate() + 4);
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${days[d1.getDay()]}, ${months[d1.getMonth()]} ${d1.getDate()} – ${days[d2.getDay()]}, ${months[d2.getMonth()]} ${d2.getDate()}`;
 }

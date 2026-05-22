@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=154" />
+  <link rel="stylesheet" href="styles.css?v=155" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -328,7 +328,7 @@
     </div>
 
     <!-- CATEGORY ARCH -->
-    <section class="cat-arch-section">
+    <section class="cat-arch-section reveal">
       <div class="cat-arch-heading">
         <span class="cat-arch-line"></span>
         <h2 class="cat-arch-title" data-i18n="categories">Categories</h2>
@@ -490,7 +490,7 @@
     </section>
 
     <!-- FLASH DEALS -->
-    <div class="flash-deals-banner">
+    <div class="flash-deals-banner reveal">
       <div class="flash-left">
         <div class="flash-icon-box"><i class="fas fa-bolt"></i></div>
         <div class="flash-info">
@@ -559,7 +559,7 @@
     </div>
 
     <!-- SHOP BY COLLECTION -->
-    <div class="col-showcase-section">
+    <div class="col-showcase-section reveal">
       <div class="col-showcase-header">
         <span class="col-showcase-title" data-i18n="shopByCollection">Shop by Collection</span>
         <a href="#" class="col-showcase-viewall" onclick="document.querySelector('.tab-btn[data-tab=products]').click();return false;"><span data-i18n="viewAll">View all</span> <i class="fas fa-chevron-right"></i></a>
@@ -2351,6 +2351,23 @@
     </div>
   </section>
 
+  <!-- SUBSCRIBE / WHATSAPP VIP SECTION -->
+  <section class="subscribe-section reveal">
+    <div class="sub-inner">
+      <div class="sub-badge">👑 VIP</div>
+      <div class="sub-title">Get Exclusive Deals on WhatsApp</div>
+      <div class="sub-sub">احصل على أفضل العروض مباشرةً عبر واتساب</div>
+      <a class="sub-wa-btn" href="https://wa.me/966546224029?text=Subscribe%20me%20to%20EX%20GLOBAL%20VIP%20deals%20%F0%9F%9B%8D" target="_blank" rel="noopener">
+        <i class="fab fa-whatsapp"></i> Subscribe on WhatsApp
+      </a>
+      <div class="sub-features">
+        <span><i class="fas fa-tag"></i> Flash offers first</span>
+        <span><i class="fas fa-truck"></i> Delivery updates</span>
+        <span><i class="fas fa-star"></i> VIP early access</span>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== PREMIUM SITE FOOTER ===== -->
   <footer class="site-footer">
     <!-- Payment methods bar -->
@@ -2530,6 +2547,13 @@
     </div>
   </div>
 
+  <!-- LIVE ACTIVITY NOTIFICATION -->
+  <div id="liveActivityBox" class="live-act-box"></div>
+
+  <!-- COMPARE BAR + MODAL -->
+  <div id="compareBar" class="compare-bar" style="display:none"></div>
+  <div id="compareModal" class="cmp-overlay" style="display:none" onclick="if(event.target===this)closeCompare()"></div>
+
   <!-- SPIN TO WIN -->
   <div class="spin-overlay" id="spinOverlay">
     <div class="spin-popup">
@@ -2549,7 +2573,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="translations.js?v=93"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=154"></script>
+  <script src="script.js?v=155"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
