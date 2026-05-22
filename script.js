@@ -388,6 +388,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
+  renderFilterRow();
+  renderReviewsStrip();
   renderRecentlyViewed();
   _renderVipBlock();
   _renderCheckinBlock();
@@ -6594,10 +6596,6 @@ function renderFilterRow() {
         <input type="range" class="filter-price-slider" min="50" max="500" value="${maxPrice}" step="10"
           oninput="document.getElementById('priceVal').textContent='SAR '+this.value;filterByPrice(parseInt(this.value))" />
         <span class="filter-price-val" id="priceVal">${currentPriceMax >= 9999 ? (t('any')||'Any') : 'SAR '+currentPriceMax}</span>
-      </div>
-      <div class="filter-section filter-color-section">
-        <span class="filter-label">${t('color')||'Color'}</span>
-        <div class="filter-swatches">${allColors.map(c => `<button class="filter-swatch${currentColors.includes(c)?' active':''}" style="background:${c}" onclick="filterByColor('${c}')" title="${c}"></button>`).join('')}</div>
       </div>
       <button class="filter-clear-btn" onclick="clearFilters()"><i class="fas fa-xmark"></i> ${t('clearAll')||'Clear'}</button>
     </div>
