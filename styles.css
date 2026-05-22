@@ -6984,61 +6984,58 @@ body.dark-mode .rstrip-name { color: #f0f0f0; }
 
 /* ===== CLEAN TRUST BENEFITS BAR ===== */
 .trust-bar {
-  display: flex;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
   background: #fff;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 0 8px;
+  border-bottom: 1px solid #ebebeb;
 }
 body.dark-mode .trust-bar {
   background: #140f28;
   border-color: rgba(255,255,255,.06);
 }
 .trust-item {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 12px 4px;
-  gap: 6px;
+  padding: 11px 4px;
+  gap: 5px;
   text-align: center;
 }
 .trust-icon-wrap {
-  width: 38px; height: 38px;
-  border-radius: 12px;
+  width: 36px; height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 17px;
+  font-size: 16px;
   flex-shrink: 0;
 }
-body.dark-mode .trust-icon-wrap {
-  opacity: .85;
-}
+body.dark-mode .trust-icon-wrap { opacity: .85; }
 .trust-text {
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
 .trust-text b {
-  font-size: 10.5px;
+  font-size: 10px;
   font-weight: 800;
   color: #1a1a2e;
   display: block;
   line-height: 1.2;
+  white-space: nowrap;
 }
 body.dark-mode .trust-text b { color: #f0f0f0; }
 .trust-text span {
-  font-size: 9.5px;
-  color: #888;
+  font-size: 9px;
+  color: #999;
   display: block;
+  white-space: nowrap;
 }
 .trust-divider {
+  background: #ebebeb;
+  margin: 8px 0;
   width: 1px;
-  background: #f0f0f0;
-  margin: 10px 0;
-  flex-shrink: 0;
 }
 body.dark-mode .trust-divider { background: rgba(255,255,255,.07); }
 
@@ -7503,19 +7500,53 @@ body.dark-mode .cmp-pname { color: #f0f0f0; }
 .modal-delivery-est {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(74,222,128,.08);
-  border: 1px solid rgba(74,222,128,.2);
-  border-radius: 10px;
-  padding: 8px 12px;
-  margin: 6px 0;
-  font-size: 12.5px;
+  gap: 10px;
+  background: linear-gradient(135deg, rgba(22,163,74,.06), rgba(22,163,74,.03));
+  border: 1.5px solid rgba(22,163,74,.22);
+  border-radius: 14px;
+  padding: 10px 14px;
+  margin: 8px 0;
 }
-.mde-icon { font-size: 16px; }
-.mde-text { color: var(--text-main, #1a1a2e); }
-.mde-text b { color: #16a34a; }
-body.dark-mode .mde-text { color: #e0e0e0; }
-body.dark-mode .mde-text b { color: #4ade80; }
+.mde-left { flex-shrink: 0; }
+.mde-truck {
+  font-size: 22px;
+  display: block;
+  animation: mdeTruck .8s ease infinite alternate;
+}
+@keyframes mdeTruck {
+  from { transform: translateX(0); }
+  to   { transform: translateX(4px); }
+}
+.mde-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.mde-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+body.dark-mode .mde-label { color: #4ade80; }
+.mde-date {
+  font-size: 13px;
+  font-weight: 800;
+  color: #1a1a2e;
+}
+body.dark-mode .mde-date { color: #f0f0f0; }
+.mde-free {
+  background: #16a34a;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .8px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
 
 /* ===== SUBSCRIBE / VIP WHATSAPP SECTION ===== */
 .subscribe-section {

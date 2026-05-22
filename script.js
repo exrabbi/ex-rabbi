@@ -1821,10 +1821,14 @@ function openModal(id) {
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${String(p.sold).replace(/\++$/,'')}+ ${t('soldText')}</span>
       </div>
-      <div class="modal-delivery-est"><span class="mde-icon">🚚</span><span class="mde-text"><b>Estimated Arrival:</b> ${_deliveryRange()}</span></div>
+      <div class="modal-delivery-est">
+        <div class="mde-left"><span class="mde-truck">🚚</span></div>
+        <div class="mde-right"><span class="mde-label">Estimated Arrival</span><span class="mde-date">${_deliveryRange()}</span></div>
+        <div class="mde-free">FREE</div>
+      </div>
       <div class="modal-viewing">
         <span class="modal-view-dot"></span>
-        <span>${15 + ((p.id * 7 + p.ratingCount) % 70)} ${t('peopleViewing') || 'people are viewing this'}</span>
+        <span><b>${15 + ((p.id * 7 + p.ratingCount) % 70)}</b> ${t('peopleViewing') || 'people viewing now'}</span>
       </div>
       ${p.stock === 0
         ? `<div class="modal-stock out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>
