@@ -7612,7 +7612,7 @@ body.dark-mode .mde-date { color: #f0f0f0; }
 .hero-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(0,0,0,.62) 0%, rgba(0,0,0,.3) 55%, transparent 100%);
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -7637,7 +7637,7 @@ body.dark-mode .mde-date { color: #f0f0f0; }
   color: #fff;
   line-height: 1.15;
   margin: 0 0 6px;
-  text-shadow: 0 2px 12px rgba(0,0,0,.4);
+  text-shadow: 0 2px 8px rgba(0,0,0,.85), 0 0 20px rgba(0,0,0,.6);
 }
 .hero-heading em {
   color: #ffd700;
@@ -7645,9 +7645,10 @@ body.dark-mode .mde-date { color: #f0f0f0; }
 }
 .hero-sub {
   font-size: 12px;
-  color: rgba(255,255,255,.8);
+  color: #fff;
   margin: 0 0 14px;
   line-height: 1.4;
+  text-shadow: 0 1px 6px rgba(0,0,0,.8);
 }
 .hero-cta {
   display: inline-flex;
@@ -8336,17 +8337,7 @@ body, button, input, select, textarea {
 .hero-slide {
   position: relative;
 }
-.hero-slide::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    105deg,
-    rgba(8,7,26,.52) 0%,
-    rgba(8,7,26,.22) 45%,
-    transparent 72%
-  );
-  pointer-events: none; z-index: 1;
-}
+/* overlay removed – banner images show at full clarity */
 
 /* ── 7. PREMIUM BACKGROUND ── */
 body { background: #f4f3fb !important; }
