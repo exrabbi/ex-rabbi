@@ -391,8 +391,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderFilterRow();
   renderReviewsStrip();
   renderRecentlyViewed();
-  _renderVipBlock();
-  _renderCheckinBlock();
+  // VIP and Check-in blocks removed
   _renderReferralBlock();
   renderProducts();
   startHeroSlider();
@@ -6617,7 +6616,6 @@ function _getVipPoints() { return parseInt(localStorage.getItem('exg_vip_pts') |
 function _addVipPoints(pts) {
   const cur = _getVipPoints() + Math.round(pts);
   localStorage.setItem('exg_vip_pts', cur);
-  _renderVipBlock();
 }
 function _getVipTier(pts) {
   let tier = _VIP_TIERS[0];
@@ -7045,7 +7043,6 @@ function doCheckin() {
   localStorage.setItem('exg_checkin_streak', streak);
   _addVipPoints(pts);
   showToast('🎉 +' + pts + ' ' + (t('points')||'pts') + ' — ' + (t('checkinSuccess')||'Daily check-in complete!') + (streak >= 7 ? ' 🔥 7-day bonus!' : ''));
-  _renderCheckinBlock();
 }
 function _renderCheckinBlock() {
   const el = document.getElementById('checkinBlock');
