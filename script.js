@@ -323,6 +323,10 @@ function setLang(lang) {
   renderCategoryStrips();
   renderFilterRow();
   renderRecentlyViewed();
+  renderForYou();
+  renderInfluencerPicks();
+  renderTikTokViral();
+  renderHomepageReviews();
   const si = document.getElementById('searchInput');
   renderProducts(si ? si.value : '');
   renderCart();
@@ -377,6 +381,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderCategoryStrips();
   renderFilterRow();
   renderRecentlyViewed();
+  renderForYou();
+  renderInfluencerPicks();
+  renderTikTokViral();
+  renderHomepageReviews();
+  _checkOccasion();
   _renderVipBlock();
   _renderCheckinBlock();
   _renderReferralBlock();
@@ -738,27 +747,78 @@ function renderProducts(searchTerm = '') {
   else if (currentSort === 'popular') filtered = [...filtered].sort((a, b) => b.ratingCount - a.ratingCount);
 
   const grid = document.getElementById('productsGrid');
-  const visible = filtered.slice(0, visibleCount);
+  if (!grid) return;
+  grid.innerHTML = _skeletonGrid(8);
+  const _snap = filtered.slice(0, visibleCount);
+  setTimeout(function() {
+    if (_snap.length === 0) {
+      grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><p>${t('noResults')}</p></div>`;
+      document.getElementById('loadMoreBtn').style.display = 'none';
+      return;
+    }
+    grid.innerHTML = _snap.map(p => productCardHTML(p)).join('');
+    document.getElementById('loadMoreBtn').style.display =
+      visibleCount >= filtered.length ? 'none' : 'block';
+    const dots      = document.getElementById('autoLoadDots');
+    const loadText  = document.getElementById('autoLoadText');
+    const allDone   = document.getElementById('allLoadedMsg');
+    const allDoneSpan = allDone ? allDone.querySelector('span') : null;
+    const allLoaded = visibleCount >= filtered.length;
+    if (dots)     dots.style.display     = allLoaded ? 'none' : 'flex';
+    if (loadText) { loadText.style.display = allLoaded ? 'none' : 'block'; loadText.textContent = t('loadingMore') || 'Loading...'; }
+    if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
+    if (allDoneSpan) allDoneSpan.textContent = t('allProductsShown') || 'All shown';
+  }, 280);
+}
 
-  if (visible.length === 0) {
-    grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><p>${t('noResults')}</p></div>`;
-    document.getElementById('loadMoreBtn').style.display = 'none';
-    return;
-  }
+/* ===== TAMARA + TABBY INSTALLMENTS ===== */
+function _tamaraHTML(price, large) {
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const sar = price * lang.rate;
+  const each = (sar / 4).toFixed(0);
+  return `<div class="tamara-pill${large ? ' tamara-large' : ''}"><span class="tamara-t">t</span><span>4 × ${lang.currency}${each}</span><span class="tamara-info" onclick="event.stopPropagation();showToast('${t('tamaraInfo')||'Pay in 4 interest-free installments with Tamara'}')">ⓘ</span></div>`;
+}
+function _tabbyHTML(price) {
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const sar = price * lang.rate;
+  const each = (sar / 4).toFixed(0);
+  return `<div class="tabby-pill"><span class="tabby-t">T</span><span>4 × ${lang.currency}${each} ${t('tabbyText')||'with Tabby'}</span></div>`;
+}
 
-  grid.innerHTML = visible.map(p => productCardHTML(p)).join('');
-  document.getElementById('loadMoreBtn').style.display =
-    visibleCount >= filtered.length ? 'none' : 'block';
+/* ===== STOCK URGENCY BAR ===== */
+function _stockUrgencyHTML(p) {
+  if (p.stock === 0 || p.stock === undefined) return '';
+  const pct = Math.min(95, Math.round((p.ratingCount / 4000) * 100));
+  const color = pct > 80 ? '#dc2626' : pct > 50 ? '#ea580c' : '#16a34a';
+  return `<div class="stock-urgency-wrap"><div class="stock-urgency-bar"><div class="stock-urgency-fill" style="width:${pct}%;background:${color}"></div></div><div class="stock-urgency-label" style="color:${color}">🔥 ${pct}% ${t('stockClaimed')||'claimed'} · ${(t('stockOnly')||'Only {n} left').replace('{n}', p.stock)}</div></div>`;
+}
 
-  const dots      = document.getElementById('autoLoadDots');
-  const loadText  = document.getElementById('autoLoadText');
-  const allDone   = document.getElementById('allLoadedMsg');
-  const allDoneSpan = allDone ? allDone.querySelector('span') : null;
-  const allLoaded = visibleCount >= filtered.length;
-  if (dots)     dots.style.display     = allLoaded ? 'none' : 'flex';
-  if (loadText) { loadText.style.display = allLoaded ? 'none' : 'block'; loadText.textContent = t('loadingMore') || 'Loading...'; }
-  if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
-  if (allDoneSpan) allDoneSpan.textContent = t('allProductsShown') || 'All shown';
+/* ===== AUTO GALLERY IMAGES ===== */
+function _autoGalImgs(id) {
+  return [
+    'https://picsum.photos/seed/px'+id+'/400/500',
+    'https://picsum.photos/seed/py'+id+'/400/500',
+    'https://picsum.photos/seed/pz'+id+'/400/500'
+  ];
+}
+
+/* ===== SKELETON LOADING ===== */
+function _skeletonGrid(n) {
+  return Array.from({length: n||8}, function() {
+    return '<div class="skeleton-card"><div class="skel-img"></div><div class="skel-line" style="width:80%;margin-top:10px"></div><div class="skel-line" style="width:55%;margin-top:6px"></div><div class="skel-line" style="width:40%;margin-top:6px"></div><div class="skel-line" style="width:100%;height:34px;border-radius:10px;margin-top:10px"></div></div>';
+  }).join('');
+}
+
+/* ===== CARD BADGE LOGIC ===== */
+function _getCardBadge(p) {
+  const soldStr = String(p.sold || '');
+  const soldNum = parseInt(soldStr.replace(/[^0-9]/g, '')) * (soldStr.toUpperCase().includes('K') ? 1000 : 1);
+  if (p.discount >= 50) return '<span class="live-badge">🔴 LIVE</span>';
+  if (p.discount >= 40) return '<span class="flash-badge">⚡FLASH</span>';
+  if (soldNum >= 10000) return '<span class="trend-badge">📈 HOT</span>';
+  if (p.tag === 'bestseller') return '<span class="best-badge">🏅BEST</span>';
+  if (p.tag === 'new') return '<span class="new-badge">✨NEW</span>';
+  return '';
 }
 
 function productCardHTML(p) {
@@ -770,7 +830,7 @@ function productCardHTML(p) {
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        ${p.discount >= 40 ? `<span class="flash-badge">⚡FLASH</span>` : p.tag === 'bestseller' ? `<span class="best-badge">🏅BEST</span>` : p.tag === 'new' ? `<span class="new-badge">✨NEW</span>` : ''}
+        ${_getCardBadge(p)}
         <button class="wish-btn ${inWish ? 'active' : ''}"
           onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
@@ -782,16 +842,21 @@ function productCardHTML(p) {
           <span class="price-current">${fmt(p.price)}</span>
           <span class="pc-disc-pill">-${p.discount}%</span>
         </div>
+        ${_tamaraHTML(p.price)}
         <div class="pc-meta-row">
           <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
           <span class="pc-sep">|</span>
           <span class="pc-sold sold-hot">🔥 ${soldFmt}+ ${t('soldText')}</span>
         </div>
+        ${p.colors && p.colors.length ? `<div class="pc-swatches">${p.colors.slice(0,4).map(c=>`<span class="pc-swatch-dot" style="background:${c.hex||c}" title="${c.name||c}"></span>`).join('')}${p.colors.length>4?`<span class="pc-swatch-more">+${p.colors.length-4}</span>`:''}</div>` : ''}
         ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
       </div>
-      <button class="add-cart-btn${p.stock === 0 ? ' oos-btn' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'disabled' : ''}>
-        ${p.stock === 0 ? `<i class="fas fa-ban"></i> ${t('outOfStock')}` : `<i class="fas fa-cart-plus"></i> ${t('addToCart')}`}
-      </button>
+      <div class="pc-bottom-row">
+        <button class="add-cart-btn${p.stock === 0 ? ' oos-btn' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'disabled' : ''}>
+          ${p.stock === 0 ? `<i class="fas fa-ban"></i> ${t('outOfStock')}` : `<i class="fas fa-cart-plus"></i> ${t('addToCart')}`}
+        </button>
+        <button class="cmp-card-btn" onclick="event.stopPropagation();addToCompare(${p.id})" title="${t('compareAdd')||'Compare'}"><i class="fas fa-code-compare"></i></button>
+      </div>
     </div>
   `;
 }
@@ -1238,6 +1303,8 @@ function addToCart(id, size, color) {
   if (existing) existing.qty++;
   else cart.push({ id, qty: 1, size, color });
   _saveCart();
+  if(typeof gtag==='function')gtag('event','add_to_cart',{currency:'SAR',value:p?p.price:0,items:[{item_id:id,item_name:p?(p.names?.en||'Product'):'Product',price:p?p.price:0,quantity:1}]});
+  if(typeof fbq==='function')fbq('track','AddToCart',{content_ids:[id],content_type:'product',value:p?p.price:0,currency:'SAR'});
   updateCartBadge();
   _abandonedCartReset();
   if (!localStorage.getItem('exg_spin_shown') && cart.length === 1) setTimeout(_showSpinWheel, 900);
@@ -1771,8 +1838,8 @@ function openModal(id) {
     return '';
   })();
 
-  // Build image gallery (main + extraImages)
-  const allImgs = [p.image, ...(p.extraImages || [])].filter(Boolean);
+  // Build image gallery (main + extraImages or auto-generated)
+  const allImgs = [p.image, ...(p.extraImages && p.extraImages.length ? p.extraImages : _autoGalImgs(p.id))].filter(Boolean);
   const galleryHtml = allImgs.length > 1
     ? `<div class="modal-gallery" id="mgal" data-idx="0" data-images='${JSON.stringify(allImgs)}'>
         <img class="modal-img" id="mgalMain" src="${allImgs[0]}" alt="" onclick="_openImgZoom(this.src)" style="cursor:zoom-in" />
@@ -1797,6 +1864,7 @@ function openModal(id) {
         <span class="modal-price-orig">${fmt(p.originalPrice)}</span>
         <span class="modal-discount">-${p.discount}%</span>
       </div>
+      <div class="modal-bnpl-row">${_tamaraHTML(p.price, true)} ${_tabbyHTML(p.price)}</div>
       <div class="modal-rating">
         <span class="stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
         <span class="rating-count">${p.rating} (${p.ratingCount.toLocaleString()} ${t('reviews')}) · 🔥 ${String(p.sold).replace(/\++$/,'')}+ ${t('soldText')}</span>
@@ -1813,6 +1881,7 @@ function openModal(id) {
           : p.stock !== undefined
             ? `<div class="modal-stock ok"><i class="fas fa-check-circle"></i> ${(t('inStock')||'{n} in stock').replace('{n}',p.stock)}</div>`
             : ''}
+      ${_stockUrgencyHTML(p)}
       <div class="modal-divider"></div>
       <div class="modal-size-header">
         <p class="modal-section-title">${t('sizeSelect')}</p>
@@ -1982,14 +2051,19 @@ document.addEventListener('touchend', e => {
 }, { passive: true });
 
 function shareProduct(id) {
+  const p = PRODUCTS.find(x => x.id === id);
   const url = location.origin + location.pathname + '?p=' + id;
+  const name = p ? getName(p) : 'EX GLOBAL';
+  const price = p ? fmt(p.price) : '';
+  const waText = encodeURIComponent('👗 ' + name + '\n💰 ' + price + '\n🛍️ Shop at EX GLOBAL: ' + url);
+  const waUrl = 'https://wa.me/?text=' + waText;
   if (navigator.share) {
-    const p = PRODUCTS.find(p => p.id === id);
-    navigator.share({ title: 'EX GLOBAL – ' + (p ? getName(p) : ''), url });
+    navigator.share({ title: 'EX GLOBAL – ' + name, text: name + ' – ' + price, url })
+      .catch(() => window.open(waUrl, '_blank'));
   } else {
-    navigator.clipboard.writeText(url).catch(() => {});
-    showToast('🔗 ' + (t('linkCopied') || 'Link copied!'));
+    window.open(waUrl, '_blank');
   }
+  showToast('📤 ' + (t('sharing') || 'Sharing...'));
 }
 function selectSize(size, el) {
   selectedSize = size;
@@ -3390,6 +3464,8 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
     localStorage.setItem('exg_orders',JSON.stringify(orders));
+    if(typeof gtag==='function')gtag('event','purchase',{currency:'SAR',transaction_id:newOrder.id,value:totalSAR,tax:+(totalSAR*0.15).toFixed(2)});
+    if(typeof fbq==='function')fbq('track','Purchase',{value:totalSAR,currency:'SAR'});
     _addVipPoints(Math.round(totalSAR) * 10);
     // Reduce stock for each ordered item
     const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
@@ -3404,7 +3480,10 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     localStorage.setItem('exg_products_custom', JSON.stringify(custom));
   }catch(e){}
   // Fire automations (non-blocking)
-  if (newOrder) setTimeout(() => _automationFire(newOrder), 500);
+  if (newOrder) {
+    setTimeout(() => _automationFire(newOrder), 500);
+    setTimeout(() => _showZatcaInvoice(newOrder.id, totalSAR), 800);
+  }
   return newOrder;
 }
 
@@ -6329,6 +6408,7 @@ function _trackView(id) {
   viewed = [id, ...viewed.filter(v => v !== id)].slice(0, 10);
   localStorage.setItem('exg_viewed', JSON.stringify(viewed));
   renderRecentlyViewed();
+  renderForYou();
 }
 function renderRecentlyViewed() {
   const el = document.getElementById('rvSection');
@@ -6344,6 +6424,246 @@ function renderRecentlyViewed() {
     <div class="rv-strip">${prods.map(p => _dealMiniCard(p)).join('')}</div>
   `;
 }
+
+/* ===== FOR YOU PERSONALIZED SECTION ===== */
+function renderForYou() {
+  const el = document.getElementById('forYouSection');
+  if (!el) return;
+  const viewedIds = JSON.parse(localStorage.getItem('exg_viewed') || '[]');
+  const prefIds = [...new Set([...viewedIds, ...wishlist])];
+  const prefCats = [...new Set(prefIds.map(id => { const p = PRODUCTS.find(x => x.id === id); return p ? p.category : null; }).filter(Boolean))];
+  let candidates = prefCats.length
+    ? PRODUCTS.filter(p => prefCats.includes(p.category) && !viewedIds.includes(p.id))
+    : [...PRODUCTS].sort((a, b) => b.rating - a.rating);
+  candidates = candidates.sort(() => Math.random() - 0.5).slice(0, 6);
+  if (candidates.length < 2) { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = `<div class="rv-head"><span class="rv-title">✨ ${t('forYouTitle')||'Picked For You'}</span></div><div class="rv-strip">${candidates.map(p => _dealMiniCard(p)).join('')}</div>`;
+}
+
+/* ===== INFLUENCER PICKS SECTION ===== */
+const _INFLUENCERS = [
+  {name:'Sarah KSA', handle:'@sarahstyle', prodIds:[1,5,9,13]},
+  {name:'Reem Fashion', handle:'@reemfashion', prodIds:[3,7,11,15]},
+  {name:'Noor Luxury', handle:'@noorluxury', prodIds:[2,6,10,14]},
+  {name:'Lina Picks', handle:'@linapicks', prodIds:[4,8,12,16]}
+];
+function renderInfluencerPicks() {
+  const el = document.getElementById('influencerSection');
+  if (!el) return;
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="inf-section">
+      <div class="two-col-head"><h3 class="section-title">👑 ${t('influencerPicks')||'Influencer Picks'}</h3></div>
+      <div class="inf-strip">${_INFLUENCERS.map(inf => {
+        const prods = inf.prodIds.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0,2);
+        return `<div class="inf-card">
+          <div class="inf-header">
+            <span class="inf-avatar">${inf.name.charAt(0)}</span>
+            <div><div class="inf-name">${inf.name}</div><div class="inf-handle">${inf.handle}</div></div>
+          </div>
+          <div class="inf-products">${prods.map(p => `<div class="inf-prod" onclick="openModal(${p.id})"><img src="${p.image}" loading="lazy" /><div class="inf-prod-price">${fmt(p.price)}</div></div>`).join('')}</div>
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+}
+
+/* ===== TIKTOK VIRAL SECTION ===== */
+function renderTikTokViral() {
+  const el = document.getElementById('tiktokSection');
+  if (!el) return;
+  const viral = PRODUCTS.filter(p => {
+    const soldStr = String(p.sold || '');
+    const soldNum = parseInt(soldStr.replace(/[^0-9]/g,'')) * (soldStr.toUpperCase().includes('K') ? 1000 : 1);
+    return soldNum >= 8000;
+  }).slice(0, 6);
+  if (!viral.length) return;
+  el.style.display = 'block';
+  el.innerHTML = `
+    <div class="tiktok-section">
+      <div class="two-col-head"><h3 class="section-title">📱 ${t('tiktokViral')||'TikTok Viral'}</h3><span class="tiktok-badge">🔴 TRENDING</span></div>
+      <div class="rv-strip">${viral.map(p => `
+        <div class="tiktok-card" onclick="openModal(${p.id})">
+          <div class="tiktok-img-wrap"><img src="${p.image}" loading="lazy" /><span class="tiktok-play">▶</span><span class="tiktok-views">🔥 ${p.sold}</span></div>
+          <div class="tiktok-info"><div class="tiktok-name">${getName(p)}</div><div class="tiktok-price">${fmt(p.price)}</div></div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+}
+
+/* ===== HOMEPAGE REVIEWS SLIDER ===== */
+const _HOMEPAGE_REVIEWS = [
+  {name:'Noura Al-Rashid', city:'Riyadh', stars:5, text:'Amazing quality! Fast delivery and exactly as shown. Will buy again! 💖', avatar:'NR'},
+  {name:'Ahmad Hassan', city:'Jeddah', stars:5, text:'Best online store in Saudi. Tamara payment is super convenient.', avatar:'AH'},
+  {name:'Fatima Al-Otaibi', city:'Dammam', stars:5, text:'مرتاحة جداً مع EX GLOBAL. الجودة ممتازة والتوصيل سريع 🌟', avatar:'FA'},
+  {name:'Sara Mohammed', city:'Mecca', stars:5, text:'Received my order in 2 days! VIP Gold membership is totally worth it.', avatar:'SM'},
+  {name:'Khalid Al-Zahrani', city:'Medina', stars:5, text:'خدمة عملاء رائعة والمنتجات أفضل من المتوقع. شكراً EX GLOBAL!', avatar:'KZ'},
+  {name:'Hana Al-Ghamdi', city:'Khobar', stars:4, text:'Great selection of products. The size guide is very helpful! 👗', avatar:'HG'}
+];
+let _hrevTimer = null;
+let _hrevIdx = 0;
+function renderHomepageReviews() {
+  const el = document.getElementById('hrevSection');
+  if (!el) return;
+  el.style.display = 'block';
+  const stars = n => '★'.repeat(n) + '☆'.repeat(5-n);
+  function renderSlide() {
+    const r = _HOMEPAGE_REVIEWS[_hrevIdx];
+    const dots = _HOMEPAGE_REVIEWS.map((_,i) => `<span class="hrev-dot${i===_hrevIdx?' active':''}" onclick="_hrevGo(${i})"></span>`).join('');
+    el.innerHTML = `
+      <div class="hrev-section">
+        <div class="two-col-head"><h3 class="section-title">💬 ${t('customerReviews')||'Customer Reviews'}</h3></div>
+        <div class="hrev-card">
+          <div class="hrev-top"><div class="hrev-avatar">${r.avatar}</div><div><div class="hrev-name">${r.name}</div><div class="hrev-city"><i class="fas fa-location-dot"></i> ${r.city}</div></div><div class="hrev-stars">${stars(r.stars)}</div></div>
+          <p class="hrev-text">${r.text}</p>
+          <div class="hrev-verified">✅ ${t('verifiedBuyer')||'Verified Buyer'}</div>
+          <div class="hrev-dots">${dots}</div>
+        </div>
+      </div>`;
+    clearTimeout(_hrevTimer);
+    _hrevTimer = setTimeout(() => { _hrevIdx = (_hrevIdx + 1) % _HOMEPAGE_REVIEWS.length; renderSlide(); }, 5000);
+  }
+  window._hrevGo = function(i) { _hrevIdx = i; renderSlide(); };
+  renderSlide();
+}
+
+/* ===== STORIES ===== */
+const _STORIES = [
+  {grad:'linear-gradient(135deg,#ff6b00,#e91e8c)',slides:[
+    {title:'⚡ Flash Sale',sub:'Up to 70% OFF today only',cat:'hot'},
+    {title:'⏰ Ends Tonight',sub:'Grab deals before they expire!',cat:'sale'},
+    {title:'🔥 Most Loved',sub:'Best sellers flying off shelves',cat:'bestseller'}
+  ]},
+  {grad:'linear-gradient(135deg,#00b894,#00cec9)',slides:[
+    {title:'✨ New In',sub:'Fresh arrivals this week',cat:'new'},
+    {title:'🛍️ New Collection',sub:'Be the first to shop',cat:'new'},
+    {title:'💫 Just Landed',sub:'Brand new styles added daily',cat:'new'}
+  ]},
+  {grad:'linear-gradient(135deg,#1a1a2e,#6c5ce7)',slides:[
+    {title:'👑 VIP Club',sub:'Earn points on every order',cat:'women'},
+    {title:'💎 Gold Members',sub:'Extra 15% exclusive discount',cat:'women'},
+    {title:'🎖️ Earn & Redeem',sub:'500 pts = 5% coupon',cat:'men'}
+  ]},
+  {grad:'linear-gradient(135deg,#e91e8c,#ff9800)',slides:[
+    {title:'🎁 Gift Ideas',sub:'Perfect presents for everyone',cat:'home'},
+    {title:'🎀 Gift Wrapping',sub:'Add gift wrap at checkout',cat:'beauty'},
+    {title:'💝 Surprise Deals',sub:'Special gift bundles inside',cat:'women'}
+  ]},
+  {grad:'linear-gradient(135deg,#f7971e,#ffd200)',slides:[
+    {title:'☀️ Summer Vibes',sub:'Lightest fabrics for the heat',cat:'women'},
+    {title:'🏖️ Beach Ready',sub:'Summer must-haves are here',cat:'women'},
+    {title:'🌴 Festival Fashion',sub:'Stand out this summer',cat:'men'}
+  ]},
+  {grad:'linear-gradient(135deg,#1a6b3a,#2ecc71)',slides:[
+    {title:'🌙 Ramadan Special',sub:'Exclusive Ramadan collection',cat:'women'},
+    {title:'✨ Eid Collection',sub:'Look your best for Eid',cat:'women'},
+    {title:'🕌 Modest Fashion',sub:'Elegant and comfortable',cat:'women'}
+  ]},
+  {grad:'linear-gradient(135deg,#b8860b,#ffd700)',slides:[
+    {title:'🏅 Bestsellers',sub:'Loved by 10,000+ customers',cat:'bestseller'},
+    {title:'⭐ Top Rated',sub:'4.8★ average customer rating',cat:'bestseller'},
+    {title:'🔥 Hot Right Now',sub:'Everyone is buying these',cat:'hot'}
+  ]},
+  {grad:'linear-gradient(135deg,#e91e8c,#9415f5)',slides:[
+    {title:'📱 TikTok Viral',sub:'Products blowing up right now',cat:'hot'},
+    {title:'🎬 Seen on TikTok',sub:'Get it before it sells out',cat:'new'},
+    {title:'🔥 Trending Now',sub:'Most shared this week',cat:'bestseller'}
+  ]}
+];
+let _storyTimer = null, _storySlideIdx = 0, _storyStoryIdx = 0;
+function openStory(storyIdx) {
+  const s = _STORIES[storyIdx];
+  if (!s) return;
+  _storyStoryIdx = storyIdx;
+  _storySlideIdx = 0;
+  document.querySelectorAll('.story-item')[storyIdx]?.classList.add('seen');
+  const viewer = document.getElementById('storyViewer');
+  if (!viewer) return;
+  viewer.style.display = 'block';
+  document.body.style.overflow = 'hidden';
+  _renderStorySlide();
+}
+function _renderStorySlide() {
+  const s = _STORIES[_storyStoryIdx];
+  if (!s) return;
+  const slide = s.slides[_storySlideIdx];
+  const viewer = document.getElementById('storyViewer');
+  if (!viewer) return;
+  const prods = slide.cat === 'all' ? PRODUCTS.slice(0,3) : PRODUCTS.filter(p => p.tag === slide.cat || p.category === slide.cat).slice(0,3);
+  const progBars = s.slides.map((_,i) => `<div class="story-prog-seg"><div class="story-prog-fill" id="storyPF${i}" style="width:${i<_storySlideIdx?'100%':'0%'}"></div></div>`).join('');
+  viewer.innerHTML = `<div class="story-slide" style="background:${s.grad}"><div class="story-prog-row">${progBars}</div><button class="story-close" onclick="closeStory()"><i class="fas fa-xmark"></i></button><div class="story-content"><div class="story-title">${slide.title}</div><div class="story-sub">${slide.sub}</div><div class="story-prod-row">${prods.map(p=>`<div class="story-prod-card" onclick="closeStory();setTimeout(()=>openModal(${p.id}),200)"><img src="${p.image}" loading="lazy" /><div>${fmt(p.price)}</div></div>`).join('')}</div></div><div class="story-tap-left" onclick="_storyNav(-1)"></div><div class="story-tap-right" onclick="_storyNav(1)"></div></div>`;
+  setTimeout(() => {
+    const fill = document.getElementById('storyPF'+_storySlideIdx);
+    if (fill) { fill.style.transition = 'width 3s linear'; fill.style.width = '100%'; }
+  }, 60);
+  clearTimeout(_storyTimer);
+  _storyTimer = setTimeout(() => _storyNav(1), 3100);
+}
+function _storyNav(dir) {
+  const s = _STORIES[_storyStoryIdx];
+  _storySlideIdx += dir;
+  if (_storySlideIdx >= s.slides.length) { closeStory(); return; }
+  if (_storySlideIdx < 0) _storySlideIdx = 0;
+  _renderStorySlide();
+}
+function closeStory() {
+  clearTimeout(_storyTimer);
+  const v = document.getElementById('storyViewer');
+  if (v) v.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+/* ===== VOICE SEARCH ===== */
+function startVoiceSearch() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast(t('voiceNotSupported')||'Voice search not supported on this browser'); return; }
+  const rec = new SR();
+  rec.lang = currentLang === 'ar' ? 'ar-SA' : 'en-US';
+  rec.interimResults = false;
+  const btn = document.getElementById('voiceSearchBtn');
+  if (btn) btn.classList.add('voice-listening');
+  showToast((t('listening')||'Listening...') + ' 🎤');
+  rec.onresult = e => {
+    const q = e.results[0][0].transcript;
+    const inp = document.getElementById('searchInput');
+    if (inp) { inp.value = q; }
+    if (btn) btn.classList.remove('voice-listening');
+    renderProducts(q);
+  };
+  rec.onerror = () => { if (btn) btn.classList.remove('voice-listening'); };
+  rec.onend = () => { if (btn) btn.classList.remove('voice-listening'); };
+  rec.start();
+}
+
+/* ===== SAUDI OCCASIONS BANNER ===== */
+const _OCCASIONS = {
+  nationalday: {title:'🇸🇦 Saudi National Day 93', sub:'Exclusive National Day Deals — Up to 93% OFF', coupon:'KSA93', bg:'linear-gradient(135deg,#006400,#FFFFFF,#006400)', color:'#006400'},
+  eid: {title:'🌙 Eid Mubarak Deals', sub:'Celebrate Eid with premium fashion at incredible prices', coupon:'EID20', bg:'linear-gradient(135deg,#1a6b3a,#ffd700)', color:'#fff'},
+  ramadan: {title:'🌙 Ramadan Kareem', sub:'Holy month special — Exclusive prices for EX GLOBAL community', coupon:'RAMADAN15', bg:'linear-gradient(135deg,#1a1a2e,#6c5ce7)', color:'#ffd700'},
+  white: {title:'⚡ White Wednesday Sale', sub:'Saudi Arabia\'s biggest sale event — Extra 20% OFF everything', coupon:'WHITE20', bg:'linear-gradient(135deg,#e91e8c,#9415f5)', color:'#fff'}
+};
+function _checkOccasion() {
+  const forced = localStorage.getItem('exg_occasion');
+  const now = new Date();
+  const m = now.getMonth() + 1, d = now.getDate();
+  let key = forced || null;
+  if (!key && m === 9 && d >= 18 && d <= 26) key = 'nationalday';
+  if (!key && m === 11 && d >= 25 && d <= 29) key = 'white';
+  if (!key) return;
+  const occ = _OCCASIONS[key];
+  if (!occ) return;
+  let banner = document.getElementById('occasionBanner');
+  if (!banner) {
+    banner = document.createElement('div');
+    banner.id = 'occasionBanner';
+    const stories = document.getElementById('storiesRow');
+    if (stories) stories.parentNode.insertBefore(banner, stories.nextSibling);
+  }
+  banner.innerHTML = `<div class="occasion-banner" style="background:${occ.bg};color:${occ.color}"><div class="occ-content"><div class="occ-title">${occ.title}</div><div class="occ-sub">${occ.sub}</div><div class="occ-coupon-row"><span class="occ-code">${occ.coupon}</span><button class="occ-copy" onclick="navigator.clipboard.writeText('${occ.coupon}').then(()=>showToast('✅ Coupon copied!'))">Copy</button></div></div><button class="occ-close" onclick="this.closest('#occasionBanner').style.display='none'"><i class="fas fa-xmark"></i></button></div>`;
+  banner.style.display = 'block';
+}
+
+/* ===== WHATSAPP SHARE (IMPROVED) ===== */
 
 /* ===== RELATED PRODUCTS ===== */
 function _relatedHTML(p) {
@@ -6776,4 +7096,135 @@ function _renderReferralBlock() {
       </div>
     </div>
   `;
+}
+
+/* ===== PRODUCT COMPARISON ===== */
+let compareList = [];
+
+function addToCompare(id) {
+  if (compareList.includes(id)) { showToast(t('compareAdd')||'Already added'); return; }
+  if (compareList.length >= 2) { showToast(t('compareHint')||'Select only 2 products to compare'); return; }
+  compareList.push(id);
+  _renderCompareBar();
+  if (compareList.length === 2) setTimeout(openCompare, 200);
+}
+
+function _renderCompareBar() {
+  const bar = document.getElementById('compareBar');
+  if (!bar) return;
+  if (compareList.length === 0) { bar.style.display = 'none'; return; }
+  const names = compareList.map(cid => {
+    const p = PRODUCTS.find(x => x.id === cid);
+    return p ? (p.names?.en || p.nameEn || 'Product') : '?';
+  });
+  bar.style.display = 'flex';
+  bar.innerHTML = `
+    <i class="fas fa-code-compare" style="color:#e91e8c"></i>
+    <span class="cmp-bar-text">${t('compareTitle')||'Compare'}: <b>${names.join(' vs ')}</b></span>
+    <button class="cmp-bar-go" onclick="openCompare()">${t('compareAdd')||'Compare'} →</button>
+    <button class="cmp-bar-clear" onclick="clearCompare()">✕</button>
+  `;
+}
+
+function openCompare() {
+  const [a, b] = compareList.map(cid => PRODUCTS.find(x => x.id === cid));
+  if (!a || !b) { showToast(t('compareHint')||'Select 2 products to compare'); return; }
+  const overlay = document.getElementById('compareModal');
+  if (!overlay) return;
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const fmtP = p => lang.currency + (p.price * (lang.rate || 1)).toFixed(0);
+  const row = (label, va, vb) => `<tr><td class="cmp-label">${label}</td><td class="${va===vb?'':'cmp-win'}">${va}</td><td class="${vb===va?'':'cmp-win'}">${vb}</td></tr>`;
+  overlay.innerHTML = `
+    <div class="compare-modal">
+      <button class="cmp-close" onclick="closeCompare()"><i class="fas fa-xmark"></i></button>
+      <h3 class="cmp-title"><i class="fas fa-code-compare"></i> ${t('compareTitle')||'Compare Products'}</h3>
+      <div class="compare-scroll">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th class="cmp-label-head"></th>
+              <th><img src="${a.image}" class="cmp-img" onerror="this.src='https://picsum.photos/seed/p${a.id}/200/200'"><div class="cmp-pname">${a.names?.en||a.nameEn||'Product'}</div></th>
+              <th><img src="${b.image}" class="cmp-img" onerror="this.src='https://picsum.photos/seed/p${b.id}/200/200'"><div class="cmp-pname">${b.names?.en||b.nameEn||'Product'}</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            ${row('💰 Price', fmtP(a), fmtP(b))}
+            ${row('⭐ Rating', a.rating+'/5', b.rating+'/5')}
+            ${row('🔥 Sold', String(a.sold||'-'), String(b.sold||'-'))}
+            ${row('🏷️ Discount', a.discount?a.discount+'%':'-', b.discount?b.discount+'%':'-')}
+            ${row('📦 Stock', a.stock?a.stock+' left':'In Stock', b.stock?b.stock+' left':'In Stock')}
+            ${row('🗂️ Category', a.category||'-', b.category||'-')}
+          </tbody>
+        </table>
+      </div>
+      <div class="cmp-actions">
+        <button class="cmp-add-btn" onclick="closeCompare();flyCartAdd(event,${a.id})"><i class="fas fa-cart-plus"></i> ${a.names?.en||a.nameEn||'Product A'}</button>
+        <button class="cmp-add-btn" onclick="closeCompare();flyCartAdd(event,${b.id})"><i class="fas fa-cart-plus"></i> ${b.names?.en||b.nameEn||'Product B'}</button>
+      </div>
+    </div>
+  `;
+  overlay.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCompare() {
+  const overlay = document.getElementById('compareModal');
+  if (overlay) overlay.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+function clearCompare() {
+  compareList = [];
+  _renderCompareBar();
+}
+
+/* ===== ZATCA PHASE 1 QR INVOICE ===== */
+function _zatcaQR(orderTotal, vatAmt) {
+  function tlvEncode(tag, value) {
+    const enc = new TextEncoder().encode(value);
+    const result = [tag, enc.length];
+    enc.forEach(b => result.push(b));
+    return result;
+  }
+  const ts = new Date().toISOString();
+  const bytes = [
+    ...tlvEncode(1, 'EX GLOBAL'),
+    ...tlvEncode(2, '300000000000003'),
+    ...tlvEncode(3, ts),
+    ...tlvEncode(4, orderTotal.toFixed(2)),
+    ...tlvEncode(5, vatAmt.toFixed(2))
+  ];
+  return btoa(String.fromCharCode.apply(null, bytes));
+}
+
+function _showZatcaInvoice(orderId, totalSAR) {
+  const container = document.getElementById('zatcaInvoiceBox');
+  if (!container) return;
+  const vatAmt = +(totalSAR * 0.15).toFixed(2);
+  const excl = +(totalSAR - vatAmt).toFixed(2);
+  const qrData = _zatcaQR(totalSAR, vatAmt);
+  const qrId = 'zatcaQR_' + orderId;
+  container.innerHTML = `
+    <div class="zatca-invoice">
+      <div class="zatca-header">
+        <span class="zatca-logo">EX GLOBAL</span>
+        <span class="zatca-inv-label">${t('zatcaInvoice')||'Tax Invoice'}</span>
+      </div>
+      <div class="zatca-details">
+        <div class="zatca-row"><span>VAT Number</span><span>300000000000003</span></div>
+        <div class="zatca-row"><span>Invoice #</span><span>${orderId}</span></div>
+        <div class="zatca-row"><span>Date</span><span>${new Date().toLocaleDateString('en-SA')}</span></div>
+        <div class="zatca-row"><span>Subtotal (excl. VAT)</span><span>SAR ${excl.toFixed(2)}</span></div>
+        <div class="zatca-row"><span>VAT 15%</span><span>SAR ${vatAmt.toFixed(2)}</span></div>
+        <div class="zatca-row zatca-total"><span><b>Total</b></span><span><b>SAR ${totalSAR.toFixed(2)}</b></span></div>
+      </div>
+      <div class="zatca-qr-wrap"><div id="${qrId}"></div><p class="zatca-scan">Scan to verify</p></div>
+    </div>
+  `;
+  container.style.display = 'block';
+  try {
+    if (typeof QRCode !== 'undefined') {
+      new QRCode(document.getElementById(qrId), { text: qrData, width: 128, height: 128, correctLevel: QRCode.CorrectLevel.M });
+    }
+  } catch(e) {}
 }
