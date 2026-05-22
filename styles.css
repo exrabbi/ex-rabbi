@@ -6982,56 +6982,47 @@ body.dark-mode .rstrip-name { color: #f0f0f0; }
   margin: 8px 0 4px;
 }
 
-/* ===== SLIM TRUST BAR ===== */
-.trust-bar {
+/* ===== TRUST PILL BAR ===== */
+.tbar {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-evenly;
+  gap: 6px;
+  padding: 7px 10px;
   background: #fff;
   border-bottom: 1px solid #f0f0f0;
-  padding: 0 6px;
-  height: 44px;
-  overflow: hidden;
+  flex-wrap: nowrap;
 }
-body.dark-mode .trust-bar {
+body.dark-mode .tbar {
   background: #0f0c22;
   border-color: rgba(255,255,255,.06);
 }
-.trust-item {
-  display: flex;
+.tbar-pill {
+  display: inline-flex;
   align-items: center;
   gap: 5px;
-  flex: 1;
-  justify-content: center;
-  min-width: 0;
-}
-.tbi-dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--c, #e91e8c);
-  flex-shrink: 0;
-  opacity: .7;
-}
-.tbi-ic {
-  font-size: 13px;
+  background: var(--pb, #f3f3f3);
+  border-radius: 30px;
+  padding: 5px 10px 5px 8px;
+  text-decoration: none;
   flex-shrink: 0;
 }
-.tbi-label {
-  font-size: 10.5px;
+body.dark-mode .tbar-pill {
+  background: rgba(255,255,255,.08);
+}
+.tbar-pill i {
+  font-size: 12px;
+  color: var(--pc, #e91e8c);
+  flex-shrink: 0;
+}
+.tbar-pill span {
+  font-size: 10px;
   font-weight: 700;
   color: #1a1a2e;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  line-height: 1;
 }
-body.dark-mode .tbi-label { color: #e8e8f0; }
-.tbi-sep {
-  width: 1px;
-  height: 20px;
-  background: #e8e8e8;
-  flex-shrink: 0;
-}
-body.dark-mode .tbi-sep { background: rgba(255,255,255,.1); }
+body.dark-mode .tbar-pill span { color: #e8e8f0; }
 
 /* ===== PREMIUM FOOTER ===== */
 .site-footer {

@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=155" />
+  <link rel="stylesheet" href="styles.css?v=156" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -278,30 +278,19 @@
     </section>
 
     <!-- TRUST BENEFITS BAR -->
-    <div class="trust-bar">
-      <div class="trust-item">
-        <span class="tbi-dot" style="--c:#f97316"></span>
-        <i class="fas fa-bolt tbi-ic" style="color:#f97316"></i>
-        <span class="tbi-label" data-i18n="trustDelivery">Fast Delivery</span>
-      </div>
-      <span class="tbi-sep"></span>
-      <div class="trust-item">
-        <span class="tbi-dot" style="--c:#16a34a"></span>
-        <i class="fas fa-lock tbi-ic" style="color:#16a34a"></i>
-        <span class="tbi-label" data-i18n="trustSecure">Secure Payment</span>
-      </div>
-      <span class="tbi-sep"></span>
-      <div class="trust-item">
-        <span class="tbi-dot" style="--c:#7c3aed"></span>
-        <i class="fas fa-rotate-left tbi-ic" style="color:#7c3aed"></i>
-        <span class="tbi-label" data-i18n="trustReturns">7-Day Returns</span>
-      </div>
-      <span class="tbi-sep"></span>
-      <div class="trust-item">
-        <span class="tbi-dot" style="--c:#e91e8c"></span>
-        <i class="fab fa-whatsapp tbi-ic" style="color:#e91e8c"></i>
-        <span class="tbi-label" data-i18n="trustSupport">24/7 Support</span>
-      </div>
+    <div class="tbar">
+      <a class="tbar-pill" style="--pc:#f97316;--pb:#fff3e0" href="#">
+        <i class="fas fa-bolt"></i><span data-i18n="trustDelivery">Fast Delivery</span>
+      </a>
+      <a class="tbar-pill" style="--pc:#16a34a;--pb:#e8f5e9" href="#">
+        <i class="fas fa-lock"></i><span data-i18n="trustSecure">Secure Pay</span>
+      </a>
+      <a class="tbar-pill" style="--pc:#7c3aed;--pb:#f3eeff" href="#">
+        <i class="fas fa-rotate-left"></i><span data-i18n="trustReturns">7-Day Return</span>
+      </a>
+      <a class="tbar-pill" style="--pc:#e91e8c;--pb:#fce4f3" href="#">
+        <i class="fab fa-whatsapp"></i><span data-i18n="trustSupport">24/7 Support</span>
+      </a>
     </div>
 
     <!-- SAUDI PRIDE BANNER -->
