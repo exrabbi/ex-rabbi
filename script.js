@@ -2431,6 +2431,12 @@ function whatsappCheckout() {
 }
 
 function codCheckout() {
+  if (!currentUser) {
+    closePayment();
+    showToast('🔒 ' + (t('loginRequired') || 'Please sign in to place your order'));
+    setTimeout(openAuth, 400);
+    return;
+  }
   // Re-validate location before placing order
   if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
     showToast('📍 Please add a delivery address first');
@@ -3698,6 +3704,12 @@ function _cartStockError() {
 }
 
 function openPayment() {
+  if (!currentUser) {
+    closeCart();
+    showToast('🔒 ' + (t('loginRequired') || 'Please sign in to place your order'));
+    setTimeout(openAuth, 400);
+    return;
+  }
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
   const stockErr = _cartStockError();
   if (stockErr) { showToast('🚫 ' + stockErr); return; }
@@ -3935,6 +3947,12 @@ function copyBinanceAddr() {
 }
 
 function processPayment() {
+  if (!currentUser) {
+    closePayment();
+    showToast('🔒 ' + (t('loginRequired') || 'Please sign in to place your order'));
+    setTimeout(openAuth, 400);
+    return;
+  }
   const stockErr = _cartStockError();
   if (stockErr) { showToast('🚫 ' + stockErr); return; }
   if (selectedPayMethod === 'whatsapp') {
