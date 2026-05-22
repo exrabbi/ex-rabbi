@@ -6656,22 +6656,28 @@ html, body { transition: background .35s, color .35s; }
 /* ===== FLOATING WHATSAPP BUTTON ===== */
 .wa-float-btn {
   position: fixed;
-  bottom: 76px;
-  right: 16px;
-  width: 52px;
-  height: 52px;
+  bottom: 100px;
+  right: 14px;
+  width: 54px;
+  height: 54px;
   background: #25D366;
   color: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
-  box-shadow: 0 4px 18px rgba(37,211,102,.5);
-  z-index: 999;
+  font-size: 27px;
+  box-shadow: 0 4px 20px rgba(37,211,102,.55), 0 2px 8px rgba(0,0,0,.18);
+  z-index: 1100;
   text-decoration: none;
+  cursor: grab;
+  touch-action: none;
+  transition: box-shadow .2s, transform .15s;
   animation: waBounce 0.8s ease 1s both;
+  user-select: none;
+  -webkit-user-select: none;
 }
+.wa-float-btn:active { cursor: grabbing; transform: scale(1.08); box-shadow: 0 8px 28px rgba(37,211,102,.6); }
 @keyframes waBounce {
   0%   { transform: scale(0); opacity: 0; }
   60%  { transform: scale(1.15); opacity: 1; }

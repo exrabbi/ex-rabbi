@@ -91,7 +91,7 @@
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
   </script>
-  <link rel="stylesheet" href="styles.css?v=145" />
+  <link rel="stylesheet" href="styles.css?v=146" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -783,10 +783,55 @@
 
   </main>
 
-  <!-- FLOATING WHATSAPP BUTTON -->
-  <a class="wa-float-btn" href="https://wa.me/966500000000?text=Hello%20EX%20GLOBAL%20%F0%9F%91%8B%20I%20need%20help" target="_blank" rel="noopener" title="WhatsApp Support">
+  <!-- FLOATING WHATSAPP BUTTON (draggable) -->
+  <a id="waFloatBtn" class="wa-float-btn" href="https://wa.me/966500000000?text=Hello%20EX%20GLOBAL%20%F0%9F%91%8B%20I%20need%20help" target="_blank" rel="noopener" title="WhatsApp Support">
     <i class="fab fa-whatsapp"></i>
   </a>
+  <script>
+  (function(){
+    var btn = document.getElementById('waFloatBtn');
+    if (!btn) return;
+    var dragging = false, startX, startY, origX, origY, moved = false;
+    var saved = JSON.parse(localStorage.getItem('wa_btn_pos') || 'null');
+    if (saved) { btn.style.right = 'auto'; btn.style.bottom = 'auto'; btn.style.left = saved.x + 'px'; btn.style.top = saved.y + 'px'; }
+    function onStart(e) {
+      var t = e.touches ? e.touches[0] : e;
+      dragging = true; moved = false;
+      startX = t.clientX; startY = t.clientY;
+      var r = btn.getBoundingClientRect();
+      origX = r.left; origY = r.top;
+      btn.style.right = 'auto'; btn.style.bottom = 'auto';
+      btn.style.left = origX + 'px'; btn.style.top = origY + 'px';
+      btn.style.transition = 'none';
+      e.preventDefault();
+    }
+    function onMove(e) {
+      if (!dragging) return;
+      var t = e.touches ? e.touches[0] : e;
+      var dx = t.clientX - startX, dy = t.clientY - startY;
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+      var nx = Math.max(8, Math.min(window.innerWidth - 60, origX + dx));
+      var ny = Math.max(8, Math.min(window.innerHeight - 150, origY + dy));
+      btn.style.left = nx + 'px'; btn.style.top = ny + 'px';
+      e.preventDefault();
+    }
+    function onEnd(e) {
+      if (!dragging) return;
+      dragging = false;
+      btn.style.transition = '';
+      var r = btn.getBoundingClientRect();
+      var cx = r.left + 26;
+      var snapX = cx < window.innerWidth / 2 ? 12 : window.innerWidth - 64;
+      btn.style.left = snapX + 'px';
+      localStorage.setItem('wa_btn_pos', JSON.stringify({x: snapX, y: parseFloat(btn.style.top)}));
+      if (moved) e.preventDefault();
+    }
+    btn.addEventListener('touchstart', onStart, {passive:false});
+    btn.addEventListener('touchmove', onMove, {passive:false});
+    btn.addEventListener('touchend', onEnd, {passive:false});
+    btn.addEventListener('click', function(e){ if (moved) e.preventDefault(); });
+  })();
+  </script>
 
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
