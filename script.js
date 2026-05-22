@@ -3267,12 +3267,13 @@ document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
   // Firebase auth state listener + redirect result handler
   if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-    // Handle Google redirect result on page load
+    // Handle redirect result (Google + Facebook) on page load
     firebase.auth().getRedirectResult().then(result => {
       if (result && result.user) {
-        setUser({ name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid, provider: 'google' });
+        const prov = result.additionalUserInfo && result.additionalUserInfo.providerId === 'facebook.com' ? 'facebook' : 'google';
+        setUser({ name: result.user.displayName, email: result.user.email, avatar: result.user.photoURL, uid: result.user.uid, provider: prov });
         closeAuth();
-        showToast(t('welcome') + result.user.displayName.split(' ')[0] + '!');
+        showToast(t('welcome') + (result.user.displayName || '').split(' ')[0] + '!');
       }
     }).catch(() => {});
     firebase.auth().onAuthStateChanged(user => {
@@ -3365,10 +3366,16 @@ async function signInWithFacebook() {
       showToast(t('welcome') + (result.user.displayName || '').split(' ')[0] + '!');
     }
   } catch (e) {
-    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
-      showToast('Popup blocked — please use Google login instead.');
-    } else if (e.code === 'auth/web-storage-unsupported' || (e.message && e.message.includes('storage'))) {
-      showToast('Browser storage blocked — please use Google login or enable cookies in your browser settings.');
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user' ||
+        e.code === 'auth/web-storage-unsupported' || (e.message && e.message.toLowerCase().includes('storage'))) {
+      // Popup failed or storage blocked — fall back to redirect
+      try {
+        const p2 = new firebase.auth.FacebookAuthProvider();
+        p2.addScope('email');
+        await firebase.auth().signInWithRedirect(p2);
+      } catch(e2) {
+        showToast('Facebook login unavailable — please use Google login.');
+      }
     } else if (e.code === 'auth/operation-not-allowed') {
       showToast(t('facebookNotEnabled'));
     } else if (e.code !== 'auth/cancelled-popup-request') {
