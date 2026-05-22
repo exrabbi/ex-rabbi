@@ -6982,62 +6982,56 @@ body.dark-mode .rstrip-name { color: #f0f0f0; }
   margin: 8px 0 4px;
 }
 
-/* ===== CLEAN TRUST BENEFITS BAR ===== */
+/* ===== SLIM TRUST BAR ===== */
 .trust-bar {
-  display: grid;
-  grid-template-columns: 1fr 1px 1fr 1px 1fr 1px 1fr;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #fff;
-  border-bottom: 1px solid #ebebeb;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 6px;
+  height: 44px;
+  overflow: hidden;
 }
 body.dark-mode .trust-bar {
-  background: #140f28;
+  background: #0f0c22;
   border-color: rgba(255,255,255,.06);
 }
 .trust-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 11px 4px;
   gap: 5px;
-  text-align: center;
-}
-.trust-icon-wrap {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
+  flex: 1;
   justify-content: center;
-  font-size: 16px;
+  min-width: 0;
+}
+.tbi-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--c, #e91e8c);
+  flex-shrink: 0;
+  opacity: .7;
+}
+.tbi-ic {
+  font-size: 13px;
   flex-shrink: 0;
 }
-body.dark-mode .trust-icon-wrap { opacity: .85; }
-.trust-text {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.trust-text b {
-  font-size: 10px;
-  font-weight: 800;
+.tbi-label {
+  font-size: 10.5px;
+  font-weight: 700;
   color: #1a1a2e;
-  display: block;
-  line-height: 1.2;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-body.dark-mode .trust-text b { color: #f0f0f0; }
-.trust-text span {
-  font-size: 9px;
-  color: #999;
-  display: block;
-  white-space: nowrap;
-}
-.trust-divider {
-  background: #ebebeb;
-  margin: 8px 0;
+body.dark-mode .tbi-label { color: #e8e8f0; }
+.tbi-sep {
   width: 1px;
+  height: 20px;
+  background: #e8e8e8;
+  flex-shrink: 0;
 }
-body.dark-mode .trust-divider { background: rgba(255,255,255,.07); }
+body.dark-mode .tbi-sep { background: rgba(255,255,255,.1); }
 
 /* ===== PREMIUM FOOTER ===== */
 .site-footer {
