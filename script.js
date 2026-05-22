@@ -779,23 +779,26 @@ function renderProducts(searchTerm = '') {
 function productCardHTML(p) {
   const inWish = wishlist.includes(p.id);
   const rcFmt = p.ratingCount >= 1000 ? (p.ratingCount/1000).toFixed(1)+'k' : p.ratingCount;
-  const soldRaw = String(p.sold).replace(/\++$/, '');
-  const soldFmt = soldRaw;
+  const soldFmt = String(p.sold).replace(/\++$/, '');
+  const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
+  const isOOS = p.stock === 0;
+  const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
   return `
     <div class="product-card" onclick="openModal(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
         ${p.discount >= 40 ? `<span class="badge-ribbon flash-badge"><i class="fas fa-bolt"></i> FLASH</span>` : p.tag === 'bestseller' ? `<span class="badge-ribbon best-badge"><i class="fas fa-trophy"></i> BEST</span>` : p.tag === 'new' ? `<span class="badge-ribbon new-badge"><i class="fas fa-sparkles"></i> NEW</span>` : p.discount >= 20 ? `<span class="badge-ribbon hot-badge">-${p.discount}%</span>` : ''}
-        <button class="wish-btn ${inWish ? 'active' : ''}"
-          onclick="event.stopPropagation();toggleWish(${p.id},this)">
+        <button class="wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
           <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
         </button>
         <button class="cmp-card-btn" onclick="event.stopPropagation();addToCompare(${p.id})" title="Compare"><i class="fas fa-code-compare"></i></button>
+        <div class="card-qv-overlay"><span class="card-qv-tag"><i class="fas fa-eye"></i> Quick View</span></div>
       </div>
       <div class="product-info">
         <p class="product-name">${getName(p)}</p>
         <div class="pc-price-row">
           <span class="price-current">${fmt(p.price)}</span>
+          ${origPrice ? `<span class="price-original">${origPrice}</span>` : ''}
           <span class="pc-disc-pill">-${p.discount}%</span>
         </div>
         ${_tamaraHTML(p.price)}
@@ -804,10 +807,12 @@ function productCardHTML(p) {
           <span class="pc-sep">|</span>
           <span class="pc-sold sold-hot">🔥 ${soldFmt}+ ${t('soldText')}</span>
         </div>
-        ${p.stock === 0 ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : p.stock !== undefined && p.stock <= 5 ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
+        ${isOOS ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : isLow ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
+        ${!isOOS ? `<div class="card-trust-strip"><span class="card-trust-chip"><i class="fas fa-bolt"></i> Fast Delivery</span><span class="card-trust-chip"><i class="fas fa-shield-halved"></i> Secure</span>${isLow ? `<span class="card-trust-chip urgency"><i class="fas fa-fire"></i> Only ${p.stock} left</span>` : ''}</div>` : ''}
       </div>
-      <button class="add-cart-btn${p.stock === 0 ? ' oos-btn' : ''}" onclick="event.stopPropagation();${p.stock === 0 ? '' : `flyCartAdd(event,${p.id})`}" ${p.stock === 0 ? 'disabled' : ''}>
-        ${p.stock === 0 ? `<i class="fas fa-ban"></i> ${t('outOfStock')}` : `<i class="fas fa-cart-plus"></i> ${t('addToCart')}`}
+      <button class="add-cart-btn${isOOS ? ' oos-btn' : ''}" onclick="event.stopPropagation();${isOOS ? '' : `flyCartAdd(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
+        <i class="fas fa-${isOOS ? 'ban' : 'shopping-bag'}"></i>
+        <span>${isOOS ? (t('outOfStock')||'Out of Stock') : (t('addToCart')||'Add to Cart')}</span>
       </button>
     </div>
   `;
