@@ -197,6 +197,10 @@ const TRANSLATIONS = {
     confirmDeleteAccount: 'আপনি কি নিশ্চিতভাবে অ্যাকাউন্ট মুছতে চান? এই কাজ আর ফেরানো যাবে না।',
     accountDeleted: '✓ অ্যাকাউন্ট মুছে ফেলা হয়েছে', close: 'বন্ধ করুন',
     thisDevice: 'এই ডিভাইস', noSignInHistory: 'কোনো লগইন তথ্য নেই',
+    trustDelivery: 'দ্রুত ডেলিভারি', trustDeliverySub: '১–৩ দিন · সারা কেএসএ',
+    trustSecure: 'নিরাপদ পেমেন্ট', trustSecureSub: 'SSL সুরক্ষিত',
+    trustReturns: '৭ দিন রিটার্ন', trustReturnsSub: 'ঝামেলামুক্ত',
+    trustSupport: '২৪/৭ সাপোর্ট', trustSupportSub: 'WhatsApp চ্যাট',
   },
   en: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -392,6 +396,10 @@ const TRANSLATIONS = {
     confirmDeleteAccount: 'Are you sure you want to permanently delete your account? This cannot be undone.',
     accountDeleted: '✓ Account deleted', close: 'Close',
     thisDevice: 'This device', noSignInHistory: 'No sign-in history',
+    trustDelivery: 'Fast Delivery', trustDeliverySub: '1–3 days · KSA',
+    trustSecure: 'Secure Payment', trustSecureSub: 'SSL encrypted',
+    trustReturns: '7-Day Returns', trustReturnsSub: 'Hassle-free',
+    trustSupport: '24/7 Support', trustSupportSub: 'WhatsApp chat',
   },
   ar: {
     dir: 'rtl', currency: 'ر.س ', rate: 0.034,
@@ -587,6 +595,10 @@ const TRANSLATIONS = {
     confirmDeleteAccount: 'هل أنت متأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.',
     accountDeleted: '✓ تم حذف الحساب', close: 'إغلاق',
     thisDevice: 'هذا الجهاز', noSignInHistory: 'لا يوجد سجل دخول',
+    trustDelivery: 'توصيل سريع', trustDeliverySub: '١–٣ أيام · المملكة',
+    trustSecure: 'دفع آمن', trustSecureSub: 'SSL مشفّر',
+    trustReturns: 'إرجاع ٧ أيام', trustReturnsSub: 'بدون تعقيد',
+    trustSupport: 'دعم ٢٤/٧', trustSupportSub: 'واتساب · دردشة',
   },
   hi: {
     dir: 'ltr', currency: 'SAR ', rate: 0.034,
@@ -767,5 +779,9 @@ const TRANSLATIONS = {
     confirmDeleteAccount: 'क्या आप वाकई अपना अकाउंट स्थायी रूप से हटाना चाहते हैं? यह वापस नहीं होगा।',
     accountDeleted: '✓ अकाउंट हटा दिया गया', close: 'बंद करें',
     thisDevice: 'यह डिवाइस', noSignInHistory: 'कोई साइन-इन इतिहास नहीं',
+    trustDelivery: 'तेज़ डिलीवरी', trustDeliverySub: '१–३ दिन · KSA',
+    trustSecure: 'सुरक्षित भुगतान', trustSecureSub: 'SSL एन्क्रिप्टेड',
+    trustReturns: '७-दिन वापसी', trustReturnsSub: 'आसान प्रक्रिया',
+    trustSupport: '२४/७ सहायता', trustSupportSub: 'WhatsApp चैट',
   }
 };
