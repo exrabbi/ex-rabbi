@@ -9358,11 +9358,11 @@ body, button, input, select, textarea {
 }
 [data-theme="dark"] .cat-arch-title { color: #f0eeff !important; }
 
-/* --- 5. HERO SLIDER UPGRADE ------------------------------ */
-.hero-slider { height: 260px !important; }
-@media (min-width: 480px) { .hero-slider { height: 320px !important; } }
-@media (min-width: 768px) { .hero-slider { height: 400px !important; } }
-@media (min-width: 1200px) { .hero-slider { height: 500px !important; } }
+/* --- 5. HERO SLIDER — RESTORE ORIGINAL HEIGHT ----- */
+.hero-slider { height: 165px !important; }
+@media (min-width: 480px) { .hero-slider { height: 200px !important; } }
+@media (min-width: 768px) { .hero-slider { height: 300px !important; } }
+@media (min-width: 1200px) { .hero-slider { height: 440px !important; } }
 
 .hero-dot {
   width: 6px !important;
