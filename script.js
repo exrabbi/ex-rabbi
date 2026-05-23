@@ -2843,8 +2843,6 @@ function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
   document.getElementById('locModal').classList.add('open');
   document.body.style.overflow = 'hidden';
-  const fab = document.getElementById('aiChatFab');
-  if (fab) fab.style.display = 'none';
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
   setTimeout(() => { _initLocMap(); _locAutoGps(); }, 350);
@@ -3243,9 +3241,6 @@ function closeLocation() {
   if (drop) drop.style.display = 'none';
   const input = document.getElementById('locSearchInput');
   if (input) input.value = '';
-  // Restore AI fab
-  const fab = document.getElementById('aiChatFab');
-  if (fab) fab.style.display = '';
   document.body.style.overflow = '';
   _locGeocoding = false;
 }

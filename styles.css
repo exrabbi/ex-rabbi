@@ -2359,13 +2359,14 @@ img { max-width: 100%; display: block; }
   position: absolute; bottom: calc(100% + 8px); left: 50%;
   transform: translateX(-50%);
   background: #FFC200; color: #111;
-  font-size: 13px; font-weight: 800;
-  padding: 10px 16px; border-radius: 14px;
-  white-space: normal; max-width: 240px; text-align: center;
-  box-shadow: 0 4px 16px rgba(0,0,0,.22);
+  font-size: 12px; font-weight: 700;
+  padding: 6px 12px; border-radius: 10px;
+  white-space: nowrap; max-width: 220px;
+  overflow: hidden; text-overflow: ellipsis;
+  box-shadow: 0 3px 12px rgba(0,0,0,.2);
   pointer-events: none; z-index: 600;
   opacity: 0; transition: opacity .3s;
-  line-height: 1.4;
+  line-height: 1.3;
 }
 .loc-pin-label.show { opacity: 1; }
 .loc-pin-label::after {
@@ -5026,7 +5027,7 @@ html, body { transition: background .35s, color .35s; }
 /* FAB button — draggable */
 .ai-chat-fab {
   position: fixed;
-  bottom: 100px; right: 16px;
+  bottom: 164px; right: 16px;
   width: 54px; height: 62px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   border: none; border-radius: 28px;
@@ -6696,7 +6697,10 @@ body:has(#payModal.open) .hc-fab,
 body:has(#payModal.open) .ai-chat-fab,
 body:has(.modal-overlay.open) .wa-float-btn,
 body:has(.modal-overlay.open) .hc-fab,
-body:has(.modal-overlay.open) .ai-chat-fab {
+body:has(.modal-overlay.open) .ai-chat-fab,
+body:has(#locModal.open) .wa-float-btn,
+body:has(#locModal.open) .hc-fab,
+body:has(#locModal.open) .ai-chat-fab {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: scale(0.6) !important;
