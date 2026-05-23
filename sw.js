@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v29';
+const CACHE = 'exglobal-v30';
 
 self.addEventListener('install', e => {
   // Use dynamic scope so it works on both exglobal.online and exrabbi.github.io/ex-rabbi/
@@ -24,6 +24,11 @@ self.addEventListener('activate', e => {
         keys.filter(k => k !== CACHE).map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
+      .then(() => {
+        // Tell all open tabs to reload so they get the fresh SW immediately
+        self.clients.matchAll({ type: 'window', includeUncontrolled: false })
+          .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED' })));
+      })
   );
 });
 

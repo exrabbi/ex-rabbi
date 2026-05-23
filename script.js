@@ -4781,7 +4781,35 @@ function markHelpful(btn) {
 /* ===== PWA INSTALL ===== */
 (function initPWA() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    // Track whether a SW was already controlling this page (update vs first install)
+    const _hadController = !!navigator.serviceWorker.controller;
+    let _swRefreshing = false;
+
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => {
+        // Poll for updates every 60 s while the page is visible
+        setInterval(() => { if (!document.hidden) reg.update(); }, 60000);
+        // Also check when user switches back to the app
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) reg.update();
+        });
+      })
+      .catch(() => {});
+
+    // When a new SW takes over, reload so the fresh files are served
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (_swRefreshing || !_hadController) return;
+      _swRefreshing = true;
+      window.location.reload();
+    });
+
+    // Belt-and-suspenders: SW also posts SW_UPDATED after clients.claim()
+    navigator.serviceWorker.addEventListener('message', e => {
+      if (e.data?.type === 'SW_UPDATED' && !_swRefreshing && _hadController) {
+        _swRefreshing = true;
+        window.location.reload();
+      }
+    });
   }
 
   let deferredPrompt = null;
