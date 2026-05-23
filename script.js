@@ -160,6 +160,7 @@ let selectedColor = '';
 let _modalQty = 1;
 let heroIndex = 0;
 let heroTimer;
+let _heroSlideCount = 5;
 let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 
 /* ===== PUBLISHED DATA SYNC ===== */
@@ -488,41 +489,50 @@ function _applyCatImages() {
 /* ===== ADMIN SITE OVERRIDES ===== */
 function _applyHeroOverrides() {
   try {
-    const slides = JSON.parse(localStorage.getItem('exg_hero_slides') || '[]');
-    slides.forEach((s, i) => {
-      if (!s) return;
-      const slide = document.querySelector('.hero-slide.slide-' + (i + 1));
-      if (!slide) return;
+    const raw = JSON.parse(localStorage.getItem('exg_hero_slides') || '[]');
+    const valid = raw.filter(s => s && (s.image || s.video));
+    if (!valid.length) return;
 
-      // Update image
-      const imgEl = slide.querySelector('.hero-slide-img');
-      if (s.image && imgEl) imgEl.src = s.image;
+    const heroSlides = document.getElementById('heroSlides');
+    const heroDots   = document.getElementById('heroDots');
+    if (!heroSlides) return;
 
-      // Video — replace image with video/iframe
-      let existingVideo = slide.querySelector('.hero-slide-video');
+    // Rebuild slides — only the ones the admin uploaded
+    heroSlides.innerHTML = valid.map((s, i) => {
+      let inner = '';
       if (s.video) {
         let embedUrl = '';
         const ytMatch = s.video.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
         if (ytMatch) embedUrl = `https://www.youtube.com/embed/${ytMatch[1]}?rel=0&playsinline=1&autoplay=1&mute=1&loop=1&playlist=${ytMatch[1]}`;
         const ttMatch = s.video.match(/tiktok\.com\/@[^/]+\/video\/(\d+)/);
         if (ttMatch) embedUrl = `https://www.tiktok.com/embed/v2/${ttMatch[1]}`;
-        const isDirectVideo = !embedUrl && (s.video.includes('cloudinary.com') || s.video.match(/\.(mp4|webm|mov)(\?|$)/i));
-        if (embedUrl || isDirectVideo) {
-          if (imgEl) imgEl.style.display = 'none';
-          if (!existingVideo) {
-            existingVideo = document.createElement('div');
-            existingVideo.className = 'hero-slide-video';
-            slide.appendChild(existingVideo);
-          }
-          existingVideo.innerHTML = isDirectVideo
-            ? `<video src="${s.video}" autoplay muted loop playsinline></video>`
-            : `<iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe>`;
+        const isDirect = !embedUrl && (s.video.includes('cloudinary.com') || s.video.match(/\.(mp4|webm|mov)(\?|$)/i));
+        if (isDirect) {
+          inner = `<div class="hero-slide-video"><video src="${s.video}" autoplay muted loop playsinline></video></div>`;
+        } else if (embedUrl) {
+          inner = `<div class="hero-slide-video"><iframe src="${embedUrl}" frameborder="0" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen loading="lazy"></iframe></div>`;
         }
-      } else if (existingVideo) {
-        existingVideo.remove();
-        if (imgEl) imgEl.style.display = '';
       }
-    });
+      if (!inner && s.image) {
+        inner = `<img class="hero-slide-img" src="${s.image}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" />`;
+      }
+      return `<div class="hero-slide slide-${i + 1}">${inner}</div>`;
+    }).join('');
+
+    // Rebuild dots to match uploaded slide count
+    if (heroDots) {
+      heroDots.innerHTML = valid.map((_, i) =>
+        `<span class="hero-dot${i === 0 ? ' active' : ''}"></span>`
+      ).join('');
+      heroDots.querySelectorAll('.hero-dot').forEach((dot, i) => {
+        dot.addEventListener('click', () => goSlide(i));
+      });
+    }
+
+    // Update cycle count and reset position
+    _heroSlideCount = valid.length;
+    heroIndex = 0;
+    heroSlides.style.transform = 'translateX(0%)';
   } catch(e) {}
 }
 
@@ -580,7 +590,7 @@ function startHeroSlider() {
   });
 }
 function nextSlide() {
-  heroIndex = (heroIndex + 1) % 5;
+  heroIndex = (heroIndex + 1) % _heroSlideCount;
   updateSlider();
 }
 function goSlide(i) {
