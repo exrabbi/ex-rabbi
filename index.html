@@ -90,8 +90,24 @@
   </script>
   <script>
     (function(){var t=localStorage.getItem('exglobal_theme');if(t)document.documentElement.setAttribute('data-theme',t);})();
+    /* Force-clear old SW caches so stale CSS/JS never shows */
+    (function(){
+      var EXPECTED='exglobal-v31';
+      var seen=localStorage.getItem('exg_sw_cache');
+      if(seen && seen!==EXPECTED && 'caches' in window){
+        caches.keys().then(function(ks){
+          ks.forEach(function(k){ if(k!==EXPECTED) caches.delete(k); });
+        });
+        localStorage.setItem('exg_sw_cache',EXPECTED);
+        if('serviceWorker' in navigator){
+          navigator.serviceWorker.getRegistration().then(function(r){if(r)r.update();});
+        }
+      } else {
+        localStorage.setItem('exg_sw_cache',EXPECTED);
+      }
+    })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=164" />
+  <link rel="stylesheet" href="styles.css?v=178" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -200,6 +216,21 @@
       <button class="cat-tab" data-cat="beauty" data-i18n="tabBeauty">Beauty</button>
       <button class="cat-tab" data-cat="home" data-i18n="tabHome">Home</button>
     </nav>
+
+    <!-- Desktop Premium Nav Bar (hidden on mobile via CSS) -->
+    <nav class="desk-nav-bar" id="deskNavBar">
+      <a class="desk-nav-link active" data-desk-cat="all" onclick="filterCategory('all');return false;" href="#">All Products</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="women" onclick="filterCategory('women');return false;" href="#">Women</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="men" onclick="filterCategory('men');return false;" href="#">Men</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="kids" onclick="filterCategory('kids');return false;" href="#">Kids</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="beauty" onclick="filterCategory('beauty');return false;" href="#">Beauty</a>
+      <div class="desk-nav-divider"></div>
+      <a class="desk-nav-link" data-desk-cat="home" onclick="filterCategory('home');return false;" href="#">Home &amp; Decor</a>
+    </nav>
   </header>
 
   <!-- DRAWER -->
@@ -248,23 +279,19 @@
       <div class="hero-slides" id="heroSlides">
 
         <div class="hero-slide slide-1">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=900&h=380&fit=crop&q=90" alt="" loading="eager" onerror="this.src='https://picsum.photos/seed/ex1/900/380'" />
+          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="eager" />
         </div>
-
         <div class="hero-slide slide-2">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" onerror="this.src='https://picsum.photos/seed/ex2/900/380'" />
+          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
         </div>
-
         <div class="hero-slide slide-3">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" onerror="this.src='https://picsum.photos/seed/ex3/900/380'" />
+          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
         </div>
-
         <div class="hero-slide slide-4">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" onerror="this.src='https://picsum.photos/seed/ex4/900/380'" />
+          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
         </div>
-
         <div class="hero-slide slide-5">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&h=380&fit=crop&q=90" alt="" loading="lazy" onerror="this.src='https://picsum.photos/seed/ex5/900/380'" />
+          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
         </div>
 
       </div>
@@ -277,20 +304,24 @@
       </div>
     </section>
 
-    <!-- TRUST BENEFITS BAR -->
-    <div class="tbar">
-      <a class="tbar-pill" style="--pc:#f97316;--pb:#fff3e0" href="#">
-        <i class="fas fa-bolt"></i><span data-i18n="trustDelivery">Fast Delivery</span>
-      </a>
-      <a class="tbar-pill" style="--pc:#16a34a;--pb:#e8f5e9" href="#">
-        <i class="fas fa-lock"></i><span data-i18n="trustSecure">Secure Pay</span>
-      </a>
-      <a class="tbar-pill" style="--pc:#7c3aed;--pb:#f3eeff" href="#">
-        <i class="fas fa-rotate-left"></i><span data-i18n="trustReturns">7-Day Return</span>
-      </a>
-      <a class="tbar-pill" style="--pc:#e91e8c;--pb:#fce4f3" href="#">
-        <i class="fab fa-whatsapp"></i><span data-i18n="trustSupport">24/7 Support</span>
-      </a>
+    <!-- TRUST BENEFITS MARQUEE -->
+    <div class="tbar-marquee-wrap">
+      <div class="tbar-marquee-track">
+        <span class="tbm-pill"><i class="fas fa-bolt"></i> Flash Delivery</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-shield-halved"></i> Secure Payment</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-rotate-left"></i> 7-Day Returns</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-headset"></i> 24/7 Support</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-star"></i> 100% Authentic</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-truck-fast"></i> Free Over SAR 100</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-crown"></i> Saudi Arabia #1 Brand</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-bolt"></i> Flash Delivery</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-shield-halved"></i> Secure Payment</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-rotate-left"></i> 7-Day Returns</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-headset"></i> 24/7 Support</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-star"></i> 100% Authentic</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-truck-fast"></i> Free Over SAR 100</span><span class="tbm-sep">·</span>
+        <span class="tbm-pill"><i class="fas fa-crown"></i> Saudi Arabia #1 Brand</span><span class="tbm-sep">·</span>
+      </div>
     </div>
     <div id="liveCounterBar" class="live-counter-bar">
       <span class="live-dot"></span>
@@ -869,11 +900,11 @@
   <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="bot-btn active" data-sound="shop" onclick="setBottomActive(this)">
-      <div class="bot-icon-wrap"><i class="fas fa-house-chimney"></i></div>
+      <div class="bot-icon-wrap"><i class="fas fa-store"></i></div>
       <span data-i18n="navShop">Shop</span>
     </button>
     <button class="bot-btn" data-sound="cat" onclick="setBottomActive(this);filterCategory('all')">
-      <div class="bot-icon-wrap"><i class="fas fa-border-all"></i></div>
+      <div class="bot-icon-wrap"><i class="fas fa-table-cells-large"></i></div>
       <span data-i18n="navCategory">Category</span>
     </button>
     <button class="bot-btn bot-center-btn" data-sound="trend" onclick="setBottomActive(this);openTrendContent()">
@@ -882,13 +913,13 @@
     </button>
     <button class="bot-btn" id="botCartBtn" data-sound="cart" onclick="setBottomActive(this);openCart()">
       <div class="bot-icon-wrap">
-        <i class="fas fa-basket-shopping"></i>
+        <i class="fas fa-bag-shopping"></i>
         <span class="bot-nav-badge" id="botCartBadge" style="display:none">0</span>
       </div>
       <span data-i18n="navCart">Cart</span>
     </button>
     <button class="bot-btn" data-sound="me" onclick="setBottomActive(this);openMe()">
-      <div class="bot-icon-wrap"><i class="fas fa-user-astronaut"></i></div>
+      <div class="bot-icon-wrap"><i class="fas fa-circle-user"></i></div>
       <span data-i18n="navMe">Me</span>
     </button>
   </nav>
@@ -1318,15 +1349,6 @@
       <div id="meOrdersList"></div>
     </div>
 
-    <!-- VIP Loyalty -->
-    <div class="me-card-block" style="padding:0">
-      <div id="vipBlock"></div>
-    </div>
-
-    <!-- Daily Check-in -->
-    <div class="me-card-block" style="padding:0">
-      <div id="checkinBlock"></div>
-    </div>
 
     <!-- Referral -->
     <div class="me-card-block" style="padding:0">
@@ -2558,7 +2580,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
-  <script src="script.js?v=160"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="script.js?v=175"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

@@ -24,6 +24,11 @@ self.addEventListener('activate', e => {
         keys.filter(k => k !== CACHE).map(k => caches.delete(k))
       ))
       .then(() => self.clients.claim())
+      .then(() => {
+        // Tell all open tabs to reload so they get the fresh SW immediately
+        self.clients.matchAll({ type: 'window', includeUncontrolled: false })
+          .then(clients => clients.forEach(c => c.postMessage({ type: 'SW_UPDATED' })));
+      })
   );
 });
 
@@ -32,18 +37,21 @@ self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   const base = self.registration.scope;
 
-  // Navigation — requested পেজ সরাসরি serve করো
+  // Navigation — admin.html সরাসরি serve করো, SW bypass
   if (e.request.mode === 'navigate') {
+    const reqUrl = new URL(e.request.url);
+    if (reqUrl.pathname.includes('admin')) {
+      e.respondWith(fetch(e.request)); // direct fetch, no redirect
+      return;
+    }
     e.respondWith(
-      fetch(e.request)
+      fetch(base + 'index.html')
         .then(res => {
-          if (res.ok) {
-            const c = res.clone();
-            caches.open(CACHE).then(cache => cache.put(e.request, c));
-          }
+          const c = res.clone();
+          caches.open(CACHE).then(cache => cache.put(base + 'index.html', c));
           return res;
         })
-        .catch(() => caches.match(e.request).then(r => r || caches.match(base + 'index.html')))
+        .catch(() => caches.match(base + 'index.html').then(r => r || caches.match(base)))
     );
     return;
   }
