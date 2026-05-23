@@ -9983,6 +9983,17 @@ body { background: #fff !important; }
   color: #e91e8c !important;
 }
 
+/* ── ABSOLUTE HEADER OVERRIDE (higher specificity beats luxury upgrade) ── */
+html body .header,
+html body .header * { box-sizing: border-box; }
+html body .header {
+  background: #e91e8c !important;
+  border-bottom: none !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 /* Hide AI + WA fabs when Help Center panel is open (CSS-only, no JS inline style needed) */
 body:has(#hcPanel.open) .ai-chat-fab,
 body:has(#hcPanel.open) .wa-float-btn {

@@ -4785,10 +4785,10 @@ function markHelpful(btn) {
     const _hadController = !!navigator.serviceWorker.controller;
     let _swRefreshing = false;
 
-    navigator.serviceWorker.register('./sw.js')
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' })
       .then(reg => {
-        // Poll for updates every 60 s while the page is visible
-        setInterval(() => { if (!document.hidden) reg.update(); }, 60000);
+        // Poll for updates every 30 s while the page is visible
+        setInterval(() => { if (!document.hidden) reg.update(); }, 30000);
         // Also check when user switches back to the app
         document.addEventListener('visibilitychange', () => {
           if (!document.hidden) reg.update();
@@ -5791,6 +5791,9 @@ async function _saveOrderToFirestore(orderData) {
   document.addEventListener('DOMContentLoaded', () => {
     const fab = document.getElementById('aiChatFab');
     if (!fab) return;
+    // Recovery: clear any inline display:none set by old cached JS
+    if (fab.style.display === 'none') fab.style.display = '';
+    if (fab.style.opacity === '0') fab.style.opacity = '';
 
     const STORE_KEY = 'exg_ai_fab_pos';
     const W = 54, H = 62, EDGE = 12;
