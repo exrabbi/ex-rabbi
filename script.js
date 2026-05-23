@@ -7562,7 +7562,7 @@ function _gsapCardEntrance() {
 }
 
 /* ===== RECENTLY PURCHASED SOCIAL PROOF POPUP ===== */
-function _initRecentlyPurchasedPopup() {
+function _initRecentlyPurchasedPopup() { return; // disabled by user request
   if (typeof PRODUCTS === 'undefined' || !PRODUCTS.length) return;
   const popup = document.createElement('div');
   popup.className = 'rp-popup';
