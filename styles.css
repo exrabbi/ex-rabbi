@@ -9992,3 +9992,35 @@ body:has(#hcPanel.open) .wa-float-btn {
   transition: opacity .2s, transform .2s !important;
 }
 
+/* Hide floating buttons when auth modal is open */
+body:has(#authModal.open) .ai-chat-fab,
+body:has(#authModal.open) .wa-float-btn,
+body:has(#authModal.open) .hc-fab {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.6) !important;
+  transition: opacity .2s, transform .2s !important;
+}
+
+/* Cat-tabs dark mode */
+[data-theme="dark"] .cat-tabs {
+  background: #0e0c1e !important;
+  border-bottom-color: rgba(255,255,255,.07) !important;
+}
+[data-theme="dark"] .cat-tab {
+  color: #aaa !important;
+}
+[data-theme="dark"] .cat-tab.active {
+  color: #e91e8c !important;
+}
+
+/* Trust bar pills dark mode */
+[data-theme="dark"] .tbm-pill {
+  background: #1a1a2e !important;
+  color: #ccc !important;
+  border-color: rgba(255,255,255,.08) !important;
+}
+[data-theme="dark"] .tbm-pill i {
+  color: #e91e8c !important;
+}
+
