@@ -3470,11 +3470,6 @@ function openHelpCenter() {
   document.getElementById('hcPanel').classList.add('open');
   document.getElementById('hcBackdrop').classList.add('open');
   document.getElementById('hcFabIcon').className = 'fas fa-times';
-  // Hide overlapping FABs
-  const aiFab = document.getElementById('aiChatFab');
-  const waFab = document.getElementById('waFab');
-  if (aiFab) aiFab.style.display = 'none';
-  if (waFab) waFab.style.display = 'none';
   const _T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const wa = document.getElementById('hcWaBtn');
   if (wa) wa.href = 'https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(_T.waMsg || 'Hello, I have a question.');
@@ -3494,11 +3489,6 @@ function closeHelpCenter() {
   document.getElementById('hcPanel').classList.remove('open');
   document.getElementById('hcBackdrop').classList.remove('open');
   document.getElementById('hcFabIcon').className = 'fas fa-headset';
-  // Restore FABs
-  const aiFab = document.getElementById('aiChatFab');
-  const waFab = document.getElementById('waFab');
-  if (aiFab) aiFab.style.display = '';
-  if (waFab) waFab.style.display = '';
 }
 function hcAsk(msg) {
   closeHelpCenter();
@@ -5805,12 +5795,15 @@ async function _saveOrderToFirestore(orderData) {
     const STORE_KEY = 'exg_ai_fab_pos';
     const W = 54, H = 62, EDGE = 12;
 
-    // Restore saved position
+    // Restore saved position (with bounds clamp to prevent off-screen restore)
     try {
       const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
       if (saved) {
-        fab.style.left   = saved.left + 'px';
-        fab.style.top    = saved.top  + 'px';
+        const vw = window.innerWidth, vh = window.innerHeight;
+        const safeLeft = Math.max(EDGE, Math.min(saved.left, vw - W - EDGE));
+        const safeTop  = Math.max(EDGE, Math.min(saved.top,  vh - H - EDGE - 70));
+        fab.style.left   = safeLeft + 'px';
+        fab.style.top    = safeTop  + 'px';
         fab.style.right  = 'auto';
         fab.style.bottom = 'auto';
       }

@@ -9983,3 +9983,12 @@ body { background: #fff !important; }
   color: #e91e8c !important;
 }
 
+/* Hide AI + WA fabs when Help Center panel is open (CSS-only, no JS inline style needed) */
+body:has(#hcPanel.open) .ai-chat-fab,
+body:has(#hcPanel.open) .wa-float-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.6) !important;
+  transition: opacity .2s, transform .2s !important;
+}
+
