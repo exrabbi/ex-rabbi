@@ -9611,3 +9611,246 @@ body:not([data-theme="dark"]) .tbm-pill i,
   border-radius: 20px !important;
 }
 
+/* ============================================================
+   PRODUCT MODAL — WORLD-CLASS LUXURY REDESIGN  (v172)
+   ============================================================ */
+
+/* 1. Hide floating buttons when product modal is open */
+body.modal-open .wa-float-btn,
+body.modal-open .hc-fab,
+body.modal-open .ai-chat-fab {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.5) !important;
+  transition: opacity .2s, transform .2s !important;
+}
+
+/* 2. Info card — spacing & hierarchy */
+.lux-info-card { padding: 22px 18px 18px !important; margin: -30px 10px 0 !important; }
+.lux-product-name {
+  font-size: 20px !important; font-weight: 800 !important;
+  line-height: 1.3 !important; margin-bottom: 12px !important;
+  letter-spacing: -.3px !important;
+}
+.lux-price-current { font-size: 30px !important; font-weight: 900 !important; }
+.lux-price-orig { font-size: 16px !important; }
+.lux-discount-badge {
+  font-size: 13px !important; padding: 4px 12px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 3px 12px rgba(233,30,140,.3) !important;
+}
+.lux-prices-row { gap: 10px !important; margin-bottom: 14px !important; }
+.lux-rating-row { margin-bottom: 12px !important; }
+.lux-stars { font-size: 15px !important; }
+.lux-rating-num { font-size: 15px !important; }
+
+/* Viewing + stock chips */
+.lux-viewing-chip {
+  font-size: 12px !important; padding: 5px 12px !important;
+  border-radius: 10px !important; gap: 6px !important;
+  background: rgba(10,179,92,.08) !important;
+}
+.lux-view-pulse { width: 8px !important; height: 8px !important; }
+.lux-stock-chip.low {
+  font-size: 12px !important; padding: 5px 12px !important;
+  border-radius: 10px !important;
+}
+
+/* 3. Size & colour selectors */
+.lux-size-opt {
+  height: 44px !important; min-width: 48px !important;
+  font-size: 14px !important; border-radius: 12px !important;
+  border-width: 1.5px !important;
+}
+.lux-size-opt.active {
+  box-shadow: 0 0 0 3.5px rgba(233,30,140,.22) !important;
+  transform: scale(1.06) !important;
+}
+.lux-color-opt {
+  width: 38px !important; height: 38px !important;
+}
+.lux-color-opt.active {
+  box-shadow: 0 0 0 3px #fff, 0 0 0 5.5px var(--lux-pink), 0 4px 14px rgba(233,30,140,.45) !important;
+  transform: scale(1.2) !important;
+}
+.lux-section { margin: 0 12px !important; padding: 16px 0 !important; border-bottom: 1px solid rgba(0,0,0,.06) !important; }
+[data-theme="dark"] .lux-section { border-bottom-color: rgba(255,255,255,.06) !important; }
+.lux-section-title { font-size: 14px !important; font-weight: 800 !important; letter-spacing: .2px !important; }
+.lux-size-grid { gap: 8px !important; }
+
+/* 4. FBT — premium redesign */
+.pfbt-wrap {
+  margin: 0 12px; padding: 16px; border-radius: 18px;
+  background: linear-gradient(135deg, rgba(124,58,237,.05) 0%, rgba(233,30,140,.04) 100%);
+  border: 1px solid rgba(124,58,237,.12);
+  margin-top: 12px;
+}
+[data-theme="dark"] .pfbt-wrap { background: rgba(124,58,237,.06); border-color: rgba(124,58,237,.18); }
+.pfbt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.pfbt-title { font-size: 13.5px; font-weight: 800; color: #222; display: flex; align-items: center; gap: 7px; }
+[data-theme="dark"] .pfbt-title { color: #eee; }
+.pfbt-title i { color: var(--lux-purple); }
+.pfbt-save-badge {
+  font-size: 11px; font-weight: 800;
+  background: linear-gradient(135deg, var(--lux-pink), var(--lux-purple));
+  color: #fff; padding: 3px 10px; border-radius: 20px;
+}
+.pfbt-items { display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
+.pfbt-item {
+  flex: 1; cursor: pointer; text-align: center; min-width: 0;
+  transition: transform .2s var(--transition-spring);
+}
+.pfbt-item:active { transform: scale(.95); }
+.pfbt-img-wrap { position: relative; margin-bottom: 6px; }
+.pfbt-img {
+  width: 100%; aspect-ratio: 1/1; object-fit: cover;
+  border-radius: 12px; border: 1.5px solid rgba(0,0,0,.07);
+}
+[data-theme="dark"] .pfbt-img { border-color: rgba(255,255,255,.07); }
+.pfbt-this {
+  position: absolute; top: 6px; left: 6px;
+  background: var(--lux-purple); color: #fff;
+  font-size: 9px; font-weight: 800; letter-spacing: .3px;
+  padding: 2px 7px; border-radius: 20px;
+}
+.pfbt-name {
+  font-size: 11px; font-weight: 600; color: #555; line-height: 1.3;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+[data-theme="dark"] .pfbt-name { color: #aaa; }
+.pfbt-price { font-size: 13px; font-weight: 900; color: var(--lux-pink); margin-top: 2px; }
+.pfbt-plus {
+  flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%;
+  background: rgba(0,0,0,.06); display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: #888;
+}
+[data-theme="dark"] .pfbt-plus { background: rgba(255,255,255,.08); color: #aaa; }
+.pfbt-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.pfbt-total-info { display: flex; flex-direction: column; gap: 1px; }
+.pfbt-total-label { font-size: 11px; color: #888; font-weight: 600; }
+.pfbt-total-price { font-size: 18px; font-weight: 900; color: #222; }
+[data-theme="dark"] .pfbt-total-price { color: #eee; }
+.pfbt-add-btn {
+  flex: 1; max-width: 180px; padding: 11px 14px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, var(--lux-purple), var(--lux-pink));
+  color: #fff; font-size: 13px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  box-shadow: 0 4px 16px rgba(124,58,237,.3);
+  transition: transform .15s, box-shadow .15s;
+}
+.pfbt-add-btn:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(124,58,237,.2); }
+.fbt-wrap { display: none !important; }
+
+/* 5. Related products — wider cards with name + price */
+.prel-wrap { margin: 12px 0 0; padding-bottom: 8px; }
+.prel-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px 12px;
+}
+.prel-title { font-size: 15px; font-weight: 800; color: #222; }
+[data-theme="dark"] .prel-title { color: #eee; }
+.prel-count { font-size: 12px; color: #aaa; font-weight: 600; }
+.prel-scroll {
+  display: flex; gap: 10px; overflow-x: auto; padding: 0 12px 4px;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+}
+.prel-scroll::-webkit-scrollbar { display: none; }
+.prel-card {
+  flex-shrink: 0; width: 140px; cursor: pointer; scroll-snap-align: start;
+  border-radius: 14px; overflow: hidden;
+  background: #fff; box-shadow: 0 2px 12px rgba(0,0,0,.07);
+  transition: transform .2s var(--transition-spring);
+}
+[data-theme="dark"] .prel-card { background: #13112a; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.prel-card:active { transform: scale(.96); }
+.prel-img-wrap { position: relative; overflow: hidden; }
+.prel-img { width: 140px; height: 180px; object-fit: cover; display: block; }
+.prel-disc-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: linear-gradient(135deg, var(--lux-pink), var(--lux-purple));
+  color: #fff; font-size: 10px; font-weight: 800;
+  padding: 2px 8px; border-radius: 20px;
+}
+.prel-info { padding: 8px 10px 10px; }
+.prel-name {
+  font-size: 11.5px; font-weight: 600; color: #333; line-height: 1.35;
+  margin-bottom: 4px; overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+}
+[data-theme="dark"] .prel-name { color: #ccc; }
+.prel-price { font-size: 14px; font-weight: 900; color: var(--lux-pink); }
+.modal-related { display: none !important; }
+
+/* 6. Bundle section polish */
+.lux-section-title-full {
+  font-size: 14px !important; font-weight: 800 !important;
+  margin-bottom: 12px !important; color: #222 !important;
+}
+[data-theme="dark"] .lux-section-title-full { color: #eee !important; }
+.lux-bundle-row { gap: 10px !important; margin-bottom: 16px !important; }
+.lux-bundle-opt {
+  border-radius: 14px !important; padding: 12px 8px !important;
+  border-width: 1.5px !important;
+}
+.lux-bq { font-size: 20px !important; }
+.lux-bl { font-size: 11px !important; margin-top: 3px !important; }
+.lux-bsave { font-size: 9.5px !important; padding: 2px 8px !important; top: -9px !important; }
+.lux-qty-row {
+  background: rgba(0,0,0,.03) !important;
+  border-radius: 14px !important; padding: 12px 14px !important;
+  margin-top: 4px !important;
+}
+[data-theme="dark"] .lux-qty-row { background: rgba(255,255,255,.04) !important; }
+.lux-qbtn {
+  width: 36px !important; height: 36px !important;
+  border-radius: 10px !important; font-size: 16px !important;
+}
+.lux-qnum { font-size: 17px !important; font-weight: 900 !important; min-width: 32px !important; }
+.lux-qty-total { font-size: 18px !important; font-weight: 900 !important; color: var(--lux-pink) !important; }
+
+/* 7. ATC bar — harmonize colour palette */
+.lux-atc-now {
+  background: linear-gradient(135deg, #ff6800 0%, var(--lux-pink) 100%) !important;
+  box-shadow: 0 6px 20px rgba(255,104,0,.35) !important;
+}
+.lux-atc-bar {
+  padding: 12px 14px calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+}
+.lux-atc-btns { gap: 10px !important; }
+.lux-atc-main {
+  height: 54px !important; border-radius: 18px !important;
+  font-size: 15px !important; font-weight: 900 !important;
+  letter-spacing: .3px !important;
+}
+.lux-atc-now, .lux-atc-wish {
+  width: 54px !important; height: 54px !important;
+  border-radius: 18px !important;
+}
+
+/* 8. Delivery card & timeline polish */
+.lux-delivery-card {
+  margin: 12px 12px 0 !important; padding: 14px 16px !important;
+  border-radius: 16px !important; gap: 14px !important;
+}
+.lux-del-title { font-size: 14px !important; }
+.lux-del-date { font-size: 12px !important; margin-top: 2px !important; }
+.lux-del-free-badge { padding: 4px 12px !important; font-size: 12px !important; }
+
+/* 9. Policy row */
+.lux-policy-row { gap: 10px !important; margin: 14px 12px 0 !important; }
+.lux-policy-item {
+  border-radius: 16px !important; padding: 14px 8px !important;
+  font-size: 10.5px !important; font-weight: 700 !important;
+  gap: 7px !important;
+}
+.lux-policy-item i { font-size: 20px !important; }
+
+/* 10. Coupon strip */
+.lux-coupon-strip {
+  border-radius: 16px !important; margin: 14px 12px 0 !important;
+}
+.lux-coupon-strip .lux-coupon-icon {
+  width: 56px !important;
+}
+.lux-coupon-strip span { font-size: 13.5px !important; font-weight: 700 !important; }
+

@@ -6741,20 +6741,29 @@ function renderRecentlyViewed() {
 /* ===== RELATED PRODUCTS ===== */
 function _relatedHTML(p) {
   const related = PRODUCTS.filter(x => x.category === p.category && x.id !== p.id)
-    .sort(() => 0.5 - Math.random()).slice(0, 8);
+    .sort(() => 0.5 - Math.random()).slice(0, 10);
   if (!related.length) return '';
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   return `
-    <div class="modal-related">
-      <div class="modal-related-title"><i class="fas fa-thumbs-up"></i> ${t('youMayLike')||'You May Also Like'}</div>
-      <div class="rp-strip">${related.map(r => `
-        <div class="rp-card" onclick="closeModal();setTimeout(()=>openModal(${r.id}),120)">
-          <img class="rp-img" src="${r.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/r${r.id}/160/160'" />
-          <div class="rp-price">${fmt(r.price)}</div>
-          <div class="rp-disc">-${r.discount}%</div>
-        </div>`).join('')}
+    <div class="prel-wrap lux-reveal">
+      <div class="prel-header">
+        <span class="prel-title">You May Also Like</span>
+        <span class="prel-count">${related.length} items</span>
       </div>
-    </div>
-  `;
+      <div class="prel-scroll">
+        ${related.map(r => `
+          <div class="prel-card" onclick="closeModal();setTimeout(()=>openModal(${r.id}),120)">
+            <div class="prel-img-wrap">
+              <img class="prel-img" src="${r.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/r${r.id}/200/260'" />
+              ${r.discount >= 20 ? `<span class="prel-disc-badge">-${r.discount}%</span>` : ''}
+            </div>
+            <div class="prel-info">
+              <div class="prel-name">${(r.names?.en || r.name || 'Product').substring(0, 26)}</div>
+              <div class="prel-price">${T.currency || 'SAR '}${(r.price * (T.rate || 1)).toFixed(0)}</div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>`;
 }
 
 /* ===== SPIN TO WIN ===== */
@@ -7260,24 +7269,40 @@ function _fbtHTML(p) {
   const same = PRODUCTS.filter(x => x.id !== p.id && x.category === p.category).slice(0, 2);
   if (same.length < 1) return '';
   const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-  const bundleTotal = (p.price + same.reduce((s,x)=>s+x.price,0)) * (T.rate||1);
+  const rate = T.rate || 1;
+  const cur = T.currency || 'SAR ';
   const items = [p, ...same];
-  return `<div class="fbt-wrap">
-    <div class="fbt-title"><i class="fas fa-layer-group"></i> Frequently Bought Together</div>
-    <div class="fbt-row">
-      ${items.map((x,i)=>`<div class="fbt-item" onclick="closeModal();setTimeout(()=>openModal(${x.id}),120)">
-        <img src="${x.image}" class="fbt-img" onerror="this.src='https://picsum.photos/seed/fbt${x.id}/80/80'">
-        <div class="fbt-name">${(x.names?.en||'Product').slice(0,18)}…</div>
-        <div class="fbt-price">${T.currency}${(x.price*(T.rate||1)).toFixed(0)}</div>
-      </div>${i<items.length-1?'<span class="fbt-plus">+</span>':''}`).join('')}
+  const bundleTotal = (items.reduce((s,x) => s + x.price, 0) * rate).toFixed(0);
+  const discount = Math.round((items.length - 1) * 5);
+  return `
+  <div class="pfbt-wrap lux-reveal">
+    <div class="pfbt-header">
+      <span class="pfbt-title"><i class="fas fa-layer-group"></i> Frequently Bought Together</span>
+      <span class="pfbt-save-badge">Save ${discount}%</span>
     </div>
-    <div class="fbt-total-row">
-      <span>Bundle Total: <b>${T.currency}${bundleTotal.toFixed(0)}</b></span>
-      <button class="fbt-add-all" onclick="${items.map(x=>`addToCart(${x.id})`).join(';')};showToast('${items.length} items added!')">
-        <i class="fas fa-cart-plus"></i> Add All
+    <div class="pfbt-items">
+      ${items.map((x, i) => `
+        <div class="pfbt-item" onclick="closeModal();setTimeout(()=>openModal(${x.id}),120)">
+          <div class="pfbt-img-wrap">
+            <img src="${x.image}" class="pfbt-img" loading="lazy" onerror="this.src='https://picsum.photos/seed/fbt${x.id}/200/200'" />
+            ${i === 0 ? '<span class="pfbt-this">This Item</span>' : ''}
+          </div>
+          <div class="pfbt-name">${(x.names?.en || x.name || 'Product').substring(0, 22)}</div>
+          <div class="pfbt-price">${cur}${(x.price * rate).toFixed(0)}</div>
+        </div>
+        ${i < items.length - 1 ? '<div class="pfbt-plus"><i class="fas fa-plus"></i></div>' : ''}
+      `).join('')}
+    </div>
+    <div class="pfbt-footer">
+      <div class="pfbt-total-info">
+        <span class="pfbt-total-label">Bundle Total</span>
+        <span class="pfbt-total-price">${cur}${bundleTotal}</span>
+      </div>
+      <button class="pfbt-add-btn" onclick="${items.map(x => `addToCart(${x.id})`).join(';')};showToast('🛍 ${items.length} items added to cart!')">
+        <i class="fas fa-cart-plus"></i> Add All to Cart
       </button>
     </div>
-  </div><div class="modal-divider"></div>`;
+  </div>`;
 }
 
 /* ===== LIVE ACTIVITY NOTIFICATIONS ===== */
