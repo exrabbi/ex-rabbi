@@ -2603,16 +2603,28 @@ function openTrendContent() {
 
 function setBottomActive(el) {
   if (el.classList.contains('active')) return;
-  document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
+  const btns = [...document.querySelectorAll('.bot-btn')];
+  const idx = btns.indexOf(el);
+  btns.forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  // Bounce the icon on tap
-  const wrap = el.querySelector('.bot-icon-wrap');
-  if (wrap) {
-    wrap.style.animation = 'none';
-    void wrap.offsetWidth; // reflow
-    wrap.style.animation = 'botIconBounce .4s cubic-bezier(.34,1.56,.64,1)';
-    setTimeout(() => { wrap.style.animation = ''; }, 420);
-  }
+
+  // macOS dock magnification — scale active + neighbours
+  btns.forEach((btn, i) => {
+    const wrap = btn.querySelector('.bot-icon-wrap');
+    if (!wrap) return;
+    const dist = Math.abs(i - idx);
+    wrap.style.setProperty('--ds', dist === 0 ? '1.38' : dist === 1 ? '1.13' : '1');
+    wrap.style.setProperty('--dt', dist === 0 ? '-10px' : dist === 1 ? '-4px' : '0px');
+  });
+  // Reset neighbours after spring completes
+  setTimeout(() => {
+    btns.forEach((btn, i) => {
+      if (i === idx) return;
+      const wrap = btn.querySelector('.bot-icon-wrap');
+      wrap?.style.removeProperty('--ds');
+      wrap?.style.removeProperty('--dt');
+    });
+  }, 380);
 }
 
 /* ===== TOAST ===== */
@@ -3367,6 +3379,13 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 
 function openAuth() {
   closeMe();
+  // Mascot wave on open
+  const mascot = document.getElementById('authMascot');
+  if (mascot) {
+    mascot.classList.remove('pw-mode','mascot-wave');
+    void mascot.offsetWidth;
+    mascot.classList.add('mascot-wave');
+  }
   setTimeout(() => {
     const loggedInView = document.getElementById('authLoggedIn');
     const loginView = document.getElementById('authLoginView');
@@ -3397,6 +3416,11 @@ function openAuth() {
     document.getElementById('authOverlay').classList.add('open');
     document.getElementById('authModal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    // Mascot reacts to password fields
+    document.querySelectorAll('#authModal input[type="password"]').forEach(inp => {
+      inp.addEventListener('focus', () => document.getElementById('authMascot')?.classList.add('pw-mode'), {once:false});
+      inp.addEventListener('blur',  () => document.getElementById('authMascot')?.classList.remove('pw-mode'), {once:false});
+    });
   }, 200);
 }
 

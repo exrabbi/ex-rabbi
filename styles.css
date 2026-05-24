@@ -12167,3 +12167,167 @@ body:has(#authModal.open) .hc-fab {
 [data-theme="dark"] .nx-sz    { border-color: rgba(255,255,255,.14); color: #ccc; background: rgba(255,255,255,.04); }
 [data-theme="dark"] .nx-dot   { border-color: rgba(255,255,255,.12); }
 [data-theme="dark"] .nx-orig  { color: #666; }
+
+/* ===================================================
+   macOS DOCK MAGNIFICATION — bottom nav
+   =================================================== */
+.bot-icon-wrap {
+  transform: scale(var(--ds, 1)) translateY(var(--dt, 0px)) !important;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1) !important;
+  will-change: transform;
+}
+/* Active icon stays elevated */
+.bot-btn.active .bot-icon-wrap {
+  --ds: 1.28 !important;
+  --dt: -8px !important;
+}
+
+/* ===================================================
+   ANIMATED LOGIN MASCOT
+   =================================================== */
+.auth-mascot {
+  width: 90px;
+  height: 90px;
+  margin: 0 auto 18px;
+  position: relative;
+  animation: mascot-float 3s ease-in-out infinite;
+}
+@keyframes mascot-float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-7px); }
+}
+@keyframes mascot-wave-anim {
+  0%   { transform: translateY(0) rotate(0deg); }
+  15%  { transform: translateY(-12px) rotate(-8deg); }
+  30%  { transform: translateY(-6px)  rotate(6deg); }
+  45%  { transform: translateY(-10px) rotate(-4deg); }
+  60%  { transform: translateY(-4px)  rotate(3deg); }
+  75%  { transform: translateY(-8px)  rotate(-2deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.auth-mascot.mascot-wave {
+  animation: mascot-wave-anim 1.4s cubic-bezier(.34,1.56,.64,1) forwards,
+             mascot-float 3s ease-in-out 1.4s infinite;
+}
+
+/* Face */
+.auth-mascot-face {
+  width: 62px;
+  height: 62px;
+  background: linear-gradient(145deg, #ffd166, #ffaa00);
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 6px 22px rgba(255,170,0,.45), inset 0 -3px 8px rgba(0,0,0,.1);
+  overflow: hidden;
+}
+
+/* Eyes */
+.auth-mascot-eyes {
+  display: flex;
+  justify-content: space-around;
+  padding: 18px 12px 0;
+}
+.auth-mascot-eye {
+  width: 9px;
+  height: 9px;
+  background: #1a1a2e;
+  border-radius: 50%;
+  animation: mascot-blink 4s ease-in-out infinite;
+  transition: height .2s, border-radius .2s, transform .25s;
+}
+@keyframes mascot-blink {
+  0%,92%,96%,100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.08); }
+}
+
+/* Mouth / smile */
+.auth-mascot-mouth {
+  width: 22px;
+  height: 10px;
+  border: 3px solid #1a1a2e;
+  border-top: none;
+  border-radius: 0 0 22px 22px;
+  margin: 6px auto 0;
+  transition: all .25s;
+}
+
+/* Hands (cover eyes on password) */
+.auth-mascot-hands {
+  position: absolute;
+  top: 12px;
+  left: 0; right: 0;
+  display: flex;
+  justify-content: space-around;
+  pointer-events: none;
+  transform: translateY(60px);
+  opacity: 0;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+}
+.auth-mascot-hands::before,
+.auth-mascot-hands::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(145deg, #ffa000, #ff6f00);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+/* Body */
+.auth-mascot-body {
+  width: 44px;
+  height: 24px;
+  background: linear-gradient(135deg, var(--lux-pink, #e91e8c), var(--lux-purple, #9415f5));
+  border-radius: 22px 22px 0 0;
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Arms */
+.auth-mascot-arm {
+  width: 14px;
+  height: 30px;
+  background: linear-gradient(135deg, #e91e8c, #9415f5);
+  border-radius: 7px;
+  position: absolute;
+  bottom: 8px;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.auth-arm-l {
+  left: 4px;
+  transform-origin: bottom center;
+  transform: rotate(20deg);
+}
+.auth-arm-r {
+  right: 4px;
+  transform-origin: bottom center;
+  transform: rotate(-20deg);
+}
+
+/* Password mode — hands cover eyes, arms raise */
+.auth-mascot.pw-mode .auth-mascot-hands {
+  transform: translateY(0);
+  opacity: 1;
+}
+.auth-mascot.pw-mode .auth-mascot-eye {
+  height: 2px;
+  border-radius: 2px;
+  transform: scaleY(1) !important;
+}
+.auth-mascot.pw-mode .auth-mascot-mouth {
+  border-radius: 22px 22px 0 0;
+  border-top: 3px solid #1a1a2e;
+  border-bottom: none;
+  margin-top: 8px;
+}
+.auth-mascot.pw-mode .auth-arm-l {
+  transform: rotate(-60deg) translateY(-18px);
+}
+.auth-mascot.pw-mode .auth-arm-r {
+  transform: rotate(60deg) translateY(-18px);
+}
