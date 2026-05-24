@@ -3912,13 +3912,15 @@ function selectPayMethod(method) {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
     if (pm) { pm.classList.remove('active'); pm.classList.remove('ck-pm-active'); }
-    if (ck) ck.querySelector('i').style.color = '#ddd';
+    if (ck) ck.classList.remove('ck-radio-active');
   });
   const card = document.getElementById('pm' + method.charAt(0).toUpperCase() + method.slice(1));
   if (card) { card.classList.add('active'); card.classList.add('ck-pm-active'); }
   const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
-  if (check) check.querySelector('i').style.color =
-    method === 'binance' ? '#F3BA2F' : method === 'stc' ? '#6D2C8A' : '#fff';
+  if (check) check.classList.add('ck-radio-active');
+  // Show/hide card protection badge
+  const prot = document.getElementById('ckCardProtect');
+  if (prot) prot.style.display = (method === 'card') ? 'flex' : 'none';
   // Show/hide sub-forms
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
