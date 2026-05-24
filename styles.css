@@ -11017,3 +11017,41 @@ body:has(#authModal.open) .hc-fab {
 .cart-simple-bar .btn-checkout {
   flex: 1 !important; max-width: 220px !important;
 }
+
+/* ── Product image shimmer skeleton (v187) ── */
+@keyframes imgShimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.product-img-wrap,
+.dmc-img-wrap,
+.fc-img-wrap {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%) !important;
+  background-size: 800px 100% !important;
+  animation: imgShimmer 1.4s ease infinite !important;
+}
+[data-theme="dark"] .product-img-wrap,
+[data-theme="dark"] .dmc-img-wrap,
+[data-theme="dark"] .fc-img-wrap {
+  background: linear-gradient(90deg, #1e1c38 25%, #2a2845 50%, #1e1c38 75%) !important;
+  background-size: 800px 100% !important;
+}
+/* Stop shimmer once image is loaded */
+.product-img-wrap:has(img[complete]),
+.dmc-img-wrap:has(img[complete]),
+.fc-img-wrap:has(img[complete]) {
+  animation: none !important;
+  background: transparent !important;
+}
+/* Image fades in smoothly */
+.product-img-wrap img,
+.dmc-img-wrap img,
+.fc-img-wrap img {
+  opacity: 0;
+  transition: opacity .3s ease !important;
+}
+.product-img-wrap img.img-loaded,
+.dmc-img-wrap img.img-loaded,
+.fc-img-wrap img.img-loaded {
+  opacity: 1 !important;
+}
