@@ -1374,7 +1374,13 @@ function updateCartBadge() {
   [hb, nb].forEach(b => {
     if (!b) return;
     b.textContent = count > 99 ? '99+' : count;
-    b.style.display = count ? 'flex' : 'none';
+    // Use class toggle so CSS !important rules don't fight inline style
+    if (b.id === 'botCartBadge') {
+      b.classList.toggle('bnb-show', count > 0);
+      b.style.display = '';
+    } else {
+      b.style.display = count ? 'flex' : 'none';
+    }
     if (count) { b.style.animation = 'none'; requestAnimationFrame(() => { b.style.animation = ''; }); }
   });
 }
