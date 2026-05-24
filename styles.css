@@ -10480,3 +10480,9 @@ body:has(#authModal.open) .hc-fab {
 .rv-title { font-size: 15px !important; font-weight: 800 !important; color: #222 !important; }
 [data-theme="dark"] .rv-title { color: #eee !important; }
 
+
+/* Hide live visitor counter bar */
+#liveCounterBar,
+.live-counter-bar {
+  display: none !important;
+}
