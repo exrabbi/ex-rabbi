@@ -10987,3 +10987,33 @@ body:has(#authModal.open) .hc-fab {
   color: #111 !important; line-height: 1 !important;
 }
 [data-theme="dark"] .atc-qty-num { color: #eee !important; }
+
+/* ── Simplified cart footer bar (v186) ── */
+.cart-simple-bar {
+  display: flex !important; align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 16px !important; gap: 12px !important;
+}
+.csb-left { display: flex; flex-direction: column; gap: 2px; }
+.csb-count { font-size: 12px; color: #888; font-weight: 600; }
+.csb-total { font-size: 20px; font-weight: 900; color: #111; }
+[data-theme="dark"] .csb-total { color: #eee; }
+
+/* Hide old cart summary/progress when cart-simple-bar is present */
+.cart-footer .cart-summary,
+.cart-footer .cart-total-row,
+.cart-footer .cart-gift-wrap-row,
+.cart-footer #cartDelProg,
+.cart-footer .cart-addr-strip,
+.cart-footer #savedLaterSection { display: none !important; }
+
+/* Make the cart body scrollable without summary taking space */
+.cart-sidebar { display: flex; flex-direction: column; }
+.cart-items { flex: 1; overflow-y: auto; }
+.cart-footer { border-top: 1px solid rgba(0,0,0,.08); flex-shrink: 0; }
+[data-theme="dark"] .cart-footer { border-top-color: rgba(255,255,255,.07); }
+
+/* btn-checkout full width in simple bar */
+.cart-simple-bar .btn-checkout {
+  flex: 1 !important; max-width: 220px !important;
+}

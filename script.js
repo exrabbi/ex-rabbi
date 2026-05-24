@@ -1135,43 +1135,17 @@ function renderCart() {
       vatRow.style.display = 'none';
     }
   }
-  // Delivery address strip — always show in cart footer
-  let addrStrip = document.getElementById('cartAddrStrip');
-  if (!addrStrip) {
-    addrStrip = document.createElement('div');
-    addrStrip.id = 'cartAddrStrip';
-    footer.insertBefore(addrStrip, footer.firstChild);
-  }
-  if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
-    addrStrip.className = 'cart-addr-strip cart-addr-strip--missing';
-    addrStrip.innerHTML = `
-      <div class="cas-left">
-        <i class="fas fa-location-dot cas-icon"></i>
-        <div>
-          <p class="cas-label">${t('deliveryAddress') || 'Delivery address required'}</p>
-          <p class="cas-sub">${t('addAddressHint') || 'Add your address to place order'}</p>
-        </div>
-      </div>
-      <button class="cas-add-btn" onclick="closeCart();setTimeout(openLocation,300)">
-        ${t('addBtn') || 'Add'} <i class="fas fa-chevron-right"></i>
-      </button>`;
-  } else {
-    addrStrip.className = 'cart-addr-strip cart-addr-strip--set';
-    addrStrip.innerHTML = `
-      <div class="cas-left">
-        <i class="fas fa-circle-check cas-icon"></i>
-        <div>
-          <p class="cas-label">${savedLocation.name} · ${savedLocation.phone}</p>
-          <p class="cas-sub">${[savedLocation.city, savedLocation.area].filter(Boolean).join(', ')}</p>
-        </div>
-      </div>
-      <button class="cas-change-btn" onclick="closeCart();setTimeout(openLocation,300)">
-        ${t('changeBtn') || 'Change'}
-      </button>`;
-  }
-  // Remove old-style warning if still present
+  // Address strip is now shown on checkout page — hide it here
+  const addrStrip = document.getElementById('cartAddrStrip');
+  if (addrStrip) addrStrip.style.display = 'none';
   const _oldWarn = document.getElementById('cartAddrWarn');
   if (_oldWarn) _oldWarn.remove();
+  // Update simplified cart bar
+  const cstCountEl = document.getElementById('cstCount');
+  const cstTotalEl = document.getElementById('cstTotal');
+  const totalItemCount = cart.reduce((s, i) => s + i.qty, 0);
+  if (cstCountEl) cstCountEl.textContent = totalItemCount + ' item' + (totalItemCount !== 1 ? 's' : '');
+  if (cstTotalEl) cstTotalEl.textContent = fmtD(subtotalDisp + deliveryDisp);
   if (footer) footer.style.display = 'block';
 }
 function _saveCart() { try { localStorage.setItem('exg_cart', JSON.stringify(cart)); } catch(e) {} }
