@@ -3683,7 +3683,7 @@ function updateAuthUI() {
 const BINANCE_PAY_ID = '1167244565';
 const SAR_TO_USDT = 0.267;
 
-let selectedPayMethod = 'whatsapp';
+let selectedPayMethod = '';
 let paypalLoaded = false;
 
 let DELIVERY_SAR = 17;
@@ -4010,6 +4010,12 @@ function processPayment() {
     closePayment();
     showToast('🔒 ' + (t('loginRequired') || 'Please sign in to place your order'));
     setTimeout(openAuth, 400);
+    return;
+  }
+  if (!selectedPayMethod) {
+    showToast('⚠️ Please select a payment method to continue');
+    const paySection = document.querySelector('.ck-sec:has(.ck-pm)');
+    if (paySection) { paySection.scrollIntoView({behavior:'smooth',block:'center'}); paySection.style.outline='2px solid #e91e8c'; setTimeout(()=>{ paySection.style.outline=''; },1800); }
     return;
   }
   const stockErr = _cartStockError();
