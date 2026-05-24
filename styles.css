@@ -11055,3 +11055,14 @@ body:has(#authModal.open) .hc-fab {
 .fc-img-wrap img.img-loaded {
   opacity: 1 !important;
 }
+
+/* ── Product card ATC button — slim single-line (v188) ── */
+.add-cart-btn {
+  padding: 8px 6px !important;
+  margin: 0 6px 8px !important;
+  font-size: 10px !important;
+  letter-spacing: .4px !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+}
+.add-cart-btn i { font-size: 12px !important; }
