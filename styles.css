@@ -11486,3 +11486,50 @@ body:has(#authModal.open) .hc-fab {
   color: #aaa; font-size: 13.5px; font-weight: 600;
   cursor: pointer; padding: 6px;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   Google Pay pill icon + Binance 5-diamond fix (v195)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Google Pay — pill shape exactly like reference */
+.ck-pm-ico-gpay {
+  background: #fff !important;
+  border: 1.5px solid #dadce0 !important;
+  border-radius: 100px !important;
+  width: 64px !important;
+  height: 28px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 1px !important;
+  flex-shrink: 0 !important;
+}
+.gpay-g {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  font-family: 'Product Sans', Arial, sans-serif !important;
+  background: linear-gradient(135deg, #4285F4 0%, #4285F4 30%, #EA4335 30%, #EA4335 50%, #FBBC05 50%, #FBBC05 70%, #34A853 70%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  line-height: 1 !important;
+}
+.gpay-pay {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  font-family: Arial, sans-serif !important;
+  color: #5F6368 !important;
+  line-height: 1 !important;
+}
+
+/* Binance — 5-diamond: larger icon box, right proportions */
+.ck-pm-ico-binance {
+  background: #0B0E11 !important;
+  border-color: #0B0E11 !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  padding: 6px !important;
+  flex-shrink: 0 !important;
+}
