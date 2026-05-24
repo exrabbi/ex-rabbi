@@ -13415,3 +13415,95 @@ body { padding-bottom: 100px !important; }
 /* Hide old page-head elements if they still render */
 .me-panel > .me-page-head { display: none !important; }
 .me-panel > .me-profile-hero { display: none !important; }
+
+/* =========================================
+   AUTH SPLIT ROW — Character beside form
+   (Reference: Animated Login Form style)
+   ========================================= */
+.auth-split-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 10px 0 4px;
+}
+
+/* Character column — left side */
+.auth-split-row .am-wrap {
+  flex: 0 0 110px;
+  margin: 0;
+  width: 110px;
+  align-self: flex-end;
+}
+
+/* Scale character up to fill the column */
+.auth-split-row .am-char {
+  transform: scale(1.25);
+  transform-origin: bottom center;
+}
+
+/* Pointing arm always visible toward the right */
+.auth-split-row .am-arm-l {
+  transform: rotate(-55deg) !important;
+  animation: auth-arm-point 2.5s ease-in-out infinite !important;
+}
+@keyframes auth-arm-point {
+  0%,100% { transform: rotate(-55deg) !important; }
+  50%      { transform: rotate(-45deg) !important; }
+}
+
+/* Walking legs animation */
+.auth-split-row .am-leg-l {
+  animation: auth-leg-l 0.8s ease-in-out infinite alternate;
+}
+.auth-split-row .am-leg-r {
+  animation: auth-leg-r 0.8s ease-in-out infinite alternate;
+}
+@keyframes auth-leg-l {
+  0%   { transform: rotate(-18deg); }
+  100% { transform: rotate(18deg); }
+}
+@keyframes auth-leg-r {
+  0%   { transform: rotate(18deg); }
+  100% { transform: rotate(-18deg); }
+}
+
+/* Body bob while walking */
+.auth-split-row .am-scene {
+  animation: auth-walk-bob 0.8s ease-in-out infinite !important;
+}
+@keyframes auth-walk-bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* Speech bubble — above the character */
+.auth-split-row .am-bubble {
+  left: 50%;
+  transform: translateX(-50%) scale(.7);
+  top: -38px;
+  font-size: 11px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  border-radius: 12px 12px 12px 4px;
+}
+.auth-split-row .am-bubble.show {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+/* Form column — right side */
+.auth-split-row #authLoginView {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Make buttons more compact inside split */
+.auth-split-row .btn-google-signin,
+.auth-split-row .btn-facebook-signin {
+  padding: 13px 12px !important;
+  font-size: 13px !important;
+  border-radius: 16px !important;
+}
