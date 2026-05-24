@@ -12805,3 +12805,164 @@ body { padding-bottom: 86px !important; }
 /* Dark mode */
 [data-theme="dark"] .trash-btn { background: #252540; }
 [data-theme="dark"] .trash-btn:hover { background: #b71c1c; }
+
+/* ===== 3D TEAM CAROUSEL ===== */
+.team-section {
+  padding: 50px 0 38px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f3eeff 0%, #fff 100%);
+  margin-top: 8px;
+}
+[data-theme="dark"] .team-section {
+  background: linear-gradient(180deg, #12071f 0%, #0d0d0d 100%);
+}
+
+.team-bg-text {
+  position: absolute;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(52px, 18vw, 80px);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 2px rgba(124,58,237,.10);
+  letter-spacing: 10px;
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+}
+[data-theme="dark"] .team-bg-text { -webkit-text-stroke: 2px rgba(124,58,237,.16); }
+
+.team-carousel-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+  height: 280px;
+  margin-bottom: 22px;
+}
+.team-stage {
+  position: relative;
+  width: 290px; height: 260px;
+  perspective: 1000px;
+}
+
+/* ── Card base ── */
+.tc {
+  position: absolute;
+  width: 160px; height: 220px;
+  top: 20px; left: 65px;
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .52s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 8px 28px rgba(0,0,0,.18);
+  will-change: transform, filter;
+}
+.tc img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  pointer-events: none;
+}
+
+/* Active — front & center, full color */
+.tc-0 {
+  transform: translateX(0) scale(1) rotateY(0deg);
+  filter: grayscale(0%) brightness(1);
+  z-index: 5;
+  box-shadow: 0 18px 50px rgba(124,58,237,.38);
+  cursor: default;
+}
+/* Right ±1 */
+.tc-r1 {
+  transform: translateX(90px) scale(0.82) rotateY(-16deg);
+  filter: grayscale(70%) brightness(.9);
+  z-index: 3;
+}
+/* Left ±1 */
+.tc-l1 {
+  transform: translateX(-90px) scale(0.82) rotateY(16deg);
+  filter: grayscale(70%) brightness(.9);
+  z-index: 3;
+}
+/* Right ±2 */
+.tc-r2 {
+  transform: translateX(150px) scale(0.64) rotateY(-28deg);
+  filter: grayscale(100%) brightness(.8);
+  z-index: 1;
+  opacity: .88;
+}
+/* Left ±2 */
+.tc-l2 {
+  transform: translateX(-150px) scale(0.64) rotateY(28deg);
+  filter: grayscale(100%) brightness(.8);
+  z-index: 1;
+  opacity: .88;
+}
+/* Hidden */
+.tc-hide { opacity: 0; pointer-events: none; z-index: 0; transform: scale(.4); }
+
+/* ── Nav buttons ── */
+.team-nav-btn {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(124,58,237,.10);
+  color: #7c3aed;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+  transition: background .2s, transform .15s;
+  z-index: 10;
+  position: relative;
+  border: 1.5px solid rgba(124,58,237,.18);
+}
+.team-nav-btn:hover { background: rgba(124,58,237,.2); transform: scale(1.08); }
+.team-nav-btn:active { transform: scale(.9); }
+[data-theme="dark"] .team-nav-btn {
+  background: rgba(124,58,237,.18);
+  border-color: rgba(124,58,237,.28);
+  color: #a78bfa;
+}
+
+/* ── Name row ── */
+.team-info-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 12px; margin-bottom: 6px;
+}
+.team-name-line {
+  width: 38px; height: 2px;
+  background: linear-gradient(90deg, transparent, #7c3aed);
+  border-radius: 2px;
+}
+.team-info-row .team-name-line:last-child {
+  background: linear-gradient(90deg, #7c3aed, transparent);
+}
+.team-name {
+  font-size: 17px; font-weight: 800;
+  color: #1a1a1a; letter-spacing: .2px;
+  transition: opacity .3s;
+}
+[data-theme="dark"] .team-name { color: #eee; }
+.team-role {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 2.5px; color: #7c3aed;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  transition: opacity .3s;
+}
+
+/* ── Dots ── */
+.team-dots {
+  display: flex; justify-content: center; gap: 7px;
+}
+.team-dots .team-dot {
+  width: 8px; height: 8px; border-radius: 4px;
+  background: rgba(124,58,237,.18);
+  transition: all .35s cubic-bezier(.34,1.56,.64,1);
+  cursor: pointer;
+}
+.team-dots .team-dot.active {
+  width: 24px; border-radius: 4px;
+  background: linear-gradient(90deg, #7c3aed, #e91e8c);
+}

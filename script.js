@@ -8007,3 +8007,60 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, true);
 });
+
+/* ===== 3D TEAM CAROUSEL ===== */
+const TEAM = [
+  { name: 'Aisha Al-Rashid',   role: 'FOUNDER & CEO',       img: 'https://i.pravatar.cc/400?img=47' },
+  { name: 'Mohammed Hassan',   role: 'HEAD OF OPERATIONS',   img: 'https://i.pravatar.cc/400?img=68' },
+  { name: 'Fatima Al-Zahra',   role: 'CUSTOMER CARE LEAD',  img: 'https://i.pravatar.cc/400?img=48' },
+  { name: 'Omar Al-Khalid',    role: 'MARKETING DIRECTOR',   img: 'https://i.pravatar.cc/400?img=12' },
+  { name: 'Sara Al-Nasser',    role: 'LOGISTICS MANAGER',    img: 'https://i.pravatar.cc/400?img=45' },
+  { name: 'Khalid Al-Mutairi', role: 'TECH & DIGITAL',       img: 'https://i.pravatar.cc/400?img=33' },
+];
+let _tIdx = 0, _tTimer = null;
+
+function _initTeam() {
+  const stage = document.getElementById('teamStage');
+  const dots  = document.getElementById('teamDots');
+  if (!stage) return;
+  stage.innerHTML = TEAM.map((m, i) =>
+    `<div class="tc" data-ti="${i}" onclick="_teamTap(${i})"><img src="${m.img}" alt="${m.name}" loading="lazy"/></div>`
+  ).join('');
+  dots.innerHTML = TEAM.map((_, i) =>
+    `<button class="team-dot" onclick="_teamGoTo(${i})"></button>`).join('');
+  _teamRender();
+  _tTimer = setInterval(() => teamNav(1), 3800);
+}
+
+function _teamRender() {
+  const n = TEAM.length;
+  document.querySelectorAll('.tc').forEach((c, i) => {
+    let r = ((i - _tIdx) % n + n) % n;
+    if (r > n / 2) r -= n;
+    c.className = 'tc';
+    if      (r ===  0) c.classList.add('tc-0');
+    else if (r ===  1) c.classList.add('tc-r1');
+    else if (r === -1) c.classList.add('tc-l1');
+    else if (r ===  2) c.classList.add('tc-r2');
+    else if (r === -2) c.classList.add('tc-l2');
+    else               c.classList.add('tc-hide');
+  });
+  document.querySelectorAll('.team-dots .team-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === _tIdx));
+  const m = TEAM[_tIdx];
+  const ne = document.getElementById('tmName');
+  const re = document.getElementById('tmRole');
+  if (ne) { ne.style.opacity = '0'; setTimeout(() => { ne.textContent = m.name; ne.style.opacity = '1'; }, 150); }
+  if (re) { re.style.opacity = '0'; setTimeout(() => { re.textContent = m.role; re.style.opacity = '1'; }, 150); }
+}
+
+function teamNav(dir) {
+  _tIdx = ((_tIdx + dir) % TEAM.length + TEAM.length) % TEAM.length;
+  _teamRender();
+  clearInterval(_tTimer);
+  _tTimer = setInterval(() => teamNav(1), 3800);
+}
+function _teamGoTo(i) { _tIdx = i; _teamRender(); clearInterval(_tTimer); _tTimer = setInterval(() => teamNav(1), 3800); }
+function _teamTap(i)  { if (i !== _tIdx) _teamGoTo(i); }
+
+document.addEventListener('DOMContentLoaded', _initTeam);
