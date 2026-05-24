@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=200" />
+  <link rel="stylesheet" href="styles.css?v=207" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -898,20 +898,24 @@
   </script>
 
   <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
+  <nav class="bottom-nav dock-nav">
     <button class="bot-btn active" data-sound="shop" onclick="setBottomActive(this)">
+      <div class="dock-tooltip" data-i18n="navShop">Shop</div>
       <div class="bot-icon-wrap"><i class="fas fa-store"></i></div>
       <span data-i18n="navShop">Shop</span>
     </button>
     <button class="bot-btn" data-sound="cat" onclick="setBottomActive(this);filterCategory('all')">
+      <div class="dock-tooltip" data-i18n="navCategory">Category</div>
       <div class="bot-icon-wrap"><i class="fas fa-table-cells-large"></i></div>
       <span data-i18n="navCategory">Category</span>
     </button>
     <button class="bot-btn bot-center-btn" data-sound="trend" onclick="setBottomActive(this);openTrendContent()">
+      <div class="dock-tooltip" data-i18n="navTrend">Trend</div>
       <div class="bot-icon-wrap"><i class="fas fa-bolt-lightning"></i></div>
       <span data-i18n="navTrend">Trend</span>
     </button>
     <button class="bot-btn" id="botCartBtn" data-sound="cart" onclick="setBottomActive(this);openCart()">
+      <div class="dock-tooltip" data-i18n="navCart">Cart</div>
       <div class="bot-icon-wrap">
         <i class="fas fa-bag-shopping"></i>
         <span class="bot-nav-badge" id="botCartBadge" style="display:none">0</span>
@@ -919,6 +923,7 @@
       <span data-i18n="navCart">Cart</span>
     </button>
     <button class="bot-btn" data-sound="me" onclick="setBottomActive(this);openMe()">
+      <div class="dock-tooltip" data-i18n="navMe">Me</div>
       <div class="bot-icon-wrap"><i class="fas fa-circle-user"></i></div>
       <span data-i18n="navMe">Me</span>
     </button>
@@ -1539,10 +1544,63 @@
         </div>
         <!-- Card form -->
         <div id="cardForm" style="display:none">
+          <!-- Animated card preview -->
+          <div class="cc-scene">
+            <div class="cc-card" id="ccCard">
+              <!-- Front -->
+              <div class="cc-front">
+                <div class="cc-bg-glow"></div>
+                <div class="cc-top-row">
+                  <span class="cc-bank">CreditCard</span>
+                  <div class="cc-network" id="ccNetwork">
+                    <svg viewBox="0 0 48 30" width="48" height="30">
+                      <circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/>
+                      <circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/>
+                      <path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/>
+                    </svg>
+                  </div>
+                </div>
+                <div class="cc-chip">
+                  <div class="cc-chip-line"></div>
+                  <div class="cc-chip-line"></div>
+                  <div class="cc-chip-line cc-chip-mid"></div>
+                </div>
+                <div class="cc-number" id="ccNumber">#### #### #### ####</div>
+                <div class="cc-bottom-row">
+                  <div>
+                    <div class="cc-lbl">Card Holder</div>
+                    <div class="cc-holder" id="ccHolder">NAME ON CARD</div>
+                  </div>
+                  <div>
+                    <div class="cc-lbl">Expires</div>
+                    <div class="cc-expiry" id="ccExpiry">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Back -->
+              <div class="cc-back">
+                <div class="cc-stripe"></div>
+                <div class="cc-sig-row">
+                  <div class="cc-sig-lines"></div>
+                  <div class="cc-cvv-box">
+                    <div class="cc-lbl" style="color:#333">CVV</div>
+                    <div class="cc-cvv-val" id="ccCvv">•••</div>
+                  </div>
+                </div>
+                <div class="cc-back-network">
+                  <svg viewBox="0 0 48 30" width="40" height="24">
+                    <circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".6"/>
+                    <circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".6"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="card-form-wrap">
-            <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
-            <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" /></div></div>
-            <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName()" /></div></div>
+            <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);_updateCCPreview()" onfocus="_updateCCPreview()" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
+            <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this);_updateCCPreview()" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" oninput="_updateCCPreview()" onfocus="_ccFlip(true)" onblur="_ccFlip(false)" /></div></div>
+            <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName();_updateCCPreview()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName();_updateCCPreview()" /></div></div>
           </div>
           <input type="hidden" id="cardName" />
         </div>
@@ -1698,6 +1756,62 @@
       <button onclick="signOut()" style="width:100%;padding:15px;border-radius:50px;border:none;background:linear-gradient(135deg,#e91e8c,#9415f5);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 28px rgba(233,30,140,.55)">
         <i class="fas fa-sign-out-alt"></i> <span data-i18n="signOut">Sign Out</span>
       </button>
+    </div>
+
+    <!-- Animated 3D-style mascot -->
+    <div class="am-wrap" id="authMascot">
+      <!-- Speech bubble -->
+      <div class="am-bubble" id="amBubble">Welcome! 👋</div>
+      <div class="am-scene">
+        <!-- Character -->
+        <div class="am-char">
+          <!-- Hair -->
+          <div class="am-hair"></div>
+          <!-- Head -->
+          <div class="am-head">
+            <!-- Eyebrows -->
+            <div class="am-brows">
+              <div class="am-brow am-brow-l"></div>
+              <div class="am-brow am-brow-r"></div>
+            </div>
+            <!-- Eyes -->
+            <div class="am-eyes">
+              <div class="am-eye">
+                <div class="am-pupil"></div>
+                <div class="am-shine"></div>
+              </div>
+              <div class="am-eye">
+                <div class="am-pupil"></div>
+                <div class="am-shine"></div>
+              </div>
+            </div>
+            <!-- Nose -->
+            <div class="am-nose"></div>
+            <!-- Mouth -->
+            <div class="am-mouth" id="amMouth"></div>
+          </div>
+          <!-- Neck -->
+          <div class="am-neck"></div>
+          <!-- Body (shirt) -->
+          <div class="am-body">
+            <!-- Collar -->
+            <div class="am-collar"></div>
+          </div>
+          <!-- Left arm (pointing toward buttons) -->
+          <div class="am-arm am-arm-l" id="amArmL">
+            <div class="am-hand am-hand-l">👈</div>
+          </div>
+          <!-- Right arm (relaxed) -->
+          <div class="am-arm am-arm-r">
+            <div class="am-hand am-hand-r"></div>
+          </div>
+          <!-- Legs -->
+          <div class="am-legs">
+            <div class="am-leg am-leg-l"></div>
+            <div class="am-leg am-leg-r"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Login view -->
@@ -2414,7 +2528,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=193"></script>
+  <script src="script.js?v=202"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

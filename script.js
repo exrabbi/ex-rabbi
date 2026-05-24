@@ -156,7 +156,7 @@ let currentPriceMax = 9999;
 // Track last render state to enable append-only "load more"
 let _rnFilter = '', _rnSort = '', _rnSearch = '', _rnPrice = 9999, _rnColors = '', _rnCount = 0;
 let currentColors = [];
-let currentLang = 'en';
+let currentLang = 'ar';
 let selectedSize = '';
 let selectedColor = '';
 let _modalQty = 1;
@@ -379,7 +379,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Apply admin settings (delivery charge, free delivery threshold)
   try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   applyTheme(currentTheme);
-  setLang(localStorage.getItem('exg_lang') || 'en');
+  setLang(localStorage.getItem('exg_lang') || 'ar');
   _revealPage(); // remove opacity:0 set in <head>
   updateWishBadge();
   updateCartBadge();
@@ -820,45 +820,95 @@ function renderProducts(searchTerm = '') {
 
 function productCardHTML(p) {
   const inWish = wishlist.includes(p.id);
-  const rcFmt = p.ratingCount >= 1000 ? (p.ratingCount/1000).toFixed(1)+'k' : p.ratingCount;
-  const soldFmt = String(p.sold).replace(/\++$/, '');
   const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
   const isOOS = p.stock === 0;
   const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
+
+  // Gradient palette by category
+  const CAT_GRAD = {
+    'abaya':['#1a237e','#0d47a1'],'women':['#880e4f','#c2185b'],'men':['#0d47a1','#1565c0'],
+    'kids':['#bf360c','#e64a19'],'beauty':['#4a148c','#7b1fa2'],'electronics':['#004d40','#00695c'],
+    'accessories':['#1b5e20','#2e7d32'],'shoes':['#b71c1c','#c62828'],'bags':['#33691e','#558b2f'],
+    'sport':['#006064','#00838f'],'home':['#37474f','#455a64'],'watches':['#212121','#37474f'],
+    'perfume':['#4a148c','#6a1b9a'],'fashion':['#1a237e','#283593'],
+  };
+  const fallbackPalette = [
+    ['#1a237e','#283593'],['#880e4f','#ad1457'],['#4a148c','#6a1b9a'],
+    ['#004d40','#00695c'],['#b71c1c','#c62828'],['#bf360c','#e64a19'],
+    ['#006064','#00838f'],['#1b5e20','#2e7d32'],
+  ];
+  const catKey = (p.category||'').toLowerCase().split(/[\s/]/)[0];
+  const [g1, g2] = CAT_GRAD[catKey] || fallbackPalette[p.id % fallbackPalette.length];
+
+  const watermark = (p.category||'STYLE').toUpperCase().replace(/\s+/g,'').substring(0,7);
+  const sizes = (p.sizes||[]).slice(0,4);
+  const colorDots = (p.colors||[]).slice(0,4);
+
+  const badge = p.discount >= 40
+    ? `<span class="nx-badge nx-flash"><i class="fas fa-bolt"></i> FLASH</span>`
+    : p.tag === 'bestseller' ? `<span class="nx-badge nx-best"><i class="fas fa-trophy"></i></span>`
+    : p.tag === 'new' ? `<span class="nx-badge nx-new">NEW</span>`
+    : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
+
   return `
-    <div class="product-card" onclick="openModal(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        ${p.discount >= 40 ? `<span class="badge-ribbon flash-badge"><i class="fas fa-bolt"></i> FLASH</span>` : p.tag === 'bestseller' ? `<span class="badge-ribbon best-badge"><i class="fas fa-trophy"></i> BEST</span>` : p.tag === 'new' ? `<span class="badge-ribbon new-badge"><i class="fas fa-sparkles"></i> NEW</span>` : p.discount >= 20 ? `<span class="badge-ribbon hot-badge">-${p.discount}%</span>` : ''}
-        <button class="wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-          <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
+    <div class="product-card nx-card" onclick="openModal(${p.id})" style="--g1:${g1};--g2:${g2}">
+      <div class="nx-top">
+        <span class="nx-wm">${watermark}</span>
+        <img class="nx-img" src="${p.image}" loading="lazy" alt=""
+          onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
+          ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
+        <div class="nx-top-btns">
+          ${badge}
+          <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+            <i class="${inWish?'fas':'far'} fa-heart"></i>
+          </button>
+        </div>
+        ${isOOS ? '<div class="nx-oos-overlay">Out of Stock</div>' : isLow ? `<div class="nx-low-strip">🔥 Only ${p.stock} left</div>` : ''}
+      </div>
+      <div class="nx-body">
+        <p class="nx-name">${getName(p)}</p>
+        ${sizes.length ? `<div class="nx-row"><span class="nx-lbl">SIZE</span>${sizes.map(s=>`<span class="nx-sz">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="nx-row"><span class="nx-lbl">COLOR</span>${colorDots.map(c=>`<span class="nx-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
+        <div class="nx-price-wrap">
+          <span class="nx-price">${fmt(p.price)}</span>
+          ${origPrice?`<span class="nx-orig">${origPrice}</span>`:''}
+        </div>
+        <button class="nx-btn add-to-cart${isOOS?' oos-btn':''}"
+          onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
+          ${isOOS?'disabled':''}>
+          ${!isOOS?`<span class="shirt"><i class="fas fa-bag-shopping"></i></span>`:''}
+          <span class="cart">
+            <i class="fas fa-${isOOS?'ban':'cart-plus'}"></i>
+            <span class="cart-lbl">${isOOS?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
+          </span>
         </button>
-        <button class="cmp-card-btn" onclick="event.stopPropagation();addToCompare(${p.id})" title="Compare"><i class="fas fa-code-compare"></i></button>
-        <div class="card-qv-overlay"><span class="card-qv-tag"><i class="fas fa-eye"></i> Quick View</span></div>
       </div>
-      <div class="product-info">
-        ${p.category ? `<span class="desk-card-cat">${p.category.toUpperCase()}</span>` : ''}
-        <p class="product-name">${getName(p)}</p>
-        ${p.description ? `<p class="desk-card-desc">${p.description.replace(/<[^>]+>/g,'').substring(0,90)}</p>` : ''}
-        <div class="pc-price-row">
-          <span class="price-current">${fmt(p.price)}</span>
-          ${origPrice ? `<span class="price-original">${origPrice}</span>` : ''}
-          <span class="pc-disc-pill">-${p.discount}%</span>
-        </div>
-        <div class="pc-meta-row">
-          <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
-          <span class="pc-sep">|</span>
-          <span class="pc-sold sold-hot">🔥 ${soldFmt}+ ${t('soldText')}</span>
-        </div>
-        ${isOOS ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : isLow ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
-        ${!isOOS ? `<div class="card-trust-strip"><span class="card-trust-chip"><i class="fas fa-bolt"></i> Fast Delivery</span><span class="card-trust-chip"><i class="fas fa-shield-halved"></i> Secure</span>${isLow ? `<span class="card-trust-chip urgency"><i class="fas fa-fire"></i> Only ${p.stock} left</span>` : ''}</div>` : ''}
-      </div>
-      <button class="add-cart-btn${isOOS ? ' oos-btn' : ''}" onclick="event.stopPropagation();${isOOS ? '' : `flyCartAdd(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
-        <i class="fas fa-${isOOS ? 'ban' : 'shopping-bag'}"></i>
-        <span>${isOOS ? (t('outOfStock')||'Out of Stock') : (t('addToCart')||'Add to Cart')}</span>
-      </button>
     </div>
   `;
+}
+
+function nxAtc(ev, id) {
+  const btn = ev.currentTarget;
+  if (btn.dataset.atcBusy) return;
+  btn.dataset.atcBusy = '1';
+  flyCartAdd(ev, id);
+
+  // Phase 1 — shirt appears at button center
+  btn.style.setProperty('--shirt-y', '0px');
+  btn.style.setProperty('--shirt-scale', '1');
+
+  // Phase 2 — shirt flies up and shrinks
+  setTimeout(() => {
+    btn.style.setProperty('--shirt-y', '-52px');
+    btn.style.setProperty('--shirt-scale', '0');
+  }, 320);
+
+  // Reset
+  setTimeout(() => {
+    btn.style.removeProperty('--shirt-y');
+    btn.style.removeProperty('--shirt-scale');
+    delete btn.dataset.atcBusy;
+  }, 720);
 }
 
 /* ===== DESKTOP NAV ACTIVE STATE ===== */
@@ -1074,7 +1124,8 @@ function renderCart() {
               ${hasDiscount ? `<span class="cart-item-disc-badge">-${discPct}%</span>` : ''}
             </div>
           </div>
-          <button class="save-later-btn" onclick="saveForLater(${item.id})"><i class="fas fa-bookmark"></i> ${t('saveLater')||'Save for Later'}</button>
+          <div class="cart-item-actions">
+          </div>
         </div>
       </div>`;
   }).join('');
@@ -2568,16 +2619,43 @@ function openTrendContent() {
 
 function setBottomActive(el) {
   if (el.classList.contains('active')) return;
-  document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
+  const btns = [...document.querySelectorAll('.bot-btn')];
+  const idx = btns.indexOf(el);
+  btns.forEach(b => b.classList.remove('active'));
   el.classList.add('active');
-  // Bounce the icon on tap
-  const wrap = el.querySelector('.bot-icon-wrap');
-  if (wrap) {
-    wrap.style.animation = 'none';
-    void wrap.offsetWidth; // reflow
-    wrap.style.animation = 'botIconBounce .4s cubic-bezier(.34,1.56,.64,1)';
-    setTimeout(() => { wrap.style.animation = ''; }, 420);
-  }
+
+  // macOS dock magnification — active icon bounces, neighbours ripple
+  btns.forEach((btn, i) => {
+    const wrap = btn.querySelector('.bot-icon-wrap');
+    if (!wrap) return;
+    const dist = Math.abs(i - idx);
+    if (dist === 0) {
+      wrap.style.setProperty('--ds', '1.4');
+      wrap.style.setProperty('--dt', '-12px');
+    } else if (dist === 1) {
+      wrap.style.setProperty('--ds', '1.15');
+      wrap.style.setProperty('--dt', '-5px');
+    } else {
+      wrap.style.setProperty('--ds', '1');
+      wrap.style.setProperty('--dt', '0px');
+    }
+  });
+
+  // Settle active icon to elevated resting position
+  setTimeout(() => {
+    const activeWrap = el.querySelector('.bot-icon-wrap');
+    if (activeWrap) {
+      activeWrap.style.setProperty('--ds', '1.18');
+      activeWrap.style.setProperty('--dt', '-6px');
+    }
+    // Reset neighbours
+    btns.forEach((btn, i) => {
+      if (i === idx) return;
+      const wrap = btn.querySelector('.bot-icon-wrap');
+      wrap?.style.removeProperty('--ds');
+      wrap?.style.removeProperty('--dt');
+    });
+  }, 320);
 }
 
 /* ===== TOAST ===== */
@@ -3332,6 +3410,19 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 
 function openAuth() {
   closeMe();
+  // Mascot wave on open
+  const mascot = document.getElementById('authMascot');
+  if (mascot) {
+    mascot.classList.remove('pw-mode','am-wave');
+    void mascot.offsetWidth;
+    mascot.classList.add('am-wave');
+    // Show speech bubble
+    const bubble = document.getElementById('amBubble');
+    if (bubble) {
+      bubble.classList.add('show');
+      setTimeout(() => bubble.classList.remove('show'), 2800);
+    }
+  }
   setTimeout(() => {
     const loggedInView = document.getElementById('authLoggedIn');
     const loginView = document.getElementById('authLoginView');
@@ -3362,6 +3453,20 @@ function openAuth() {
     document.getElementById('authOverlay').classList.add('open');
     document.getElementById('authModal').classList.add('open');
     document.body.style.overflow = 'hidden';
+    // Mascot reacts to password fields
+    document.querySelectorAll('#authModal input[type="password"]').forEach(inp => {
+      inp.addEventListener('focus', () => document.getElementById('authMascot')?.classList.add('pw-mode'), {once:false});
+      inp.addEventListener('blur',  () => document.getElementById('authMascot')?.classList.remove('pw-mode'), {once:false});
+      // Change bubble text on password focus
+      inp.addEventListener('focus', () => {
+        const b = document.getElementById('amBubble');
+        if (b) { b.textContent = "I won't peek! 🙈"; b.classList.add('show'); }
+      }, {once:false});
+      inp.addEventListener('blur', () => {
+        const b = document.getElementById('amBubble');
+        if (b) b.classList.remove('show');
+      }, {once:false});
+    });
   }, 200);
 }
 
@@ -4015,7 +4120,11 @@ function processPayment() {
   if (!selectedPayMethod) {
     showToast('⚠️ Please select a payment method to continue');
     const paySection = document.querySelector('.ck-sec:has(.ck-pm)');
-    if (paySection) { paySection.scrollIntoView({behavior:'smooth',block:'center'}); paySection.style.outline='2px solid #e91e8c'; setTimeout(()=>{ paySection.style.outline=''; },1800); }
+    if (paySection) {
+      paySection.scrollIntoView({behavior:'smooth',block:'center'});
+      paySection.classList.add('pm-shake');
+      setTimeout(() => paySection.classList.remove('pm-shake'), 600);
+    }
     return;
   }
   const stockErr = _cartStockError();
@@ -4230,6 +4339,56 @@ function _syncCardName() {
   const l = (document.getElementById('cardLastName')?.value || '').trim();
   const h = document.getElementById('cardName');
   if (h) h.value = [f, l].filter(Boolean).join(' ');
+}
+
+/* ── Animated card preview ── */
+function _updateCCPreview() {
+  const num   = (document.getElementById('cardNumber')?.value || '').replace(/\s/g,'');
+  const exp   = document.getElementById('cardExpiry')?.value || '';
+  const first = (document.getElementById('cardFirstName')?.value || '').trim();
+  const last  = (document.getElementById('cardLastName')?.value || '').trim();
+  const cvv   = document.getElementById('cardCvv')?.value || '';
+
+  // Number — pad with # to 16 digits
+  const padded = (num + '################').substring(0,16);
+  const formatted = padded.match(/.{1,4}/g).join(' ');
+  const numEl = document.getElementById('ccNumber');
+  if (numEl) numEl.textContent = formatted;
+
+  // Holder
+  const holderEl = document.getElementById('ccHolder');
+  if (holderEl) {
+    const name = [first, last].filter(Boolean).join(' ').toUpperCase();
+    holderEl.textContent = name || 'NAME ON CARD';
+  }
+
+  // Expiry
+  const expEl = document.getElementById('ccExpiry');
+  if (expEl) expEl.textContent = exp || 'MM/YY';
+
+  // CVV (back of card)
+  const cvvEl = document.getElementById('ccCvv');
+  if (cvvEl) cvvEl.textContent = cvv ? cvv.replace(/./g,'•') : '•••';
+
+  // Detect card network from first digit
+  const networkEl = document.getElementById('ccNetwork');
+  if (networkEl && num.length > 0) {
+    const d = num[0];
+    if (d === '4') {
+      // Visa
+      networkEl.innerHTML = `<svg viewBox="0 0 80 26" width="52" height="26"><text x="0" y="22" font-size="26" font-weight="900" font-style="italic" fill="#1a1f71" font-family="Arial">VISA</text></svg>`;
+    } else if (d === '5') {
+      // Mastercard
+      networkEl.innerHTML = `<svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>`;
+    } else if (d === '3') {
+      // Amex
+      networkEl.innerHTML = `<svg viewBox="0 0 60 24" width="52" height="24"><rect width="60" height="24" rx="4" fill="#2E77BC"/><text x="6" y="18" font-size="13" font-weight="900" fill="#fff" font-family="Arial">AMEX</text></svg>`;
+    }
+  }
+}
+
+function _ccFlip(toBack) {
+  document.getElementById('ccCard')?.classList.toggle('cc-flipped', toBack);
 }
 
 /* ===== REVIEWS ===== */
@@ -5166,7 +5325,7 @@ function _localAiReply(text) {
   const WA = 'https://wa.me/966546224029';
 
   // ── PLACE ORDER ──
-  if (/order.*place|place.*order|buy|purchase|checkout|কিনতে|কিনব|কিনবো|অর্ডার দি|অর্ডার দেব|অর্ডার করত|ওডার দি|ওডার দেব|ওডার করত|order দি|order দেব|দিবো|দেবো|দিতে চাই|করতে চাই/.test(q)) {
+  if (/order.*place|place.*order|buy|purchase|checkout|أبغى أطلب|كيف أطلب|عايز اشتري|أريد أطلب|كيف اشتري|كيف أشتري|أطلب|اطلب|أبغى أشتري|وش أسوي|كيف أكمل|اكمل الطلب|অর্ডার দি|অর্ডার দেব|অর্ডার করত|ওডার দি|ওডার দেব|ওডার করত|কিনতে|কিনব|কিনবো/.test(q)) {
     const howto = {
       bn: '🛍️ **অর্ডার দেওয়ার সহজ ধাপ:**\n\n1️⃣ পণ্য দেখুন → **Add to Cart** চাপুন\n2️⃣ Cart icon চাপুন (নিচে ডানে)\n3️⃣ **Checkout** চাপুন\n4️⃣ ঠিকানা দিন\n5️⃣ Payment method বেছে নিন\n6️⃣ **Place Order** চাপুন ✅\n\n💳 Payment: Card · Binance · STC Pay · COD\n🚚 Delivery: 2-4 দিন · Free (SAR 100+)\n\n📲 সাহায্য লাগলে: ' + WA,
       en: '🛍️ **How to Place an Order:**\n\n1️⃣ Browse & tap **Add to Cart**\n2️⃣ Open Cart (bottom right)\n3️⃣ Tap **Checkout**\n4️⃣ Enter delivery address\n5️⃣ Choose payment method\n6️⃣ Tap **Place Order** ✅\n\n💳 Payment: Card · Binance · STC · COD\n🚚 Delivery: 2-4 days · Free over SAR 100\n\n📲 Need help? ' + WA,
@@ -5176,7 +5335,7 @@ function _localAiReply(text) {
   }
 
   // ── GREETING ──
-  if (/^(hi|hello|hey|مرحبا|هلا|السلام|هاي|اهلا|হ্যালো|নমস্কার|হাই|আস|সালাম|namaste|नमस्ते|hola)/.test(q)) {
+  if (/^(hi|hello|hey|مرحبا|مرحباً|هلا|هلاً|السلام|السلام عليكم|أهلاً|اهلا|أهلا وسهلا|هاي|يا عزيزي|يا صديقي|صباح|مساء|كيف حالك|হ্যালো|নমস্কার|হাই|আস|সালাম|namaste|नमस्ते|hola)/.test(q)) {
     const greet = {
       bn: 'আস-সালামু আলাইকুম! 😊\nআমি EX GLOBAL-এর AI সহকারী। কীভাবে সাহায্য করতে পারি?\n\n🛍️ পণ্য খুঁজতে | 📦 অর্ডার ট্র্যাক | 💳 পেমেন্ট | 🚚 ডেলিভারি',
       en: 'Welcome to EX GLOBAL! 👑\nI\'m your AI shopping assistant. How can I help?\n\n🛍️ Find products | 📦 Track order | 💳 Payment | 🚚 Delivery',
