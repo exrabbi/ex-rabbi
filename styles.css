@@ -12976,3 +12976,539 @@ body { padding-bottom: 100px !important; }
   width: 24px; border-radius: 4px;
   background: linear-gradient(90deg, #7c3aed, #e91e8c);
 }
+
+/* =========================================
+   PCARD — Nike-style floating-image card
+   ========================================= */
+.pcard {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(145deg, var(--clr), var(--clr2));
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  cursor: pointer;
+  height: 320px;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), box-shadow .22s;
+}
+.pcard:active { transform: scale(.97); box-shadow: 0 3px 12px rgba(0,0,0,.1); }
+
+/* Watermark — large italic text across gradient section */
+.pcard::after {
+  content: var(--wm);
+  position: absolute;
+  top: 23%;
+  left: -20%;
+  font-size: 9em;
+  font-weight: 800;
+  font-style: italic;
+  color: #f5f4f4;
+  opacity: .07;
+  white-space: nowrap;
+  letter-spacing: -4px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+}
+
+/* Floating product image — vertically centered in gradient area */
+.pcard-imgBx {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+  width: 100%;
+  height: 170px;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.pcard-imgBx img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0,0,0,.38));
+  transition: transform 0.5s cubic-bezier(.34,1.56,.64,1);
+}
+.pcard:active .pcard-imgBx img { transform: scale(1.07) translateY(-5px); }
+
+/* Badge + wishlist row — absolute top */
+.pcard-top-btns {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10001;
+}
+
+/* OOS / Low-stock overlays */
+.pcard-oos {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .6px;
+  backdrop-filter: blur(3px);
+  z-index: 10002;
+}
+.pcard-low {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(220,38,38,.9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  z-index: 10002;
+  white-space: nowrap;
+}
+
+/* White content box pinned to bottom of card */
+.pcard-contentBx {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-radius: 16px 16px 20px 20px;
+  padding: 10px 11px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 10000;
+}
+
+.pcard-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.35;
+}
+
+.pcard-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.pcard-price {
+  font-size: 15px;
+  font-weight: 900;
+  color: #1a1a2e;
+}
+.pcard-orig {
+  font-size: 11px;
+  color: #c0c0c0;
+  text-decoration: line-through;
+}
+
+/* SIZE chips — hover background: #237fea */
+.pcard-size {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.pcard-size-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  margin-right: 2px;
+}
+.pcard-size span {
+  font-size: 10px;
+  font-weight: 700;
+  color: #444;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 7px;
+  padding: 2px 7px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s, color .15s;
+  line-height: 1.6;
+}
+.pcard-size span:hover,
+.pcard-size span.active { background: #237fea; border-color: #237fea; color: #fff; }
+
+/* COLOR dots — 20px circles with label */
+.pcard-color {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pcard-color-lbl {
+  font-size: 9px;
+  font-weight: 700;
+  color: #888;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  margin-right: 6px;
+}
+.pcard-color span {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin: 0 5px 0 0;
+  cursor: pointer;
+  border: 2px solid rgba(0,0,0,.09);
+  flex-shrink: 0;
+  transition: transform .15s, box-shadow .15s;
+}
+.pcard-color span:hover { transform: scale(1.28); box-shadow: 0 0 0 2px rgba(0,0,0,.18); }
+
+/* Buy Now button — pill shape with gradient */
+.pcard-btn {
+  border-radius: 30px !important;
+  margin-top: 4px;
+  background: linear-gradient(135deg, var(--clr), var(--clr2)) !important;
+}
+
+/* Dark mode */
+[data-theme="dark"] .pcard-contentBx { background: #13112a; }
+[data-theme="dark"] .pcard-name { color: #eee; }
+[data-theme="dark"] .pcard-price { color: #fff; }
+[data-theme="dark"] .pcard-size span { border-color: rgba(255,255,255,.14); color: #ccc; background: rgba(255,255,255,.04); }
+[data-theme="dark"] .pcard-color span { border-color: rgba(255,255,255,.12); }
+[data-theme="dark"] .pcard-orig { color: #666; }
+
+/* =========================================
+   SUPER DEALS — Infinite Auto-Scroll Marquee
+   ========================================= */
+.sdeal-wrap {
+  margin: 10px 10px 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #1a0533 0%, #0d1b4b 100%);
+  overflow: hidden;
+  padding-bottom: 14px;
+}
+[data-theme="dark"] .sdeal-wrap { background: linear-gradient(135deg, #12002a 0%, #060d2a 100%); }
+
+.sdeal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+}
+.sdeal-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: .2px;
+}
+
+/* Viewport clips the scrolling track */
+.sdeal-viewport {
+  overflow: hidden;
+  width: 100%;
+  cursor: grab;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.sdeal-viewport:active { cursor: grabbing; }
+
+/* Track — duplicated content, animated left */
+@keyframes sdealsScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.sdeal-track {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+  width: max-content;
+  animation: sdealsScroll 28s linear infinite;
+  will-change: transform;
+}
+.sdeal-track:hover { animation-play-state: paused; }
+
+/* Override deal-mini-card width inside marquee */
+.sdeal-track .deal-mini-card {
+  flex-shrink: 0;
+  width: 125px;
+  background: rgba(255,255,255,.07);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: transform .18s;
+}
+.sdeal-track .deal-mini-card:active { transform: scale(.95); }
+.sdeal-track .dmc-img-wrap {
+  position: relative;
+  width: 125px;
+  height: 145px;
+  overflow: hidden;
+}
+.sdeal-track .dmc-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sdeal-track .deal-mini-badge {
+  position: absolute;
+  top: 7px; left: 7px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.sdeal-track .dmc-body {
+  padding: 7px 8px 9px;
+}
+.sdeal-track .dmc-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #eee;
+  margin: 0 0 4px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.35;
+}
+.sdeal-track .dmc-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.sdeal-track .dmc-price {
+  font-size: 13px;
+  font-weight: 900;
+  color: #f472b6;
+}
+.sdeal-track .dmc-orig {
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+  text-decoration: line-through;
+}
+
+/* =========================================
+   PREMIUM PROFILE HERO BANNER
+   ========================================= */
+.me-hero-banner {
+  position: relative;
+  background: linear-gradient(160deg, #0d0050 0%, #3d0068 35%, #8b0fa0 70%, #c41f8e 100%);
+  padding: 0 20px 36px;
+  text-align: center;
+  overflow: hidden;
+}
+.me-hero-deco-1, .me-hero-deco-2 {
+  position: absolute; border-radius: 50%; pointer-events: none;
+}
+.me-hero-deco-1 { width: 220px; height: 220px; background: rgba(255,255,255,.05); top: -70px; right: -50px; }
+.me-hero-deco-2 { width: 160px; height: 160px; background: rgba(255,255,255,.04); bottom: 20px; left: -40px; }
+.me-hero-banner::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 32px; background: #f5f5f5; border-radius: 32px 32px 0 0;
+}
+[data-theme="dark"] .me-hero-banner::after { background: #0d0d0d; }
+
+/* Controls row */
+.me-hero-ctrl {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 50px 0 22px; position: relative; z-index: 1;
+}
+.me-hero-back-btn, .me-hero-settings-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,.15); border: none;
+  color: #fff; font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; backdrop-filter: blur(8px);
+  transition: background .15s;
+}
+.me-hero-back-btn:active, .me-hero-settings-btn:active { background: rgba(255,255,255,.28); }
+.me-hero-title-lbl { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: .2px; }
+
+/* Avatar ring */
+.me-hero-av-ring {
+  width: 92px; height: 92px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.5);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.12), 0 8px 30px rgba(0,0,0,.3);
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.15); overflow: hidden;
+  position: relative; z-index: 1;
+}
+.me-hero-av-guest { font-size: 50px; color: rgba(255,255,255,.75); }
+.me-hero-av-ring .me-big-avatar-wrap {
+  width: 100%; height: 100%; border-radius: 50%;
+  box-shadow: none;
+}
+.me-hero-av-ring .me-big-initial { font-size: 34px; }
+
+/* Name, email */
+.me-hero-uname {
+  font-size: 21px; font-weight: 900; color: #fff;
+  letter-spacing: -.2px; margin-bottom: 4px; position: relative; z-index: 1;
+}
+.me-hero-uemail {
+  font-size: 12.5px; color: rgba(255,255,255,.6);
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+
+/* Login / Edit pill */
+.me-hero-login-pill, .me-hero-edit-pill {
+  border: 1.5px solid rgba(255,255,255,.55);
+  border-radius: 30px;
+  background: rgba(255,255,255,.14);
+  color: #fff; font-size: 13px; font-weight: 700;
+  padding: 9px 26px; cursor: pointer;
+  backdrop-filter: blur(10px);
+  letter-spacing: .2px;
+  transition: background .15s;
+  position: relative; z-index: 1;
+}
+.me-hero-login-pill:active, .me-hero-edit-pill:active { background: rgba(255,255,255,.26); }
+
+/* Stats row */
+.me-hero-stats-row {
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 24px; position: relative; z-index: 1;
+}
+.me-hstat { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+.me-hstat-n { font-size: 24px; font-weight: 900; color: #fff; line-height: 1; }
+.me-hstat-l { font-size: 10.5px; color: rgba(255,255,255,.6); font-weight: 600; letter-spacing: .5px; }
+.me-hstat-sep { width: 1px; height: 38px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+
+/* Quick actions grid */
+.me-quick-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; padding: 16px 12px;
+  background: #f5f5f5;
+}
+[data-theme="dark"] .me-quick-grid { background: #0d0d0d; }
+.me-qc {
+  background: #fff; border-radius: 16px;
+  padding: 14px 6px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="dark"] .me-qc { background: #1a1a2e; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.me-qc:active { transform: scale(.91); }
+.me-qc-ico {
+  width: 46px; height: 46px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 19px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.me-qc span {
+  font-size: 10px; font-weight: 700; color: #555; text-align: center; line-height: 1.3;
+}
+[data-theme="dark"] .me-qc span { color: #aaa; }
+
+/* Hide old page-head elements if they still render */
+.me-panel > .me-page-head { display: none !important; }
+.me-panel > .me-profile-hero { display: none !important; }
+
+/* =========================================
+   AUTH SPLIT ROW — Character beside form
+   (Reference: Animated Login Form style)
+   ========================================= */
+.auth-split-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 10px 0 4px;
+}
+
+/* Character column — left side */
+.auth-split-row .am-wrap {
+  flex: 0 0 110px;
+  margin: 0;
+  width: 110px;
+  align-self: flex-end;
+}
+
+/* Scale character up to fill the column */
+.auth-split-row .am-char {
+  transform: scale(1.25);
+  transform-origin: bottom center;
+}
+
+/* Pointing arm always visible toward the right */
+.auth-split-row .am-arm-l {
+  transform: rotate(-55deg) !important;
+  animation: auth-arm-point 2.5s ease-in-out infinite !important;
+}
+@keyframes auth-arm-point {
+  0%,100% { transform: rotate(-55deg) !important; }
+  50%      { transform: rotate(-45deg) !important; }
+}
+
+/* Walking legs animation */
+.auth-split-row .am-leg-l {
+  animation: auth-leg-l 0.8s ease-in-out infinite alternate;
+}
+.auth-split-row .am-leg-r {
+  animation: auth-leg-r 0.8s ease-in-out infinite alternate;
+}
+@keyframes auth-leg-l {
+  0%   { transform: rotate(-18deg); }
+  100% { transform: rotate(18deg); }
+}
+@keyframes auth-leg-r {
+  0%   { transform: rotate(18deg); }
+  100% { transform: rotate(-18deg); }
+}
+
+/* Body bob while walking */
+.auth-split-row .am-scene {
+  animation: auth-walk-bob 0.8s ease-in-out infinite !important;
+}
+@keyframes auth-walk-bob {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* Speech bubble — above the character */
+.auth-split-row .am-bubble {
+  left: 50%;
+  transform: translateX(-50%) scale(.7);
+  top: -38px;
+  font-size: 11px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  border-radius: 12px 12px 12px 4px;
+}
+.auth-split-row .am-bubble.show {
+  transform: translateX(-50%) scale(1);
+  opacity: 1;
+}
+
+/* Form column — right side */
+.auth-split-row #authLoginView {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Make buttons more compact inside split */
+.auth-split-row .btn-google-signin,
+.auth-split-row .btn-facebook-signin {
+  padding: 13px 12px !important;
+  font-size: 13px !important;
+  border-radius: 16px !important;
+}

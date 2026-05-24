@@ -663,13 +663,16 @@ function _dealMiniCard(p) {
   </div>`;
 }
 
-/* ===== RENDER SUPER DEALS ===== */
+/* ===== RENDER SUPER DEALS (infinite marquee) ===== */
 function renderSuperDeals() {
+  const track = document.getElementById('sdealsTrack');
+  if (!track) return;
   const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
   const items = pins
-    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
-    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
-  document.getElementById('superDeals').innerHTML = items.map(_dealMiniCard).join('');
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 10)
+    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 10);
+  const html = items.map(_dealMiniCard).join('');
+  track.innerHTML = html + html; // duplicate for seamless infinite loop
 }
 
 /* ===== RENDER TRENDING ===== */
@@ -824,7 +827,6 @@ function productCardHTML(p) {
   const isOOS = p.stock === 0;
   const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
 
-  // Gradient palette by category
   const CAT_GRAD = {
     'abaya':['#1a237e','#0d47a1'],'women':['#880e4f','#c2185b'],'men':['#0d47a1','#1565c0'],
     'kids':['#bf360c','#e64a19'],'beauty':['#4a148c','#7b1fa2'],'electronics':['#004d40','#00695c'],
@@ -840,7 +842,7 @@ function productCardHTML(p) {
   const catKey = (p.category||'').toLowerCase().split(/[\s/]/)[0];
   const [g1, g2] = CAT_GRAD[catKey] || fallbackPalette[p.id % fallbackPalette.length];
 
-  const watermark = (p.category||'STYLE').toUpperCase().replace(/\s+/g,'').substring(0,7);
+  const watermark = (p.category||'STYLE').toUpperCase().replace(/['\s]+/g,'').substring(0,8);
   const sizes = (p.sizes||[]).slice(0,4);
   const colorDots = (p.colors||[]).slice(0,4);
 
@@ -851,34 +853,33 @@ function productCardHTML(p) {
     : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
 
   return `
-    <div class="product-card nx-card" onclick="openModal(${p.id})" style="--g1:${g1};--g2:${g2}">
-      <div class="nx-top">
-        <span class="nx-wm">${watermark}</span>
-        <img class="nx-img" src="${p.image}" loading="lazy" alt=""
+    <div class="product-card pcard" onclick="openModal(${p.id})" style="--clr:${g1};--clr2:${g2};--wm:'${watermark}'">
+      <div class="pcard-imgBx">
+        <img src="${p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
           ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
-        <div class="nx-top-btns">
-          ${badge}
-          <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-            <i class="${inWish?'fas':'far'} fa-heart"></i>
-          </button>
-        </div>
-        ${isOOS ? '<div class="nx-oos-overlay">Out of Stock</div>' : isLow ? `<div class="nx-low-strip">🔥 Only ${p.stock} left</div>` : ''}
       </div>
-      <div class="nx-body">
-        <p class="nx-name">${getName(p)}</p>
-        ${sizes.length ? `<div class="nx-row"><span class="nx-lbl">SIZE</span>${sizes.map(s=>`<span class="nx-sz">${s}</span>`).join('')}</div>` : ''}
-        ${colorDots.length ? `<div class="nx-row"><span class="nx-lbl">COLOR</span>${colorDots.map(c=>`<span class="nx-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
-        <div class="nx-price-wrap">
-          <span class="nx-price">${fmt(p.price)}</span>
-          ${origPrice?`<span class="nx-orig">${origPrice}</span>`:''}
+      <div class="pcard-top-btns">
+        ${badge}
+        <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+          <i class="${inWish?'fas':'far'} fa-heart"></i>
+        </button>
+      </div>
+      ${isOOS ? '<div class="pcard-oos">Out of Stock</div>' : isLow ? `<div class="pcard-low">🔥 Only ${p.stock} left</div>` : ''}
+      <div class="pcard-contentBx">
+        <h3 class="pcard-name">${getName(p)}</h3>
+        <div class="pcard-price-row">
+          <span class="pcard-price">${fmt(p.price)}</span>
+          ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
-        <button class="nx-btn add-to-cart${isOOS?' oos-btn':''}"
+        ${sizes.length ? `<div class="pcard-size"><span class="pcard-size-lbl">SIZE :</span>${sizes.map(s=>`<span onclick="event.stopPropagation()">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="pcard-color"><span class="pcard-color-lbl">COLOR :</span>${colorDots.map(c=>`<span onclick="event.stopPropagation()" style="background:${c}"></span>`).join('')}</div>` : ''}
+        <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
           ${!isOOS?`
-            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
-            <span class="cart"><i class="fas fa-check"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
+            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>Buy Now</span></span>
+            <span class="cart"><i class="fas fa-check"></i><span>Added!</span></span>
           `:`<i class="fas fa-ban"></i><span>${t('outOfStock')||'Out of Stock'}</span>`}
         </button>
       </div>
@@ -2742,6 +2743,20 @@ function openMe() {
   refreshMeAddress();
   renderMyOrders();
   updateWishBadge();
+  _updateMeStats();
+}
+
+function _updateMeStats() {
+  const wishEl = document.getElementById('meStat_wish');
+  const ordEl  = document.getElementById('meStat_orders');
+  const ptsEl  = document.getElementById('meStat_pts');
+  if (wishEl) wishEl.textContent = wishlist.length;
+  if (ordEl) {
+    const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+    const cnt = currentUser ? allOrders.filter(o => o.customer?.email === currentUser.email).length : 0;
+    ordEl.textContent = cnt;
+  }
+  if (ptsEl) ptsEl.textContent = parseInt(localStorage.getItem('exg_loyalty_pts') || '0');
 }
 
 function renderMyOrders() {
@@ -3782,10 +3797,11 @@ function updateAuthUI() {
         initial.style.display = 'none';
       } else {
         avatarImg.style.display = 'none';
-        initial.style.display   = 'block';
+        initial.style.display   = 'flex';
         initial.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
       }
     }
+    _updateMeStats();
   } else {
     guestEl.style.display = 'flex';
     userEl.style.display  = 'none';
@@ -5394,10 +5410,10 @@ function _localAiReply(text) {
   }
 
   // ── PRODUCT SEARCH ──
-  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
-    const words = q.split(/\s+/).filter(w => w.length > 3);
+  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद|জামা|কাপড়|পোশাক|বাচ্চা|শিশু|ছোট|শাড়ি|সালোয়ার|হিজাব|পাঞ্জাবি|আবায়া|ব্যাগ|জুতা|ঘড়ি|পার্ফিউম|কিনতে|চাই|দেখতে/.test(q)) {
+    const words = q.split(/\s+/).filter(w => w.length > 1);
     const matches = PRODUCTS.filter(p => {
-      const n = (p.names?.en || p.name || '').toLowerCase();
+      const n = (p.names?.en || p.names?.bn || p.name || '').toLowerCase();
       const c = (p.category || '').toLowerCase();
       return words.some(w => n.includes(w) || c.includes(w));
     }).slice(0, 5);
@@ -5541,11 +5557,28 @@ function _localAiReply(text) {
   }
 
   // ── LANGUAGE FALLBACK (Arabic direct) ──
-  if (/[؀-ۿ]/.test(text) && !/(order|track|pay|deliver|return|size|coupon|contact|vat|about|cancel|quality|gift|stock|point|account|cart|wish|complain|open|new|best|deal|search)/.test(q)) {
+  if (/[؀-ۿ]/.test(text)) {
     return `مرحباً! 👋\nكيف يمكنني مساعدتك اليوم؟\n\n• 📦 تتبع الطلب\n• 🛍️ البحث عن منتج\n• 💳 طرق الدفع\n• 🚚 التوصيل\n• ↩️ الإرجاع والاستبدال\n• 📞 التواصل معنا\n\nاكتب سؤالك وسأجيبك فوراً! ⚡`;
   }
 
-  return null; // no local match → try external AI API
+  // ── BENGALI / HINDI CATCH-ALL ──
+  if (/[ঀ-৿]/.test(text)) {
+    const catMap = { kids:'বাচ্চাদের পোশাক', women:'মেয়েদের পোশাক', men:'ছেলেদের পোশাক', beauty:'বিউটি', shoes:'জুতা', bags:'ব্যাগ', perfume:'পার্ফিউম', accessories:'অ্যাক্সেসরিজ', watches:'ঘড়ি', sport:'স্পোর্টস' };
+    const matched = PRODUCTS.filter(p => {
+      const qWords = text.split(/\s+/).filter(w => w.length > 1);
+      const allText = [(p.names?.bn||''), (p.names?.en||p.name||''), (p.category||''), (p.tags||[]).join(' ')].join(' ').toLowerCase();
+      return qWords.some(w => allText.includes(w));
+    }).slice(0, 5);
+    if (matched.length) {
+      return `🛍️ **আপনার জন্য ${matched.length}টি পণ্য পেলাম:**\n\n` +
+        matched.map(p => `• ${p.names?.bn || p.names?.en || p.name} — SAR ${p.price} (**${p.discount}% ছাড়**)`).join('\n') +
+        `\n\nপণ্যে ট্যাপ করলে বিস্তারিত দেখতে পাবেন! 🛒\n📲 সরাসরি অর্ডার করতে: ${WA}`;
+    }
+    return `ওয়া, দারুণ! 👋\n\nআমি EX GLOBAL-এর সহকারী। আপনাকে সাহায্য করতে পারি:\n\n🛍️ পণ্য খুঁজে পেতে\n📦 অর্ডার ট্র্যাক করতে\n💳 পেমেন্ট সম্পর্কে জানতে\n🚚 ডেলিভারি তথ্য পেতে\n\n🌐 আমাদের ওয়েবসাইট: **exglobal.online**\n📲 WhatsApp: ${WA}\n\nকী জানতে চান? ✍️`;
+  }
+
+  // ── GENERAL ENGLISH CATCH-ALL ──
+  return `👋 Hi! I'm the EX GLOBAL shopping assistant.\n\nI can help you with:\n🛍️ Finding products\n📦 Order tracking\n💳 Payment info\n🚚 Delivery details\n↩️ Returns & refunds\n\n🌐 Shop now: **exglobal.online**\n📲 WhatsApp: ${WA}`;
 }
 
 function _aiMarkdown(t) {
