@@ -4219,13 +4219,7 @@ body {
 }
 .wish-add-cart:active { transform: scale(.95); }
 .wish-add-cart:not(.disabled):hover { transform: translateY(-1px) scale(1.01); }
-.wish-remove-btn {
-  width: 30px; height: 30px; border-radius: 50%;
-  background: #fce4ec; color: #e91e8c;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0; transition: background .2s;
-}
-.wish-remove-btn:active { background: #f48fb1; }
+.wish-remove-btn { display: none !important; }
 
 /* Empty state */
 .wish-empty {
@@ -12730,3 +12724,87 @@ body { padding-bottom: 86px !important; }
   display: flex;
   justify-content: flex-end;
 }
+
+/* ===== ANIMATED TRASH BUTTON (Wishlist Remove) ===== */
+.trash-btn {
+  --trash: #fff;
+  position: relative;
+  width: 44px; height: 44px;
+  border-radius: 14px;
+  background: #1a1a2e;
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background .3s, transform .15s;
+  overflow: visible;
+}
+.trash-btn:hover { background: #c62828; }
+.trash-btn:active { transform: scale(.90); }
+
+.trash__wrap {
+  position: relative;
+  width: 20px; height: 22px;
+  margin-top: 4px;
+}
+
+/* Handle knob above lid */
+.trash__wrap::before {
+  content: '';
+  position: absolute;
+  top: -7px; left: 50%;
+  transform: translateX(-50%);
+  width: 8px; height: 4px;
+  border: 2px solid var(--trash);
+  border-bottom: none;
+  border-radius: 2px 2px 0 0;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.trash-btn:hover .trash__wrap::before {
+  transform: translateX(-50%) rotate(-40deg) translate(-3px, -4px);
+}
+
+/* Lid bar */
+.trash__lid {
+  position: absolute;
+  top: -2px; left: -4px; right: -4px;
+  height: 3px;
+  background: var(--trash);
+  border-radius: 2px;
+  transform-origin: 20% center;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+  z-index: 1;
+}
+.trash-btn:hover .trash__lid {
+  transform: rotate(-38deg) translate(-3px, -5px);
+}
+
+/* Trash body */
+.trash__body {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 18px;
+  border: 2px solid var(--trash);
+  border-top: none;
+  border-radius: 1px 1px 3px 3px;
+  overflow: hidden;
+}
+
+/* Inner vertical lines */
+.trash__lines {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 100%;
+  padding: 3px 2px 1px;
+}
+.trash__lines span {
+  display: block;
+  width: 2px; height: 70%;
+  background: var(--trash);
+  border-radius: 1px;
+  opacity: .65;
+}
+
+/* Dark mode */
+[data-theme="dark"] .trash-btn { background: #252540; }
+[data-theme="dark"] .trash-btn:hover { background: #b71c1c; }
