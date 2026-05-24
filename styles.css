@@ -11066,3 +11066,95 @@ body:has(#authModal.open) .hc-fab {
   white-space: nowrap !important;
 }
 .add-cart-btn i { font-size: 12px !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   CHECKOUT — Premium payment method polish (v189)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Section label */
+.ck-sec-lbl { font-size: 16px !important; font-weight: 800 !important; }
+
+/* Each payment method row */
+.ck-pm {
+  padding: 14px 0 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  border-radius: 0 !important;
+  position: relative !important;
+}
+[data-theme="dark"] .ck-pm { border-bottom-color: rgba(255,255,255,.07) !important; }
+
+/* Selected method — light blue card */
+.ck-pm.ck-pm-active {
+  background: #f0f4ff !important;
+  border: none !important;
+  border-radius: 14px !important;
+  margin: 4px -16px !important;
+  padding: 14px 16px !important;
+  border-left: 4px solid #003087 !important;
+}
+[data-theme="dark"] .ck-pm.ck-pm-active {
+  background: rgba(37,99,235,.1) !important;
+  border-left-color: #60a5fa !important;
+}
+
+/* Radio circle — LEFT of icon */
+.ck-pm::before {
+  content: '';
+  position: absolute; left: 0; top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #ccc; background: #fff;
+  transition: border-color .2s, background .2s;
+  display: none; /* hidden — using right-side checkmark instead */
+}
+
+/* Icon box — consistent size */
+.ck-pm-ico {
+  width: 46px !important; height: 32px !important;
+  border-radius: 8px !important; font-size: 12px !important;
+  border: 1.5px solid #e8e8e8 !important;
+  flex-shrink: 0 !important;
+}
+[data-theme="dark"] .ck-pm-ico { border-color: rgba(255,255,255,.12) !important; }
+
+/* Payment name + subtitle */
+.ck-pm-name { font-size: 14.5px !important; font-weight: 700 !important; color: #111 !important; }
+[data-theme="dark"] .ck-pm-name { color: #eee !important; }
+.ck-pm-sub {
+  font-size: 12px !important; color: #888 !important;
+  white-space: nowrap !important; overflow: hidden !important;
+  text-overflow: ellipsis !important; max-width: 200px !important;
+}
+
+/* Right side — checkmark circle */
+.ck-pm-check {
+  width: 24px !important; height: 24px !important; flex-shrink: 0 !important;
+  border-radius: 50% !important; border: 2px solid #ddd !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  background: #fff !important;
+  transition: border-color .2s, background .2s !important;
+}
+[data-theme="dark"] .ck-pm-check { background: #1e1c38 !important; border-color: rgba(255,255,255,.15) !important; }
+.ck-pm-check i { font-size: 13px !important; color: #ddd !important; }
+
+/* Active check — filled pink */
+.ck-pm.ck-pm-active .ck-pm-check {
+  background: #e91e8c !important; border-color: #e91e8c !important;
+}
+.ck-pm.ck-pm-active .ck-pm-check i { color: #fff !important; }
+
+/* Add/change link */
+.ck-pm-add { font-size: 12px !important; font-weight: 700 !important; color: #2563eb !important; }
+[data-theme="dark"] .ck-pm-add { color: #60a5fa !important; }
+
+/* Bottom bar — Place Order button text trim */
+.ck-bar-btn {
+  font-size: 14px !important; font-weight: 900 !important;
+  border-radius: 14px !important; height: 52px !important;
+}
+
+/* Payment summary — cleaner rows */
+.ck-summ-row { font-size: 13.5px !important; }
+.ck-summ-total { font-size: 14px !important; }
+.ck-summ-total strong { font-size: 17px !important; color: #e91e8c !important; }
+[data-theme="dark"] .ck-summ-total strong { color: #e91e8c !important; }

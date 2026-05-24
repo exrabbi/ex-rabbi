@@ -3908,17 +3908,17 @@ function closePayment() {
 
 function selectPayMethod(method) {
   selectedPayMethod = method;
-  ['whatsapp','paypal','card','gpay','binance','stc'].forEach(m => {
+  ['whatsapp','paypal','card','gpay','binance','stc','tabby','tamara'].forEach(m => {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
-    if (pm) pm.classList.remove('active');
+    if (pm) { pm.classList.remove('active'); pm.classList.remove('ck-pm-active'); }
     if (ck) ck.querySelector('i').style.color = '#ddd';
   });
   const card = document.getElementById('pm' + method.charAt(0).toUpperCase() + method.slice(1));
-  if (card) card.classList.add('active');
+  if (card) { card.classList.add('active'); card.classList.add('ck-pm-active'); }
   const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
   if (check) check.querySelector('i').style.color =
-    method === 'binance' ? '#F3BA2F' : method === 'stc' ? '#6D2C8A' : '#e91e8c';
+    method === 'binance' ? '#F3BA2F' : method === 'stc' ? '#6D2C8A' : '#fff';
   // Show/hide sub-forms
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
