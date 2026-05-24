@@ -1981,11 +1981,11 @@ function openModal(id) {
         <span class="lux-bq">×3</span><span class="lux-bl">🔥 Best</span><span class="lux-bsave">15% off</span>
       </div>
     </div>
-    <div class="lux-qty-row">
+    <div class="lux-qty-row" style="display:none">
       <span class="lux-qty-label">${t('qtyLabel')||'Quantity'}</span>
       <div class="lux-qty-ctrl">
         <button class="lux-qbtn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
-        <span class="lux-qnum" id="modalQtyNum">1</span>
+        <span class="lux-qnum">1</span>
         <button class="lux-qbtn" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
       </div>
       <span class="lux-qty-total" id="modalQtyPrice">${fmt(p.price)}</span>
@@ -2039,6 +2039,11 @@ ${p.stock!==0?`
   </div>
   <div class="lux-atc-btns">
     <button class="lux-atc-wish ${inWish?'active':''}" id="luxAtcWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
+    <div class="atc-qty-stepper">
+      <button class="atc-qty-btn" onclick="changeModalQty(-1,${p.id})"><i class="fas fa-minus"></i></button>
+      <span class="atc-qty-num" id="modalQtyNum">1</span>
+      <button class="atc-qty-btn atc-qty-plus" onclick="changeModalQty(1,${p.id})"><i class="fas fa-plus"></i></button>
+    </div>
     <button class="lux-atc-main" id="luxAtcMain" onclick="_luxAddCart(${p.id})">
       <span class="lux-atc-default"><i class="fas fa-bag-shopping"></i> ${t('addToCart')||'Add to Cart'}</span>
       <span class="lux-atc-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>

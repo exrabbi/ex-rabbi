@@ -10959,3 +10959,31 @@ body:has(#authModal.open) .hc-fab {
 
 /* Override old btnPayNow styles when inside new checkout */
 #btnPayNow.ck-bar-btn { padding: 0 !important; background: linear-gradient(135deg, #003087 0%, #0052cc 100%) !important; }
+
+/* ── ATC bar quantity stepper (v185) ── */
+.atc-qty-stepper {
+  display: flex !important; align-items: center !important;
+  background: rgba(0,0,0,.06) !important;
+  border-radius: 14px !important;
+  overflow: hidden !important; flex-shrink: 0 !important;
+  height: 54px !important;
+}
+[data-theme="dark"] .atc-qty-stepper { background: rgba(255,255,255,.1) !important; }
+.atc-qty-btn {
+  width: 40px !important; height: 54px !important;
+  border: none !important; background: none !important;
+  font-size: 13px !important; color: #444 !important;
+  cursor: pointer !important; display: flex !important;
+  align-items: center !important; justify-content: center !important;
+  transition: background .15s !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+[data-theme="dark"] .atc-qty-btn { color: #ccc !important; }
+.atc-qty-btn:active { background: rgba(0,0,0,.1) !important; }
+.atc-qty-plus { color: #e91e8c !important; }
+.atc-qty-num {
+  min-width: 28px !important; text-align: center !important;
+  font-size: 17px !important; font-weight: 900 !important;
+  color: #111 !important; line-height: 1 !important;
+}
+[data-theme="dark"] .atc-qty-num { color: #eee !important; }
