@@ -1074,7 +1074,8 @@ function renderCart() {
               ${hasDiscount ? `<span class="cart-item-disc-badge">-${discPct}%</span>` : ''}
             </div>
           </div>
-          <button class="save-later-btn" onclick="saveForLater(${item.id})"><i class="fas fa-bookmark"></i> ${t('saveLater')||'Save for Later'}</button>
+          <div class="cart-item-actions">
+          </div>
         </div>
       </div>`;
   }).join('');
