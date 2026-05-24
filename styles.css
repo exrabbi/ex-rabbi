@@ -13295,3 +13295,123 @@ body { padding-bottom: 100px !important; }
   color: rgba(255,255,255,.35);
   text-decoration: line-through;
 }
+
+/* =========================================
+   PREMIUM PROFILE HERO BANNER
+   ========================================= */
+.me-hero-banner {
+  position: relative;
+  background: linear-gradient(160deg, #0d0050 0%, #3d0068 35%, #8b0fa0 70%, #c41f8e 100%);
+  padding: 0 20px 36px;
+  text-align: center;
+  overflow: hidden;
+}
+.me-hero-deco-1, .me-hero-deco-2 {
+  position: absolute; border-radius: 50%; pointer-events: none;
+}
+.me-hero-deco-1 { width: 220px; height: 220px; background: rgba(255,255,255,.05); top: -70px; right: -50px; }
+.me-hero-deco-2 { width: 160px; height: 160px; background: rgba(255,255,255,.04); bottom: 20px; left: -40px; }
+.me-hero-banner::after {
+  content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+  height: 32px; background: #f5f5f5; border-radius: 32px 32px 0 0;
+}
+[data-theme="dark"] .me-hero-banner::after { background: #0d0d0d; }
+
+/* Controls row */
+.me-hero-ctrl {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 50px 0 22px; position: relative; z-index: 1;
+}
+.me-hero-back-btn, .me-hero-settings-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,.15); border: none;
+  color: #fff; font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; backdrop-filter: blur(8px);
+  transition: background .15s;
+}
+.me-hero-back-btn:active, .me-hero-settings-btn:active { background: rgba(255,255,255,.28); }
+.me-hero-title-lbl { font-size: 17px; font-weight: 800; color: #fff; letter-spacing: .2px; }
+
+/* Avatar ring */
+.me-hero-av-ring {
+  width: 92px; height: 92px; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.5);
+  box-shadow: 0 0 0 6px rgba(255,255,255,.12), 0 8px 30px rgba(0,0,0,.3);
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.15); overflow: hidden;
+  position: relative; z-index: 1;
+}
+.me-hero-av-guest { font-size: 50px; color: rgba(255,255,255,.75); }
+.me-hero-av-ring .me-big-avatar-wrap {
+  width: 100%; height: 100%; border-radius: 50%;
+  box-shadow: none;
+}
+.me-hero-av-ring .me-big-initial { font-size: 34px; }
+
+/* Name, email */
+.me-hero-uname {
+  font-size: 21px; font-weight: 900; color: #fff;
+  letter-spacing: -.2px; margin-bottom: 4px; position: relative; z-index: 1;
+}
+.me-hero-uemail {
+  font-size: 12.5px; color: rgba(255,255,255,.6);
+  margin-bottom: 18px; position: relative; z-index: 1;
+}
+
+/* Login / Edit pill */
+.me-hero-login-pill, .me-hero-edit-pill {
+  border: 1.5px solid rgba(255,255,255,.55);
+  border-radius: 30px;
+  background: rgba(255,255,255,.14);
+  color: #fff; font-size: 13px; font-weight: 700;
+  padding: 9px 26px; cursor: pointer;
+  backdrop-filter: blur(10px);
+  letter-spacing: .2px;
+  transition: background .15s;
+  position: relative; z-index: 1;
+}
+.me-hero-login-pill:active, .me-hero-edit-pill:active { background: rgba(255,255,255,.26); }
+
+/* Stats row */
+.me-hero-stats-row {
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 24px; position: relative; z-index: 1;
+}
+.me-hstat { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; }
+.me-hstat-n { font-size: 24px; font-weight: 900; color: #fff; line-height: 1; }
+.me-hstat-l { font-size: 10.5px; color: rgba(255,255,255,.6); font-weight: 600; letter-spacing: .5px; }
+.me-hstat-sep { width: 1px; height: 38px; background: rgba(255,255,255,.2); flex-shrink: 0; }
+
+/* Quick actions grid */
+.me-quick-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 10px; padding: 16px 12px;
+  background: #f5f5f5;
+}
+[data-theme="dark"] .me-quick-grid { background: #0d0d0d; }
+.me-qc {
+  background: #fff; border-radius: 16px;
+  padding: 14px 6px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: transform .18s cubic-bezier(.34,1.56,.64,1);
+}
+[data-theme="dark"] .me-qc { background: #1a1a2e; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.me-qc:active { transform: scale(.91); }
+.me-qc-ico {
+  width: 46px; height: 46px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 19px;
+  box-shadow: 0 4px 14px rgba(0,0,0,.18);
+}
+.me-qc span {
+  font-size: 10px; font-weight: 700; color: #555; text-align: center; line-height: 1.3;
+}
+[data-theme="dark"] .me-qc span { color: #aaa; }
+
+/* Hide old page-head elements if they still render */
+.me-panel > .me-page-head { display: none !important; }
+.me-panel > .me-profile-hero { display: none !important; }

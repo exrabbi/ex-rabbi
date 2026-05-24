@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=218" />
+  <link rel="stylesheet" href="styles.css?v=219" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1271,37 +1271,61 @@
   <!-- ME / PROFILE PAGE -->
   <aside class="me-panel" id="mePanel">
 
-    <!-- Page Header -->
-    <div class="me-page-head">
-      <button class="me-back-btn" onclick="closeMe()"><i class="fas fa-arrow-left"></i></button>
-      <span class="me-page-title" data-i18n="profile">Profile</span>
-      <div style="width:40px"></div>
+    <!-- PREMIUM HERO BANNER -->
+    <div class="me-hero-banner">
+      <div class="me-hero-deco-1"></div>
+      <div class="me-hero-deco-2"></div>
+      <div class="me-hero-ctrl">
+        <button class="me-hero-back-btn" onclick="closeMe()"><i class="fas fa-arrow-left"></i></button>
+        <span class="me-hero-title-lbl" data-i18n="profile">Profile</span>
+        <button class="me-hero-settings-btn" onclick="closeMe();setTimeout(openSettings,250)"><i class="fas fa-gear"></i></button>
+      </div>
+      <!-- GUEST state -->
+      <div id="meGuestState" style="display:flex;flex-direction:column;align-items:center">
+        <div class="me-hero-av-ring me-hero-av-guest"><i class="fas fa-circle-user"></i></div>
+        <div class="me-hero-uname">Guest User</div>
+        <div class="me-hero-uemail">Tap to sign in</div>
+        <button class="me-hero-login-pill" onclick="openAuth()">Login / Register</button>
+      </div>
+      <!-- USER state -->
+      <div id="meUserState" style="display:none;flex-direction:column;align-items:center">
+        <div class="me-hero-av-ring">
+          <div class="me-big-avatar-wrap" id="meAvatarWrap">
+            <img id="meUserAvatar" src="" alt="" />
+            <span id="meAvatarInitial" class="me-big-initial"></span>
+          </div>
+        </div>
+        <div class="me-hero-uname" id="meUserName"></div>
+        <div class="me-hero-uemail" id="meUserEmail"></div>
+        <button class="me-hero-edit-pill" onclick="openEditProfile()"><i class="fas fa-pen-to-square"></i> Edit Profile</button>
+      </div>
+      <!-- Stats row -->
+      <div class="me-hero-stats-row">
+        <div class="me-hstat"><span class="me-hstat-n" id="meStat_orders">0</span><span class="me-hstat-l">Orders</span></div>
+        <div class="me-hstat-sep"></div>
+        <div class="me-hstat"><span class="me-hstat-n" id="meStat_wish">0</span><span class="me-hstat-l">Wishlist</span></div>
+        <div class="me-hstat-sep"></div>
+        <div class="me-hstat"><span class="me-hstat-n" id="meStat_pts">0</span><span class="me-hstat-l">Points</span></div>
+      </div>
     </div>
 
-    <!-- Profile Hero -->
-    <div class="me-profile-hero">
-      <!-- Guest -->
-      <div id="meGuestState" class="me-hero-row">
-        <div class="me-big-avatar me-big-avatar-guest">
-          <i class="fas fa-circle-user"></i>
-        </div>
-        <div class="me-hero-info">
-          <div class="me-hero-name" data-i18n="guestUser">Guest User</div>
-          <div class="me-hero-email" style="opacity:.55" data-i18n="tapToLogin">Tap to sign in</div>
-        </div>
-        <button class="me-edit-pill" onclick="openAuth()" data-i18n="loginRegister">Login</button>
+    <!-- QUICK ACTIONS GRID -->
+    <div class="me-quick-grid">
+      <div class="me-qc" onclick="openLocation()">
+        <div class="me-qc-ico" style="background:linear-gradient(135deg,#e91e8c,#b5179e)"><i class="fas fa-location-dot"></i></div>
+        <span>My Address</span>
       </div>
-      <!-- Logged-in -->
-      <div id="meUserState" class="me-hero-row" style="display:none">
-        <div class="me-big-avatar-wrap" id="meAvatarWrap">
-          <img id="meUserAvatar" src="" alt="" />
-          <span id="meAvatarInitial" class="me-big-initial"></span>
-        </div>
-        <div class="me-hero-info">
-          <div class="me-hero-name" id="meUserName"></div>
-          <div class="me-hero-email" id="meUserEmail"></div>
-        </div>
-        <button class="me-edit-pill" onclick="openEditProfile()" data-i18n="edit">Edit</button>
+      <div class="me-qc" onclick="document.getElementById('meOrdersBlock')?.scrollIntoView({behavior:'smooth'})">
+        <div class="me-qc-ico" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-box-open"></i></div>
+        <span>My Orders</span>
+      </div>
+      <div class="me-qc" onclick="closeMe();setTimeout(()=>document.getElementById('wishlistBtn')?.click(),300)">
+        <div class="me-qc-ico" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fas fa-heart"></i></div>
+        <span>Wishlist</span>
+      </div>
+      <div class="me-qc" onclick="closeMe();setTimeout(openSettings,300)">
+        <div class="me-qc-ico" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed)"><i class="fas fa-gear"></i></div>
+        <span>Settings</span>
       </div>
     </div>
 
@@ -2498,7 +2522,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=209"></script>
+  <script src="script.js?v=210"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

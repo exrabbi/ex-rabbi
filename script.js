@@ -2743,6 +2743,20 @@ function openMe() {
   refreshMeAddress();
   renderMyOrders();
   updateWishBadge();
+  _updateMeStats();
+}
+
+function _updateMeStats() {
+  const wishEl = document.getElementById('meStat_wish');
+  const ordEl  = document.getElementById('meStat_orders');
+  const ptsEl  = document.getElementById('meStat_pts');
+  if (wishEl) wishEl.textContent = wishlist.length;
+  if (ordEl) {
+    const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+    const cnt = currentUser ? allOrders.filter(o => o.customer?.email === currentUser.email).length : 0;
+    ordEl.textContent = cnt;
+  }
+  if (ptsEl) ptsEl.textContent = parseInt(localStorage.getItem('exg_loyalty_pts') || '0');
 }
 
 function renderMyOrders() {
@@ -3783,10 +3797,11 @@ function updateAuthUI() {
         initial.style.display = 'none';
       } else {
         avatarImg.style.display = 'none';
-        initial.style.display   = 'block';
+        initial.style.display   = 'flex';
         initial.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
       }
     }
+    _updateMeStats();
   } else {
     guestEl.style.display = 'flex';
     userEl.style.display  = 'none';
@@ -5395,10 +5410,10 @@ function _localAiReply(text) {
   }
 
   // ── PRODUCT SEARCH ──
-  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
-    const words = q.split(/\s+/).filter(w => w.length > 3);
+  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद|জামা|কাপড়|পোশাক|বাচ্চা|শিশু|ছোট|শাড়ি|সালোয়ার|হিজাব|পাঞ্জাবি|আবায়া|ব্যাগ|জুতা|ঘড়ি|পার্ফিউম|কিনতে|চাই|দেখতে/.test(q)) {
+    const words = q.split(/\s+/).filter(w => w.length > 1);
     const matches = PRODUCTS.filter(p => {
-      const n = (p.names?.en || p.name || '').toLowerCase();
+      const n = (p.names?.en || p.names?.bn || p.name || '').toLowerCase();
       const c = (p.category || '').toLowerCase();
       return words.some(w => n.includes(w) || c.includes(w));
     }).slice(0, 5);
@@ -5542,11 +5557,28 @@ function _localAiReply(text) {
   }
 
   // ── LANGUAGE FALLBACK (Arabic direct) ──
-  if (/[؀-ۿ]/.test(text) && !/(order|track|pay|deliver|return|size|coupon|contact|vat|about|cancel|quality|gift|stock|point|account|cart|wish|complain|open|new|best|deal|search)/.test(q)) {
+  if (/[؀-ۿ]/.test(text)) {
     return `مرحباً! 👋\nكيف يمكنني مساعدتك اليوم؟\n\n• 📦 تتبع الطلب\n• 🛍️ البحث عن منتج\n• 💳 طرق الدفع\n• 🚚 التوصيل\n• ↩️ الإرجاع والاستبدال\n• 📞 التواصل معنا\n\nاكتب سؤالك وسأجيبك فوراً! ⚡`;
   }
 
-  return null; // no local match → try external AI API
+  // ── BENGALI / HINDI CATCH-ALL ──
+  if (/[ঀ-৿]/.test(text)) {
+    const catMap = { kids:'বাচ্চাদের পোশাক', women:'মেয়েদের পোশাক', men:'ছেলেদের পোশাক', beauty:'বিউটি', shoes:'জুতা', bags:'ব্যাগ', perfume:'পার্ফিউম', accessories:'অ্যাক্সেসরিজ', watches:'ঘড়ি', sport:'স্পোর্টস' };
+    const matched = PRODUCTS.filter(p => {
+      const qWords = text.split(/\s+/).filter(w => w.length > 1);
+      const allText = [(p.names?.bn||''), (p.names?.en||p.name||''), (p.category||''), (p.tags||[]).join(' ')].join(' ').toLowerCase();
+      return qWords.some(w => allText.includes(w));
+    }).slice(0, 5);
+    if (matched.length) {
+      return `🛍️ **আপনার জন্য ${matched.length}টি পণ্য পেলাম:**\n\n` +
+        matched.map(p => `• ${p.names?.bn || p.names?.en || p.name} — SAR ${p.price} (**${p.discount}% ছাড়**)`).join('\n') +
+        `\n\nপণ্যে ট্যাপ করলে বিস্তারিত দেখতে পাবেন! 🛒\n📲 সরাসরি অর্ডার করতে: ${WA}`;
+    }
+    return `ওয়া, দারুণ! 👋\n\nআমি EX GLOBAL-এর সহকারী। আপনাকে সাহায্য করতে পারি:\n\n🛍️ পণ্য খুঁজে পেতে\n📦 অর্ডার ট্র্যাক করতে\n💳 পেমেন্ট সম্পর্কে জানতে\n🚚 ডেলিভারি তথ্য পেতে\n\n🌐 আমাদের ওয়েবসাইট: **exglobal.online**\n📲 WhatsApp: ${WA}\n\nকী জানতে চান? ✍️`;
+  }
+
+  // ── GENERAL ENGLISH CATCH-ALL ──
+  return `👋 Hi! I'm the EX GLOBAL shopping assistant.\n\nI can help you with:\n🛍️ Finding products\n📦 Order tracking\n💳 Payment info\n🚚 Delivery details\n↩️ Returns & refunds\n\n🌐 Shop now: **exglobal.online**\n📲 WhatsApp: ${WA}`;
 }
 
 function _aiMarkdown(t) {
