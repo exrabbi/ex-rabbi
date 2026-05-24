@@ -5165,8 +5165,18 @@ function _localAiReply(text) {
   const rate = T.rate || 1;
   const WA = 'https://wa.me/966546224029';
 
+  // ── PLACE ORDER ──
+  if (/order.*place|place.*order|buy|purchase|checkout|কিনতে|কিনব|কিনবো|অর্ডার দি|অর্ডার দেব|অর্ডার করত|ওডার দি|ওডার দেব|ওডার করত|order দি|order দেব|দিবো|দেবো|দিতে চাই|করতে চাই/.test(q)) {
+    const howto = {
+      bn: '🛍️ **অর্ডার দেওয়ার সহজ ধাপ:**\n\n1️⃣ পণ্য দেখুন → **Add to Cart** চাপুন\n2️⃣ Cart icon চাপুন (নিচে ডানে)\n3️⃣ **Checkout** চাপুন\n4️⃣ ঠিকানা দিন\n5️⃣ Payment method বেছে নিন\n6️⃣ **Place Order** চাপুন ✅\n\n💳 Payment: Card · Binance · STC Pay · COD\n🚚 Delivery: 2-4 দিন · Free (SAR 100+)\n\n📲 সাহায্য লাগলে: ' + WA,
+      en: '🛍️ **How to Place an Order:**\n\n1️⃣ Browse & tap **Add to Cart**\n2️⃣ Open Cart (bottom right)\n3️⃣ Tap **Checkout**\n4️⃣ Enter delivery address\n5️⃣ Choose payment method\n6️⃣ Tap **Place Order** ✅\n\n💳 Payment: Card · Binance · STC · COD\n🚚 Delivery: 2-4 days · Free over SAR 100\n\n📲 Need help? ' + WA,
+      ar: '🛍️ **كيفية الطلب:**\n\n1️⃣ أضف المنتج للسلة\n2️⃣ افتح السلة\n3️⃣ اضغط تسجيل الخروج\n4️⃣ أدخل العنوان\n5️⃣ اختر طريقة الدفع\n6️⃣ اضغط تأكيد الطلب ✅\n\n📲 للمساعدة: ' + WA,
+    };
+    return howto[currentLang] || howto.en;
+  }
+
   // ── GREETING ──
-  if (/^(hi|hello|hey|مرحبا|هلا|السلام|هاي|اهلا|আমি|হ্যালো|নমস্কার|হাই|আস|সালাম|namaste|नमस्ते|hola)/.test(q)) {
+  if (/^(hi|hello|hey|مرحبا|هلا|السلام|هاي|اهلا|হ্যালো|নমস্কার|হাই|আস|সালাম|namaste|नमस्ते|hola)/.test(q)) {
     const greet = {
       bn: 'আস-সালামু আলাইকুম! 😊\nআমি EX GLOBAL-এর AI সহকারী। কীভাবে সাহায্য করতে পারি?\n\n🛍️ পণ্য খুঁজতে | 📦 অর্ডার ট্র্যাক | 💳 পেমেন্ট | 🚚 ডেলিভারি',
       en: 'Welcome to EX GLOBAL! 👑\nI\'m your AI shopping assistant. How can I help?\n\n🛍️ Find products | 📦 Track order | 💳 Payment | 🚚 Delivery',
@@ -5177,7 +5187,7 @@ function _localAiReply(text) {
   }
 
   // ── ORDER TRACKING ──
-  if (/order|track|deliver|where|status|shipped|طلب|أين|توصيل|تتبع|অর্ডার|ট্র্যাক|ডেলিভারি|ऑर्डर|ट्रैक/.test(q)) {
+  if (/track|deliver|where|status|shipped|طلب|أين|توصيل|تتبع|অর্ডার কোথায়|ওডার কোথায়|ট্র্যাক|ডেলিভারি|ऑर्डर|ट्रैक/.test(q)) {
     const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
     if (orders.length > 0) {
       const last = orders[orders.length - 1];
