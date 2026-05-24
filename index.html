@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=190" />
+  <link rel="stylesheet" href="styles.css?v=191" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1516,11 +1516,26 @@
 
         <!-- Card -->
         <div class="ck-pm ck-pm-active" id="pmCard" onclick="selectPayMethod('card')">
+          <div class="ck-pm-radio ck-radio-active" id="checkCard"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left">
             <div class="ck-pm-ico ck-pm-ico-card"><i class="fas fa-credit-card"></i></div>
-            <div><div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div><div class="ck-pm-sub">mada · Visa · Mastercard · AMEX</div></div>
+            <div>
+              <div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div>
+              <div class="ck-card-logos-row">
+                <span class="ck-cl ck-cl-mada">mada</span>
+                <span class="ck-cl ck-cl-visa">VISA</span>
+                <span class="ck-cl ck-cl-mc"><span class="ck-mc-r"></span><span class="ck-mc-o"></span></span>
+                <span class="ck-cl ck-cl-amex">AMEX</span>
+                <span class="ck-cl ck-cl-disc">Discover</span>
+              </div>
+            </div>
           </div>
-          <div class="ck-pm-right"><span class="ck-pm-add">Add/change</span><div class="ck-pm-check" id="checkCard"><i class="fas fa-check-circle"></i></div></div>
+          <div class="ck-pm-right"><span class="ck-pm-add">Add/change</span></div>
+        </div>
+        <!-- Green protection badge -->
+        <div class="ck-card-protect" id="ckCardProtect" style="display:flex">
+          <i class="fas fa-shield-halved"></i>
+          <span>Your card information is protected with 256-bit encryption</span>
         </div>
         <!-- Card form -->
         <div id="cardForm" style="display:none">
@@ -1534,44 +1549,44 @@
 
         <!-- Tabby -->
         <div class="ck-pm" id="pmTabby" onclick="selectPayMethod('tabby')">
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tabby">tabby</div><div><div class="ck-pm-name">Tabby</div><div class="ck-pm-sub">Pay in 4 interest-free payments</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkTabby"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+          <div class="ck-pm-radio" id="checkTabby"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tabby">tabby</div><div><div class="ck-pm-name">Tabby</div><div class="ck-pm-sub">Pay in 4 · Interest-free</div></div></div>
         </div>
 
         <!-- Tamara -->
         <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara">tamara</div><div><div class="ck-pm-name">Tamara</div><div class="ck-pm-sub">Split in up to 24 payments</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkTamara"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+          <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara">tamara</div><div><div class="ck-pm-name">Tamara</div><div class="ck-pm-sub">Split up to 24 payments</div></div></div>
         </div>
 
         <!-- Cash on Delivery -->
         <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod"><i class="fas fa-money-bill-wave"></i></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive · Extra charges may apply</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkWhatsapp"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+          <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod"><i class="fas fa-money-bill-wave"></i></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
         </div>
 
         <!-- STC Pay -->
         <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
+          <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left"><div class="ck-pm-ico"><svg width="30" height="20" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkStc"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
 
         <!-- Binance Pay -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
+          <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left"><div class="ck-pm-ico"><i class="fas fa-coins" style="color:#F3BA2F;font-size:18px"></i></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkBinance"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
 
         <!-- Google Pay (hidden) -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')" style="display:none">
+          <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left"><div class="ck-pm-ico"><span style="color:#4285F4;font-weight:900">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC04">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div><div><div class="ck-pm-name">Google Pay</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkGpay"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
 
         <!-- PayPal (hidden) -->
         <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')" style="display:none">
+          <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left"><div class="ck-pm-ico"><i class="fab fa-paypal" style="color:#003087;font-size:20px"></i></div><div><div class="ck-pm-name">PayPal</div></div></div>
-          <div class="ck-pm-right"><div class="ck-pm-check" id="checkPaypal"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
@@ -2388,7 +2403,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=186"></script>
+  <script src="script.js?v=187"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
