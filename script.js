@@ -624,18 +624,23 @@ function renderFlashDeals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
     : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
-  document.getElementById('flashProducts').innerHTML = items.map(p => `
-    <div class="flash-card" onclick="openModal(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        <span class="discount-badge">-${p.discount}%</span>
+  document.getElementById('flashProducts').innerHTML = items.map(p => {
+    const name = (typeof getName === 'function' ? getName(p) : (p.names?.en || p.name || ''));
+    return `<div class="flash-card" onclick="openModal(${p.id})">
+      <div class="fc-img-wrap">
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        <span class="fc-badge">-${p.discount}%</span>
       </div>
-      <div class="product-info">
-        <div class="product-prices"><span class="price-current">${fmt(p.price)}</span></div>
-        <div class="product-meta"><span class="product-rating">★ ${p.rating}</span></div>
+      <div class="fc-body">
+        <p class="fc-name">${name.substring(0, 26)}</p>
+        <div class="fc-prices">
+          <span class="fc-price">${fmt(p.price)}</span>
+          ${p.originalPrice && p.originalPrice > p.price ? `<span class="fc-orig">${fmt(p.originalPrice)}</span>` : ''}
+        </div>
+        <div class="fc-rating"><span>★</span> ${p.rating}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function _dealMiniCard(p) {
