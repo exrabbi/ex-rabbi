@@ -5157,87 +5157,189 @@ function _localAiReply(text) {
   const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const cur = T.currency || 'SAR ';
   const rate = T.rate || 1;
+  const WA = 'https://wa.me/966546224029';
 
-  // ── ORDER TRACKING ──
-  if (/order|track|deliver|where|طلب|أين|توصيل|অর্ডার|ট্র্যাক|ডেলিভারি|ऑर्डर/.test(q)) {
-    const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
-    if (orders.length > 0) {
-      const last = orders[orders.length - 1];
-      const statusMap = { pending:'Pending ⏳', confirmed:'Confirmed ✅', shipped:'Shipped 🚚', delivered:'Delivered ✅' };
-      return `📦 **Your Latest Order**\n\nOrder ID: #${last.id}\nStatus: ${statusMap[last.status] || last.status}\nTotal: ${cur}${(last.total * rate).toFixed(0)}\n\nExpected delivery: 2–4 business days from order date.\n\n📞 For real-time updates WhatsApp: +966 546 224 029`;
-    }
-    return `📦 I don't see any recent orders on this device.\n\nPlease share your **Order ID** on WhatsApp for instant tracking:\n👉 wa.me/966546224029`;
-  }
-
-  // ── PRODUCT SEARCH ──
-  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|جلابية|عباية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
-    const words = q.split(/\s+/).filter(w => w.length > 3);
-    const matches = PRODUCTS.filter(p => {
-      const n = (p.names?.en || '').toLowerCase();
-      return words.some(w => n.includes(w));
-    }).slice(0, 4);
-    if (matches.length) {
-      return `🛍️ **Found ${matches.length} products:**\n\n` +
-        matches.map(p => `• ${p.names?.en} — ${cur}${(p.price*rate).toFixed(0)} (-${p.discount}%)`).join('\n') +
-        '\n\nTap any product card to view & buy!';
-    }
-  }
-
-  // ── BEST DEALS / OFFERS ──
-  if (/deal|offer|sale|discount|cheap|best|price|offer|عرض|خصم|أرخص|ডিল|অফার|ছাড়|डील|ऑफर/.test(q)) {
-    const top = [...PRODUCTS].sort((a,b) => b.discount - a.discount).slice(0, 4);
-    return `🔥 **Today's Best Deals:**\n\n` +
-      top.map(p => `• ${p.names?.en}: ${cur}${(p.price*rate).toFixed(0)} **-${p.discount}%** off`).join('\n') +
-      `\n\nAll prices include 15% VAT. Use code **EXG10** for extra 10% off!`;
-  }
-
-  // ── DELIVERY ──
-  if (/ship|deliver|how long|days|fast|كم يوم|توصيل|متى|শিপিং|ডেলিভারি|कितने दिन/.test(q)) {
-    return `🚚 **Delivery Information:**\n\n• Standard: 2–4 business days\n• Express: 1–2 days (+SAR 15)\n• **Free delivery** on orders over SAR 100\n• Coverage: All Saudi Arabia 🇸🇦\n• Riyadh & Jeddah: sometimes same-day!\n\nTrack your order anytime on WhatsApp.`;
-  }
-
-  // ── RETURNS ──
-  if (/return|refund|exchange|back|إرجاع|استبدال|রিটার্ন|ফেরত|वापसी|रिफंड/.test(q)) {
-    return `↩️ **Return & Refund Policy:**\n\n✅ 7 days from delivery date\n✅ Item must be unused & original packaging\n✅ Free returns for defective items\n✅ Refund within 3–5 business days\n\n📞 Start a return: WhatsApp +966 546 224 029\nMention your order ID for faster processing.`;
-  }
-
-  // ── PAYMENT ──
-  if (/pay|card|cash|mada|visa|tamara|tabby|apple|stc|كيف أدفع|دفع|পেমেন্ট|भुगतान/.test(q)) {
-    return `💳 **Payment Methods:**\n\n• 💵 Cash on Delivery (COD)\n• 💳 Mada, Visa, Mastercard\n• 📱 Apple Pay, STC Pay\n• 🟣 Tamara — 4 payments, 0% interest\n• 🟤 Tabby — 4 payments, 0% interest\n\n🔒 All payments SSL encrypted & ZATCA compliant.`;
-  }
-
-  // ── COUPONS ──
-  if (/coupon|code|promo|كوبون|خصم|كود|কুপন|কোড|कूपन/.test(q)) {
-    return `🎁 **Active Coupon Codes:**\n\n• **EXG10** — 10% off any order\n• **NEWUSER** — 15% off your first order\n• **EID2025** — 20% off Eid collection\n• **VIP5OFF** — 5% extra (loyalty reward)\n\nEnter the code in your cart before checkout!`;
-  }
-
-  // ── SIZE ──
-  if (/size|fit|measure|مقاس|حجم|سايز|সাইজ|माप/.test(q)) {
-    return `📏 **Size Guide:**\n\n• XS = 34–36 | S = 36–38\n• M = 38–40 | L = 40–42\n• XL = 42–44 | XXL = 44–46\n\nFor custom fit advice, send your measurements on WhatsApp and we'll recommend the perfect size! 👗`;
-  }
-
-  // ── CONTACT ──
-  if (/contact|support|help|phone|whatsapp|تواصل|دعم|رقم|সাপোর্ট|যোগাযোগ|संपर्क/.test(q)) {
-    return `📞 **Contact EX GLOBAL:**\n\n• WhatsApp: +966 546 224 029\n• Hours: 9AM–11PM (SAT–THU)\n• Response time: ~5 minutes ⚡\n• Email: support@exglobal.online\n\n📍 Riyadh, Saudi Arabia 🇸🇦`;
-  }
-
-  // ── VAT ──
-  if (/vat|tax|ضريبة|zatca|فاتورة|ভ্যাট|कर/.test(q)) {
-    return `🧾 **Tax & Invoice:**\n\n• VAT: 15% included in all prices\n• CR No: 7034567890\n• VAT No: 310000000000003\n• ZATCA Phase 1 compliant\n• Tax invoice auto-generated after each order with QR code`;
-  }
-
-  // ── ABOUT ──
-  if (/about|who|brand|company|store|شركة|متجر|عن|সম্পর্কে|ব্র্যান্ড/.test(q)) {
-    return `👑 **About EX GLOBAL:**\n\nSaudi Arabia's premium fashion destination serving 50,000+ customers since 2021.\n\n📍 HQ: Riyadh, Saudi Arabia 🇸🇦\n🌍 Offices: China 🇨🇳 · UAE 🇦🇪 · Iraq 🇮🇶\n📋 CR: 7034567890 | VAT: 310000000000003\n✅ 100% genuine products guaranteed`;
-  }
-
-  // ── ARABIC / HELLO ──
-  if (/^(hi|hello|hey|مرحبا|هلا|السلام|আমি|হ্যালো|নমস্কার)/.test(q)) {
-    const greet = { bn:'ওয়া আলাইকুম সালাম! 😊 কীভাবে সাহায্য করতে পারি?', en:'Hello! How can I help you today? 😊', ar:'وعليكم السلام! كيف يمكنني مساعدتك؟ 😊', hi:'नमस्ते! आज मैं आपकी कैसे मदद कर सकता हूं? 😊' };
+  // ── GREETING ──
+  if (/^(hi|hello|hey|مرحبا|هلا|السلام|هاي|اهلا|আমি|হ্যালো|নমস্কার|হাই|আস|সালাম|namaste|नमस्ते|hola)/.test(q)) {
+    const greet = {
+      bn: 'আস-সালামু আলাইকুম! 😊\nআমি EX GLOBAL-এর AI সহকারী। কীভাবে সাহায্য করতে পারি?\n\n🛍️ পণ্য খুঁজতে | 📦 অর্ডার ট্র্যাক | 💳 পেমেন্ট | 🚚 ডেলিভারি',
+      en: 'Welcome to EX GLOBAL! 👑\nI\'m your AI shopping assistant. How can I help?\n\n🛍️ Find products | 📦 Track order | 💳 Payment | 🚚 Delivery',
+      ar: 'أهلاً بك في EX GLOBAL! 👑\nأنا مساعدك الذكي. كيف يمكنني خدمتك؟\n\n🛍️ البحث عن منتج | 📦 تتبع الطلب | 💳 الدفع | 🚚 التوصيل',
+      hi: 'EX GLOBAL में आपका स्वागत है! 👑\nमैं आपका AI सहायक हूं। कैसे मदद करूं?\n\n🛍️ उत्पाद खोजें | 📦 ऑर्डर ट्रैक | 💳 भुगतान | 🚚 डिलीवरी',
+    };
     return greet[currentLang] || greet.en;
   }
 
-  return null; // no local match → try external API
+  // ── ORDER TRACKING ──
+  if (/order|track|deliver|where|status|shipped|طلب|أين|توصيل|تتبع|অর্ডার|ট্র্যাক|ডেলিভারি|ऑर्डर|ट्रैक/.test(q)) {
+    const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
+    if (orders.length > 0) {
+      const last = orders[orders.length - 1];
+      const statusMap = { pending:'⏳ Pending — being prepared', confirmed:'✅ Confirmed — processing', shipped:'🚚 Shipped — on the way!', delivered:'🎉 Delivered successfully' };
+      const statusIcon = { pending:'⏳', confirmed:'✅', shipped:'🚚', delivered:'🎉' };
+      return `📦 **Your Latest Order**\n\n🔖 Order: #${last.id}\n${statusMap[last.status] || ('Status: ' + last.status)}\n💰 Total: ${cur}${(last.total * rate).toFixed(0)}\n\n📅 Expected: 2–4 business days\n🚀 Express upgrade: +SAR 15 for 1-day\n\n📲 For live tracking, message us:\n👉 ${WA}`;
+    }
+    return `📦 **Track Your Order**\n\nNo orders found on this device.\n\nTo track your order, please share your:\n• Order ID (e.g. #EX-12345)\n• Phone number used at checkout\n\n📲 WhatsApp us: ${WA}\nWe respond within 5 minutes! ⚡`;
+  }
+
+  // ── CANCEL ORDER ──
+  if (/cancel|cancellation|إلغاء|بطل|বাতিল|रद्द/.test(q)) {
+    return `❌ **Order Cancellation:**\n\n✅ Orders can be cancelled **within 2 hours** of placing\n✅ After 2 hours — contact support immediately\n✅ Full refund if cancelled before shipping\n\n**How to cancel:**\n1. Open My Cart → My Orders\n2. Tap your order → Request Cancel\n3. Or WhatsApp us with your Order ID\n\n📲 ${WA}\n\n⚠️ Orders already shipped cannot be cancelled — request a return instead.`;
+  }
+
+  // ── PRODUCT SEARCH ──
+  if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
+    const words = q.split(/\s+/).filter(w => w.length > 3);
+    const matches = PRODUCTS.filter(p => {
+      const n = (p.names?.en || p.name || '').toLowerCase();
+      const c = (p.category || '').toLowerCase();
+      return words.some(w => n.includes(w) || c.includes(w));
+    }).slice(0, 5);
+    if (matches.length) {
+      return `🛍️ **Found ${matches.length} matching products:**\n\n` +
+        matches.map(p => `• ${p.names?.en || p.name} — ${cur}${(p.price*rate).toFixed(0)} (**-${p.discount}% off**)`).join('\n') +
+        '\n\nTap any product to view details & add to cart! 🛒';
+    }
+    return `🔍 I searched but couldn\'t find an exact match.\n\nTry:\n• Browsing by **category** (top menu)\n• Using the **search bar** 🔍\n• Describing what you need\n\n📲 For personalized recommendations: ${WA}`;
+  }
+
+  // ── NEW ARRIVALS ──
+  if (/new|latest|arrival|fresh|جديد|وصل|নতুন|নতুন পণ্য|नया/.test(q)) {
+    const newest = [...PRODUCTS].sort((a,b) => (b.id||0) - (a.id||0)).slice(0, 5);
+    return `✨ **Latest Arrivals:**\n\n` +
+      newest.map(p => `• ${p.names?.en || p.name} — ${cur}${(p.price*rate).toFixed(0)}`).join('\n') +
+      `\n\n🔥 New products added daily!\nCheck the **New In** section for more.`;
+  }
+
+  // ── BESTSELLERS / POPULAR ──
+  if (/best|popular|top|trending|most|most sold|الأكثر|رائج|বেস্ট|জনপ্রিয়|लोकप्रिय/.test(q)) {
+    const best = [...PRODUCTS].sort((a,b) => (b.reviews||0) - (a.reviews||0)).slice(0, 5);
+    return `⭐ **Most Popular Products:**\n\n` +
+      best.map(p => `• ${p.names?.en || p.name} — ${cur}${(p.price*rate).toFixed(0)} (⭐ ${p.rating||4.5})`).join('\n') +
+      `\n\nThese are customer favourites! Tap to view.`;
+  }
+
+  // ── PRICE RANGE ──
+  if (/under|below|cheap|budget|less than|أرخص من|أقل من|সস্তা|বাজেট|सस्ता|बजट/.test(q)) {
+    const nums = q.match(/\d+/g);
+    const limit = nums ? parseInt(nums[0]) / rate : 100;
+    const affordable = PRODUCTS.filter(p => p.price <= limit).slice(0, 5);
+    if (affordable.length) {
+      return `💰 **Products Under ${cur}${Math.round(limit * rate)}:**\n\n` +
+        affordable.map(p => `• ${p.names?.en || p.name} — ${cur}${(p.price*rate).toFixed(0)}`).join('\n') +
+        `\n\nGreat value picks! 🎯`;
+    }
+    return `💡 Try filtering by price in the **Filters** section (top of product page).`;
+  }
+
+  // ── DEALS / OFFERS ──
+  if (/deal|offer|sale|discount|flash|خصم|عرض|تخفيض|ডিল|অফার|ছাড়|डील|ऑफर|सेल/.test(q)) {
+    const top = [...PRODUCTS].sort((a,b) => (b.discount||0) - (a.discount||0)).slice(0, 5);
+    return `🔥 **Today's Hottest Deals:**\n\n` +
+      top.map(p => `• ${p.names?.en || p.name}: ${cur}${(p.price*rate).toFixed(0)} — **${p.discount}% OFF**`).join('\n') +
+      `\n\n⏰ Flash Deals refresh daily — check the **Flash Deals** section!\n🏷️ Use code **EXG10** for extra 10% off`;
+  }
+
+  // ── DELIVERY ──
+  if (/ship|deliver|how long|days|fast|express|free delivery|كم يوم|توصيل|متى|شحن|শিপিং|ডেলিভারি|कितने दिन|डिलीवरी/.test(q)) {
+    return `🚚 **Delivery Information:**\n\n📦 **Standard Delivery:** 2–4 business days\n⚡ **Express (1-2 days):** +SAR 15\n🎁 **Free delivery:** On orders over SAR 100\n\n🗺️ **Coverage:**\n• 🏙️ Riyadh & Jeddah — sometimes same day!\n• 🌍 All Saudi Arabia 🇸🇦\n• 📦 Remote areas: +1 day\n\n⏰ Orders placed before 2PM dispatched same day.\n📲 Real-time tracking via WhatsApp confirmation.`;
+  }
+
+  // ── RETURNS & REFUNDS ──
+  if (/return|refund|exchange|replace|damage|defect|broken|wrong|إرجاع|استبدال|استرداد|رجوع|রিটার্ন|ফেরত|রিফান্ড|वापसी|रिफंड/.test(q)) {
+    return `↩️ **Return & Refund Policy:**\n\n✅ **7-day return window** from delivery date\n✅ Item must be unused, original packaging\n✅ **Free returns** for damaged or wrong items\n✅ Exchange available for different size/color\n✅ Refund processed in **3–5 business days**\n\n**How to return:**\n1. Message us on WhatsApp with your Order ID\n2. Send photos of the item\n3. We arrange free pickup (defective items)\n4. Refund sent to original payment method\n\n📲 Start your return: ${WA}`;
+  }
+
+  // ── PAYMENT METHODS ──
+  if (/pay|payment|card|cash|mada|visa|master|stc|tamara|binance|crypto|apple|كيف أدفع|دفع|طريقة الدفع|পেমেন্ট|ভুগতান|भुगतान/.test(q)) {
+    return `💳 **Payment Methods at EX GLOBAL:**\n\n💵 **Cash on Delivery (COD)**\n   Pay when you receive — no upfront payment\n\n💳 **Debit/Credit Card**\n   Mada · Visa · Mastercard · AMEX\n   256-bit SSL encrypted ✅\n\n🟣 **Tamara**\n   Split into payments — 0% interest\n\n📱 **STC Pay**\n   Instant SAR transfer\n\n🟡 **Binance Pay**\n   USDT · BNB · Crypto payments\n\n💙 **Google Pay & PayPal**\n   Coming soon\n\n🔒 All payments are ZATCA-compliant & fully secure.`;
+  }
+
+  // ── COUPONS / PROMO CODES ──
+  if (/coupon|promo|code|discount code|كوبون|كود|قسيمة|কুপন|কোড|প্রমো|कूपन|प्रोमो/.test(q)) {
+    return `🎁 **Active Promo Codes:**\n\n🏷️ **EXG10** — 10% off any order\n🆕 **NEWUSER** — 15% off your first order\n🌙 **EID2025** — 20% off Eid special\n👑 **VIP5OFF** — 5% loyalty bonus\n\n**How to use:**\n1. Add items to cart\n2. Tap "Apply Coupon" in cart\n3. Enter code → tap Apply\n4. Discount applied instantly! ✅\n\n💡 Codes can\'t be combined. Best deal chosen automatically.`;
+  }
+
+  // ── SIZE GUIDE ──
+  if (/size|fit|measurement|large|small|chart|مقاس|حجم|قياسات|সাইজ|মাপ|माप|साइज/.test(q)) {
+    return `📏 **Size Guide:**\n\n👗 **Women's Clothing:**\nXS=34–36 | S=36–38 | M=38–40\nL=40–42 | XL=42–44 | XXL=44–46\n\n👔 **Men's Clothing:**\nS=36–38 | M=38–40 | L=40–42\nXL=42–44 | XXL=44–46 | 3XL=46–48\n\n👟 **Shoes (EU → UK):**\n36=3.5 | 37=4 | 38=5 | 39=6\n40=6.5 | 41=7 | 42=8 | 43=9\n\n💡 **Tip:** When between sizes, size up.\n📲 Need custom advice? Send your measurements:\n${WA}`;
+  }
+
+  // ── QUALITY / AUTHENTICITY ──
+  if (/quality|original|genuine|fake|authentic|real|جودة|أصلي|গুণমান|আসল|গুণ|गुणवत्ता|असली/.test(q)) {
+    return `✅ **Quality Guarantee:**\n\n• 100% genuine products — no counterfeits\n• Direct sourcing from verified suppliers\n• Every item inspected before shipping\n• Products photographed in-house\n• Secure packaging — no damage in transit\n\n🛡️ **EX GLOBAL Promise:**\nIf you receive anything that doesn\'t match the description, we'll replace it FREE or give a full refund — no questions asked.\n\n📲 Report any issue: ${WA}`;
+  }
+
+  // ── COMPLAINTS ──
+  if (/complain|complaint|problem|issue|wrong|شكوى|مشكلة|অভিযোগ|সমস্যা|शिकायत/.test(q)) {
+    return `😟 **We're Sorry to Hear That!**\n\nWe take every complaint seriously. Here\'s how we help:\n\n1️⃣ **Wrong item received** — Free replacement + refund of shipping\n2️⃣ **Damaged item** — Full refund or free exchange\n3️⃣ **Late delivery** — Compensation voucher for next order\n4️⃣ **Other issues** — Resolved within 24 hours\n\n📲 Tell us what happened:\n${WA}\n\nPlease include:\n• Order ID\n• Photo of the item\n• What went wrong\n\nWe aim to resolve all issues within **24 hours**. ⚡`;
+  }
+
+  // ── ACCOUNT / LOGIN ──
+  if (/account|login|sign in|sign up|register|password|profile|حساب|تسجيل|অ্যাকাউন্ট|লগইন|অ্যাকাউন্ট|अकाउंट|लॉगिन/.test(q)) {
+    return `👤 **Your Account:**\n\n**Sign In / Sign Up:**\n• Tap the 👤 icon (top right)\n• Sign in with Email or Google\n• First time? Create account in seconds\n\n**Benefits of an account:**\n✅ Track all your orders\n✅ Save wishlist items\n✅ Faster checkout\n✅ Earn loyalty points\n✅ Get personalised deals\n\n**Forgot password?**\nTap Sign In → Forgot Password → reset via email.\n\n📲 Account issues? ${WA}`;
+  }
+
+  // ── WISHLIST ──
+  if (/wish|wishlist|save|favourite|favorite|قائمة|مفضلة|উইশলিস্ট|পছন্দের|विशलिस्ट/.test(q)) {
+    return `❤️ **Wishlist (Save for Later):**\n\nTap the ❤️ heart on any product to save it.\n\n**To view your wishlist:**\n• Tap the heart icon in the top menu\n• All saved items appear here\n\n**Tips:**\n• Items in wishlist can drop in price — you\'ll see the difference!\n• Share your wishlist link with family\n• Move items to cart with one tap\n\n📲 Need help finding an item? ${WA}`;
+  }
+
+  // ── CART HELP ──
+  if (/cart|basket|bag|checkout|سلة|عربة|কার্ট|ব্যাগ|कार्ट/.test(q)) {
+    const cartTotal = cart.reduce((s,i) => { const p=PRODUCTS.find(x=>x.id===i.id); return s+(p?p.price*i.qty*rate:0); }, 0);
+    if (cart.length > 0) {
+      return `🛒 **Your Cart:**\n\n${cart.length} item(s) — Total: ${cur}${Math.round(cartTotal)}\n\n${cart.map(i => { const p=PRODUCTS.find(x=>x.id===i.id); return p ? `• ${p.names?.en||p.name} ×${i.qty}` : ''; }).filter(Boolean).join('\n')}\n\n**Next steps:**\n• Tap 🛒 to open cart\n• Tap "Checkout" to place order\n• Apply a coupon for extra savings!`;
+    }
+    return `🛒 Your cart is empty!\n\nBrowse products and tap **Add to Cart** to start shopping.\n\n🔥 Check our **Flash Deals** for great prices!`;
+  }
+
+  // ── LOYALTY POINTS ──
+  if (/point|loyalty|reward|earn|نقاط|مكافأة|পয়েন্ট|লয়্যালটি|पॉइंट/.test(q)) {
+    return `⭐ **Loyalty Rewards Program:**\n\n• Earn **1 point** for every SAR 1 spent\n• **100 points = SAR 5 discount** on next order\n• Bonus points on first order (×2)\n• Points never expire\n\n**How to check your points:**\nTap 👤 Account → Loyalty Points\n\n**Redeem:** Applied automatically at checkout when you have enough points.\n\n🎁 Refer a friend → Earn 50 bonus points!`;
+  }
+
+  // ── STORE HOURS / AVAILABILITY ──
+  if (/open|hours|available|time|when|متى|ساعات|খোলা|সময়|समय|खुला/.test(q)) {
+    return `🕐 **Customer Support Hours:**\n\n• **Chat & WhatsApp:** 9AM – 11PM (Sat–Thu)\n• **Friday:** 2PM – 11PM\n• **Response time:** ~5 minutes during hours\n• **After hours:** Leave a message, we reply within 12hrs\n\n🌐 **Website:** Available 24/7, shop anytime!\n📱 **App:** Works offline, add to home screen\n\n📲 Message us: ${WA}`;
+  }
+
+  // ── GIFT / PACKAGING ──
+  if (/gift|wrap|packaging|present|occasion|هدية|تغليف|উপহার|গিফট|उपहार|गिफ्ट/.test(q)) {
+    return `🎁 **Gift Services:**\n\n✅ **Gift wrapping** available on request\n✅ **Personal message card** added for free\n✅ **Special occasions:** Eid, Birthday, Wedding, Anniversary\n✅ Elegant branded packaging on all orders\n\n**To add gift wrap:**\nLeave a note at checkout with:\n• Recipient name\n• Your message\n• Occasion type\n\nExtra charge: SAR 10 for premium gift box.\n📲 Special requests: ${WA}`;
+  }
+
+  // ── CONTACT ──
+  if (/contact|support|help|phone|whatsapp|email|تواصل|دعم|رقم|বাপোর্ট|যোগাযোগ|संपर्क/.test(q)) {
+    return `📞 **Contact EX GLOBAL Support:**\n\n💬 **WhatsApp (fastest):**\n${WA}\n⚡ Response: ~5 minutes\n\n📧 **Email:**\nsupport@exglobal.online\n\n⏰ **Hours:** 9AM–11PM (Sat–Thu)\n          2PM–11PM (Friday)\n\n📍 **Based in:** Riyadh, Saudi Arabia 🇸🇦\n\nFor: Orders · Returns · Products · Anything!`;
+  }
+
+  // ── VAT / INVOICE ──
+  if (/vat|tax|invoice|ضريبة|zatca|فاتورة|ভ্যাট|কর|कर|इनवॉइस/.test(q)) {
+    return `🧾 **VAT & Tax Invoice:**\n\n• VAT: **15%** included in all displayed prices\n• VAT No: 310000000000003\n• ZATCA Phase 1 compliant ✅\n• Tax invoice auto-generated after every order\n• QR code on every invoice (ZATCA standard)\n\n📄 Your invoice is shown in the **Order Confirmation** screen and sent via WhatsApp after delivery.`;
+  }
+
+  // ── ABOUT / COMPANY ──
+  if (/about|who|brand|company|store|شركة|متجر|عن|সম্পর্কে|ব্র্যান্ড|कंपनी/.test(q)) {
+    return `👑 **About EX GLOBAL:**\n\nSaudi Arabia's premium online shopping destination.\n\n🛍️ 1,000+ products across fashion, beauty, electronics & lifestyle\n⭐ 4.8/5 average customer rating\n🚀 Launched 2021 · Growing every day\n🇸🇦 Saudi-owned · Saudi-operated\n\n**Our Promise:**\n✅ 100% genuine products\n✅ Secure payments\n✅ Fast delivery\n✅ Hassle-free returns\n✅ 24/7 customer care\n\nWe exist to make great products accessible to everyone in Saudi Arabia!`;
+  }
+
+  // ── STOCK / AVAILABILITY ──
+  if (/stock|available|out of stock|sold out|متوفر|نفد|স্টক|পাওয়া যাচ্ছে|स्टॉक/.test(q)) {
+    return `📦 **Product Availability:**\n\nProducts showing on site are **in stock** and ready to ship.\n\n**Out of stock items:**\n• Tap ❤️ to add to wishlist\n• We\'ll notify you when restocked\n\n**Low stock warning:**\nWhen you see "Only X left!" — act fast!\nHigh-demand items sell out quickly.\n\n📲 Ask about a specific item: ${WA}`;
+  }
+
+  // ── PRIVACY / DATA ──
+  if (/privacy|data|personal|information|secure|خصوصية|بيانات|গোপনীয়তা|তথ্য|गोपनीयता/.test(q)) {
+    return `🔒 **Your Privacy & Data:**\n\n• Your personal info is **never shared** with third parties\n• Payments are processed via secure, encrypted gateways\n• We only collect what\'s needed: name, address, phone\n• No spam — you control your notifications\n• Delete your data anytime: Contact support\n\n🛡️ EX GLOBAL follows Saudi data protection laws.\n\n📧 Privacy questions: support@exglobal.online`;
+  }
+
+  // ── LANGUAGE FALLBACK (Arabic direct) ──
+  if (/[؀-ۿ]/.test(text) && !/(order|track|pay|deliver|return|size|coupon|contact|vat|about|cancel|quality|gift|stock|point|account|cart|wish|complain|open|new|best|deal|search)/.test(q)) {
+    return `مرحباً! 👋\nكيف يمكنني مساعدتك اليوم؟\n\n• 📦 تتبع الطلب\n• 🛍️ البحث عن منتج\n• 💳 طرق الدفع\n• 🚚 التوصيل\n• ↩️ الإرجاع والاستبدال\n• 📞 التواصل معنا\n\nاكتب سؤالك وسأجيبك فوراً! ⚡`;
+  }
+
+  return null; // no local match → try external AI API
 }
 
 function _aiAppendMsg(role, text) {
