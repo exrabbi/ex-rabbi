@@ -4375,20 +4375,30 @@ function _updateCCPreview() {
   const cvvEl = document.getElementById('ccCvv');
   if (cvvEl) cvvEl.textContent = cvv ? cvv.replace(/./g,'•') : '•••';
 
-  // Detect card network from first digit
+  // Detect card network & bank label from first digits
   const networkEl = document.getElementById('ccNetwork');
-  if (networkEl && num.length > 0) {
+  const bankEl    = document.getElementById('ccBank');
+  if (num.length > 0) {
     const d = num[0];
     if (d === '4') {
-      // Visa
-      networkEl.innerHTML = `<svg viewBox="0 0 80 26" width="52" height="26"><text x="0" y="22" font-size="26" font-weight="900" font-style="italic" fill="#1a1f71" font-family="Arial">VISA</text></svg>`;
+      if (networkEl) networkEl.innerHTML = `<svg viewBox="0 0 80 26" width="52" height="26"><text x="0" y="22" font-size="26" font-weight="900" font-style="italic" fill="#fff" font-family="Arial">VISA</text></svg>`;
+      if (bankEl) bankEl.textContent = 'VISA';
     } else if (d === '5') {
-      // Mastercard
-      networkEl.innerHTML = `<svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>`;
+      if (networkEl) networkEl.innerHTML = `<svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>`;
+      if (bankEl) bankEl.textContent = 'Mastercard';
     } else if (d === '3') {
-      // Amex
-      networkEl.innerHTML = `<svg viewBox="0 0 60 24" width="52" height="24"><rect width="60" height="24" rx="4" fill="#2E77BC"/><text x="6" y="18" font-size="13" font-weight="900" fill="#fff" font-family="Arial">AMEX</text></svg>`;
+      if (networkEl) networkEl.innerHTML = `<svg viewBox="0 0 60 24" width="52" height="24"><rect width="60" height="24" rx="4" fill="#2E77BC"/><text x="6" y="18" font-size="13" font-weight="900" fill="#fff" font-family="Arial">AMEX</text></svg>`;
+      if (bankEl) bankEl.textContent = 'Amex';
+    } else if (d === '6') {
+      if (networkEl) networkEl.innerHTML = `<svg viewBox="0 0 90 26" width="70" height="24"><text x="0" y="20" font-size="20" font-weight="900" fill="#f76f20" font-family="Arial">DISCOVER</text></svg>`;
+      if (bankEl) bankEl.textContent = 'Discover';
+    } else {
+      if (networkEl) networkEl.innerHTML = '';
+      if (bankEl) bankEl.textContent = 'Credit Card';
     }
+  } else {
+    if (networkEl) networkEl.innerHTML = `<svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>`;
+    if (bankEl) bankEl.textContent = '';
   }
 }
 

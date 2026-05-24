@@ -12650,11 +12650,12 @@ body { padding-bottom: 86px !important; }
 
 /* Card number */
 .cc-number {
-  font-size: 19px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-family: 'Courier New', monospace;
   margin-bottom: 16px;
+  white-space: nowrap;
   transition: all .2s;
   text-shadow: 0 2px 8px rgba(0,0,0,.5);
 }
