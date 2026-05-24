@@ -4016,7 +4016,11 @@ function processPayment() {
   if (!selectedPayMethod) {
     showToast('⚠️ Please select a payment method to continue');
     const paySection = document.querySelector('.ck-sec:has(.ck-pm)');
-    if (paySection) { paySection.scrollIntoView({behavior:'smooth',block:'center'}); paySection.style.outline='2px solid #e91e8c'; setTimeout(()=>{ paySection.style.outline=''; },1800); }
+    if (paySection) {
+      paySection.scrollIntoView({behavior:'smooth',block:'center'});
+      paySection.classList.add('pm-shake');
+      setTimeout(() => paySection.classList.remove('pm-shake'), 600);
+    }
     return;
   }
   const stockErr = _cartStockError();
