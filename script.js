@@ -3780,11 +3780,10 @@ function openPayment() {
       const d2a = fmt(addD(5)), d2b = fmt(addD(7));
       const _T  = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
       nudge.innerHTML = `
-        <div class="ndg-free-pill" style="margin-bottom:12px">
-          <div class="ndg-icon-circle"><i class="fas fa-truck-fast"></i></div>
-          <span>${t('freeDeliveryActive') || 'Free delivery applied!'}</span>
-          <div class="ndg-check"><i class="fas fa-check"></i></div>
-        </div>
+        <i class="fas fa-truck-fast" style="color:#16a34a;font-size:15px"></i>
+        <span style="color:#16a34a;font-weight:700">Free delivery</span>
+        &nbsp;·&nbsp; Get it <b>${d2a} – ${d2b}</b>
+        <span style="display:none">
         <div class="del-timeline">
           <div class="del-step">
             <div class="del-circle"><i class="fas fa-bag-shopping"></i></div>
@@ -3803,18 +3802,13 @@ function openPayment() {
             <div class="del-date">${d2a} – ${d2b}</div>
             <div class="del-sub">${_T.trackDelivered || 'Delivered'}</div>
           </div>
-        </div>`;
+        </div></span>`;
     } else {
       const needed = FREE_DELIVERY_THRESHOLD_SAR - subtotalDisp;
       const pct = Math.min((subtotalDisp / FREE_DELIVERY_THRESHOLD_SAR) * 100, 100);
       nudge.innerHTML = `
-        <div class="del-mini">
-          <div class="del-mini-row">
-            <i class="fas fa-truck"></i>
-            <span>${t('addMoreFree') || 'Add'} <b>${fmtD(needed)}</b> ${t('moreForFree') || 'more for free delivery'}</span>
-          </div>
-          <div class="del-mini-track"><div class="del-mini-fill" style="width:${pct}%"></div></div>
-        </div>`;
+        <i class="fas fa-truck" style="color:#888;font-size:15px"></i>
+        <span style="color:#555;font-size:12px">Add <b>${fmtD(needed)}</b> more for <span style="color:#16a34a;font-weight:700">free delivery</span></span>`;
     }
   }
   // Reset coupon state
@@ -3862,6 +3856,26 @@ function openPayment() {
     }).join('');
     payItemsWrap.innerHTML = `<div class="pay-items-list">${itemsHtml}</div>`;
   }
+  // Populate new checkout UI fields
+  const addrEl = document.getElementById('ckAddrVal');
+  if (addrEl && savedLocation) {
+    const parts = [savedLocation.name, savedLocation.city, savedLocation.address].filter(Boolean);
+    addrEl.textContent = parts.join(', ') || 'Add delivery address';
+  }
+  const recvNameEl = document.getElementById('ckRecvName');
+  const recvPhoneEl = document.getElementById('ckRecvPhone');
+  if (recvNameEl && savedLocation) recvNameEl.textContent = savedLocation.name || (currentUser?.displayName || 'Me');
+  if (recvPhoneEl && savedLocation) recvPhoneEl.textContent = savedLocation.phone || '';
+  const shipCountEl = document.getElementById('ckShipCount');
+  if (shipCountEl) { const tc = cart.reduce((s,i) => s+i.qty, 0); shipCountEl.textContent = `(${tc} item${tc !== 1 ? 's' : ''})`; }
+  const ckBarCountEl = document.getElementById('ckBarCount');
+  const ckBarTotalEl = document.getElementById('ckBarTotal');
+  const tc2 = cart.reduce((s,i) => s+i.qty, 0);
+  if (ckBarCountEl) ckBarCountEl.textContent = `${tc2} item${tc2 !== 1 ? 's' : ''}`;
+  if (ckBarTotalEl) ckBarTotalEl.textContent = fmtD(grandDisp);
+  // Scroll back to top of checkout body
+  const ckBodyEl = document.getElementById('ckBody') || document.querySelector('.ck-body');
+  if (ckBodyEl) ckBodyEl.scrollTop = 0;
   // Open modal — small delay so cart close animation plays first
   setTimeout(() => {
     document.getElementById('payOverlay').classList.add('open');
