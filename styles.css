@@ -12184,151 +12184,235 @@ body:has(#authModal.open) .hc-fab {
 /* ===================================================
    ANIMATED LOGIN MASCOT
    =================================================== */
-.auth-mascot {
-  width: 90px;
-  height: 90px;
-  margin: 0 auto 18px;
+/* ===================================================
+   ANIMATED LOGIN CHARACTER — 3D-style CSS mascot
+   Reference: Visme animated login form character
+   =================================================== */
+.am-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 8px auto 16px;
   position: relative;
-  animation: mascot-float 3s ease-in-out infinite;
-}
-@keyframes mascot-float {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-7px); }
-}
-@keyframes mascot-wave-anim {
-  0%   { transform: translateY(0) rotate(0deg); }
-  15%  { transform: translateY(-12px) rotate(-8deg); }
-  30%  { transform: translateY(-6px)  rotate(6deg); }
-  45%  { transform: translateY(-10px) rotate(-4deg); }
-  60%  { transform: translateY(-4px)  rotate(3deg); }
-  75%  { transform: translateY(-8px)  rotate(-2deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-.auth-mascot.mascot-wave {
-  animation: mascot-wave-anim 1.4s cubic-bezier(.34,1.56,.64,1) forwards,
-             mascot-float 3s ease-in-out 1.4s infinite;
+  width: 120px;
 }
 
-/* Face */
-.auth-mascot-face {
-  width: 62px;
-  height: 62px;
-  background: linear-gradient(145deg, #ffd166, #ffaa00);
-  border-radius: 50%;
+/* Speech bubble */
+.am-bubble {
   position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 6px 22px rgba(255,170,0,.45), inset 0 -3px 8px rgba(0,0,0,.1);
-  overflow: hidden;
+  top: -2px;
+  left: 100%;
+  margin-left: 8px;
+  background: #fff;
+  color: #333;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 14px 14px 14px 4px;
+  white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
+  opacity: 0;
+  transform: scale(.7) translateX(-10px);
+  transition: opacity .35s, transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events: none;
 }
+.am-bubble.show {
+  opacity: 1;
+  transform: scale(1) translateX(0);
+}
+
+/* Scene — float animation */
+.am-scene {
+  animation: am-float 3.5s ease-in-out infinite;
+}
+@keyframes am-float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-8px); }
+}
+.am-wrap.am-wave .am-scene {
+  animation: am-wave-body 1.2s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes am-wave-body {
+  0%   { transform: translateY(0) rotate(0); }
+  20%  { transform: translateY(-14px) rotate(-5deg); }
+  40%  { transform: translateY(-8px) rotate(4deg); }
+  60%  { transform: translateY(-12px) rotate(-3deg); }
+  80%  { transform: translateY(-5px) rotate(2deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+.am-char { position: relative; width: 80px; }
+
+/* Hair */
+.am-hair {
+  width: 56px;
+  height: 22px;
+  background: linear-gradient(180deg, #1a0a3e 60%, #2d1060);
+  border-radius: 28px 28px 0 0;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  box-shadow: -8px 6px 0 #1a0a3e, 8px 6px 0 #1a0a3e;
+}
+
+/* Head */
+.am-head {
+  width: 56px;
+  height: 58px;
+  background: linear-gradient(160deg, #fce4c8 0%, #f5c5a0 60%, #e8a882 100%);
+  border-radius: 50% 50% 42% 42%;
+  margin: -4px auto 0;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2), inset 0 -4px 10px rgba(0,0,0,.08);
+  overflow: visible;
+}
+
+/* Eyebrows */
+.am-brows { display: flex; justify-content: space-around; padding: 9px 8px 0; }
+.am-brow {
+  width: 14px; height: 3px;
+  background: #5a2d0c;
+  border-radius: 3px;
+  transition: transform .3s;
+}
+.am-wrap.pw-mode .am-brow-l { transform: rotate(12deg) translateY(-2px); }
+.am-wrap.pw-mode .am-brow-r { transform: rotate(-12deg) translateY(-2px); }
 
 /* Eyes */
-.auth-mascot-eyes {
-  display: flex;
-  justify-content: space-around;
-  padding: 18px 12px 0;
-}
-.auth-mascot-eye {
-  width: 9px;
-  height: 9px;
-  background: #1a1a2e;
+.am-eyes { display: flex; justify-content: space-around; padding: 6px 8px 0; }
+.am-eye {
+  width: 13px; height: 13px;
+  background: #fff;
   border-radius: 50%;
-  animation: mascot-blink 4s ease-in-out infinite;
-  transition: height .2s, border-radius .2s, transform .25s;
+  position: relative;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  overflow: hidden;
+  animation: am-blink 4.5s ease-in-out infinite;
 }
-@keyframes mascot-blink {
-  0%,92%,96%,100% { transform: scaleY(1); }
-  94% { transform: scaleY(0.08); }
+@keyframes am-blink {
+  0%,90%,96%,100% { transform: scaleY(1); }
+  93% { transform: scaleY(0.05); }
 }
+.am-pupil {
+  width: 7px; height: 7px;
+  background: #2d1060;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px; left: 3px;
+  transition: transform .2s;
+}
+.am-shine {
+  width: 3px; height: 3px;
+  background: rgba(255,255,255,.9);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+}
+.am-wrap.pw-mode .am-eye { transform: scaleY(0.1); }
 
-/* Mouth / smile */
-.auth-mascot-mouth {
-  width: 22px;
-  height: 10px;
-  border: 3px solid #1a1a2e;
+/* Nose */
+.am-nose {
+  width: 8px; height: 5px;
+  border: 2px solid rgba(180,100,60,.4);
   border-top: none;
-  border-radius: 0 0 22px 22px;
-  margin: 6px auto 0;
-  transition: all .25s;
+  border-radius: 0 0 6px 6px;
+  margin: 4px auto 0;
 }
 
-/* Hands (cover eyes on password) */
-.auth-mascot-hands {
-  position: absolute;
-  top: 12px;
-  left: 0; right: 0;
-  display: flex;
-  justify-content: space-around;
-  pointer-events: none;
-  transform: translateY(60px);
-  opacity: 0;
-  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s;
+/* Mouth */
+.am-mouth {
+  width: 20px; height: 9px;
+  border: 2.5px solid #c0684a;
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+  margin: 4px auto 0;
+  transition: all .3s;
 }
-.auth-mascot-hands::before,
-.auth-mascot-hands::after {
-  content: '';
-  width: 18px;
-  height: 18px;
-  background: linear-gradient(145deg, #ffa000, #ff6f00);
-  border-radius: 50%;
-  box-shadow: 0 2px 6px rgba(0,0,0,.2);
+.am-wrap.pw-mode .am-mouth {
+  border-top: 2.5px solid #c0684a;
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
 }
 
-/* Body */
-.auth-mascot-body {
-  width: 44px;
-  height: 24px;
-  background: linear-gradient(135deg, var(--lux-pink, #e91e8c), var(--lux-purple, #9415f5));
-  border-radius: 22px 22px 0 0;
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+/* Neck */
+.am-neck {
+  width: 20px; height: 10px;
+  background: #f5c5a0;
+  margin: 0 auto;
+}
+
+/* Body / shirt */
+.am-body {
+  width: 60px;
+  height: 42px;
+  background: linear-gradient(160deg, #e91e8c 0%, #9415f5 100%);
+  border-radius: 10px 10px 4px 4px;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(148,21,245,.35);
+}
+.am-collar {
+  width: 22px; height: 12px;
+  border-left: 10px solid rgba(255,255,255,.3);
+  border-right: 10px solid rgba(255,255,255,.3);
+  margin: 0 auto;
+  border-radius: 0 0 6px 6px;
 }
 
 /* Arms */
-.auth-mascot-arm {
-  width: 14px;
-  height: 30px;
-  background: linear-gradient(135deg, #e91e8c, #9415f5);
-  border-radius: 7px;
+.am-arm {
   position: absolute;
-  bottom: 8px;
+  width: 14px; height: 36px;
+  background: linear-gradient(180deg, #e91e8c, #9415f5);
+  border-radius: 7px;
+  top: 86px;
   transition: transform .35s cubic-bezier(.34,1.56,.64,1);
 }
-.auth-arm-l {
-  left: 4px;
-  transform-origin: bottom center;
+.am-arm-l {
+  left: 3px;
+  transform-origin: top center;
   transform: rotate(20deg);
+  animation: am-point 2.5s ease-in-out 1.5s infinite;
 }
-.auth-arm-r {
-  right: 4px;
-  transform-origin: bottom center;
+.am-arm-r {
+  right: 3px;
+  transform-origin: top center;
   transform: rotate(-20deg);
 }
+@keyframes am-point {
+  0%,100% { transform: rotate(20deg); }
+  50%      { transform: rotate(35deg); }
+}
+.am-hand {
+  font-size: 14px;
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.am-hand-r {
+  width: 12px; height: 12px;
+  background: #fce4c8;
+  border-radius: 50%;
+  bottom: -6px;
+}
 
-/* Password mode — hands cover eyes, arms raise */
-.auth-mascot.pw-mode .auth-mascot-hands {
-  transform: translateY(0);
-  opacity: 1;
+/* Legs */
+.am-legs { display: flex; justify-content: center; gap: 6px; margin-top: 2px; }
+.am-leg {
+  width: 16px; height: 22px;
+  background: #1a0a3e;
+  border-radius: 4px 4px 6px 6px;
 }
-.auth-mascot.pw-mode .auth-mascot-eye {
-  height: 2px;
-  border-radius: 2px;
-  transform: scaleY(1) !important;
+
+/* Password mode */
+.am-wrap.pw-mode .am-arm-l {
+  transform: rotate(-80deg) translateY(-8px);
+  animation: none;
 }
-.auth-mascot.pw-mode .auth-mascot-mouth {
-  border-radius: 22px 22px 0 0;
-  border-top: 3px solid #1a1a2e;
-  border-bottom: none;
-  margin-top: 8px;
-}
-.auth-mascot.pw-mode .auth-arm-l {
-  transform: rotate(-60deg) translateY(-18px);
-}
-.auth-mascot.pw-mode .auth-arm-r {
-  transform: rotate(60deg) translateY(-18px);
+.am-wrap.pw-mode .am-arm-r {
+  transform: rotate(80deg) translateY(-8px);
 }
 
 /* ===================================================

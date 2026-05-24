@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=206" />
+  <link rel="stylesheet" href="styles.css?v=207" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1758,19 +1758,60 @@
       </button>
     </div>
 
-    <!-- Animated mascot -->
-    <div class="auth-mascot" id="authMascot">
-      <div class="auth-mascot-face">
-        <div class="auth-mascot-eyes">
-          <div class="auth-mascot-eye auth-eye-l"></div>
-          <div class="auth-mascot-eye auth-eye-r"></div>
+    <!-- Animated 3D-style mascot -->
+    <div class="am-wrap" id="authMascot">
+      <!-- Speech bubble -->
+      <div class="am-bubble" id="amBubble">Welcome! 👋</div>
+      <div class="am-scene">
+        <!-- Character -->
+        <div class="am-char">
+          <!-- Hair -->
+          <div class="am-hair"></div>
+          <!-- Head -->
+          <div class="am-head">
+            <!-- Eyebrows -->
+            <div class="am-brows">
+              <div class="am-brow am-brow-l"></div>
+              <div class="am-brow am-brow-r"></div>
+            </div>
+            <!-- Eyes -->
+            <div class="am-eyes">
+              <div class="am-eye">
+                <div class="am-pupil"></div>
+                <div class="am-shine"></div>
+              </div>
+              <div class="am-eye">
+                <div class="am-pupil"></div>
+                <div class="am-shine"></div>
+              </div>
+            </div>
+            <!-- Nose -->
+            <div class="am-nose"></div>
+            <!-- Mouth -->
+            <div class="am-mouth" id="amMouth"></div>
+          </div>
+          <!-- Neck -->
+          <div class="am-neck"></div>
+          <!-- Body (shirt) -->
+          <div class="am-body">
+            <!-- Collar -->
+            <div class="am-collar"></div>
+          </div>
+          <!-- Left arm (pointing toward buttons) -->
+          <div class="am-arm am-arm-l" id="amArmL">
+            <div class="am-hand am-hand-l">👈</div>
+          </div>
+          <!-- Right arm (relaxed) -->
+          <div class="am-arm am-arm-r">
+            <div class="am-hand am-hand-r"></div>
+          </div>
+          <!-- Legs -->
+          <div class="am-legs">
+            <div class="am-leg am-leg-l"></div>
+            <div class="am-leg am-leg-r"></div>
+          </div>
         </div>
-        <div class="auth-mascot-mouth"></div>
-        <div class="auth-mascot-hands"></div>
       </div>
-      <div class="auth-mascot-body"></div>
-      <div class="auth-mascot-arm auth-arm-l"></div>
-      <div class="auth-mascot-arm auth-arm-r"></div>
     </div>
 
     <!-- Login view -->
@@ -2487,7 +2528,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=201"></script>
+  <script src="script.js?v=202"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

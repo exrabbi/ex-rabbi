@@ -3413,9 +3413,15 @@ function openAuth() {
   // Mascot wave on open
   const mascot = document.getElementById('authMascot');
   if (mascot) {
-    mascot.classList.remove('pw-mode','mascot-wave');
+    mascot.classList.remove('pw-mode','am-wave');
     void mascot.offsetWidth;
-    mascot.classList.add('mascot-wave');
+    mascot.classList.add('am-wave');
+    // Show speech bubble
+    const bubble = document.getElementById('amBubble');
+    if (bubble) {
+      bubble.classList.add('show');
+      setTimeout(() => bubble.classList.remove('show'), 2800);
+    }
   }
   setTimeout(() => {
     const loggedInView = document.getElementById('authLoggedIn');
@@ -3451,6 +3457,15 @@ function openAuth() {
     document.querySelectorAll('#authModal input[type="password"]').forEach(inp => {
       inp.addEventListener('focus', () => document.getElementById('authMascot')?.classList.add('pw-mode'), {once:false});
       inp.addEventListener('blur',  () => document.getElementById('authMascot')?.classList.remove('pw-mode'), {once:false});
+      // Change bubble text on password focus
+      inp.addEventListener('focus', () => {
+        const b = document.getElementById('amBubble');
+        if (b) { b.textContent = "I won't peek! 🙈"; b.classList.add('show'); }
+      }, {once:false});
+      inp.addEventListener('blur', () => {
+        const b = document.getElementById('amBubble');
+        if (b) b.classList.remove('show');
+      }, {once:false});
     });
   }, 200);
 }
