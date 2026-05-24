@@ -1830,8 +1830,13 @@ function renderWishlistPanel() {
             <button class="wish-add-cart${p.stock === 0 ? ' disabled' : ''}" onclick="${p.stock === 0 ? '' : `addToCart(${id},null,null)`}" ${p.stock === 0 ? 'style="opacity:.45;cursor:not-allowed"' : ''}>
               <i class="fas fa-bag-shopping"></i> ${p.stock === 0 ? (t('outOfStock') || 'Out of Stock') : (t('addToCart') || 'Add to Cart')}
             </button>
-            <button class="wish-remove-btn" onclick="removeFromWishlist(${id})">
-              <i class="fas fa-heart"></i>
+            <button class="trash-btn" onclick="removeFromWishlist(${id})" title="Remove">
+              <div class="trash__wrap">
+                <div class="trash__lid"></div>
+                <div class="trash__body">
+                  <div class="trash__lines"><span></span><span></span><span></span></div>
+                </div>
+              </div>
             </button>
           </div>
         </div>
