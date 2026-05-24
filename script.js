@@ -823,7 +823,6 @@ function productCardHTML(p) {
           ${origPrice ? `<span class="price-original">${origPrice}</span>` : ''}
           <span class="pc-disc-pill">-${p.discount}%</span>
         </div>
-        ${_tamaraHTML(p.price)}
         <div class="pc-meta-row">
           <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
           <span class="pc-sep">|</span>
@@ -1884,7 +1883,6 @@ function openModal(id) {
           ?`<div class="lux-stock-chip low"><i class="fas fa-fire"></i> Only ${p.stock} left</div>`
           :`<div class="lux-stock-chip ok"><i class="fas fa-check-circle"></i> In Stock</div>`}
     </div>
-    <div class="lux-bnpl-row">${_tamaraHTML(p.price,true)}${_tabbyHTML(p.price,true)}</div>
   </div>
 
   <div class="lux-delivery-card lux-reveal">
