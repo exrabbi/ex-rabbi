@@ -13576,3 +13576,60 @@ body { padding-bottom: 100px !important; }
   font-size: 10px;
   padding: 3px 8px;
 }
+
+/* =========================================
+   SETTINGS — WhatsApp VIP card
+   ========================================= */
+.st-wa-vip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 14px 14px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #0b5e30, #1a8f3c);
+  border-radius: 18px;
+  text-decoration: none;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(18,140,42,.28);
+}
+.st-wa-vip-ico {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.st-wa-vip-body { flex: 1; min-width: 0; }
+.st-wa-vip-title { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+.st-wa-vip-sub { font-size: 11px; opacity: .8; font-weight: 500; }
+.st-wa-vip-arr { opacity: .6; font-size: 13px; flex-shrink: 0; }
+
+/* =========================================
+   SETTINGS — Payment methods block
+   ========================================= */
+.st-pay-wrap {
+  margin: 0 14px 16px;
+  background: var(--card-bg, #f8f8f8);
+  border-radius: 16px;
+  padding: 14px 16px;
+  border: 1px solid rgba(0,0,0,.06);
+}
+[data-theme="dark"] .st-pay-wrap {
+  background: rgba(255,255,255,.05);
+  border-color: rgba(255,255,255,.07);
+}
+.st-pay-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.st-pay-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
