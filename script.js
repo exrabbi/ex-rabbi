@@ -4017,22 +4017,33 @@ function processPayment() {
   if (selectedPayMethod === 'whatsapp') {
     closePayment();
     whatsappCheckout();
+  } else if (selectedPayMethod === 'tamara') {
+    showToast('⚠️ Tamara payment gateway not connected. Please choose another method.');
+    return;
   } else if (selectedPayMethod === 'paypal') {
     if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY) {
       showToast(t('paypalOpening'));
     } else {
-      showToast(t('paypalNotSetup'));
-      setTimeout(() => { closePayment(); codCheckout(); }, 1500);
+      showToast('⚠️ PayPal is not connected. Please choose another payment method.');
     }
+    return;
   } else if (selectedPayMethod === 'card') {
     const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
     const moyasarKey = s.moyasarPubKey || '';
     if (!moyasarKey) {
-      showToast(t('cardNotSetup'));
-      setTimeout(() => { closePayment(); codCheckout(); }, 1500);
+      showToast('⚠️ Card payment gateway not connected. Please choose another method.');
       return;
     }
-    // Moyasar payment integration
+    // Validate card fields
+    const cardNum = (document.getElementById('cardNumber')?.value || '').replace(/\s/g,'');
+    const cardExp = document.getElementById('cardExpiry')?.value || '';
+    const cardCvv = document.getElementById('cardCvv')?.value || '';
+    const cardFN  = document.getElementById('cardFirstName')?.value?.trim() || '';
+    if (cardNum.length < 15 || !cardExp || cardCvv.length < 3 || !cardFN) {
+      showToast('⚠️ Please fill in all card details to proceed.');
+      document.getElementById('cardForm').style.display = 'block';
+      return;
+    }
     const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
     const sub = cartSubtotalBase() * lang.rate;
     const del = sub >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
@@ -4042,8 +4053,8 @@ function processPayment() {
     });
     return;
   } else if (selectedPayMethod === 'gpay') {
-    showToast(t('gpayNotSetup'));
-    setTimeout(() => { closePayment(); codCheckout(); }, 1500);
+    showToast('⚠️ Google Pay not connected. Please choose another payment method.');
+    return;
   } else if (selectedPayMethod === 'binance') {
     const ref = (document.getElementById('binanceRefInput')?.value || '').trim();
     if (ref.length < 6) { showToast('⚠️ Enter your Binance reference number'); return; }
@@ -7353,7 +7364,6 @@ function _showZatcaInvoice(orderId, totalSAR) {
     <div class="zatca-header"><span class="zatca-logo">EXG Global Trading</span><span class="zatca-inv-label">فاتورة ضريبية · Tax Invoice</span></div>
     <div class="zatca-details">
       <div class="zatca-row"><span>VAT No.</span><span>310000000000003</span></div>
-      <div class="zatca-row"><span>CR No.</span><span>7034567890</span></div>
       <div class="zatca-row"><span>Invoice #</span><span>${orderId}</span></div>
       <div class="zatca-row"><span>Date</span><span>${new Date().toLocaleDateString('en-SA')}</span></div>
       <div class="zatca-row"><span>Excl. VAT</span><span>SAR ${excl.toFixed(2)}</span></div>
