@@ -873,14 +873,14 @@ function productCardHTML(p) {
           <span class="nx-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="nx-orig">${origPrice}</span>`:''}
         </div>
-        <button class="nx-btn${isOOS?' oos-btn':''}"
+        <button class="nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
-          <span class="nx-btn-inner">
+          ${!isOOS?`<span class="shirt"><i class="fas fa-bag-shopping"></i></span>`:''}
+          <span class="cart">
             <i class="fas fa-${isOOS?'ban':'cart-plus'}"></i>
-            <span>${isOOS?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
+            <span class="cart-lbl">${isOOS?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
           </span>
-          ${!isOOS?'<span class="nx-fly" aria-hidden="true">🛍️</span>':''}
         </button>
       </div>
     </div>
@@ -889,10 +889,26 @@ function productCardHTML(p) {
 
 function nxAtc(ev, id) {
   const btn = ev.currentTarget;
-  if (btn.classList.contains('nx-animating')) return;
+  if (btn.dataset.atcBusy) return;
+  btn.dataset.atcBusy = '1';
   flyCartAdd(ev, id);
-  btn.classList.add('nx-animating');
-  setTimeout(() => btn.classList.remove('nx-animating'), 750);
+
+  // Phase 1 — shirt appears at button center
+  btn.style.setProperty('--shirt-y', '0px');
+  btn.style.setProperty('--shirt-scale', '1');
+
+  // Phase 2 — shirt flies up and shrinks
+  setTimeout(() => {
+    btn.style.setProperty('--shirt-y', '-52px');
+    btn.style.setProperty('--shirt-scale', '0');
+  }, 320);
+
+  // Reset
+  setTimeout(() => {
+    btn.style.removeProperty('--shirt-y');
+    btn.style.removeProperty('--shirt-scale');
+    delete btn.dataset.atcBusy;
+  }, 720);
 }
 
 /* ===== DESKTOP NAV ACTIVE STATE ===== */

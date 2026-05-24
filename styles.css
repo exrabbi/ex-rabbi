@@ -12117,46 +12117,45 @@ body:has(#authModal.open) .hc-fab {
 }
 .nx-btn.oos-btn { background: #e0e0e0 !important; color: #aaa !important; cursor: not-allowed; }
 
-/* Button inner label (icon + text) */
-.nx-btn-inner {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: transform .32s cubic-bezier(.34,1.56,.64,1), opacity .28s;
-  position: relative;
-  z-index: 1;
-}
-
-/* Flying shirt emoji */
-.nx-fly {
+/* ── Reference code: .add-to-cart .shirt / .cart ── */
+.nx-btn.add-to-cart .shirt,
+.nx-btn.add-to-cart .cart {
+  pointer-events: none;
   position: absolute;
   left: 50%;
-  top: 100%;
-  transform: translateX(-50%) scale(0.4);
+}
+
+/* Flying item — starts hidden (scale 0), flies up on click */
+.nx-btn.add-to-cart .shirt {
+  margin: -12px 0 0 -12px;
+  top: 50%;
+  transform-origin: 50% 100%;
+  transform: translateY(var(--shirt-y, 18px)) scale(var(--shirt-scale, 0));
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1);
   font-size: 20px;
-  opacity: 0;
-  pointer-events: none;
-  transition: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
   z-index: 2;
 }
 
-/* Trigger animation */
-@keyframes nx-fly-up {
-  0%   { top: 110%; opacity: 0;   transform: translateX(-50%) scale(0.3); }
-  30%  { top: 50%;  opacity: 1;   transform: translateX(-50%) scale(1.15) translateY(-50%); }
-  65%  { top: 50%;  opacity: 1;   transform: translateX(-50%) scale(1.05) translateY(-50%); }
-  100% { top: -20%; opacity: 0;   transform: translateX(-50%) scale(0.2); }
+/* Cart label stays centered, slides away when shirt flies */
+.nx-btn.add-to-cart .cart {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transform: translateX(-50%);
+  transition: opacity .25s, transform .3s;
+  white-space: nowrap;
+  z-index: 1;
 }
-@keyframes nx-inner-hide {
-  0%,20% { transform: translateY(0); opacity: 1; }
-  40%,80% { transform: translateY(8px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-.nx-btn.nx-animating .nx-fly {
-  animation: nx-fly-up 0.7s cubic-bezier(.34,1.56,.64,1) forwards;
-}
-.nx-btn.nx-animating .nx-btn-inner {
-  animation: nx-inner-hide 0.7s ease forwards;
+
+/* While animating, hide cart label slightly */
+.nx-btn.add-to-cart[data-atc-busy] .cart {
+  opacity: 0.4;
+  transform: translateX(-50%) scale(0.92);
 }
 
 /* Dark mode */
