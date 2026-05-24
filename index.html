@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=180" />
+  <link rel="stylesheet" href="styles.css?v=181" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1468,7 +1468,23 @@
       <div class="pay-head-body">
         <div class="pay-head-title">
           <i class="fas fa-shield-halved"></i>
-          <span>Pay safe &amp; secure</span>
+          <span>Secure Checkout</span>
+        </div>
+        <!-- Step progress bar -->
+        <div class="pay-steps">
+          <div class="pay-step pay-step-done"><div class="pay-step-dot"><i class="fas fa-check"></i></div><span>Cart</span></div>
+          <div class="pay-step-line pay-step-line-done"></div>
+          <div class="pay-step pay-step-active"><div class="pay-step-dot"><span>2</span></div><span>Review</span></div>
+          <div class="pay-step-line"></div>
+          <div class="pay-step"><div class="pay-step-dot"><span>3</span></div><span>Pay</span></div>
+          <div class="pay-step-line"></div>
+          <div class="pay-step"><div class="pay-step-dot"><span>4</span></div><span>Done</span></div>
+        </div>
+      </div>
+    </div>
+    <!-- Order items mini-list (populated by JS) -->
+    <div class="pay-items-wrap" id="payItemsWrap"></div>
+    <div class="pay-body">
         </div>
         <div class="pay-head-icons">
           <span class="phi phi-apple"><i class="fab fa-apple"></i> Pay</span>
@@ -2581,7 +2597,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=176"></script>
+  <script src="script.js?v=177"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
