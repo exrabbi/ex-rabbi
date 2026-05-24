@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=193" />
+  <link rel="stylesheet" href="styles.css?v=194" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1574,19 +1574,19 @@
         <!-- Binance Pay -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" fill="#F3BA2F" xmlns="http://www.w3.org/2000/svg"><polygon points="50,4 63,17 70,50 50,30 30,50 37,17"/><polygon points="4,50 17,37 30,50 17,63"/><polygon points="50,30 70,50 50,70 30,50"/><polygon points="96,50 83,37 70,50 83,63"/><polygon points="50,96 37,83 30,50 50,70 70,50 63,83"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" fill="#F3BA2F" xmlns="http://www.w3.org/2000/svg"><polygon points="50,2 61,13 72,50 50,27 28,50 39,13"/><polygon points="2,50 14,38 26,50 14,62"/><polygon points="50,27 72,50 50,73 28,50"/><polygon points="98,50 86,38 74,50 86,62"/><polygon points="50,98 39,87 28,50 50,73 72,50 61,87"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
         </div>
 
-        <!-- Google Pay (hidden) -->
-        <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')" style="display:none">
+        <!-- Google Pay -->
+        <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico"><span style="color:#4285F4;font-weight:900">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC04">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div><div><div class="ck-pm-name">Google Pay</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay"><svg viewBox="0 0 48 20" xmlns="http://www.w3.org/2000/svg"><text x="0" y="16" font-family="Arial,sans-serif" font-size="14" font-weight="700" fill="#4285F4">G</text><text x="11" y="16" font-family="Arial,sans-serif" font-size="11" font-weight="500" fill="#5F6368">Pay</text></svg></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast & secure checkout</div></div></div>
         </div>
 
-        <!-- PayPal (hidden) -->
-        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')" style="display:none">
+        <!-- PayPal -->
+        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
           <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico"><i class="fab fa-paypal" style="color:#003087;font-size:20px"></i></div><div><div class="ck-pm-name">PayPal</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-paypal"><svg viewBox="0 0 48 32" xmlns="http://www.w3.org/2000/svg"><rect width="48" height="32" rx="4" fill="#003087"/><text x="8" y="22" font-family="Arial,sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#fff">Pay</text><text x="29" y="22" font-family="Arial,sans-serif" font-size="14" font-weight="900" font-style="italic" fill="#009cde">Pal</text></svg></div><div><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div></div>
         </div>
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
@@ -2322,17 +2322,34 @@
 
   <!-- ===== ABANDONED CART POPUP ===== -->
   <div class="promo-overlay" id="abandonOverlay" onclick="closeAbandonPopup()"></div>
-  <div class="promo-popup" id="abandonPopup">
-    <button class="promo-close" onclick="closeAbandonPopup()"><i class="fas fa-times"></i></button>
-    <div class="promo-emoji">🛒</div>
-    <div class="promo-title">Your cart is waiting!</div>
-    <div class="promo-sub">You have <b id="abandonCount">0</b> item(s) ready to order</div>
-    <div class="promo-amount" id="abandonTotal"></div>
-    <div class="promo-hint"><i class="fas fa-truck-fast"></i> Fast delivery across Saudi Arabia</div>
-    <button class="promo-cta" onclick="abandonCheckout()">
-      <i class="fas fa-bag-shopping"></i> Complete My Order →
-    </button>
-    <button class="promo-skip" onclick="closeAbandonPopup()">Maybe later</button>
+  <div class="aband-popup" id="abandonPopup">
+    <!-- Gradient header -->
+    <div class="aband-hdr">
+      <button class="aband-close" onclick="closeAbandonPopup()"><i class="fas fa-times"></i></button>
+      <div class="aband-hdr-icon"><i class="fas fa-bag-shopping"></i></div>
+      <div class="aband-hdr-title">Your cart is waiting! 🛍</div>
+      <div class="aband-hdr-sub">Complete your order before items sell out</div>
+    </div>
+    <!-- Body -->
+    <div class="aband-body">
+      <!-- Product thumbnails -->
+      <div class="aband-items" id="abandonItems"></div>
+      <!-- Total row -->
+      <div class="aband-total-row">
+        <div class="aband-total-info">
+          <span class="aband-items-lbl"><b id="abandonCount">0</b> item(s) in cart</span>
+          <span class="aband-total-price" id="abandonTotal">SAR 0</span>
+        </div>
+        <div class="aband-urgency"><i class="fas fa-fire"></i> Selling fast!</div>
+      </div>
+      <!-- Delivery -->
+      <div class="aband-del-row"><i class="fas fa-truck-fast"></i> Free delivery available · Saudi Arabia</div>
+      <!-- CTA -->
+      <button class="aband-cta" onclick="abandonCheckout()">
+        <i class="fas fa-lock"></i> Complete My Order
+      </button>
+      <button class="aband-skip" onclick="closeAbandonPopup()">Maybe later</button>
+    </div>
   </div>
 
   <!-- ===== EXIT INTENT POPUP ===== -->
@@ -2403,7 +2420,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=187"></script>
+  <script src="script.js?v=188"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

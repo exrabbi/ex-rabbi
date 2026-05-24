@@ -6490,13 +6490,23 @@ function _showAbandonedPopup() {
   const overlay = document.getElementById('abandonOverlay');
   const popup   = document.getElementById('abandonPopup');
   if (!overlay || !popup) return;
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const total = cart.reduce((s, i) => {
     const p = PRODUCTS.find(x => x.id === i.id);
-    return s + (p ? p.price * i.qty : 0);
+    return s + (p ? p.price * i.qty * (lang.rate || 1) : 0);
   }, 0);
-  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
-  document.getElementById('abandonTotal').textContent = lang.currency + total;
+  document.getElementById('abandonTotal').textContent = (lang.currency || 'SAR ') + Math.round(total);
   document.getElementById('abandonCount').textContent = cart.reduce((s,i)=>s+i.qty,0);
+  // Populate product thumbnails
+  const itemsEl = document.getElementById('abandonItems');
+  if (itemsEl) {
+    const previewItems = cart.slice(0, 4);
+    itemsEl.innerHTML = previewItems.map(i => {
+      const p = PRODUCTS.find(x => x.id === i.id);
+      if (!p) return '';
+      return `<div class="aband-thumb"><img src="${p.image}" onerror="this.src='https://picsum.photos/seed/${p.id}/80/80'" />${i.qty > 1 ? `<span class="aband-qty-badge">×${i.qty}</span>` : ''}</div>`;
+    }).join('') + (cart.length > 4 ? `<div class="aband-more-thumb">+${cart.length - 4}</div>` : '');
+  }
   overlay.classList.add('show');
   popup.classList.add('show');
   sessionStorage.setItem('exg_abandon_shown', '1');
