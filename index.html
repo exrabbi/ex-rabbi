@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=186" />
+  <link rel="stylesheet" href="styles.css?v=187" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1015,52 +1015,31 @@
       <button class="stc-pend-done" onclick="closeCart()">Close</button>
     </div>
     <div class="cart-footer" id="cartFooter" style="display:none">
-      <!-- Delivery progress (VIP) -->
-      <div id="cartDelProg"></div>
-      <!-- Summary -->
-      <div class="cart-summary">
-        <div class="cart-srow">
-          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="itemsTotal">Items total</span></span>
-          <span class="cart-srow-val cart-original-total" id="cartOriginalTotal"></span>
+      <!-- Simple total + Checkout button -->
+      <div class="cart-simple-bar">
+        <div class="csb-left">
+          <div class="csb-count" id="cstCount">1 item</div>
+          <div class="csb-total" id="cstTotal">SAR 0</div>
         </div>
-        <div class="cart-srow">
-          <span class="cart-srow-label" style="color:#e05c00"><i class="fas fa-tag"></i> <span data-i18n="discountsLabel">Discounts</span></span>
-          <span class="cart-srow-val cart-discount-val" id="cartDiscountDisp"></span>
-        </div>
-        <div class="cart-srow">
-          <span class="cart-srow-label"><i class="fas fa-bag-shopping"></i> <span data-i18n="orderSubtotal">Subtotal</span></span>
-          <span class="cart-srow-val" id="cartSubtotalDisp"></span>
-        </div>
-        <div class="cart-srow cart-vat-row" id="cartVatRow" style="display:none">
-          <span class="cart-srow-label"><i class="fas fa-receipt"></i> <span id="cartVatLabel">VAT (10%)</span></span>
-          <span class="cart-srow-val cart-vat-val" id="cartVatDisp"></span>
-        </div>
-        <div class="cart-srow">
-          <span class="cart-srow-label"><i class="fas fa-truck"></i> <span data-i18n="deliveryCharge">Delivery</span></span>
-          <span class="cart-srow-val" id="cartDeliveryDisp"></span>
-        </div>
-        <div class="cart-gift-wrap-row">
-          <label class="gift-wrap-label">
-            <input type="checkbox" id="giftWrapCheck" onchange="toggleGiftWrap()">
-            <i class="fas fa-gift" style="color:#e91e8c"></i>
-            <span data-i18n="giftWrap">Gift wrapping (+SAR 5)</span>
-          </label>
-        </div>
-        <div class="cart-srow" id="giftWrapRow" style="display:none">
-          <span class="cart-srow-label" data-i18n="giftWrapLabel">Gift Wrap</span>
-          <span class="cart-srow-val">SAR 5</span>
-        </div>
-        <div class="cart-total-row">
-          <span class="cart-total-label" data-i18n="totalLabel">Total:</span>
-          <span class="cart-total-val" id="cartTotal">0</span>
-        </div>
+        <button class="btn-checkout" onclick="openPayment()">
+          <i class="fas fa-lock" style="font-size:13px;opacity:.85"></i>
+          <span data-i18n="checkout">Checkout</span>
+          <i class="fas fa-arrow-right" style="font-size:13px"></i>
+        </button>
       </div>
-      <div id="savedLaterSection" style="display:none;padding:0 16px 8px"></div>
-      <button class="btn-checkout" onclick="openPayment()">
-        <i class="fas fa-lock" style="font-size:13px;opacity:.85"></i>
-        <span data-i18n="checkout">Checkout</span>
-        <i class="fas fa-arrow-right" style="font-size:13px"></i>
-      </button>
+      <!-- Hidden: keep old IDs intact for JS compatibility -->
+      <div style="display:none" aria-hidden="true">
+        <div id="cartDelProg"></div>
+        <span id="cartOriginalTotal"></span>
+        <span id="cartDiscountDisp"></span>
+        <span id="cartSubtotalDisp"></span>
+        <span id="cartDeliveryDisp"></span>
+        <span id="cartTotal">0</span>
+        <div id="cartVatRow"><span id="cartVatLabel">VAT</span><span id="cartVatDisp"></span></div>
+        <div id="giftWrapRow"></div>
+        <input type="checkbox" id="giftWrapCheck" onchange="toggleGiftWrap()">
+      </div>
+      <div id="savedLaterSection" style="display:none"></div>
     </div>
   </aside>
 
@@ -2409,7 +2388,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=183"></script>
+  <script src="script.js?v=184"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
