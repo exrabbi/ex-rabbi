@@ -11861,11 +11861,14 @@ body:has(#authModal.open) .hc-fab {
   font-size: 10px !important;
   font-weight: 800 !important;
   border-radius: 9px !important;
-  display: flex !important;
+  display: none !important;
   align-items: center !important;
   justify-content: center !important;
   border: 2px solid #fff !important;
   z-index: 10 !important;
+}
+.bot-nav-badge.bnb-show {
+  display: flex !important;
 }
 [data-theme="dark"] .bot-nav-badge { border-color: #161522 !important; background: #ff3aab !important; }
 
@@ -12546,7 +12549,7 @@ body:has(#authModal.open) .hc-fab {
 }
 
 /* Body padding update for floating dock */
-body { padding-bottom: 86px !important; }
+body { padding-bottom: 100px !important; }
 
 /* ===================================================
    ANIMATED CREDIT CARD PREVIEW
@@ -12811,9 +12814,10 @@ body { padding-bottom: 86px !important; }
   padding: 50px 0 38px;
   text-align: center;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
   background: linear-gradient(180deg, #f3eeff 0%, #fff 100%);
   margin-top: 8px;
+  touch-action: pan-y;
 }
 [data-theme="dark"] .team-section {
   background: linear-gradient(180deg, #12071f 0%, #0d0d0d 100%);
@@ -12847,6 +12851,7 @@ body { padding-bottom: 86px !important; }
   position: relative;
   width: 290px; height: 260px;
   perspective: 1000px;
+  touch-action: pan-y;
 }
 
 /* ── Card base ── */
@@ -12860,6 +12865,7 @@ body { padding-bottom: 86px !important; }
   transition: all .52s cubic-bezier(.34,1.56,.64,1);
   box-shadow: 0 8px 28px rgba(0,0,0,.18);
   will-change: transform, filter;
+  touch-action: pan-y;
 }
 .tc img {
   width: 100%; height: 100%;
