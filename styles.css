@@ -11311,3 +11311,12 @@ body:has(#authModal.open) .hc-fab {
 }
 .ck-card-protect i { font-size: 15px !important; flex-shrink: 0 !important; color: #22a55a !important; }
 [data-theme="dark"] .ck-card-protect i { color: #4ade80 !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   Binance Pay — exact brand colors (v192)
+   ════════════════════════════════════════════════════════════════ */
+.ck-pm-ico-binance {
+  background: #0B0E11 !important;
+  border-color: #0B0E11 !important;
+}
+.ck-pm-ico-binance svg { filter: none !important; }
