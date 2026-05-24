@@ -153,6 +153,8 @@ let currentFilter = 'all';
 let currentSort = 'default';
 let visibleCount = 8;
 let currentPriceMax = 9999;
+// Track last render state to enable append-only "load more"
+let _rnFilter = '', _rnSort = '', _rnSearch = '', _rnPrice = 9999, _rnColors = '', _rnCount = 0;
 let currentColors = [];
 let currentLang = 'en';
 let selectedSize = '';
@@ -782,10 +784,25 @@ function renderProducts(searchTerm = '') {
   if (visible.length === 0) {
     grid.innerHTML = `<div class="no-results"><i class="fas fa-search"></i><p>${t('noResults')}</p></div>`;
     document.getElementById('loadMoreBtn').style.display = 'none';
+    _rnCount = 0;
     return;
   }
 
-  grid.innerHTML = visible.map(p => productCardHTML(p)).join('');
+  // Append-only when just loading more (filter/sort/search unchanged)
+  const colorsKey = currentColors.join(',');
+  const isLoadMore = (
+    searchTerm  === _rnSearch  && currentFilter === _rnFilter &&
+    currentSort === _rnSort    && currentPriceMax === _rnPrice &&
+    colorsKey   === _rnColors  && visibleCount > _rnCount && grid.children.length > 0
+  );
+  if (isLoadMore) {
+    const newCards = filtered.slice(_rnCount, visibleCount).map(p => productCardHTML(p)).join('');
+    grid.insertAdjacentHTML('beforeend', newCards);
+  } else {
+    grid.innerHTML = visible.map(p => productCardHTML(p)).join('');
+  }
+  _rnFilter = currentFilter; _rnSort = currentSort; _rnSearch = searchTerm;
+  _rnPrice = currentPriceMax; _rnColors = colorsKey; _rnCount = visibleCount;
   document.getElementById('loadMoreBtn').style.display =
     visibleCount >= filtered.length ? 'none' : 'block';
 
@@ -909,7 +926,7 @@ function setupEvents() {
         visibleCount += 8;
         renderProducts(q);
         if (spinner) spinner.style.display = 'none';
-      }, 400);
+      }, 80);
     }, { rootMargin: '200px' });
     observer.observe(sentinel);
   }
@@ -7646,3 +7663,14 @@ function _initRecentlyPurchasedPopup() { return; // disabled by user request
   setTimeout(_show, 9000);
   setInterval(_show, 28000 + Math.random() * 12000);
 }
+
+/* ── Image fade-in on load (remove shimmer) ── */
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.addEventListener('load', e => {
+    if (e.target.tagName === 'IMG') {
+      e.target.classList.add('img-loaded');
+      const wrap = e.target.closest('.product-img-wrap, .dmc-img-wrap, .fc-img-wrap');
+      if (wrap) { wrap.style.animation = 'none'; wrap.style.background = 'transparent'; }
+    }
+  }, true);
+});
