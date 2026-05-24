@@ -9472,12 +9472,20 @@ body:not([data-theme="dark"]) .tbm-pill i,
 .fpi {
   font-size: 12px !important;
   font-weight: 800 !important;
-  padding: 4px 10px !important;
-  border-radius: 6px !important;
-  background: rgba(255,255,255,.08) !important;
-  color: #fff !important;
+  padding: 5px 12px !important;
+  border-radius: 7px !important;
   letter-spacing: .2px;
 }
+
+/* Real brand colors */
+.fpi-mada   { background: #0072BC !important; color: #fff !important; border-color: transparent !important; }
+.fpi-stc    { background: #6D2C8A !important; color: #fff !important; border-color: transparent !important; }
+.fpi-visa   { background: #1a1f71 !important; color: #fff !important; border-color: transparent !important; }
+.fpi-mc     { background: linear-gradient(135deg,#eb001b,#f79e1b) !important; color: #fff !important; border-color: transparent !important; }
+.fpi-apple  { background: #000 !important; color: #fff !important; border-color: transparent !important; }
+.fpi-tamara { background: #3d9970 !important; color: #fff !important; border-color: transparent !important; }
+.fpi-tabby  { background: #3d1a78 !important; color: #BDA9FF !important; border-color: #7c3aed88 !important; }
+.fpi-cod    { background: #065f46 !important; color: #6ee7b7 !important; border-color: #34d39955 !important; }
 .footer-logo {
   font-size: 22px !important;
   font-weight: 900 !important;
