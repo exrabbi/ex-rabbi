@@ -3716,6 +3716,11 @@ function openPayment() {
     setTimeout(openLocation, 400);
     return;
   }
+  // Close cart first so payment modal appears cleanly without overlap
+  const cartSidebarEl = document.getElementById('cartSidebar');
+  const cartOverlayEl = document.getElementById('cartOverlay');
+  if (cartSidebarEl) cartSidebarEl.classList.remove('open');
+  if (cartOverlayEl) cartOverlayEl.classList.remove('open');
   const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['bn'];
   const subtotalBase = cartSubtotalBase();
   const subtotalDisp = subtotalBase * lang.rate;          // in display currency (SAR)
@@ -3844,20 +3849,27 @@ function openPayment() {
     }).join('');
     payItemsWrap.innerHTML = `<div class="pay-items-list">${itemsHtml}</div>`;
   }
-  // Open modal
-  document.getElementById('payOverlay').classList.add('open');
-  document.getElementById('payModal').classList.add('open');
-  document.body.style.overflow = 'hidden';
-  // Load PayPal if configured
-  if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY && !paypalLoaded) {
-    loadPayPalSDK();
-  }
+  // Open modal — small delay so cart close animation plays first
+  setTimeout(() => {
+    document.getElementById('payOverlay').classList.add('open');
+    document.getElementById('payModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY && !paypalLoaded) {
+      loadPayPalSDK();
+    }
+  }, 320);
 }
 
 function closePayment() {
   document.getElementById('payOverlay').classList.remove('open');
   document.getElementById('payModal').classList.remove('open');
   document.body.style.overflow = '';
+  // Re-open cart so user can continue shopping or edit
+  setTimeout(() => {
+    const cs = document.getElementById('cartSidebar');
+    const co = document.getElementById('cartOverlay');
+    if (cs && cart && cart.length > 0) { cs.classList.add('open'); co && co.classList.add('open'); }
+  }, 300);
   // Reset binance form states
   const ps = document.getElementById('bncPayState');
   const vs = document.getElementById('bncVerifyState');
