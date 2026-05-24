@@ -10349,3 +10349,134 @@ body:has(#authModal.open) .hc-fab {
 /* Products grid spacing */
 .products-grid { gap: 10px !important; padding: 0 10px 10px !important; }
 
+/* ════════════════════════════════════════════════════════════════
+   HOME SECTIONS — PREMIUM FULL-WIDTH REDESIGN (v182)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Stack sections vertically, full width */
+.two-col-banner {
+  display: flex !important; flex-direction: column !important;
+  gap: 12px !important; padding: 4px 12px 8px !important;
+}
+.two-col-card {
+  background: #fff !important; border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,.07) !important;
+}
+[data-theme="dark"] .two-col-card { background: #13112a !important; }
+
+/* Section header — bold & colorful */
+.two-col-head {
+  display: flex !important; align-items: center !important;
+  justify-content: space-between !important;
+  padding: 12px 14px 10px !important;
+}
+.two-col-head.head-deals {
+  background: linear-gradient(135deg, #e91e8c 0%, #c2185b 100%) !important;
+}
+.two-col-head.head-trend {
+  background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%) !important;
+}
+.two-col-head.head-hot {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+.two-col-head.head-new {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+}
+.two-col-title {
+  font-size: 15px !important; font-weight: 900 !important;
+  color: #fff !important; font-style: normal !important; letter-spacing: .2px !important;
+}
+.two-col-more {
+  font-size: 12px !important; color: rgba(255,255,255,.92) !important;
+  font-weight: 700 !important; background: rgba(255,255,255,.18) !important;
+  padding: 4px 12px !important; border-radius: 20px !important;
+}
+.deal-countdown { font-size: 12px !important; color: rgba(255,255,255,.92) !important; font-weight: 700 !important; }
+
+/* Products — horizontal scroll row */
+.two-col-products {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: unset !important;
+  gap: 10px !important;
+  padding: 10px 12px 14px !important;
+  overflow-x: auto !important; overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+.two-col-products::-webkit-scrollbar { display: none !important; }
+
+/* Deal mini card — premium redesign */
+.deal-mini-card {
+  flex-shrink: 0 !important; width: 148px !important;
+  border-radius: 14px !important; overflow: hidden !important;
+  background: #fafafa !important; cursor: pointer !important;
+  scroll-snap-align: start !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07) !important;
+  transition: transform .18s, box-shadow .18s !important;
+  border: 1px solid rgba(0,0,0,.05) !important;
+}
+[data-theme="dark"] .deal-mini-card { background: #1e1c38 !important; border-color: rgba(255,255,255,.07) !important; }
+.deal-mini-card:active { transform: scale(.96) !important; box-shadow: 0 1px 5px rgba(0,0,0,.1) !important; }
+
+.dmc-img-wrap {
+  position: relative !important; width: 100% !important;
+  aspect-ratio: 3/4 !important; overflow: hidden !important; background: #f0f0f0 !important;
+}
+[data-theme="dark"] .dmc-img-wrap { background: #2a2845 !important; }
+.dmc-img-wrap img {
+  width: 100% !important; height: 100% !important;
+  object-fit: cover !important; display: block !important;
+  transition: transform .35s !important;
+}
+.deal-mini-card:active .dmc-img-wrap img { transform: scale(1.05) !important; }
+.deal-mini-badge {
+  position: absolute !important; top: 7px !important; left: 7px !important;
+  background: linear-gradient(135deg, #e91e8c, #c2185b) !important;
+  color: #fff !important; font-size: 10px !important; font-weight: 800 !important;
+  padding: 3px 8px !important; border-radius: 6px !important; letter-spacing: .2px !important;
+}
+.dmc-body {
+  padding: 8px 9px 10px !important;
+}
+.dmc-name {
+  font-size: 12px !important; font-weight: 600 !important; color: #222 !important;
+  line-height: 1.35 !important; margin-bottom: 5px !important;
+  display: -webkit-box !important; -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important; overflow: hidden !important;
+  min-height: 32px !important;
+}
+[data-theme="dark"] .dmc-name { color: #ddd !important; }
+.dmc-prices { display: flex !important; align-items: baseline !important; gap: 5px !important; flex-wrap: wrap !important; }
+.dmc-price { font-size: 14px !important; font-weight: 900 !important; color: #e91e8c !important; }
+.dmc-orig { font-size: 11px !important; color: #bbb !important; text-decoration: line-through !important; }
+
+/* Remove old deal-mini-price since we replaced it */
+.deal-mini-price { display: none !important; }
+
+/* Recently Viewed — bigger cards */
+.rv-strip { gap: 10px !important; padding: 6px 12px 14px !important; }
+.rv-card {
+  min-width: 110px !important; border-radius: 12px !important;
+  overflow: hidden !important; background: #fafafa !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07) !important;
+  border: 1px solid rgba(0,0,0,.05) !important;
+  flex-shrink: 0 !important;
+}
+[data-theme="dark"] .rv-card { background: #1e1c38 !important; border-color: rgba(255,255,255,.07) !important; }
+.rv-card img {
+  width: 110px !important; height: 130px !important;
+  object-fit: cover !important; display: block !important;
+}
+.rv-card-price {
+  padding: 5px 7px 6px !important; font-size: 13px !important;
+  font-weight: 800 !important; color: #e91e8c !important;
+  white-space: nowrap !important;
+}
+.rv-section { padding: 0 0 6px !important; }
+.rv-head { padding: 14px 14px 8px !important; }
+.rv-title { font-size: 15px !important; font-weight: 800 !important; color: #222 !important; }
+[data-theme="dark"] .rv-title { color: #eee !important; }
+
