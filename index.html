@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=184" />
+  <link rel="stylesheet" href="styles.css?v=185" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1463,377 +1463,189 @@
   <!-- PAYMENT MODAL -->
   <div class="pay-overlay" id="payOverlay" onclick="closePayment()"></div>
   <div class="pay-modal" id="payModal">
-    <div class="pay-head">
-      <button class="pay-head-close" onclick="closePayment()"><i class="fas fa-times"></i></button>
-      <div class="pay-head-body">
-        <div class="pay-head-title">
-          <i class="fas fa-shield-halved"></i>
-          <span>Secure Checkout</span>
-        </div>
-        <!-- Step progress bar -->
-        <div class="pay-steps">
-          <div class="pay-step pay-step-done"><div class="pay-step-dot"><i class="fas fa-check"></i></div><span>Cart</span></div>
-          <div class="pay-step-line pay-step-line-done"></div>
-          <div class="pay-step pay-step-active"><div class="pay-step-dot"><span>2</span></div><span>Review</span></div>
-          <div class="pay-step-line"></div>
-          <div class="pay-step"><div class="pay-step-dot"><span>3</span></div><span>Pay</span></div>
-          <div class="pay-step-line"></div>
-          <div class="pay-step"><div class="pay-step-dot"><span>4</span></div><span>Done</span></div>
+    <!-- HEADER -->
+    <div class="ck-hdr">
+      <button class="ck-hdr-back" onclick="closePayment()"><i class="fas fa-arrow-left"></i></button>
+      <span class="ck-hdr-title">Checkout</span>
+      <div style="width:44px"></div>
+    </div>
+    <!-- SCROLLABLE BODY -->
+    <div class="ck-body">
+
+      <!-- 1. ADDRESS -->
+      <div class="ck-sec">
+        <div class="ck-sec-lbl">Address</div>
+        <div class="ck-addr-card" onclick="closePayment();setTimeout(openLocation,300)">
+          <div class="ck-addr-pin"><i class="fas fa-location-dot"></i></div>
+          <div class="ck-addr-info">
+            <div class="ck-addr-to">Deliver to</div>
+            <div class="ck-addr-val" id="ckAddrVal">Add delivery address</div>
+          </div>
+          <i class="fas fa-chevron-right ck-addr-chev"></i>
         </div>
       </div>
-    </div>
-    <!-- Order items mini-list (populated by JS) -->
-    <div class="pay-items-wrap" id="payItemsWrap"></div>
-    <div class="pay-body">
+
+      <!-- 2. WHO RECEIVES -->
+      <div class="ck-sec">
+        <div class="ck-sec-lbl-row">
+          <span class="ck-sec-lbl">Who will receive this order?</span>
+          <span class="ck-new-pill">NEW</span>
         </div>
-        <div class="pay-head-icons">
-          <span class="phi phi-apple"><i class="fab fa-apple"></i> Pay</span>
-          <span class="phi phi-pp"><i class="fab fa-paypal"></i></span>
-          <span class="phi phi-visa">VISA</span>
-          <span class="phi phi-mc">
-            <svg width="28" height="18" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg>
-          </span>
-          <span class="phi phi-amex">AMEX</span>
+        <div class="ck-recv-row">
+          <div class="ck-recv-card ck-recv-active" id="ckRecvMe">
+            <i class="fas fa-user ck-recv-icon"></i>
+            <div class="ck-recv-info">
+              <div class="ck-recv-name" id="ckRecvName">Me</div>
+              <div class="ck-recv-phone" id="ckRecvPhone"></div>
+            </div>
+            <div class="ck-recv-chk"><i class="fas fa-check-circle"></i></div>
+          </div>
+          <div class="ck-recv-card" id="ckRecvOther">
+            <i class="fas fa-phone ck-recv-icon"></i>
+            <div class="ck-recv-info">
+              <div class="ck-recv-name">Someone else</div>
+              <div class="ck-recv-phone">will be at the...</div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="pay-body">
 
-      <!-- Free delivery nudge -->
-      <div class="pay-free-nudge" id="payFreeNudge"></div>
+      <!-- 3. SHIPMENT + ITEMS -->
+      <div class="ck-sec">
+        <div class="ck-ship-hdr">
+          <div><span class="ck-ship-title">Shipment</span> <span class="ck-ship-count" id="ckShipCount"></span></div>
+          <span class="ck-express-pill"><i class="fas fa-bolt"></i> express</span>
+        </div>
+        <div id="payItemsWrap"></div>
+        <div id="payFreeNudge" class="ck-get-row"></div>
+      </div>
 
-      <!-- Coupon Input -->
-      <div class="pay-coupon-row">
-        <div class="pay-coupon-wrap">
-          <i class="fas fa-tag pay-coupon-icon"></i>
-          <input type="text" id="couponInput" class="pay-coupon-input" placeholder="Coupon code" data-i18n-placeholder="couponPlaceholder" maxlength="20" onfocus="_showCouponSuggestions()" />
-          <button class="pay-coupon-btn" id="couponApplyBtn" onclick="applyCoupon()">
-            <span data-i18n="applyCoupon">Apply</span>
-          </button>
+      <!-- 4. COUPON -->
+      <div class="ck-sec">
+        <div class="ck-coupon-row">
+          <i class="fas fa-tag ck-coupon-tag"></i>
+          <input type="text" id="couponInput" class="ck-coupon-inp" placeholder="Coupon code" maxlength="20" onfocus="_showCouponSuggestions()" />
+          <button class="ck-coupon-btn" id="couponApplyBtn" onclick="applyCoupon()">Apply</button>
         </div>
         <div class="pay-coupon-msg" id="couponMsg"></div>
-        <!-- Available vouchers -->
         <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
       </div>
 
-      <!-- Order Summary -->
-      <div class="pay-summary">
-        <div class="pay-summary-row">
-          <span data-i18n="orderSubtotal">Order Subtotal</span>
-          <span id="payOriginalTotal" class="pay-original-total">0</span>
+      <!-- 5. PAY WITH -->
+      <div class="ck-sec">
+        <div class="ck-sec-lbl">Pay with</div>
+
+        <!-- Card -->
+        <div class="ck-pm ck-pm-active" id="pmCard" onclick="selectPayMethod('card')">
+          <div class="ck-pm-left">
+            <div class="ck-pm-ico ck-pm-ico-card"><i class="fas fa-credit-card"></i></div>
+            <div><div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div><div class="ck-pm-sub">mada · Visa · Mastercard · AMEX</div></div>
+          </div>
+          <div class="ck-pm-right"><span class="ck-pm-add">Add/change</span><div class="ck-pm-check" id="checkCard"><i class="fas fa-check-circle"></i></div></div>
         </div>
-        <div class="pay-summary-row" id="payItemDiscountRow">
-          <span style="color:#e05c00"><i class="fas fa-tag"></i> <span data-i18n="discountsLabel">Discounts</span></span>
-          <span id="payItemDiscount" style="color:#e05c00">-0</span>
+        <!-- Card form -->
+        <div id="cardForm" style="display:none">
+          <div class="card-form-wrap">
+            <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
+            <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" /></div></div>
+            <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName()" /></div></div>
+          </div>
+          <input type="hidden" id="cardName" />
         </div>
-        <div class="pay-summary-row">
-          <span data-i18n="orderSubtotal">Subtotal</span>
-          <span id="paySubtotal">0</span>
+
+        <!-- Tabby -->
+        <div class="ck-pm" id="pmTabby" onclick="selectPayMethod('tabby')">
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tabby">tabby</div><div><div class="ck-pm-name">Tabby</div><div class="ck-pm-sub">Pay in 4 interest-free payments</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkTabby"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
-        <div class="pay-summary-row pay-discount-row" id="payDiscountRow" style="display:none">
-          <span id="payDiscountLabel">Discount (10%)</span>
-          <span id="payDiscount" style="color:#0a8f4a">-0</span>
+
+        <!-- Tamara -->
+        <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara">tamara</div><div><div class="ck-pm-name">Tamara</div><div class="ck-pm-sub">Split in up to 24 payments</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkTamara"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
-        <div class="pay-summary-row pay-vat-row" id="payVatRow" style="display:none">
-          <span id="payVatLabel">VAT (10%)</span>
-          <span id="payVat" style="color:#888"></span>
+
+        <!-- Cash on Delivery -->
+        <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod"><i class="fas fa-money-bill-wave"></i></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive · Extra charges may apply</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkWhatsapp"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
-        <div class="pay-summary-row">
-          <span data-i18n="deliveryCharge">Delivery</span>
-          <span class="pay-delivery-fee" id="payDelivery">SAR 17</span>
+
+        <!-- STC Pay -->
+        <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
+          <div class="ck-pm-left"><div class="ck-pm-ico"><svg width="30" height="20" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkStc"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
         </div>
-        <div class="pay-summary-row pay-grand">
-          <span data-i18n="payable">Total Payable</span>
-          <strong id="payTotal">0</strong>
+
+        <!-- Binance Pay -->
+        <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
+          <div class="ck-pm-left"><div class="ck-pm-ico"><i class="fas fa-coins" style="color:#F3BA2F;font-size:18px"></i></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkBinance"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+        </div>
+
+        <!-- Google Pay (hidden) -->
+        <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')" style="display:none">
+          <div class="ck-pm-left"><div class="ck-pm-ico"><span style="color:#4285F4;font-weight:900">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC04">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div><div><div class="ck-pm-name">Google Pay</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkGpay"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+        </div>
+
+        <!-- PayPal (hidden) -->
+        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')" style="display:none">
+          <div class="ck-pm-left"><div class="ck-pm-ico"><i class="fab fa-paypal" style="color:#003087;font-size:20px"></i></div><div><div class="ck-pm-name">PayPal</div></div></div>
+          <div class="ck-pm-right"><div class="ck-pm-check" id="checkPaypal"><i class="fas fa-check-circle" style="color:#ddd"></i></div></div>
+        </div>
+
+        <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
+
+        <!-- Binance form -->
+        <div id="binanceForm" style="display:none"><div class="binance-box"><div id="bncPayState"><div class="binance-box-header"><div class="binance-bnc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/></svg></div><div class="binance-box-title-wrap"><div class="binance-box-title">Binance Pay</div><div class="binance-box-net">Fast &amp; Secure Crypto</div></div><div class="binance-usdt-pill"><span class="binance-usdt-val" id="binanceUSDT">-- USDT</span></div></div><div class="binance-id-wrap"><div class="binance-id-lbl">Binance Pay ID</div><div class="binance-id-row"><span class="binance-id-num" id="binanceAddrTxt">1167244565</span><button class="binance-copy-btn" onclick="copyBinanceAddr()"><i class="fas fa-copy"></i></button></div><div class="binance-id-hint"><i class="fas fa-mobile-screen-button"></i> Binance App → Pay → Send → Enter ID above</div></div><div class="binance-amount-row"><span class="binance-amount-lbl">Send exactly:</span><span class="binance-amount-val" id="binanceAmtSAR"></span></div><div class="binance-ref-wrap"><label class="binance-ref-lbl"><i class="fas fa-receipt"></i> Binance Order / Reference No.</label><input class="binance-ref-input" type="text" id="binanceRefInput" placeholder="e.g. 12345678901234" maxlength="30" oninput="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'')" /><div class="binance-ref-hint">Copy the reference from your Binance payment receipt</div></div></div><div id="bncVerifyState" style="display:none"><div class="bnc-verify-anim"><div class="bnc-spinner"></div><div class="bnc-verify-text">Verifying payment...</div></div></div><div id="bncSuccessState" style="display:none"><div class="bnc-success"><div class="bnc-success-icon"><i class="fas fa-circle-check"></i></div><div class="bnc-success-title">Order Confirmed!</div><div class="bnc-order-badge" id="bncOrderNum">#EX-00000</div><div class="bnc-success-sub">Payment verified ✓<br>WhatsApp confirmation sending...</div></div></div></div></div>
+
+        <!-- STC form -->
+        <div id="stcForm" style="display:none"><div class="stc-box"><div class="stc-box-header"><div class="stc-logo-wrap"><svg width="36" height="26" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg></div><div class="stc-title-wrap"><div class="stc-box-title">STC Pay</div><div class="stc-box-sub">Instant SAR · المدفوعات الفورية</div></div><div class="stc-amount-pill"><span id="stcAmtSAR" class="stc-amt-val"></span></div></div><div class="stc-num-wrap"><div class="stc-num-lbl">Send to this number</div><div class="stc-num-row"><span class="stc-num" id="stcPhoneTxt">0546224029</span><button class="stc-copy-btn" onclick="copyStcNumber()"><i class="fas fa-copy"></i></button></div><div class="stc-num-hint"><i class="fas fa-mobile-screen-button"></i> STC Pay App → Send Money → Enter number above</div></div><div class="stc-amount-row"><span class="stc-amount-lbl">Send exactly:</span><span class="stc-amount-val" id="stcAmtDisplay"></span></div><div class="stc-steps"><div class="stc-step"><span class="stc-step-num">1</span><span>Open STC Pay app</span></div><div class="stc-step"><span class="stc-step-num">2</span><span>Tap <b>Send Money</b> → enter number</span></div><div class="stc-step"><span class="stc-step-num">3</span><span>Send the exact amount shown</span></div><div class="stc-step"><span class="stc-step-num">4</span><span>Enter the transaction ID below</span></div></div><div class="stc-ref-wrap"><label class="stc-ref-lbl"><i class="fas fa-receipt"></i> STC Pay Transaction ID</label><input class="stc-ref-input" type="text" id="stcRefInput" placeholder="e.g. 12345678" maxlength="20" oninput="this.value=this.value.replace(/[^0-9a-zA-Z]/g,'')" /><div class="stc-ref-hint">Copy the transaction ID from your STC Pay receipt</div></div></div></div>
+      </div>
+
+      <!-- 6. PAYMENT SUMMARY -->
+      <div class="ck-sec">
+        <div class="ck-sec-lbl">Payment summary</div>
+        <div class="ck-summ">
+          <div class="ck-summ-row"><span>Subtotal</span><div class="ck-summ-right"><span class="ck-summ-orig" id="payOriginalTotal"></span><span id="paySubtotal"></span></div></div>
+          <div class="ck-summ-row" id="payItemDiscountRow"><span><i class="fas fa-tag" style="color:#e91e8c"></i> Discounts</span><span id="payItemDiscount" style="color:#0a8f4a">-0</span></div>
+          <div class="ck-summ-row" id="payDiscountRow" style="display:none"><span id="payDiscountLabel">Coupon</span><span id="payDiscount" style="color:#0a8f4a">-0</span></div>
+          <div class="ck-summ-row"><span>Shipping Fee</span><span class="pay-delivery-fee" id="payDelivery">SAR 17</span></div>
+          <div class="ck-summ-row" id="payVatRow" style="display:none"><span id="payVatLabel">VAT (15%)</span><span id="payVat" style="color:#888"></span></div>
+          <div class="ck-summ-divider"></div>
+          <div class="ck-summ-row ck-summ-total"><span>Total <small class="ck-incl-vat">Incl. VAT</small></span><strong id="payTotal">0</strong></div>
         </div>
       </div>
 
-      <!-- Payment Methods -->
-      <div class="pay-methods-title" data-i18n="choosePayMethod">Payment methods</div>
-
-      <!-- Card -->
-      <div class="pay-method-card active" id="pmCard" onclick="selectPayMethod('card')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-card-icon">
-              <i class="fas fa-credit-card"></i>
-            </div>
-            <span class="pm-name" id="pmCardLabel" data-i18n="cardName">Card</span>
-          </div>
-          <div class="pm-card-logos">
-            <span class="pcl pcl-mada">mada</span>
-            <span class="pcl pcl-visa">VISA</span>
-            <span class="pcl pcl-mc"><svg width="26" height="16" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 3.8a11 11 0 0 1 0 16.4A11 11 0 0 1 19 3.8z" fill="#ff5f00"/></svg></span>
-            <span class="pcl pcl-amex">AMEX</span>
-            <span class="pcl pcl-disc">DISC</span>
-            <span class="pcl pcl-diners">Diners</span>
-            <span class="pcl pcl-jcb"><svg width="30" height="20" viewBox="0 0 36 24" xmlns="http://www.w3.org/2000/svg"><rect width="12" height="24" fill="#003087"/><rect x="12" width="12" height="24" fill="#cc0000"/><rect x="24" width="12" height="24" fill="#009f6b"/><text x="18" y="16" text-anchor="middle" fill="white" font-size="9" font-weight="900" font-family="Arial,sans-serif">JCB</text></svg></span>
-          </div>
-          <div class="pm-protect"><i class="fas fa-shield-halved"></i> EX GLOBAL protects your card information</div>
-        </div>
-        <div class="pay-method-check" id="checkCard" style="display:none"><i class="fas fa-check-circle"></i></div>
+      <!-- 7. EARN POINTS -->
+      <div class="ck-sec ck-earn-sec">
+        <div class="ck-earn-ico"><i class="fas fa-coins"></i></div>
+        <div class="ck-earn-txt"><div class="ck-earn-title">Earn on your order</div><div class="ck-earn-sub">Complete order to earn loyalty points</div></div>
+        <i class="fas fa-chevron-right" style="color:#ccc;font-size:13px;margin-left:auto"></i>
       </div>
 
-      <!-- Google Pay -->
-      <div class="pay-method-card" id="pmGpay" onclick="selectPayMethod('gpay')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-gpay-logo">
-              <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC04">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span>&nbsp;<span style="color:#555;font-weight:700">Pay</span>
-            </div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkGpay" style="display:none"><i class="fas fa-check-circle"></i></div>
+      <!-- Safe payment bar -->
+      <div class="ck-safe-bar">
+        <i class="fas fa-shield-halved" style="color:#e91e8c"></i>
+        <span>Pay safe &amp; secure</span>
+        <span class="psb psb-visa">VISA</span>
+        <span class="psb psb-mc"><svg width="24" height="15" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/></svg></span>
+        <span class="psb psb-amex">AMEX</span>
       </div>
+      <div style="height:90px"></div>
+    </div>
 
-      <!-- PayPal -->
-      <div class="pay-method-card" id="pmPaypal" onclick="selectPayMethod('paypal')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-paypal-logo"><i class="fab fa-paypal"></i> PayPal</div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkPaypal" style="display:none"><i class="fas fa-check-circle"></i></div>
+    <!-- STICKY BOTTOM BAR -->
+    <div class="ck-bar">
+      <div class="ck-bar-info">
+        <span class="ck-bar-count" id="ckBarCount">1 item</span>
+        <span class="ck-bar-total" id="ckBarTotal">SAR 0</span>
       </div>
-
-      <!-- Cash on Delivery -->
-      <div class="pay-method-card" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-cod-icon"><i class="fas fa-money-bill-wave" style="font-size:16px;color:#4a7c4e"></i></div>
-            <div>
-              <div class="pm-name" data-i18n="waOrderSub">Cash on Delivery</div>
-              <div class="pm-sub" data-i18n="codPayWhen">Pay when you receive</div>
-            </div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkWhatsapp" style="display:none"><i class="fas fa-check-circle"></i></div>
-      </div>
-
-      <!-- STC Pay -->
-      <div class="pay-method-card" id="pmStc" onclick="selectPayMethod('stc')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-stc-icon">
-              <svg width="28" height="20" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg>
-            </div>
-            <div>
-              <div class="pm-name">STC Pay</div>
-              <div class="pm-sub">Instant SAR transfer</div>
-            </div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkStc" style="display:none"><i class="fas fa-check-circle"></i></div>
-      </div>
-
-      <!-- Binance Pay -->
-      <div class="pay-method-card" id="pmBinance" onclick="selectPayMethod('binance')">
-        <div class="pm-radio"><span class="pm-dot"></span></div>
-        <div class="pm-content">
-          <div class="pm-top-row">
-            <div class="pm-bnb-icon"><i class="fas fa-coins"></i></div>
-            <div>
-              <div class="pm-name">Binance Pay</div>
-              <div class="pm-sub" data-i18n="binanceSub">USDT · BNB · Crypto</div>
-            </div>
-          </div>
-        </div>
-        <div class="pay-method-check" id="checkBinance" style="display:none"><i class="fas fa-check-circle"></i></div>
-      </div>
-
-
-      <!-- PayPal buttons container -->
-      <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
-
-      <!-- Card form -->
-      <div id="cardForm" style="display:none">
-        <div class="card-form-wrap">
-          <div class="card-form-header">
-            <i class="fas fa-credit-card"></i>
-            <span>Card</span>
-          </div>
-          <div class="card-field">
-            <label>* Card number</label>
-            <div class="card-input-wrap">
-              <input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)" />
-              <div class="card-type-icon" id="cardTypeIcon"></div>
-            </div>
-            <div class="card-field-req" id="cardNumReq">Required</div>
-          </div>
-          <div class="card-row2">
-            <div class="card-field">
-              <label>* Expiry date</label>
-              <input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
-            </div>
-            <div class="card-field">
-              <label>* CVV</label>
-              <input type="tel" id="cardCvv" placeholder="123" maxlength="4" />
-            </div>
-          </div>
-          <div class="card-row2">
-            <div class="card-field">
-              <label>* First name</label>
-              <input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName()" />
-            </div>
-            <div class="card-field">
-              <label>* Last name</label>
-              <input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName()" />
-            </div>
-          </div>
-        </div>
-        <!-- hidden: keeps old id for any legacy JS that reads cardName -->
-        <input type="hidden" id="cardName" />
-      </div>
-
-      <!-- Binance form -->
-      <div id="binanceForm" style="display:none">
-        <div class="binance-box">
-
-          <!-- ── PAY STATE ── -->
-          <div id="bncPayState">
-            <div class="binance-box-header">
-              <div class="binance-bnc-icon">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a">
-                  <path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/>
-                </svg>
-              </div>
-              <div class="binance-box-title-wrap">
-                <div class="binance-box-title">Binance Pay</div>
-                <div class="binance-box-net">Fast &amp; Secure Crypto</div>
-              </div>
-              <div class="binance-usdt-pill">
-                <span class="binance-usdt-val" id="binanceUSDT">-- USDT</span>
-              </div>
-            </div>
-
-            <!-- Pay ID -->
-            <div class="binance-id-wrap">
-              <div class="binance-id-lbl">Binance Pay ID</div>
-              <div class="binance-id-row">
-                <span class="binance-id-num" id="binanceAddrTxt">1167244565</span>
-                <button class="binance-copy-btn" onclick="copyBinanceAddr()">
-                  <i class="fas fa-copy"></i>
-                </button>
-              </div>
-              <div class="binance-id-hint"><i class="fas fa-mobile-screen-button"></i> Binance App → Pay → Send → Enter ID above</div>
-            </div>
-
-            <!-- Amount -->
-            <div class="binance-amount-row">
-              <span class="binance-amount-lbl">Send exactly:</span>
-              <span class="binance-amount-val" id="binanceAmtSAR"></span>
-            </div>
-
-            <!-- Reference input -->
-            <div class="binance-ref-wrap">
-              <label class="binance-ref-lbl"><i class="fas fa-receipt"></i> Binance Order / Reference No.</label>
-              <input class="binance-ref-input" type="text" id="binanceRefInput"
-                placeholder="e.g. 12345678901234" maxlength="30"
-                oninput="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'')" />
-              <div class="binance-ref-hint">Copy the reference from your Binance payment receipt</div>
-            </div>
-          </div>
-
-          <!-- ── VERIFYING STATE ── -->
-          <div id="bncVerifyState" style="display:none">
-            <div class="bnc-verify-anim">
-              <div class="bnc-spinner"></div>
-              <div class="bnc-verify-text">Verifying payment...</div>
-            </div>
-          </div>
-
-          <!-- ── SUCCESS STATE ── -->
-          <div id="bncSuccessState" style="display:none">
-            <div class="bnc-success">
-              <div class="bnc-success-icon">
-                <i class="fas fa-circle-check"></i>
-              </div>
-              <div class="bnc-success-title">Order Confirmed!</div>
-              <div class="bnc-order-badge" id="bncOrderNum">#EX-00000</div>
-              <div class="bnc-success-sub">Payment verified ✓<br>WhatsApp confirmation sending...</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- STC Pay form -->
-      <div id="stcForm" style="display:none">
-        <div class="stc-box">
-          <div class="stc-box-header">
-            <div class="stc-logo-wrap">
-              <svg width="36" height="26" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg>
-            </div>
-            <div class="stc-title-wrap">
-              <div class="stc-box-title">STC Pay</div>
-              <div class="stc-box-sub">Instant SAR · المدفوعات الفورية</div>
-            </div>
-            <div class="stc-amount-pill">
-              <span id="stcAmtSAR" class="stc-amt-val"></span>
-            </div>
-          </div>
-          <!-- Phone number -->
-          <div class="stc-num-wrap">
-            <div class="stc-num-lbl">Send to this number</div>
-            <div class="stc-num-row">
-              <span class="stc-num" id="stcPhoneTxt">0546224029</span>
-              <button class="stc-copy-btn" onclick="copyStcNumber()"><i class="fas fa-copy"></i></button>
-            </div>
-            <div class="stc-num-hint"><i class="fas fa-mobile-screen-button"></i> STC Pay App → Send Money → Enter number above</div>
-          </div>
-          <!-- Amount -->
-          <div class="stc-amount-row">
-            <span class="stc-amount-lbl">Send exactly:</span>
-            <span class="stc-amount-val" id="stcAmtDisplay"></span>
-          </div>
-          <!-- Steps -->
-          <div class="stc-steps">
-            <div class="stc-step"><span class="stc-step-num">1</span><span>Open STC Pay app</span></div>
-            <div class="stc-step"><span class="stc-step-num">2</span><span>Tap <b>Send Money</b> → enter number</span></div>
-            <div class="stc-step"><span class="stc-step-num">3</span><span>Send the exact amount shown</span></div>
-            <div class="stc-step"><span class="stc-step-num">4</span><span>Enter the transaction ID below</span></div>
-          </div>
-          <!-- Reference input -->
-          <div class="stc-ref-wrap">
-            <label class="stc-ref-lbl"><i class="fas fa-receipt"></i> STC Pay Transaction ID</label>
-            <input class="stc-ref-input" type="text" id="stcRefInput"
-              placeholder="e.g. 12345678" maxlength="20"
-              oninput="this.value=this.value.replace(/[^0-9a-zA-Z]/g,'')" />
-            <div class="stc-ref-hint">Copy the transaction ID from your STC Pay receipt</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Pay Now button -->
-      <button class="btn-pay-now" id="btnPayNow" onclick="processPayment()">
-        <i class="fas fa-lock"></i> <span id="payBtnText" data-i18n="placeOrder">Place Order</span>
+      <button class="ck-bar-btn" id="btnPayNow" onclick="processPayment()">
+        <span id="payBtnText">Place Order</span>
+        <i class="fas fa-arrow-right"></i>
       </button>
-
-      <!-- Pay safe & secure footer bar -->
-      <div class="pay-safe-bar">
-        <div class="pay-safe-left">
-          <i class="fas fa-shield-halved"></i>
-          <span>Pay safe &amp; secure</span>
-        </div>
-        <div class="pay-safe-icons">
-          <span class="psb psb-apple"><i class="fab fa-apple"></i> Pay</span>
-          <span class="psb psb-pp"><i class="fab fa-paypal"></i></span>
-          <span class="psb psb-visa">VISA</span>
-          <span class="psb psb-mc">
-            <svg width="28" height="18" viewBox="0 0 38 24" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="14" cy="12" r="11" fill="#eb001b"/>
-              <circle cx="24" cy="12" r="11" fill="#f79e1b"/>
-              <path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/>
-            </svg>
-          </span>
-          <span class="psb psb-amex">AMEX</span>
-        </div>
-      </div>
     </div>
   </div>
 
@@ -2597,7 +2409,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=181"></script>
+  <script src="script.js?v=182"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
