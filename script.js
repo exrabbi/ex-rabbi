@@ -5187,6 +5187,17 @@ function _localAiReply(text) {
     return `❌ **Order Cancellation:**\n\n✅ Orders can be cancelled **within 2 hours** of placing\n✅ After 2 hours — contact support immediately\n✅ Full refund if cancelled before shipping\n\n**How to cancel:**\n1. Open My Cart → My Orders\n2. Tap your order → Request Cancel\n3. Or WhatsApp us with your Order ID\n\n📲 ${WA}\n\n⚠️ Orders already shipped cannot be cancelled — request a return instead.`;
   }
 
+  // ── WEBSITE / LINK ──
+  if (/link|url|লিংক|ঠিকান|website|ওয়েবসাইট|site|address|সাইট/.test(q)) {
+    const site = 'https://exglobal.online';
+    const msgs = {
+      bn: `🔗 আমাদের ওয়েবসাইট:\n\n👉 exglobal.online\n\nসব পণ্য দেখতে এই সাইটে ভিজিট করুন!\n\n📲 WhatsApp: ${WA}`,
+      en: `🔗 Our website:\n\n👉 exglobal.online\n\nVisit to browse all products & place orders!\n\n📲 WhatsApp: ${WA}`,
+      ar: `🔗 موقعنا الإلكتروني:\n\n👉 exglobal.online\n\n📲 واتساب: ${WA}`,
+    };
+    return msgs[currentLang] || msgs.en;
+  }
+
   // ── PRODUCT SEARCH ──
   if (/show|find|search|product|dress|abaya|shirt|perfume|bag|shoe|beauty|watch|electronics|هاتف|عباية|جلابية|منتج|পণ্য|দেখাও|খুঁজ|उत्पाद/.test(q)) {
     const words = q.split(/\s+/).filter(w => w.length > 3);
@@ -5342,12 +5353,21 @@ function _localAiReply(text) {
   return null; // no local match → try external AI API
 }
 
+function _aiMarkdown(t) {
+  return t
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/\n/g,'<br>');
+}
+
 function _aiAppendMsg(role, text) {
   const box = document.getElementById('aiChatMessages');
   if (!box) return;
   const div = document.createElement('div');
   div.className = 'ai-msg ai-msg-' + role;
-  div.textContent = text;
+  div.innerHTML = _aiMarkdown(text);
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
@@ -7380,7 +7400,7 @@ function _renderReferralBlock() {
           <button class="ref-copy-btn" onclick="navigator.clipboard.writeText('${code}').then(()=>showToast('✅ Code copied!'))"><i class="fas fa-copy"></i></button>
         </div>
         <div class="ref-share-row">
-          <button class="ref-wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent('Join EX GLOBAL and get 10% off your first order! Use my code: '+code+' — https://exrabbi.github.io/ex-rabbi/')}','_blank')">
+          <button class="ref-wa-btn" onclick="window.open('https://wa.me/?text=${encodeURIComponent('Join EX GLOBAL and get 10% off your first order! Use my code: '+code+' — https://exglobal.online')}','_blank')">
             <i class="fab fa-whatsapp"></i> ${t('shareWhatsApp')||'Share via WhatsApp'}
           </button>
         </div>
