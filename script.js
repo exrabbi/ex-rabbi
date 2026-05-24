@@ -876,11 +876,10 @@ function productCardHTML(p) {
         <button class="nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
-          ${!isOOS?`<span class="shirt"><i class="fas fa-bag-shopping"></i></span>`:''}
-          <span class="cart">
-            <i class="fas fa-${isOOS?'ban':'cart-plus'}"></i>
-            <span class="cart-lbl">${isOOS?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
-          </span>
+          ${!isOOS?`
+            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
+            <span class="cart"><i class="fas fa-check"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
+          `:`<i class="fas fa-ban"></i><span>${t('outOfStock')||'Out of Stock'}</span>`}
         </button>
       </div>
     </div>
@@ -893,22 +892,22 @@ function nxAtc(ev, id) {
   btn.dataset.atcBusy = '1';
   flyCartAdd(ev, id);
 
-  // Phase 1 — shirt appears at button center
-  btn.style.setProperty('--shirt-y', '0px');
-  btn.style.setProperty('--shirt-scale', '1');
+  // Phase 1: shirt flies OUT (up), cart flies IN (from below)
+  btn.style.setProperty('--shirt-y', '-50px');
+  btn.style.setProperty('--shirt-scale', '0');
+  btn.style.setProperty('--cart-y', '0px');
+  btn.style.setProperty('--cart-op', '1');
 
-  // Phase 2 — shirt flies up and shrinks
-  setTimeout(() => {
-    btn.style.setProperty('--shirt-y', '-52px');
-    btn.style.setProperty('--shirt-scale', '0');
-  }, 320);
-
-  // Reset
+  // Phase 2: reset — removing properties transitions back to CSS defaults
+  // shirt default: translateY(0) scale(1) = visible at center
+  // cart default: translateY(50px) opacity(0) = hidden below
   setTimeout(() => {
     btn.style.removeProperty('--shirt-y');
     btn.style.removeProperty('--shirt-scale');
+    btn.style.removeProperty('--cart-y');
+    btn.style.removeProperty('--cart-op');
     delete btn.dataset.atcBusy;
-  }, 720);
+  }, 900);
 }
 
 /* ===== DESKTOP NAV ACTIVE STATE ===== */
