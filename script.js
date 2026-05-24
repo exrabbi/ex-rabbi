@@ -3818,6 +3818,32 @@ function openPayment() {
         : (t('cardName') || 'Credit Card');
     }
   } catch (_e) {}
+  // Populate product items in payment modal
+  const payItemsWrap = document.getElementById('payItemsWrap');
+  if (payItemsWrap) {
+    const itemsHtml = cart.map(item => {
+      const p = PRODUCTS.find(x => x.id === item.id);
+      if (!p) return '';
+      const hasDisc = p.originalPrice && p.originalPrice > p.price;
+      const discPct = hasDisc ? Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100) : 0;
+      const variant = [item.size, item.color].filter(Boolean).join(' · ');
+      return `
+        <div class="pay-item-row">
+          <div class="pay-item-img"><img src="${p.image}" alt="" loading="lazy" /></div>
+          <div class="pay-item-info">
+            <div class="pay-item-name">${(typeof getName === 'function' ? getName(p) : (p.names?.en || p.name || '')).substring(0, 40)}</div>
+            ${variant ? `<div class="pay-item-variant">${variant}</div>` : ''}
+            <div class="pay-item-qty">Qty: ${item.qty}</div>
+          </div>
+          <div class="pay-item-price">
+            ${hasDisc ? `<span class="pay-item-orig">${fmtD((p.originalPrice || p.price) * item.qty * lang.rate)}</span>` : ''}
+            <span class="pay-item-total">${fmtD(p.price * item.qty * lang.rate)}</span>
+            ${hasDisc ? `<span class="pay-item-badge">-${discPct}%</span>` : ''}
+          </div>
+        </div>`;
+    }).join('');
+    payItemsWrap.innerHTML = `<div class="pay-items-list">${itemsHtml}</div>`;
+  }
   // Open modal
   document.getElementById('payOverlay').classList.add('open');
   document.getElementById('payModal').classList.add('open');
