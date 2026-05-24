@@ -2624,23 +2624,38 @@ function setBottomActive(el) {
   btns.forEach(b => b.classList.remove('active'));
   el.classList.add('active');
 
-  // macOS dock magnification — scale active + neighbours
+  // macOS dock magnification — active icon bounces, neighbours ripple
   btns.forEach((btn, i) => {
     const wrap = btn.querySelector('.bot-icon-wrap');
     if (!wrap) return;
     const dist = Math.abs(i - idx);
-    wrap.style.setProperty('--ds', dist === 0 ? '1.38' : dist === 1 ? '1.13' : '1');
-    wrap.style.setProperty('--dt', dist === 0 ? '-10px' : dist === 1 ? '-4px' : '0px');
+    if (dist === 0) {
+      wrap.style.setProperty('--ds', '1.4');
+      wrap.style.setProperty('--dt', '-12px');
+    } else if (dist === 1) {
+      wrap.style.setProperty('--ds', '1.15');
+      wrap.style.setProperty('--dt', '-5px');
+    } else {
+      wrap.style.setProperty('--ds', '1');
+      wrap.style.setProperty('--dt', '0px');
+    }
   });
-  // Reset neighbours after spring completes
+
+  // Settle active icon to elevated resting position
   setTimeout(() => {
+    const activeWrap = el.querySelector('.bot-icon-wrap');
+    if (activeWrap) {
+      activeWrap.style.setProperty('--ds', '1.18');
+      activeWrap.style.setProperty('--dt', '-6px');
+    }
+    // Reset neighbours
     btns.forEach((btn, i) => {
       if (i === idx) return;
       const wrap = btn.querySelector('.bot-icon-wrap');
       wrap?.style.removeProperty('--ds');
       wrap?.style.removeProperty('--dt');
     });
-  }, 380);
+  }, 320);
 }
 
 /* ===== TOAST ===== */

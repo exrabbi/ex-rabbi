@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=204" />
+  <link rel="stylesheet" href="styles.css?v=205" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -898,20 +898,24 @@
   </script>
 
   <!-- BOTTOM NAV -->
-  <nav class="bottom-nav">
+  <nav class="bottom-nav dock-nav">
     <button class="bot-btn active" data-sound="shop" onclick="setBottomActive(this)">
+      <div class="dock-tooltip" data-i18n="navShop">Shop</div>
       <div class="bot-icon-wrap"><i class="fas fa-store"></i></div>
       <span data-i18n="navShop">Shop</span>
     </button>
     <button class="bot-btn" data-sound="cat" onclick="setBottomActive(this);filterCategory('all')">
+      <div class="dock-tooltip" data-i18n="navCategory">Category</div>
       <div class="bot-icon-wrap"><i class="fas fa-table-cells-large"></i></div>
       <span data-i18n="navCategory">Category</span>
     </button>
     <button class="bot-btn bot-center-btn" data-sound="trend" onclick="setBottomActive(this);openTrendContent()">
+      <div class="dock-tooltip" data-i18n="navTrend">Trend</div>
       <div class="bot-icon-wrap"><i class="fas fa-bolt-lightning"></i></div>
       <span data-i18n="navTrend">Trend</span>
     </button>
     <button class="bot-btn" id="botCartBtn" data-sound="cart" onclick="setBottomActive(this);openCart()">
+      <div class="dock-tooltip" data-i18n="navCart">Cart</div>
       <div class="bot-icon-wrap">
         <i class="fas fa-bag-shopping"></i>
         <span class="bot-nav-badge" id="botCartBadge" style="display:none">0</span>
@@ -919,6 +923,7 @@
       <span data-i18n="navCart">Cart</span>
     </button>
     <button class="bot-btn" data-sound="me" onclick="setBottomActive(this);openMe()">
+      <div class="dock-tooltip" data-i18n="navMe">Me</div>
       <div class="bot-icon-wrap"><i class="fas fa-circle-user"></i></div>
       <span data-i18n="navMe">Me</span>
     </button>
@@ -2429,7 +2434,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=199"></script>
+  <script src="script.js?v=200"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

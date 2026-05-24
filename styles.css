@@ -12330,3 +12330,145 @@ body:has(#authModal.open) .hc-fab {
 .auth-mascot.pw-mode .auth-arm-r {
   transform: rotate(60deg) translateY(-18px);
 }
+
+/* ===================================================
+   ANIMATED DOCK — macOS-style floating bottom nav
+   Reference: lightswind.com animated dock
+   =================================================== */
+
+/* Floating glass pill container */
+.dock-nav {
+  left: 50% !important;
+  right: auto !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  min-width: min(360px, 96vw) !important;
+  max-width: calc(100vw - 16px) !important;
+  bottom: 10px !important;
+  height: 64px !important;
+  border-radius: 26px !important;
+  background: rgba(255,255,255,.82) !important;
+  backdrop-filter: blur(28px) saturate(1.9) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(1.9) !important;
+  border: 1px solid rgba(255,255,255,.65) !important;
+  border-top: none !important;
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.16),
+    0 2px 8px rgba(0,0,0,.08),
+    0 0 0 0.5px rgba(0,0,0,.06) !important;
+  padding: 0 8px !important;
+  overflow: visible !important;
+  gap: 0 !important;
+}
+[data-theme="dark"] .dock-nav {
+  background: rgba(22,21,34,.88) !important;
+  border-color: rgba(255,255,255,.1) !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5), 0 0 0 0.5px rgba(255,255,255,.06) !important;
+}
+
+/* Each dock icon button */
+.dock-nav .bot-btn {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 7px;
+  height: 64px !important;
+  overflow: visible !important;
+  transition: color .2s !important;
+}
+
+/* ── Tooltip label (appears above icon on active) ── */
+/* Reference: .wrapper .icon:hover span { color: #fff; } */
+.dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%) translateY(6px) scale(.85);
+  background: rgba(30,30,40,.82);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 11px;
+  border-radius: 10px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
+  /* Reference: text-shadow: 0px -1px 0px rgba(0,0,0,.4); */
+  text-shadow: 0px -1px 0px rgba(0,0,0,.4);
+  z-index: 999;
+}
+.dock-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(30,30,40,.82);
+}
+/* Show tooltip on active */
+.dock-nav .bot-btn.active .dock-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Icon wrap — dock magnification via CSS vars */
+.dock-nav .bot-icon-wrap {
+  transform: scale(var(--ds, 1)) translateY(var(--dt, 0px)) !important;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1) !important;
+  margin-bottom: 3px;
+  will-change: transform;
+}
+
+/* Active icon — pink glow dot indicator below */
+.dock-nav .bot-btn.active .bot-icon-wrap::after {
+  display: flex !important;
+  content: '' !important;
+  position: absolute !important;
+  bottom: -7px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 5px !important;
+  height: 5px !important;
+  border-radius: 50% !important;
+  background: #e91e8c !important;
+  box-shadow: 0 0 6px rgba(233,30,140,.7) !important;
+}
+
+/* Icon color states */
+.dock-nav .bot-btn i {
+  font-size: 22px;
+  color: #999;
+  transition: color .2s, transform .2s;
+}
+.dock-nav .bot-btn.active i { color: #e91e8c; }
+[data-theme="dark"] .dock-nav .bot-btn i { color: #555; }
+[data-theme="dark"] .dock-nav .bot-btn.active i { color: #e91e8c; }
+
+/* Label below icon — hide on dock (tooltip replaces it) */
+.dock-nav .bot-btn > span:not(.bot-nav-badge) {
+  font-size: 9px;
+  font-weight: 600;
+  color: #aaa;
+  line-height: 1;
+  transition: color .2s;
+}
+.dock-nav .bot-btn.active > span:not(.bot-nav-badge) {
+  color: #e91e8c;
+  font-weight: 800;
+}
+[data-theme="dark"] .dock-nav .bot-btn > span:not(.bot-nav-badge) { color: #555; }
+[data-theme="dark"] .dock-nav .bot-btn.active > span:not(.bot-nav-badge) { color: #e91e8c; }
+
+/* Center Trend button stays raised */
+.dock-nav .bot-center-btn .bot-icon-wrap {
+  margin-bottom: 0;
+  margin-top: -22px !important;
+}
+
+/* Body padding update for floating dock */
+body { padding-bottom: 86px !important; }
