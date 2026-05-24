@@ -12099,7 +12099,7 @@ body:has(#authModal.open) .hc-fab {
 /* ── ADD TO CART button ── */
 .nx-btn {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   width: 100%;
   height: 38px;
   border: none;
@@ -12141,21 +12141,22 @@ body:has(#authModal.open) .hc-fab {
   z-index: 2;
 }
 
-/* Cart label stays centered, slides away when shirt flies */
+/* Cart label — properly centered */
 .nx-btn.add-to-cart .cart {
+  top: 50%;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   transition: opacity .25s, transform .3s;
   white-space: nowrap;
   z-index: 1;
 }
 
-/* While animating, hide cart label slightly */
+/* While animating, fade cart label */
 .nx-btn.add-to-cart[data-atc-busy] .cart {
-  opacity: 0.4;
-  transform: translateX(-50%) scale(0.92);
+  opacity: 0.3;
+  transform: translate(-50%, -50%) scale(0.88);
 }
 
 /* Dark mode */
