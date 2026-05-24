@@ -11752,3 +11752,134 @@ body:has(#authModal.open) .hc-fab {
 }
 .ck-card-protect i { color: #16a34a; font-size: 14px; flex-shrink: 0; }
 [data-theme="dark"] .ck-card-protect { background: rgba(22,163,74,.1); color: #4ade80; }
+
+/* ══════════════════════════════════════════════════════════════
+   Bottom Nav — Premium clear redesign (v198)
+   Dark mode: bright visible icons | Light mode: clean colored active
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── LIGHT MODE ── */
+.bottom-nav {
+  height: 66px !important;
+  background: #fff !important;
+  border-top: 1px solid #ebebeb !important;
+  box-shadow: 0 -2px 20px rgba(0,0,0,.07) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+}
+
+.bot-btn {
+  gap: 4px !important;
+  height: 66px !important;
+  color: #999 !important;
+}
+
+.bot-btn i {
+  font-size: 22px !important;
+  color: #bbb !important;
+  transition: color .2s, transform .18s !important;
+}
+.bot-btn span {
+  font-size: 10px !important;
+  font-weight: 600 !important;
+  color: #bbb !important;
+  letter-spacing: .1px !important;
+}
+
+/* Active tab — pink icon + label, subtle lift */
+.bot-btn.active i {
+  color: #e91e8c !important;
+  font-size: 24px !important;
+  transform: translateY(-1px) !important;
+  filter: drop-shadow(0 2px 6px rgba(233,30,140,.35)) !important;
+}
+.bot-btn.active span {
+  color: #e91e8c !important;
+  font-weight: 800 !important;
+}
+
+/* Active tab — small pink dot indicator at top */
+.bot-btn.active::before {
+  display: block !important;
+  content: '' !important;
+  position: absolute !important;
+  top: 6px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 4px !important;
+  height: 4px !important;
+  border-radius: 50% !important;
+  background: #e91e8c !important;
+  box-shadow: 0 0 6px rgba(233,30,140,.6) !important;
+}
+
+/* Center Trend button stays above nav */
+.bot-center-btn::before { display: none !important; }
+.bot-center-btn.active::before { display: none !important; }
+.bot-center-btn.active i {
+  filter: none !important;
+  transform: none !important;
+}
+
+/* ── DARK MODE ── */
+[data-theme="dark"] .bottom-nav {
+  background: #161522 !important;
+  border-top: 1px solid rgba(255,255,255,.08) !important;
+  box-shadow: 0 -2px 24px rgba(0,0,0,.5) !important;
+}
+
+/* Inactive icons: clearly visible in dark mode (#888 not #444) */
+[data-theme="dark"] .bot-btn i {
+  color: #888 !important;
+}
+[data-theme="dark"] .bot-btn span {
+  color: #888 !important;
+}
+
+/* Active: bright pink in dark mode */
+[data-theme="dark"] .bot-btn.active i {
+  color: #ff3aab !important;
+  filter: drop-shadow(0 2px 8px rgba(255,58,171,.5)) !important;
+}
+[data-theme="dark"] .bot-btn.active span {
+  color: #ff3aab !important;
+}
+[data-theme="dark"] .bot-btn.active::before {
+  background: #ff3aab !important;
+  box-shadow: 0 0 8px rgba(255,58,171,.7) !important;
+}
+
+/* Cart badge */
+.bot-nav-badge {
+  position: absolute !important;
+  top: -4px !important; right: -8px !important;
+  min-width: 18px !important; height: 18px !important;
+  padding: 0 4px !important;
+  background: #e91e8c !important;
+  color: #fff !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  border-radius: 9px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 2px solid #fff !important;
+  z-index: 10 !important;
+}
+[data-theme="dark"] .bot-nav-badge { border-color: #161522 !important; background: #ff3aab !important; }
+
+/* Center Trend: gradient circle, clear in dark mode too */
+.bot-center-btn .bot-icon-wrap {
+  width: 54px !important; height: 54px !important;
+  margin-top: -28px !important;
+  border-radius: 50% !important;
+  background: linear-gradient(145deg, #ff1097 0%, #c800e0 50%, #6c00d4 100%) !important;
+  box-shadow: 0 6px 20px rgba(233,30,140,.5), 0 2px 8px rgba(108,0,212,.3), inset 0 1.5px 0 rgba(255,255,255,.25) !important;
+  border: 3px solid #fff !important;
+}
+[data-theme="dark"] .bot-center-btn .bot-icon-wrap {
+  border-color: #161522 !important;
+  box-shadow: 0 6px 22px rgba(233,30,140,.6), 0 2px 10px rgba(108,0,212,.4) !important;
+}
+.bot-center-btn i { font-size: 22px !important; color: #fff !important; }
+.bot-center-btn span { color: #e91e8c !important; font-weight: 800 !important; font-size: 10px !important; }
+[data-theme="dark"] .bot-center-btn span { color: #ff3aab !important; }
