@@ -820,45 +820,79 @@ function renderProducts(searchTerm = '') {
 
 function productCardHTML(p) {
   const inWish = wishlist.includes(p.id);
-  const rcFmt = p.ratingCount >= 1000 ? (p.ratingCount/1000).toFixed(1)+'k' : p.ratingCount;
-  const soldFmt = String(p.sold).replace(/\++$/, '');
   const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
   const isOOS = p.stock === 0;
   const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
+
+  // Gradient palette by category
+  const CAT_GRAD = {
+    'abaya':['#1a237e','#0d47a1'],'women':['#880e4f','#c2185b'],'men':['#0d47a1','#1565c0'],
+    'kids':['#bf360c','#e64a19'],'beauty':['#4a148c','#7b1fa2'],'electronics':['#004d40','#00695c'],
+    'accessories':['#1b5e20','#2e7d32'],'shoes':['#b71c1c','#c62828'],'bags':['#33691e','#558b2f'],
+    'sport':['#006064','#00838f'],'home':['#37474f','#455a64'],'watches':['#212121','#37474f'],
+    'perfume':['#4a148c','#6a1b9a'],'fashion':['#1a237e','#283593'],
+  };
+  const fallbackPalette = [
+    ['#1a237e','#283593'],['#880e4f','#ad1457'],['#4a148c','#6a1b9a'],
+    ['#004d40','#00695c'],['#b71c1c','#c62828'],['#bf360c','#e64a19'],
+    ['#006064','#00838f'],['#1b5e20','#2e7d32'],
+  ];
+  const catKey = (p.category||'').toLowerCase().split(/[\s/]/)[0];
+  const [g1, g2] = CAT_GRAD[catKey] || fallbackPalette[p.id % fallbackPalette.length];
+
+  const watermark = (p.category||'STYLE').toUpperCase().replace(/\s+/g,'').substring(0,7);
+  const sizes = (p.sizes||[]).slice(0,4);
+  const colorDots = (p.colors||[]).slice(0,4);
+
+  const badge = p.discount >= 40
+    ? `<span class="nx-badge nx-flash"><i class="fas fa-bolt"></i> FLASH</span>`
+    : p.tag === 'bestseller' ? `<span class="nx-badge nx-best"><i class="fas fa-trophy"></i></span>`
+    : p.tag === 'new' ? `<span class="nx-badge nx-new">NEW</span>`
+    : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
+
   return `
-    <div class="product-card" onclick="openModal(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        ${p.discount >= 40 ? `<span class="badge-ribbon flash-badge"><i class="fas fa-bolt"></i> FLASH</span>` : p.tag === 'bestseller' ? `<span class="badge-ribbon best-badge"><i class="fas fa-trophy"></i> BEST</span>` : p.tag === 'new' ? `<span class="badge-ribbon new-badge"><i class="fas fa-sparkles"></i> NEW</span>` : p.discount >= 20 ? `<span class="badge-ribbon hot-badge">-${p.discount}%</span>` : ''}
-        <button class="wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-          <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
+    <div class="product-card nx-card" onclick="openModal(${p.id})" style="--g1:${g1};--g2:${g2}">
+      <div class="nx-top">
+        <span class="nx-wm">${watermark}</span>
+        <img class="nx-img" src="${p.image}" loading="lazy" alt=""
+          onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
+          ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
+        <div class="nx-top-btns">
+          ${badge}
+          <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+            <i class="${inWish?'fas':'far'} fa-heart"></i>
+          </button>
+        </div>
+        ${isOOS ? '<div class="nx-oos-overlay">Out of Stock</div>' : isLow ? `<div class="nx-low-strip">🔥 Only ${p.stock} left</div>` : ''}
+      </div>
+      <div class="nx-body">
+        <p class="nx-name">${getName(p)}</p>
+        ${sizes.length ? `<div class="nx-row"><span class="nx-lbl">SIZE</span>${sizes.map(s=>`<span class="nx-sz">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="nx-row"><span class="nx-lbl">COLOR</span>${colorDots.map(c=>`<span class="nx-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
+        <div class="nx-price-wrap">
+          <span class="nx-price">${fmt(p.price)}</span>
+          ${origPrice?`<span class="nx-orig">${origPrice}</span>`:''}
+        </div>
+        <button class="nx-btn${isOOS?' oos-btn':''}"
+          onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
+          ${isOOS?'disabled':''}>
+          <span class="nx-btn-inner">
+            <i class="fas fa-${isOOS?'ban':'cart-plus'}"></i>
+            <span>${isOOS?(t('outOfStock')||'Out of Stock'):(t('addToCart')||'Add to Cart')}</span>
+          </span>
+          ${!isOOS?'<span class="nx-fly" aria-hidden="true">🛍️</span>':''}
         </button>
-        <button class="cmp-card-btn" onclick="event.stopPropagation();addToCompare(${p.id})" title="Compare"><i class="fas fa-code-compare"></i></button>
-        <div class="card-qv-overlay"><span class="card-qv-tag"><i class="fas fa-eye"></i> Quick View</span></div>
       </div>
-      <div class="product-info">
-        ${p.category ? `<span class="desk-card-cat">${p.category.toUpperCase()}</span>` : ''}
-        <p class="product-name">${getName(p)}</p>
-        ${p.description ? `<p class="desk-card-desc">${p.description.replace(/<[^>]+>/g,'').substring(0,90)}</p>` : ''}
-        <div class="pc-price-row">
-          <span class="price-current">${fmt(p.price)}</span>
-          ${origPrice ? `<span class="price-original">${origPrice}</span>` : ''}
-          <span class="pc-disc-pill">-${p.discount}%</span>
-        </div>
-        <div class="pc-meta-row">
-          <span class="pc-star">★ ${p.rating} (${rcFmt})</span>
-          <span class="pc-sep">|</span>
-          <span class="pc-sold sold-hot">🔥 ${soldFmt}+ ${t('soldText')}</span>
-        </div>
-        ${isOOS ? `<div class="stock-badge out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>` : isLow ? `<div class="stock-badge low"><i class="fas fa-fire"></i> ${(t('lowStock')||'Only {n} left!').replace('{n}',p.stock)}</div>` : ''}
-        ${!isOOS ? `<div class="card-trust-strip"><span class="card-trust-chip"><i class="fas fa-bolt"></i> Fast Delivery</span><span class="card-trust-chip"><i class="fas fa-shield-halved"></i> Secure</span>${isLow ? `<span class="card-trust-chip urgency"><i class="fas fa-fire"></i> Only ${p.stock} left</span>` : ''}</div>` : ''}
-      </div>
-      <button class="add-cart-btn${isOOS ? ' oos-btn' : ''}" onclick="event.stopPropagation();${isOOS ? '' : `flyCartAdd(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
-        <i class="fas fa-${isOOS ? 'ban' : 'shopping-bag'}"></i>
-        <span>${isOOS ? (t('outOfStock')||'Out of Stock') : (t('addToCart')||'Add to Cart')}</span>
-      </button>
     </div>
   `;
+}
+
+function nxAtc(ev, id) {
+  const btn = ev.currentTarget;
+  if (btn.classList.contains('nx-animating')) return;
+  flyCartAdd(ev, id);
+  btn.classList.add('nx-animating');
+  setTimeout(() => btn.classList.remove('nx-animating'), 750);
 }
 
 /* ===== DESKTOP NAV ACTIVE STATE ===== */
