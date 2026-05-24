@@ -872,8 +872,8 @@ function productCardHTML(p) {
           <span class="pcard-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
-        ${sizes.length ? `<div class="pcard-size">${sizes.map(s=>`<span onclick="event.stopPropagation()">${s}</span>`).join('')}</div>` : ''}
-        ${colorDots.length ? `<div class="pcard-color">${colorDots.map(c=>`<span onclick="event.stopPropagation()" style="background:${c}"></span>`).join('')}</div>` : ''}
+        ${sizes.length ? `<div class="pcard-size"><span class="pcard-size-lbl">SIZE :</span>${sizes.map(s=>`<span onclick="event.stopPropagation()">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="pcard-color"><span class="pcard-color-lbl">COLOR :</span>${colorDots.map(c=>`<span onclick="event.stopPropagation()" style="background:${c}"></span>`).join('')}</div>` : ''}
         <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
