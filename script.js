@@ -639,10 +639,20 @@ function renderFlashDeals() {
 }
 
 function _dealMiniCard(p) {
+  const name = (typeof getName === 'function' ? getName(p) : (p.names?.en || p.name || ''));
+  const hasOrig = p.originalPrice && p.originalPrice > p.price;
   return `<div class="deal-mini-card" onclick="openModal(${p.id})">
-    <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/300/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%;transform:scale(${p.imgFocus.scale});transform-origin:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-    <span class="deal-mini-badge">-${p.discount}%</span>
-    <div class="deal-mini-price">${fmt(p.price)}</div>
+    <div class="dmc-img-wrap">
+      <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/300/400'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+      ${p.discount ? `<span class="deal-mini-badge">-${p.discount}%</span>` : ''}
+    </div>
+    <div class="dmc-body">
+      <p class="dmc-name">${name.substring(0, 28)}</p>
+      <div class="dmc-prices">
+        <span class="dmc-price">${fmt(p.price)}</span>
+        ${hasOrig ? `<span class="dmc-orig">${fmt(p.originalPrice)}</span>` : ''}
+      </div>
+    </div>
   </div>`;
 }
 
