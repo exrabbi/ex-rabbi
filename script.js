@@ -663,13 +663,16 @@ function _dealMiniCard(p) {
   </div>`;
 }
 
-/* ===== RENDER SUPER DEALS ===== */
+/* ===== RENDER SUPER DEALS (infinite marquee) ===== */
 function renderSuperDeals() {
+  const track = document.getElementById('sdealsTrack');
+  if (!track) return;
   const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
   const items = pins
-    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
-    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot').slice(0, 4);
-  document.getElementById('superDeals').innerHTML = items.map(_dealMiniCard).join('');
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 10)
+    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 10);
+  const html = items.map(_dealMiniCard).join('');
+  track.innerHTML = html + html; // duplicate for seamless infinite loop
 }
 
 /* ===== RENDER TRENDING ===== */

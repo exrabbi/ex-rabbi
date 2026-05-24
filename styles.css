@@ -13181,3 +13181,117 @@ body { padding-bottom: 100px !important; }
 [data-theme="dark"] .pcard-size span { border-color: rgba(255,255,255,.14); color: #ccc; background: rgba(255,255,255,.04); }
 [data-theme="dark"] .pcard-color span { border-color: rgba(255,255,255,.12); }
 [data-theme="dark"] .pcard-orig { color: #666; }
+
+/* =========================================
+   SUPER DEALS — Infinite Auto-Scroll Marquee
+   ========================================= */
+.sdeal-wrap {
+  margin: 10px 10px 0;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #1a0533 0%, #0d1b4b 100%);
+  overflow: hidden;
+  padding-bottom: 14px;
+}
+[data-theme="dark"] .sdeal-wrap { background: linear-gradient(135deg, #12002a 0%, #060d2a 100%); }
+
+.sdeal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px 10px;
+}
+.sdeal-title {
+  font-size: 15px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: .2px;
+}
+
+/* Viewport clips the scrolling track */
+.sdeal-viewport {
+  overflow: hidden;
+  width: 100%;
+  cursor: grab;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 6%, #000 94%, transparent 100%);
+}
+.sdeal-viewport:active { cursor: grabbing; }
+
+/* Track — duplicated content, animated left */
+@keyframes sdealsScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.sdeal-track {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+  width: max-content;
+  animation: sdealsScroll 28s linear infinite;
+  will-change: transform;
+}
+.sdeal-track:hover { animation-play-state: paused; }
+
+/* Override deal-mini-card width inside marquee */
+.sdeal-track .deal-mini-card {
+  flex-shrink: 0;
+  width: 125px;
+  background: rgba(255,255,255,.07);
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: transform .18s;
+}
+.sdeal-track .deal-mini-card:active { transform: scale(.95); }
+.sdeal-track .dmc-img-wrap {
+  position: relative;
+  width: 125px;
+  height: 145px;
+  overflow: hidden;
+}
+.sdeal-track .dmc-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.sdeal-track .deal-mini-badge {
+  position: absolute;
+  top: 7px; left: 7px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+.sdeal-track .dmc-body {
+  padding: 7px 8px 9px;
+}
+.sdeal-track .dmc-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #eee;
+  margin: 0 0 4px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.35;
+}
+.sdeal-track .dmc-prices {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+.sdeal-track .dmc-price {
+  font-size: 13px;
+  font-weight: 900;
+  color: #f472b6;
+}
+.sdeal-track .dmc-orig {
+  font-size: 10px;
+  color: rgba(255,255,255,.35);
+  text-decoration: line-through;
+}
