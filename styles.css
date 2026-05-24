@@ -12472,3 +12472,176 @@ body:has(#authModal.open) .hc-fab {
 
 /* Body padding update for floating dock */
 body { padding-bottom: 86px !important; }
+
+/* ===================================================
+   ANIMATED CREDIT CARD PREVIEW
+   Reference: slider animation + real-time update
+   =================================================== */
+.cc-scene {
+  perspective: 1000px;
+  margin: 14px auto 18px;
+  width: 300px;
+  height: 180px;
+}
+.cc-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform .6s cubic-bezier(.34,1.56,.64,1);
+  /* Reference: animation: slider 10s linear infinite */
+  animation: cc-glow-pulse 4s ease-in-out infinite;
+}
+.cc-card.cc-flipped { transform: rotateY(180deg); }
+
+@keyframes cc-glow-pulse {
+  0%,100% { filter: drop-shadow(0 12px 28px rgba(100,0,200,.35)); }
+  50%      { filter: drop-shadow(0 16px 36px rgba(233,30,140,.5)); }
+}
+
+/* Shared face styles */
+.cc-front, .cc-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  padding: 18px 20px;
+  color: #fff;
+  box-shadow: 0 20px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.2);
+}
+
+/* Front — dark gradient (matches reference dark card) */
+.cc-front {
+  background: linear-gradient(135deg, #1a0533 0%, #2d0a5e 40%, #1a1a40 100%);
+}
+.cc-bg-glow {
+  position: absolute;
+  width: 200px; height: 200px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.3) 0%, transparent 70%);
+  top: -60px; right: -40px;
+  pointer-events: none;
+}
+
+/* Back */
+.cc-back {
+  background: linear-gradient(135deg, #22223b 0%, #1a1a30 100%);
+  transform: rotateY(180deg);
+}
+
+/* Top row */
+.cc-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.cc-bank {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .5px;
+  color: rgba(255,255,255,.9);
+}
+.cc-network { display: flex; align-items: center; }
+
+/* Chip */
+.cc-chip {
+  width: 40px; height: 30px;
+  background: linear-gradient(135deg, #d4af37, #b8860b, #d4af37);
+  border-radius: 6px;
+  margin-bottom: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+.cc-chip-line {
+  position: absolute;
+  left: 0; right: 0;
+  height: 1px;
+  background: rgba(0,0,0,.2);
+}
+.cc-chip-line:nth-child(1) { top: 30%; }
+.cc-chip-line:nth-child(2) { bottom: 30%; }
+.cc-chip-mid {
+  top: 0; bottom: 0; width: 1px;
+  height: auto; left: 50%; right: auto;
+}
+
+/* Card number */
+.cc-number {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 16px;
+  transition: all .2s;
+  text-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* Bottom row */
+.cc-bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.cc-lbl {
+  font-size: 9px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 3px;
+}
+.cc-holder, .cc-expiry {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+  transition: all .2s;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Card back */
+.cc-stripe {
+  height: 44px;
+  background: #111;
+  margin: -18px -20px 16px;
+}
+.cc-sig-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.cc-sig-lines {
+  flex: 1;
+  height: 36px;
+  background: repeating-linear-gradient(
+    0deg, rgba(255,255,255,.08) 0px, rgba(255,255,255,.08) 2px,
+    rgba(255,255,255,.04) 2px, rgba(255,255,255,.04) 4px
+  );
+  border-radius: 4px;
+}
+.cc-cvv-box {
+  width: 60px;
+  background: #fff;
+  border-radius: 6px;
+  padding: 4px 8px;
+  text-align: center;
+}
+.cc-cvv-val {
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 2px;
+  font-family: 'Courier New', monospace;
+}
+.cc-back-network {
+  display: flex;
+  justify-content: flex-end;
+}

@@ -4326,6 +4326,56 @@ function _syncCardName() {
   if (h) h.value = [f, l].filter(Boolean).join(' ');
 }
 
+/* ── Animated card preview ── */
+function _updateCCPreview() {
+  const num   = (document.getElementById('cardNumber')?.value || '').replace(/\s/g,'');
+  const exp   = document.getElementById('cardExpiry')?.value || '';
+  const first = (document.getElementById('cardFirstName')?.value || '').trim();
+  const last  = (document.getElementById('cardLastName')?.value || '').trim();
+  const cvv   = document.getElementById('cardCvv')?.value || '';
+
+  // Number — pad with # to 16 digits
+  const padded = (num + '################').substring(0,16);
+  const formatted = padded.match(/.{1,4}/g).join(' ');
+  const numEl = document.getElementById('ccNumber');
+  if (numEl) numEl.textContent = formatted;
+
+  // Holder
+  const holderEl = document.getElementById('ccHolder');
+  if (holderEl) {
+    const name = [first, last].filter(Boolean).join(' ').toUpperCase();
+    holderEl.textContent = name || 'NAME ON CARD';
+  }
+
+  // Expiry
+  const expEl = document.getElementById('ccExpiry');
+  if (expEl) expEl.textContent = exp || 'MM/YY';
+
+  // CVV (back of card)
+  const cvvEl = document.getElementById('ccCvv');
+  if (cvvEl) cvvEl.textContent = cvv ? cvv.replace(/./g,'•') : '•••';
+
+  // Detect card network from first digit
+  const networkEl = document.getElementById('ccNetwork');
+  if (networkEl && num.length > 0) {
+    const d = num[0];
+    if (d === '4') {
+      // Visa
+      networkEl.innerHTML = `<svg viewBox="0 0 80 26" width="52" height="26"><text x="0" y="22" font-size="26" font-weight="900" font-style="italic" fill="#1a1f71" font-family="Arial">VISA</text></svg>`;
+    } else if (d === '5') {
+      // Mastercard
+      networkEl.innerHTML = `<svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>`;
+    } else if (d === '3') {
+      // Amex
+      networkEl.innerHTML = `<svg viewBox="0 0 60 24" width="52" height="24"><rect width="60" height="24" rx="4" fill="#2E77BC"/><text x="6" y="18" font-size="13" font-weight="900" fill="#fff" font-family="Arial">AMEX</text></svg>`;
+    }
+  }
+}
+
+function _ccFlip(toBack) {
+  document.getElementById('ccCard')?.classList.toggle('cc-flipped', toBack);
+}
+
 /* ===== REVIEWS ===== */
 let reviewStarVal = 0;
 let activeRevFilter = 'all';
