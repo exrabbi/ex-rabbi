@@ -11320,3 +11320,24 @@ body:has(#authModal.open) .hc-fab {
   border-color: #0B0E11 !important;
 }
 .ck-pm-ico-binance svg { filter: none !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   Binance Pay icon — correct BNB diamond logo (v193)
+   ════════════════════════════════════════════════════════════════ */
+.ck-pm-ico-binance {
+  background: #0B0E11 !important;
+  border-color: #0B0E11 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 9px !important;
+  padding: 5px !important;
+  flex-shrink: 0 !important;
+}
+.ck-pm-ico-binance svg {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+/* Fix: don't override display:none with !important on .ck-pm */
+.ck-pm[style*="display:none"] { display: none !important; }
