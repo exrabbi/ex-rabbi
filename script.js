@@ -824,7 +824,6 @@ function productCardHTML(p) {
   const isOOS = p.stock === 0;
   const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
 
-  // Gradient palette by category
   const CAT_GRAD = {
     'abaya':['#1a237e','#0d47a1'],'women':['#880e4f','#c2185b'],'men':['#0d47a1','#1565c0'],
     'kids':['#bf360c','#e64a19'],'beauty':['#4a148c','#7b1fa2'],'electronics':['#004d40','#00695c'],
@@ -840,7 +839,7 @@ function productCardHTML(p) {
   const catKey = (p.category||'').toLowerCase().split(/[\s/]/)[0];
   const [g1, g2] = CAT_GRAD[catKey] || fallbackPalette[p.id % fallbackPalette.length];
 
-  const watermark = (p.category||'STYLE').toUpperCase().replace(/\s+/g,'').substring(0,7);
+  const watermark = (p.category||'STYLE').toUpperCase().replace(/['\s]+/g,'').substring(0,8);
   const sizes = (p.sizes||[]).slice(0,4);
   const colorDots = (p.colors||[]).slice(0,4);
 
@@ -851,34 +850,33 @@ function productCardHTML(p) {
     : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
 
   return `
-    <div class="product-card nx-card" onclick="openModal(${p.id})" style="--g1:${g1};--g2:${g2}">
-      <div class="nx-top">
-        <span class="nx-wm">${watermark}</span>
-        <img class="nx-img" src="${p.image}" loading="lazy" alt=""
+    <div class="product-card pcard" onclick="openModal(${p.id})" style="--clr:${g1};--clr2:${g2};--wm:'${watermark}'">
+      <div class="pcard-imgBx">
+        <img src="${p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
           ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
-        <div class="nx-top-btns">
-          ${badge}
-          <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-            <i class="${inWish?'fas':'far'} fa-heart"></i>
-          </button>
-        </div>
-        ${isOOS ? '<div class="nx-oos-overlay">Out of Stock</div>' : isLow ? `<div class="nx-low-strip">🔥 Only ${p.stock} left</div>` : ''}
       </div>
-      <div class="nx-body">
-        <p class="nx-name">${getName(p)}</p>
-        ${sizes.length ? `<div class="nx-row"><span class="nx-lbl">SIZE</span>${sizes.map(s=>`<span class="nx-sz">${s}</span>`).join('')}</div>` : ''}
-        ${colorDots.length ? `<div class="nx-row"><span class="nx-lbl">COLOR</span>${colorDots.map(c=>`<span class="nx-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
-        <div class="nx-price-wrap">
-          <span class="nx-price">${fmt(p.price)}</span>
-          ${origPrice?`<span class="nx-orig">${origPrice}</span>`:''}
+      <div class="pcard-top-btns">
+        ${badge}
+        <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+          <i class="${inWish?'fas':'far'} fa-heart"></i>
+        </button>
+      </div>
+      ${isOOS ? '<div class="pcard-oos">Out of Stock</div>' : isLow ? `<div class="pcard-low">🔥 Only ${p.stock} left</div>` : ''}
+      <div class="pcard-contentBx">
+        <h3 class="pcard-name">${getName(p)}</h3>
+        <div class="pcard-price-row">
+          <span class="pcard-price">${fmt(p.price)}</span>
+          ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
-        <button class="nx-btn add-to-cart${isOOS?' oos-btn':''}"
+        ${sizes.length ? `<div class="pcard-size">${sizes.map(s=>`<span onclick="event.stopPropagation()">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="pcard-color">${colorDots.map(c=>`<span onclick="event.stopPropagation()" style="background:${c}"></span>`).join('')}</div>` : ''}
+        <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
           ${!isOOS?`
-            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
-            <span class="cart"><i class="fas fa-check"></i><span>${t('addToCart')||'Add to Cart'}</span></span>
+            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>Buy Now</span></span>
+            <span class="cart"><i class="fas fa-check"></i><span>Added!</span></span>
           `:`<i class="fas fa-ban"></i><span>${t('outOfStock')||'Out of Stock'}</span>`}
         </button>
       </div>
