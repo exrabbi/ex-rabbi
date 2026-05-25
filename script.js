@@ -3830,13 +3830,15 @@ function updateAuthUI() {
   if (!guestEl || !userEl) return;
   if (currentUser) {
     guestEl.style.display = 'none';
-    userEl.style.display  = 'flex';
+    userEl.style.display  = 'block';
     if (signOutItem) signOutItem.style.display = 'flex';
     if (drawerSignOut) drawerSignOut.style.display = 'block';
-    const nameEl  = document.getElementById('meUserName');
-    const emailEl = document.getElementById('meUserEmail');
-    if (nameEl)  nameEl.textContent  = currentUser.name  || '';
-    if (emailEl) emailEl.textContent = maskEmail(currentUser.email || '');
+
+    // Name
+    const nameEl = document.getElementById('meUserName');
+    if (nameEl) nameEl.textContent = (currentUser.name || '').toUpperCase();
+
+    // Avatar / initial
     const avatarImg = document.getElementById('meUserAvatar');
     const initial   = document.getElementById('meAvatarInitial');
     if (avatarImg && initial) {
@@ -3850,6 +3852,52 @@ function updateAuthUI() {
         initial.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
       }
     }
+
+    // User ID — generate once and persist
+    const idKey = 'exg_uid_' + (currentUser.email || 'guest');
+    let uid = localStorage.getItem(idKey);
+    if (!uid) {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      uid = 'CJ' + Array.from({length:7}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+      localStorage.setItem(idKey, uid);
+    }
+    const idEl = document.getElementById('meUserId');
+    if (idEl) idEl.textContent = uid;
+
+    // Level based on order count
+    const allOrders = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+    const orderCount = currentUser ? allOrders.filter(o=>o.customer?.email===currentUser.email).length : 0;
+    const lvEl = document.getElementById('meUserLevel');
+    if (lvEl) {
+      if (orderCount >= 20) lvEl.textContent = 'LV5';
+      else if (orderCount >= 10) lvEl.textContent = 'LV4';
+      else if (orderCount >= 5)  lvEl.textContent = 'LV3';
+      else if (orderCount >= 2)  lvEl.textContent = 'LV2';
+      else lvEl.textContent = 'LV1';
+    }
+
+    // Tier (based on loyalty points)
+    const pts = parseInt(localStorage.getItem('exg_loyalty_pts') || '0');
+    const tierEl = document.getElementById('meUserTier');
+    if (tierEl) {
+      if (pts >= 500) {
+        tierEl.innerHTML = '<i class="fas fa-crown"></i> Gold <i class="fas fa-chevron-right" style="font-size:8px"></i>';
+        tierEl.style.background = 'rgba(245,158,11,.2)';
+        tierEl.style.color = '#fbbf24';
+        tierEl.style.borderColor = 'rgba(245,158,11,.35)';
+      } else if (pts >= 200) {
+        tierEl.innerHTML = '<i class="fas fa-shield-halved"></i> Silver <i class="fas fa-chevron-right" style="font-size:8px"></i>';
+        tierEl.style.background = 'rgba(156,163,175,.18)';
+        tierEl.style.color = '#d1d5db';
+        tierEl.style.borderColor = 'rgba(156,163,175,.3)';
+      } else {
+        tierEl.innerHTML = '<i class="fas fa-shield-halved"></i> Free <i class="fas fa-chevron-right" style="font-size:8px"></i>';
+        tierEl.style.background = 'rgba(99,179,237,.18)';
+        tierEl.style.color = '#90cdf4';
+        tierEl.style.borderColor = 'rgba(99,179,237,.3)';
+      }
+    }
+
     _updateMeStats();
   } else {
     guestEl.style.display = 'flex';
@@ -3857,6 +3905,12 @@ function updateAuthUI() {
     if (signOutItem) signOutItem.style.display = 'none';
     if (drawerSignOut) drawerSignOut.style.display = 'none';
   }
+}
+
+function copyUserId() {
+  const uid = document.getElementById('meUserId')?.textContent;
+  if (!uid) return;
+  navigator.clipboard.writeText(uid).then(() => showToast('✅ User ID copied!'));
 }
 
 /* ===== PAYMENT SYSTEM ===== */
