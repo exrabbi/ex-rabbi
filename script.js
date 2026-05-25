@@ -693,8 +693,8 @@ function renderSuperDeals() {
   if (!track) return;
   const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
   const items = pins
-    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 10)
-    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 10);
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 12)
+    : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 12);
   const html = items.map(p => productCardHTML(p)).join('');
   track.innerHTML = html + html; // duplicate for seamless infinite loop
 }
