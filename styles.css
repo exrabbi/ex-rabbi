@@ -13532,45 +13532,28 @@ body { padding-bottom: 100px !important; }
 .me-panel > .me-profile-hero { display: none !important; }
 
 /* =========================================
-   AUTH SPLIT ROW — Character beside form
-   (Reference: Animated Login Form style)
+   AUTH HERO MASCOT — Centered tall (panda-style)
    ========================================= */
-.auth-split-row {
+.am-center-hero {
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin: 10px 0 4px;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px auto 8px;
+  width: 130px;
+  position: relative;
 }
 
-/* Character column — left side */
-.auth-split-row .am-wrap {
-  flex: 0 0 110px;
-  margin: 0;
-  width: 110px;
-  align-self: flex-end;
-}
-
-/* Scale character up to fill the column */
-.auth-split-row .am-char {
-  transform: scale(1.25);
+/* Big character scale */
+.am-center-hero .am-char {
+  transform: scale(1.7);
   transform-origin: bottom center;
 }
 
-/* Pointing arm always visible toward the right */
-.auth-split-row .am-arm-l {
-  transform: rotate(-55deg) !important;
-  animation: auth-arm-point 2.5s ease-in-out infinite !important;
-}
-@keyframes auth-arm-point {
-  0%,100% { transform: rotate(-55deg) !important; }
-  50%      { transform: rotate(-45deg) !important; }
-}
-
-/* Walking legs animation */
-.auth-split-row .am-leg-l {
+/* Walking legs */
+.am-center-hero .am-leg-l {
   animation: auth-leg-l 0.8s ease-in-out infinite alternate;
 }
-.auth-split-row .am-leg-r {
+.am-center-hero .am-leg-r {
   animation: auth-leg-r 0.8s ease-in-out infinite alternate;
 }
 @keyframes auth-leg-l {
@@ -13582,45 +13565,68 @@ body { padding-bottom: 100px !important; }
   100% { transform: rotate(-18deg); }
 }
 
-/* Body bob while walking */
-.auth-split-row .am-scene {
+/* Body bob */
+.am-center-hero .am-scene {
   animation: auth-walk-bob 0.8s ease-in-out infinite !important;
 }
 @keyframes auth-walk-bob {
   0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-5px); }
+  50%      { transform: translateY(-6px); }
 }
 
-/* Speech bubble — above the character */
-.auth-split-row .am-bubble {
+/* Wave arm */
+.am-center-hero .am-arm-l {
+  transform: rotate(-50deg) !important;
+  animation: auth-arm-wave 1.8s ease-in-out infinite !important;
+}
+@keyframes auth-arm-wave {
+  0%,100% { transform: rotate(-50deg) !important; }
+  40%     { transform: rotate(-20deg) !important; }
+  70%     { transform: rotate(-60deg) !important; }
+}
+
+/* Speech bubble centered above head */
+.am-center-hero .am-bubble {
   left: 50%;
   transform: translateX(-50%) scale(.7);
-  top: -38px;
-  font-size: 11px;
-  padding: 5px 10px;
+  top: -42px;
+  font-size: 12px;
+  padding: 6px 14px;
   white-space: nowrap;
-  border-radius: 12px 12px 12px 4px;
+  border-radius: 14px 14px 14px 4px;
 }
-.auth-split-row .am-bubble.show {
+.am-center-hero .am-bubble.show {
   transform: translateX(-50%) scale(1);
   opacity: 1;
 }
 
-/* Form column — right side */
-.auth-split-row #authLoginView {
-  flex: 1;
+/* pw-mode overrides for center hero */
+.am-center-hero.pw-mode .am-arm-l {
+  transform: rotate(-80deg) translateY(-8px) !important;
+  animation: none !important;
+}
+.am-center-hero.pw-mode .am-arm-r {
+  transform: rotate(80deg) translateY(-8px) !important;
+}
+.am-center-hero.pw-mode .am-eye {
+  transform: scaleY(0.1) !important;
+  animation: none !important;
+}
+.am-center-hero.pw-mode .am-scene {
+  animation: am-float 3.5s ease-in-out infinite !important;
+}
+
+/* look-right pupils for center hero */
+.am-center-hero.look-right .am-pupil {
+  transform: translate(3px, 2px) !important;
+}
+
+/* Form below mascot — full width */
+#authLoginView {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  min-width: 0;
-}
-
-/* Make buttons more compact inside split */
-.auth-split-row .btn-google-signin,
-.auth-split-row .btn-facebook-signin {
-  padding: 13px 12px !important;
-  font-size: 13px !important;
-  border-radius: 16px !important;
+  width: 100%;
 }
 
 /* =========================================
