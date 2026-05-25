@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=242" />
+  <link rel="stylesheet" href="styles.css?v=243" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -2525,7 +2525,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=221"></script>
+  <script src="script.js?v=222"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
@@ -2559,6 +2559,47 @@
     </div>
     <!-- Products grid -->
     <div class="tp-grid" id="tpGrid"></div>
+  </div>
+
+  <!-- Birthday Wish Overlay -->
+  <div class="bday-overlay" id="bdayOverlay">
+    <div class="bday-modal" id="bdayModal">
+      <div class="bday-confetti-canvas-wrap"><canvas id="bdayCanvas"></canvas></div>
+      <div class="bday-header">
+        <div class="bday-emoji-row">🎂🎉🎁</div>
+        <h2 class="bday-title" id="bdayTitle">Happy Birthday!</h2>
+        <p class="bday-sub" id="bdaySub">Wishing you an amazing day</p>
+      </div>
+      <div class="bday-cake-wrap" id="bdayCakeWrap">
+        <div class="bday-cake">
+          <div class="bday-tier bday-tier-top"></div>
+          <div class="bday-tier bday-tier-mid"></div>
+          <div class="bday-tier bday-tier-bot"></div>
+        </div>
+        <div class="bday-candle" id="bdayCandle" onclick="_blowCandle()">
+          <div class="bday-flame-wrap" id="bdayFlame">
+            <div class="bday-flame-outer"></div>
+            <div class="bday-flame-inner"></div>
+            <div class="bday-flame-glow"></div>
+          </div>
+          <div class="bday-candle-body"></div>
+          <div class="bday-smoke" id="bdaySmoke"></div>
+        </div>
+      </div>
+      <p class="bday-hint" id="bdayHint">👆 Tap the candle to blow it out!</p>
+      <div class="bday-voucher" id="bdayVoucher" style="display:none">
+        <div class="bday-voucher-inner">
+          <div class="bday-voucher-top">
+            <span class="bday-voucher-icon">🎁</span>
+            <span class="bday-voucher-pct">10% OFF</span>
+          </div>
+          <div class="bday-voucher-code" id="bdayVoucherCode">BDAY10</div>
+          <p class="bday-voucher-note">Your birthday gift — valid today!</p>
+          <button class="bday-voucher-copy" onclick="_copyBdayCode()">Copy Code</button>
+        </div>
+      </div>
+      <button class="bday-close" onclick="_closeBdayWish()">Maybe Later</button>
+    </div>
   </div>
 </body>
 </html>

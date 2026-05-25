@@ -418,6 +418,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   _applyColTiles();
   initColScroll();
   initScrollReveal();
+  _checkBirthdayWish();
 });
 
 /* ===== COLLECTION TILES — apply saved admin data ===== */
@@ -2373,7 +2374,8 @@ function buyNow(id) {
 
 /* ===== COUPON SYSTEM ===== */
 const COUPONS = {
-  'WELCOME10': { pct: 10, oneTime: true }
+  'WELCOME10': { pct: 10, oneTime: true },
+  'BDAY10':    { pct: 10, oneTime: false }
 };
 let appliedCoupon = null;
 
@@ -4004,6 +4006,7 @@ function setUser(user) {
   });
   // Request notification permission after login (silent — only asks once)
   setTimeout(() => requestNotifPermission(), 3000);
+  _checkBirthdayWish();
 }
 
 function signOut() {
@@ -8477,3 +8480,98 @@ function _teamGoTo(i) { _tIdx = i; _teamRender(); clearInterval(_tTimer); _tTime
 function _teamTap(i)  { if (i !== _tIdx) _teamGoTo(i); }
 
 document.addEventListener('DOMContentLoaded', _initTeam);
+
+// ── Birthday Wish System ─────────────────────────────────
+function _checkBirthdayWish() {
+  if (!currentUser || !currentUser.birthday) return;
+  const today = new Date();
+  const bday  = new Date(currentUser.birthday);
+  if (bday.getMonth() !== today.getMonth() || bday.getDate() !== today.getDate()) return;
+  const shownKey = 'exg_bday_shown_' + today.getFullYear();
+  if (localStorage.getItem(shownKey) === currentUser.email) return;
+  localStorage.setItem(shownKey, currentUser.email);
+  setTimeout(_showBdayWish, 1400);
+}
+
+function _showBdayWish() {
+  const overlay = document.getElementById('bdayOverlay');
+  if (!overlay) return;
+  const firstName = currentUser && currentUser.name ? ', ' + currentUser.name.split(' ')[0] + '!' : '!';
+  document.getElementById('bdayTitle').textContent = 'Happy Birthday' + firstName;
+  document.getElementById('bdaySub').textContent   = 'We have a special gift for you 🎁';
+  overlay.classList.add('open');
+  _startBdayConfetti(false);
+}
+
+function _blowCandle() {
+  const candle = document.getElementById('bdayCandle');
+  if (!candle || candle.classList.contains('blown')) return;
+  candle.classList.add('blown');
+  document.getElementById('bdayHint').textContent = '🎉 You blew it out! Here\'s your gift!';
+  setTimeout(() => {
+    const v = document.getElementById('bdayVoucher');
+    if (v) v.style.display = 'block';
+    _startBdayConfetti(true);
+  }, 600);
+}
+
+function _closeBdayWish() {
+  const overlay = document.getElementById('bdayOverlay');
+  if (overlay) overlay.classList.remove('open');
+  _stopBdayConfetti();
+}
+
+function _copyBdayCode() {
+  navigator.clipboard.writeText('BDAY10').then(() => showToast('🎂 Code BDAY10 copied!')).catch(() => {});
+  const cf = document.getElementById('couponInput');
+  if (cf) cf.value = 'BDAY10';
+}
+
+let _bdayConfRaf = null;
+let _bdayParticles = [];
+
+function _startBdayConfetti(burst) {
+  const canvas = document.getElementById('bdayCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width  = canvas.offsetWidth  || 320;
+  canvas.height = canvas.offsetHeight || 460;
+  const colors = ['#FFD700','#e91e8c','#7c3aed','#60a5fa','#34d399','#f97316'];
+  const count  = burst ? 80 : 40;
+  for (let i = 0; i < count; i++) {
+    _bdayParticles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * .5,
+      r: 4 + Math.random() * 5,
+      vx: (Math.random() - .5) * 3,
+      vy: 1 + Math.random() * 3,
+      a: 1, da: .008 + Math.random() * .006,
+      c: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI * 2,
+      drot: (Math.random() - .5) * .12,
+      sq: Math.random() > .5
+    });
+  }
+  if (_bdayConfRaf) return;
+  (function frame() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    _bdayParticles = _bdayParticles.filter(p => p.a > 0);
+    _bdayParticles.forEach(p => {
+      ctx.save(); ctx.globalAlpha = p.a;
+      ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+      ctx.fillStyle = p.c;
+      if (p.sq) { ctx.fillRect(-p.r / 2, -p.r / 2, p.r, p.r); }
+      else { ctx.beginPath(); ctx.arc(0, 0, p.r / 2, 0, Math.PI * 2); ctx.fill(); }
+      ctx.restore();
+      p.x += p.vx; p.y += p.vy; p.vy += .04;
+      p.rot += p.drot; p.a -= p.da;
+    });
+    if (_bdayParticles.length) { _bdayConfRaf = requestAnimationFrame(frame); }
+    else { _bdayConfRaf = null; }
+  })();
+}
+
+function _stopBdayConfetti() {
+  if (_bdayConfRaf) { cancelAnimationFrame(_bdayConfRaf); _bdayConfRaf = null; }
+  _bdayParticles = [];
+}
