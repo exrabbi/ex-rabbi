@@ -5338,28 +5338,32 @@ function markHelpful(btn) {
 
   // Global function called from drawer menu
   window.installPWA = async function() {
-    if (!deferredPrompt) {
-      showToast('অ্যাপ ইতিমধ্যে ইন্সটল করা আছে অথবা আপনার ব্রাউজার সাপোর্ট করে না।');
+    if (deferredPrompt) {
+      closeDrawer();
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      if (outcome === 'accepted') {
+        showToast('🎉 EX GLOBAL অ্যাপ ইন্সটল হয়ে গেছে!');
+      }
+      return;
+    }
+    // Detect iOS
+    const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+    if (isIos) {
+      closeDrawer();
+      showToast('Safari এ Share বাটনে চাপুন → "Add to Home Screen" বেছে নিন');
+      return;
+    }
+    // Already installed or Chrome waiting
+    if (window.matchMedia('(display-mode: standalone)').matches) {
+      closeDrawer();
+      showToast('✅ অ্যাপ ইতিমধ্যে ইন্সটল করা আছে!');
       return;
     }
     closeDrawer();
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    showDrawerInstall(false);
-    if (outcome === 'accepted') {
-      showToast('🎉 EX GLOBAL অ্যাপ ইন্সটল হয়ে গেছে!');
-    }
+    showToast('ব্রাউজার মেনু থেকে "Add to Home Screen" বা "Install App" বেছে নিন 📲');
   };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    // iOS Safari: show drawer install for iOS users not yet in standalone
-    const isIos = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
-    const isStandalone = window.navigator.standalone === true;
-    if (isIos && !isStandalone) {
-      showDrawerInstall(true);
-    }
-  });
 })();
 
 /* ===== AI SEARCH ===== */
