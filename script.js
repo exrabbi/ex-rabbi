@@ -3806,7 +3806,7 @@ function signInManual() {
     closeAuth();
     showToast('👋 ' + (t('welcome') || 'Welcome, ') + name.split(' ')[0] + '!');
     const label = _authIsLogin ? 'SIGN IN' : 'CREATE ACCOUNT';
-    if (btn) { btn.disabled = false; btn.innerHTML = `<span id="authSubmitText">${label}</span><i class="fas fa-arrow-right"></i>`; }
+    if (btn) { btn.disabled = false; btn.innerHTML = `<span id="authSubmitText">${label}</span><span class="auth-arrow-circle"><i class="fas fa-arrow-right"></i></span>`; }
   }, 600);
 }
 
