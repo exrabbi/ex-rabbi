@@ -3808,21 +3808,68 @@ function setUser(user) {
   localStorage.setItem('exglobal_user', JSON.stringify(user));
   _saveCustomerRecord(user);
   updateAuthUI();
+  // Animate profile card entrance + avatar welcome pulse
+  requestAnimationFrame(() => {
+    const card = document.querySelector('.me-profile-card');
+    if (card) {
+      card.classList.remove('anim-out', 'anim-in');
+      void card.offsetWidth;
+      card.classList.add('anim-in');
+      setTimeout(() => card.classList.remove('anim-in'), 700);
+    }
+    const avatar = document.getElementById('meAvatarWrap');
+    if (avatar) {
+      avatar.classList.remove('welcome-pulse');
+      void avatar.offsetWidth;
+      avatar.classList.add('welcome-pulse');
+      setTimeout(() => avatar.classList.remove('welcome-pulse'), 1000);
+    }
+  });
   // Request notification permission after login (silent — only asks once)
   setTimeout(() => requestNotifPermission(), 3000);
 }
 
 function signOut() {
-  currentUser = null;
-  localStorage.removeItem('exglobal_user');
-  if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
-    firebase.auth().signOut().catch(() => {});
+  const card = document.querySelector('.me-profile-card');
+  // Ripple effect on whichever sign-out button triggered this
+  document.querySelectorAll('[onclick*="signOut"]').forEach(btn => {
+    const ripple = document.createElement('span');
+    ripple.className = 'auth-signout-ripple';
+    btn.style.position = 'relative';
+    btn.style.overflow = 'hidden';
+    btn.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 520);
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.classList.add('auth-signout-shake');
+      setTimeout(() => icon.classList.remove('auth-signout-shake'), 380);
+    }
+  });
+  // Animate profile card out, then actually sign out
+  if (card) {
+    card.classList.remove('anim-in');
+    card.classList.add('anim-out');
+    setTimeout(() => {
+      currentUser = null;
+      localStorage.removeItem('exglobal_user');
+      if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+        firebase.auth().signOut().catch(() => {});
+      }
+      updateAuthUI(true);
+      showToast(t('signedOut'));
+    }, 300);
+  } else {
+    currentUser = null;
+    localStorage.removeItem('exglobal_user');
+    if (typeof firebase !== 'undefined' && firebase.apps && firebase.apps.length) {
+      firebase.auth().signOut().catch(() => {});
+    }
+    updateAuthUI();
+    showToast(t('signedOut'));
   }
-  updateAuthUI();
-  showToast(t('signedOut'));
 }
 
-function updateAuthUI() {
+function updateAuthUI(animateGuest) {
   const guestEl = document.getElementById('meGuestState');
   const userEl  = document.getElementById('meUserState');
   const signOutItem = document.getElementById('meSignOutItem');
@@ -3904,6 +3951,14 @@ function updateAuthUI() {
     userEl.style.display  = 'none';
     if (signOutItem) signOutItem.style.display = 'none';
     if (drawerSignOut) drawerSignOut.style.display = 'none';
+    if (animateGuest) {
+      requestAnimationFrame(() => {
+        guestEl.classList.remove('anim-in');
+        void guestEl.offsetWidth;
+        guestEl.classList.add('anim-in');
+        setTimeout(() => guestEl.classList.remove('anim-in'), 600);
+      });
+    }
   }
 }
 

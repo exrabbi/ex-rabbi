@@ -13869,3 +13869,74 @@ body { padding-bottom: 100px !important; }
   transition: background .15s, color .15s;
 }
 .me-pc-edit:hover { background: rgba(255,255,255,.2); color: #fff; }
+
+/* ===== LOGIN / LOGOUT ANIMATIONS ===== */
+@keyframes authProfileIn {
+  0%   { opacity:0; transform: translateX(64px) scale(.86); }
+  55%  { opacity:1; transform: translateX(-5px) scale(1.03); }
+  100% { opacity:1; transform: translateX(0) scale(1); }
+}
+@keyframes authProfileOut {
+  0%   { opacity:1; transform: translateX(0) scale(1); filter: blur(0); }
+  100% { opacity:0; transform: translateX(72px) scale(.84); filter: blur(2px); }
+}
+@keyframes authGuestIn {
+  0%   { opacity:0; transform: translateX(-56px) scale(.88); }
+  55%  { opacity:1; transform: translateX(4px) scale(1.02); }
+  100% { opacity:1; transform: translateX(0) scale(1); }
+}
+@keyframes avatarWelcomePulse {
+  0%   { box-shadow: 0 4px 18px rgba(245,158,11,.45); }
+  30%  { box-shadow: 0 0 0 10px rgba(245,158,11,.18), 0 4px 20px rgba(245,158,11,.7); }
+  70%  { box-shadow: 0 0 0 18px rgba(245,158,11,.0), 0 4px 18px rgba(245,158,11,.45); }
+  100% { box-shadow: 0 4px 18px rgba(245,158,11,.45); }
+}
+@keyframes signOutRipple {
+  0%   { transform: scale(0); opacity:.55; }
+  100% { transform: scale(2.8); opacity:0; }
+}
+@keyframes signOutBtnShake {
+  0%,100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-4deg); }
+  75%      { transform: rotate(4deg); }
+}
+
+/* Profile card login entrance */
+.me-profile-card.anim-in {
+  animation: authProfileIn .52s cubic-bezier(.34,1.45,.64,1) both;
+}
+/* Profile card logout exit */
+.me-profile-card.anim-out {
+  animation: authProfileOut .32s cubic-bezier(.4,0,1,1) both;
+  pointer-events: none;
+}
+/* Guest state entrance after logout */
+#meGuestState.anim-in {
+  animation: authGuestIn .46s cubic-bezier(.34,1.45,.64,1) both;
+}
+/* Avatar welcome pulse on login */
+.me-pc-avatar.welcome-pulse {
+  animation: avatarWelcomePulse .9s ease-out;
+}
+/* Sign out button ripple overlay */
+.auth-signout-ripple {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, rgba(239,68,68,.5) 0%, transparent 70%);
+  animation: signOutRipple .5s ease-out forwards;
+  pointer-events: none;
+}
+/* Sign out icon shake */
+.auth-signout-shake {
+  display: inline-block;
+  animation: signOutBtnShake .35s ease-in-out;
+}
+/* Settings sign out button loading state */
+.settings-signout-btn.signing-out {
+  opacity: .65;
+  pointer-events: none;
+}
+.settings-signout-btn.signing-out i {
+  animation: signOutBtnShake .4s ease-in-out infinite alternate;
+}
