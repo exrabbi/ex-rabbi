@@ -697,24 +697,64 @@ img { max-width: 100%; display: block; }
   padding: 2px 6px; border-radius: 4px;
 }
 [dir="rtl"] .discount-badge { left: auto; right: 6px; }
+/* === WISH-BTN: reference spring animation system === */
 .wish-btn {
+  --button-y: 0px;
   position: absolute; top: 6px; right: 6px;
-  width: 32px; height: 32px;
+  width: 34px; height: 34px;
   background: rgba(255,255,255,.92);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; color: #ccc;
-  transition: all .22s, transform .28s cubic-bezier(.34,1.56,.64,1);
+  font-size: 15px; color: #bbb;
+  /* reference: transform: translateY(var(--button-y)) translateZ(0) */
+  transform: translateY(var(--button-y)) translateZ(0);
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1),
+              color .2s, background .2s, box-shadow .2s;
   backdrop-filter: blur(8px);
-  box-shadow: 0 2px 12px rgba(0,0,0,.13), 0 1px 4px rgba(233,30,140,.08);
+  box-shadow: 0 2px 12px rgba(0,0,0,.14);
   border: 1.5px solid rgba(255,255,255,.8);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-appearance: none;
+  outline: none;
 }
 [dir="rtl"] .wish-btn { right: auto; left: 6px; }
-.wish-btn.active, .wish-btn:hover {
+.wish-btn.active {
   color: #e91e8c;
   background: #fff;
-  box-shadow: 0 3px 16px rgba(233,30,140,.38), 0 0 0 2px rgba(233,30,140,.15);
-  transform: scale(1.14);
+  box-shadow: 0 4px 18px rgba(233,30,140,.42), 0 0 0 2.5px rgba(233,30,140,.2);
+}
+.wish-btn:hover:not(.active) { color: #e91e8c; background: #fff; }
+
+/* Heart icon pop keyframe */
+@keyframes wishHeartPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.55) rotate(-12deg); }
+  65%  { transform: scale(0.9) rotate(6deg); }
+  85%  { transform: scale(1.15) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+.wish-btn.popping i {
+  animation: wishHeartPop .55s cubic-bezier(.34,1.56,.64,1) both;
+}
+
+/* Particle burst container */
+.wish-burst {
+  position: absolute;
+  pointer-events: none;
+  width: 0; height: 0;
+  z-index: 10003;
+}
+.wish-burst span {
+  position: absolute;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #e91e8c;
+  opacity: 0;
+  animation: wishParticle .6s ease-out both;
+}
+@keyframes wishParticle {
+  0%   { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
 }
 .product-info { padding: 8px; }
 .product-name {
