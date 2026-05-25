@@ -4035,6 +4035,41 @@ function updateAuthUI(animateGuest) {
   }
 }
 
+function stSignOut(btn) {
+  if (!btn) return;
+
+  // Phase 1 — button turns red, icon spins
+  btn.classList.add('st-signing-out');
+  const txt = document.getElementById('stSignOutTxt');
+  if (txt) txt.textContent = 'Signing out…';
+
+  // Add ripple from center
+  const rip = document.createElement('span');
+  rip.className = 'st-signout-ripple';
+  btn.appendChild(rip);
+  setTimeout(() => rip.remove(), 600);
+
+  // Phase 2 — settings panel slides out
+  setTimeout(() => {
+    const panel = document.getElementById('settingsPanel') || document.querySelector('.settings-panel');
+    if (panel) panel.classList.add('st-panel-exit');
+  }, 300);
+
+  // Phase 3 — actual sign-out after animation
+  setTimeout(() => {
+    const panel = document.getElementById('settingsPanel') || document.querySelector('.settings-panel');
+    if (panel) {
+      panel.classList.remove('st-panel-exit');
+      // Close settings panel
+      if (typeof closeSettings === 'function') closeSettings();
+    }
+    // Reset button state
+    btn.classList.remove('st-signing-out');
+    if (txt) txt.setAttribute('data-i18n', 'signOut');
+    signOut();
+  }, 680);
+}
+
 function copyUserId() {
   const uid = document.getElementById('meUserId')?.textContent;
   if (!uid) return;
