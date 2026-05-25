@@ -2748,7 +2748,8 @@ img { max-width: 100%; display: block; }
   transition: transform .45s cubic-bezier(.25,.46,.45,.94), opacity .3s;
   overflow-y: auto;
   display: flex; flex-direction: column;
-  padding: 0 22px 36px;
+  padding: 0 18px 40px;
+  gap: 0;
 }
 .auth-modal::before {
   content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -13542,14 +13543,15 @@ body { padding-bottom: 100px !important; }
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 4px auto 8px;
-  width: 130px;
+  margin: 0 auto 16px;
+  width: 170px;
   position: relative;
+  padding-top: 20px;
 }
 
-/* Big character scale */
+/* Big character scale — like panda reference */
 .am-center-hero .am-char {
-  transform: scale(1.7);
+  transform: scale(2.0);
   transform-origin: bottom center;
 }
 
@@ -13575,7 +13577,7 @@ body { padding-bottom: 100px !important; }
 }
 @keyframes auth-walk-bob {
   0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+  50%      { transform: translateY(-8px); }
 }
 
 /* Wave arm */
@@ -13585,19 +13587,20 @@ body { padding-bottom: 100px !important; }
 }
 @keyframes auth-arm-wave {
   0%,100% { transform: rotate(-50deg) !important; }
-  40%     { transform: rotate(-20deg) !important; }
-  70%     { transform: rotate(-60deg) !important; }
+  40%     { transform: rotate(-18deg) !important; }
+  70%     { transform: rotate(-65deg) !important; }
 }
 
 /* Speech bubble centered above head */
 .am-center-hero .am-bubble {
   left: 50%;
   transform: translateX(-50%) scale(.7);
-  top: -42px;
+  top: -10px;
   font-size: 12px;
   padding: 6px 14px;
   white-space: nowrap;
   border-radius: 14px 14px 14px 4px;
+  z-index: 10;
 }
 .am-center-hero .am-bubble.show {
   transform: translateX(-50%) scale(1);
