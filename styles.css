@@ -15392,3 +15392,209 @@ body { padding-bottom: 100px !important; }
 #authEmailForm > .auth-remember-row          { animation: authInpSlide .3s .62s both; }
 #authEmailForm > .auth-submit-btn            { animation: authInpSlide .3s .68s both; }
 /* ── END Auth Modal v2 ── */
+
+/* ── Auth Modal v3 — Final Reference Match ──────────────── */
+
+/* Full-screen, centered scrollable column */
+.auth-modal {
+  justify-content: flex-start !important;
+  padding-top: 0 !important;
+  padding-bottom: 60px !important;
+}
+
+/* Topbar */
+.auth-topbar {
+  padding: 22px 6px 0 !important;
+  margin-bottom: 0 !important;
+}
+.auth-brand-row {
+  gap: 7px !important;
+  margin-bottom: 0 !important;
+}
+.auth-logo-img {
+  width: 36px !important; height: 36px !important;
+}
+.auth-brand-text {
+  font-size: 22px !important; letter-spacing: 2px !important;
+}
+.auth-brand-sa { font-size: 11px !important; }
+.auth-flag-badge {
+  font-size: 11px !important; padding: 4px 10px !important;
+}
+
+/* Panda — prominent above card */
+.auth-modal .am-wrap.am-center-hero {
+  margin: 14px 0 -80px !important;
+  z-index: 10 !important;
+}
+.panda-mascot {
+  width: 155px !important;
+  filter:
+    drop-shadow(0 0 28px rgba(124,58,237,.5))
+    drop-shadow(0 12px 30px rgba(0,0,0,.5)) !important;
+}
+
+/* Glass card — purple-tinted opaque glass, compact */
+.auth-glass-card {
+  background: rgba(22, 10, 50, 0.72) !important;
+  backdrop-filter: blur(36px) saturate(1.6) !important;
+  -webkit-backdrop-filter: blur(36px) saturate(1.6) !important;
+  border: 1px solid rgba(180, 120, 255, 0.22) !important;
+  border-radius: 28px !important;
+  padding: 90px 22px 22px !important;
+  box-shadow:
+    0 0 0 1px rgba(233,30,140,.14),
+    0 30px 90px rgba(0,0,0,.7),
+    0 0 120px rgba(124,58,237,.12),
+    inset 0 1px 0 rgba(255,255,255,.12),
+    inset 0 -1px 0 rgba(255,255,255,.04) !important;
+  animation: authGlassPulse 5s ease-in-out infinite !important;
+}
+
+/* Heading */
+.auth-welcome-h {
+  font-size: 26px !important;
+  margin: 0 0 5px !important;
+  text-shadow: 0 2px 24px rgba(233,30,140,.25) !important;
+}
+.auth-welcome-sub {
+  font-size: 12.5px !important;
+  margin: 0 0 20px !important;
+  color: rgba(255,255,255,.45) !important;
+}
+
+/* Input fields */
+.auth-inp {
+  background: rgba(255,255,255,.07) !important;
+  border: 1.5px solid rgba(255,255,255,.1) !important;
+  border-radius: 14px !important;
+  padding: 15px 16px 15px 44px !important;
+  font-size: 14px !important;
+  color: #fff !important;
+  transition: border-color .2s, box-shadow .2s !important;
+}
+.auth-inp:focus {
+  border-color: rgba(233,30,140,.6) !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.14), 0 4px 18px rgba(0,0,0,.3) !important;
+  background: rgba(233,30,140,.05) !important;
+}
+.auth-inp::placeholder { color: rgba(255,255,255,.32) !important; }
+.auth-inp-wrap, .auth-pw-wrap {
+  margin-bottom: 12px !important;
+}
+
+/* SIGN IN button — gold/yellow → orange → pink gradient + pill + circle arrow */
+.auth-submit-btn {
+  background: linear-gradient(90deg, #FFD700 0%, #FFAA00 30%, #FF7A00 55%, #e91e8c 85%, #c2185b 100%) !important;
+  animation: none !important;
+  border-radius: 50px !important;
+  padding: 7px 7px 7px 20px !important;
+  height: 56px !important;
+  justify-content: space-between !important;
+  letter-spacing: .8px !important;
+  font-size: 14px !important;
+  box-shadow: 0 8px 36px rgba(255,170,0,.4), 0 4px 16px rgba(233,30,140,.3) !important;
+  overflow: hidden !important;
+  position: relative !important;
+  margin-top: 6px !important;
+}
+.auth-submit-btn::before {
+  content: '' !important;
+  position: absolute; top: 0; left: -80%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.25), transparent) !important;
+  transform: skewX(-18deg) !important;
+  animation: authSweep 2.5s ease-in-out infinite !important;
+  pointer-events: none;
+}
+.auth-arrow-circle {
+  width: 42px !important; height: 42px !important;
+  background: rgba(255,255,255,.22) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  flex-shrink: 0 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* Remember me row */
+.auth-remember-row {
+  margin: 2px 0 14px !important;
+}
+.auth-remember-label {
+  font-size: 12px !important;
+  color: rgba(255,255,255,.5) !important;
+}
+.auth-remember-label input[type="checkbox"] { accent-color: #4ade80 !important; }
+.auth-forgot-link { font-size: 12px !important; }
+
+/* OR divider */
+.auth-or-sep {
+  margin: 16px 0 12px !important;
+  color: rgba(255,255,255,.3) !important;
+  font-size: 11px !important;
+  letter-spacing: 1.5px !important;
+}
+
+/* Social buttons - more compact */
+.btn-google-signin {
+  padding: 13px 16px !important;
+  border-radius: 14px !important;
+  font-size: 13.5px !important;
+  margin-bottom: 10px !important;
+}
+.btn-facebook-signin {
+  padding: 13px 16px !important;
+  border-radius: 14px !important;
+  font-size: 13.5px !important;
+}
+
+/* Switch row */
+.auth-switch-row {
+  margin: 14px 0 0 !important;
+  font-size: 12.5px !important;
+}
+
+/* Trust strip */
+.auth-trust-strip {
+  margin: 18px 0 0 !important;
+  padding: 12px 6px 10px !important;
+  background: rgba(0,0,0,.25) !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 16px !important;
+}
+.auth-trust-item { font-size: 8px !important; gap: 4px !important; }
+.auth-trust-item i { font-size: 16px !important; }
+
+/* Footer */
+.auth-footer { padding-top: 12px !important; }
+.auth-protected { font-size: 11px !important; }
+.auth-terms { font-size: 10.5px !important; margin-top: 4px !important; }
+
+/* Orb sizes — bigger, more visible like reference */
+.auth-orb-1 {
+  width: 300px !important; height: 300px !important;
+  top: -60px !important; left: -80px !important;
+  background: radial-gradient(circle, rgba(124,58,237,.45) 0%, rgba(124,58,237,.18) 50%, transparent 70%) !important;
+  filter: blur(60px) !important;
+}
+.auth-orb-2 {
+  width: 250px !important; height: 250px !important;
+  top: 10% !important; right: -60px !important;
+  background: radial-gradient(circle, rgba(233,30,140,.35) 0%, rgba(233,30,140,.14) 50%, transparent 70%) !important;
+  filter: blur(50px) !important;
+}
+.auth-orb-3 {
+  width: 200px !important; height: 200px !important;
+  bottom: 15% !important; left: 10% !important;
+  background: radial-gradient(circle, rgba(233,30,140,.25) 0%, transparent 70%) !important;
+  filter: blur(44px) !important;
+}
+.auth-orb-4 {
+  width: 180px !important; height: 180px !important;
+  bottom: 5% !important; right: 5% !important;
+  background: radial-gradient(circle, rgba(124,58,237,.28) 0%, transparent 70%) !important;
+  filter: blur(40px) !important;
+}
+/* ── END Auth Modal v3 ── */
