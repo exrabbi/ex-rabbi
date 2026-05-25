@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=239" />
+  <link rel="stylesheet" href="styles.css?v=240" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1778,8 +1778,18 @@
   <!-- AUTH MODAL -->
   <div class="auth-overlay" id="authOverlay" onclick="closeAuth()"></div>
   <div class="auth-modal" id="authModal">
+    <!-- Premium animated glow orbs background -->
+    <div class="auth-bg-layer" aria-hidden="true">
+      <div class="auth-orb auth-orb-1"></div>
+      <div class="auth-orb auth-orb-2"></div>
+      <div class="auth-orb auth-orb-3"></div>
+      <div class="auth-orb auth-orb-4"></div>
+    </div>
     <!-- Back button -->
     <button class="auth-back" onclick="closeAuth()"><i class="fas fa-chevron-left"></i></button>
+
+    <!-- ✦ Glass card wraps all content ✦ -->
+    <div class="auth-glass-card">
 
     <!-- Crown badge -->
     <div class="auth-crown-wrap"><span class="auth-crown-icon">👑</span></div>
@@ -1884,9 +1894,10 @@
 
       <!-- Interactive email / password form -->
       <div id="authEmailForm">
-        <input type="text"     id="authName"  class="auth-inp" placeholder="Your Name"     autocomplete="name"             onfocus="amFocus('name')"  onblur="amBlur()" />
-        <input type="email"    id="authEmail" class="auth-inp" placeholder="Email Address" autocomplete="email"            onfocus="amFocus('email')" onblur="amBlur()" />
+        <div class="auth-inp-wrap"><i class="fas fa-user auth-inp-icon"></i><input type="text" id="authName" class="auth-inp" placeholder="Your Name" autocomplete="name" onfocus="amFocus('name')" onblur="amBlur()" /></div>
+        <div class="auth-inp-wrap"><i class="fas fa-envelope auth-inp-icon"></i><input type="email" id="authEmail" class="auth-inp" placeholder="Email Address" autocomplete="email" onfocus="amFocus('email')" onblur="amBlur()" /></div>
         <div class="auth-pw-wrap">
+          <i class="fas fa-lock auth-inp-icon"></i>
           <input type="password" id="authPass" class="auth-inp" placeholder="Password"     autocomplete="current-password" onfocus="amFocus('pw')"    onblur="amBlur()" />
           <button type="button" class="auth-pw-eye" onclick="toggleAuthPw()" tabindex="-1">
             <i class="fas fa-eye" id="authPwEyeIcon"></i>
@@ -1903,7 +1914,8 @@
       <div class="auth-country-row"><i class="fas fa-location-dot"></i> Saudi Arabia</div>
       <p class="auth-terms">By continuing, you agree to our <a href="#">Privacy &amp; Cookie Policy</a> and <a href="#">Terms &amp; Conditions</a>.</p>
     </div>
-  </div>
+    </div><!-- /.auth-glass-card -->
+  </div><!-- /.auth-modal -->
 
   <div class="loc-overlay" id="locOverlay"></div>
   <div class="loc-modal" id="locModal">

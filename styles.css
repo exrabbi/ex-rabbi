@@ -14112,3 +14112,359 @@ body { padding-bottom: 100px !important; }
 .flash-products .pcard {
   width: 100% !important;
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   ✦ PREMIUM GLASSMORPHISM AUTH — EX GLOBAL SA  ✦
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Animated Glow Orb Background ── */
+.auth-bg-layer {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0 !important; overflow: hidden;
+}
+.auth-orb {
+  position: absolute; border-radius: 50%; filter: blur(72px);
+  animation: authOrbDrift 11s ease-in-out infinite;
+}
+.auth-orb-1 {
+  width: 340px; height: 340px; top: -90px; right: -70px;
+  background: radial-gradient(circle, rgba(233,30,140,.55) 0%, transparent 68%);
+  animation-duration: 9s; animation-delay: 0s;
+}
+.auth-orb-2 {
+  width: 290px; height: 290px; bottom: 18%; left: -90px;
+  background: radial-gradient(circle, rgba(124,58,237,.5) 0%, transparent 68%);
+  animation-duration: 13s; animation-delay: -4.5s;
+}
+.auth-orb-3 {
+  width: 220px; height: 220px; top: 38%; right: -55px;
+  background: radial-gradient(circle, rgba(255,215,0,.28) 0%, transparent 68%);
+  animation-duration: 15s; animation-delay: -7s;
+}
+.auth-orb-4 {
+  width: 380px; height: 200px; bottom: 4%; left: 50%;
+  background: radial-gradient(ellipse, rgba(192,132,252,.32) 0%, transparent 68%);
+  animation-duration: 12s; animation-delay: -2s; animation-name: authOrb4Drift;
+}
+@keyframes authOrbDrift {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  33%     { transform: translate(12px, -22px) scale(1.07); }
+  66%     { transform: translate(-9px, 15px) scale(0.93); }
+}
+@keyframes authOrb4Drift {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%     { transform: translateX(-50%) translateY(-18px); }
+}
+
+/* Floating sparkle particles (pure CSS) */
+.auth-bg-layer::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,.7) 1px, transparent 1px),
+    radial-gradient(circle, rgba(255,215,0,.6) 1px, transparent 1px),
+    radial-gradient(circle, rgba(233,30,140,.5) 1px, transparent 1px);
+  background-size: 60px 60px, 90px 90px, 120px 120px;
+  background-position: 0 0, 30px 30px, 15px 50px;
+  animation: authParticleDrift 20s linear infinite;
+  opacity: 0.35;
+}
+@keyframes authParticleDrift {
+  0%   { background-position: 0 0, 30px 30px, 15px 50px; }
+  100% { background-position: 60px 60px, 90px 90px, 135px 110px; }
+}
+
+/* ── Modal base ── */
+.auth-modal { padding: 0 12px 32px !important; }
+.auth-modal > * { position: relative; z-index: 2; }
+.auth-bg-layer { position: fixed !important; z-index: 0 !important; }
+
+/* ── Back button — glass pill ── */
+.auth-back {
+  width: 44px !important; height: 44px !important;
+  border-radius: 14px !important; margin: 14px 0 10px !important;
+  background: rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  box-shadow: 0 2px 16px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.1) !important;
+  color: rgba(255,255,255,.8) !important; font-size: 17px !important;
+  transition: background .2s, transform .15s !important;
+}
+.auth-back:active { background: rgba(255,255,255,.14) !important; transform: scale(.93) !important; }
+
+/* ══ GLASS CARD ══ */
+.auth-glass-card {
+  position: relative;
+  background: rgba(12, 4, 32, 0.55);
+  backdrop-filter: blur(32px) saturate(1.8);
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,.1);
+  padding: 22px 18px 26px;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(233,30,140,.12),
+    0 32px 80px rgba(0,0,0,.6),
+    0 0 160px rgba(124,58,237,.1),
+    inset 0 1px 0 rgba(255,255,255,.14);
+  animation: authGlassPulse 5s ease-in-out infinite;
+}
+/* Top-edge shimmer highlight */
+.auth-glass-card::before {
+  content: '';
+  position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), rgba(255,215,0,.4), rgba(233,30,140,.3), rgba(255,255,255,.55), transparent);
+  pointer-events: none;
+}
+/* Subtle bottom inner glow */
+.auth-glass-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 100px;
+  background: linear-gradient(to top, rgba(124,58,237,.06), transparent);
+  pointer-events: none;
+}
+@keyframes authGlassPulse {
+  0%,100% {
+    box-shadow: 0 0 0 1px rgba(233,30,140,.12), 0 32px 80px rgba(0,0,0,.6), 0 0 120px rgba(124,58,237,.08), inset 0 1px 0 rgba(255,255,255,.14);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(233,30,140,.26), 0 32px 80px rgba(0,0,0,.65), 0 0 180px rgba(124,58,237,.17), inset 0 1px 0 rgba(255,255,255,.2);
+  }
+}
+
+/* ── Crown ── */
+.auth-crown-icon {
+  font-size: 40px !important;
+  filter: drop-shadow(0 0 12px rgba(255,215,0,1)) drop-shadow(0 0 32px rgba(255,215,0,.7)) drop-shadow(0 0 70px rgba(255,165,0,.4)) !important;
+  animation: authCrownFloat 2.2s ease-in-out infinite !important;
+}
+@keyframes authCrownFloat {
+  0%,100% { transform: translateY(0) rotate(-4deg) scale(1); }
+  50%     { transform: translateY(-6px) rotate(4deg) scale(1.05); }
+}
+
+/* ── Logo glow ring ── */
+.auth-logo-img {
+  width: 52px !important; height: 52px !important;
+  border: 2px solid rgba(233,30,140,.45) !important;
+  box-shadow:
+    0 0 0 4px rgba(233,30,140,.12),
+    0 0 26px rgba(233,30,140,.9),
+    0 0 70px rgba(233,30,140,.4) !important;
+  animation: authLogoPulse 2.8s ease-in-out infinite !important;
+}
+@keyframes authLogoPulse {
+  0%,100% { box-shadow: 0 0 0 4px rgba(233,30,140,.12), 0 0 26px rgba(233,30,140,.9), 0 0 60px rgba(233,30,140,.35); }
+  50%     { box-shadow: 0 0 0 6px rgba(233,30,140,.22), 0 0 36px rgba(233,30,140,1), 0 0 90px rgba(233,30,140,.55); }
+}
+
+/* ── Brand text ── */
+.auth-brand-text { font-size: 33px !important; letter-spacing: 3.5px !important; }
+
+/* ── Protected chip ── */
+.auth-protected {
+  background: rgba(74,222,128,.1) !important;
+  border: 1px solid rgba(74,222,128,.32) !important;
+  border-radius: 50px !important; padding: 5px 16px !important;
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 0 22px rgba(74,222,128,.18), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  font-size: 11.5px !important; font-weight: 700 !important;
+}
+
+/* ── VIP Headline ── */
+.auth-get-coupon {
+  font-size: 20px !important; font-weight: 900 !important;
+  background: linear-gradient(90deg, #fff 0%, #FFD700 30%, #e91e8c 60%, #c084fc 80%, #fff 100%) !important;
+  background-size: 260% auto !important;
+  -webkit-background-clip: text !important; -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  animation: authShimmerBrand 3.5s linear infinite !important;
+}
+
+/* ── VIP Perks Cards — Glassmorphism ── */
+.auth-cpn-row { gap: 10px !important; margin-bottom: 12px !important; }
+.auth-cpn-card {
+  flex: 1 !important; flex-direction: column !important;
+  align-items: center !important; justify-content: center !important;
+  padding: 16px 6px 13px !important; border-radius: 20px !important;
+  background: rgba(255,255,255,.05) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12) !important;
+  transition: transform .2s, box-shadow .2s !important;
+  cursor: default !important;
+}
+.auth-cpn-card:nth-child(1) {
+  border-color: rgba(233,30,140,.32) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 28px rgba(233,30,140,.14), inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.auth-cpn-card:nth-child(2) {
+  border-color: rgba(255,215,0,.38) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 28px rgba(255,215,0,.18), inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.auth-cpn-card:nth-child(3) {
+  border-color: rgba(192,132,252,.32) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.35), 0 0 28px rgba(192,132,252,.14), inset 0 1px 0 rgba(255,255,255,.12) !important;
+}
+.auth-cpn-num { font-size: 30px !important; }
+.auth-cpn-lbl { font-size: 9.5px !important; letter-spacing: 1.5px !important; }
+
+/* ── Benefits Strip — Glass pill ── */
+.auth-benefits-strip {
+  background: rgba(255,255,255,.04) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(255,255,255,.09) !important;
+  border-radius: 50px !important; padding: 10px 14px !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.09), 0 4px 18px rgba(0,0,0,.2) !important;
+  font-size: 11.5px !important; font-weight: 700 !important;
+  margin-bottom: 14px !important;
+}
+
+/* ── Input Fields — Glassmorphism ── */
+.auth-inp-wrap { position: relative; margin-bottom: 0; }
+.auth-inp-icon {
+  position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: rgba(255,255,255,.38); z-index: 3; pointer-events: none;
+  transition: color .3s, text-shadow .3s;
+}
+.auth-inp-wrap:focus-within .auth-inp-icon,
+.auth-pw-wrap:focus-within .auth-inp-icon {
+  color: #e91e8c;
+  text-shadow: 0 0 10px rgba(233,30,140,.7);
+}
+/* Fix pw-wrap icon position */
+.auth-pw-wrap .auth-inp-icon { position: absolute; top: 50%; transform: translateY(-50%); }
+
+#authEmailForm { gap: 12px !important; }
+
+.auth-inp {
+  width: 100% !important; box-sizing: border-box !important;
+  background: rgba(255,255,255,.07) !important;
+  backdrop-filter: blur(14px) !important;
+  border: 1.5px solid rgba(255,255,255,.11) !important;
+  border-radius: 16px !important;
+  padding: 16px 16px 16px 46px !important;
+  color: #fff !important; font-size: 14px !important; font-weight: 500 !important;
+  box-shadow: 0 4px 22px rgba(0,0,0,.2), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  transition: border-color .25s, box-shadow .25s, background .25s !important;
+  caret-color: #e91e8c !important; transform: none !important;
+}
+.auth-inp::placeholder { color: rgba(255,255,255,.3) !important; font-weight: 400 !important; }
+.auth-inp:focus {
+  border-color: rgba(233,30,140,.65) !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.18), 0 6px 28px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.12) !important;
+  background: rgba(255,255,255,.11) !important;
+  outline: none !important; transform: none !important;
+}
+.auth-pw-wrap .auth-inp {
+  padding-left: 46px !important;
+  padding-right: 50px !important;
+  margin-bottom: 0 !important;
+}
+.auth-pw-wrap { position: relative !important; margin-bottom: 0 !important; }
+.auth-pw-eye {
+  right: 14px !important; color: rgba(255,255,255,.4) !important;
+  font-size: 15px !important; top: 50% !important; transform: translateY(-50%) !important;
+}
+.auth-pw-eye:hover { color: #e91e8c !important; }
+
+/* Fix nth-child animations now that inputs are wrapped */
+#authEmailForm > *:nth-child(1) { animation: authInpSlide .3s .05s both; }
+#authEmailForm > *:nth-child(2) { animation: authInpSlide .3s .12s both; }
+#authEmailForm > *:nth-child(3) { animation: authInpSlide .3s .19s both; }
+#authEmailForm .auth-submit-btn  { animation: authInpSlide .3s .26s both; }
+
+/* ── Submit Button — Premium gradient ── */
+.auth-submit-btn {
+  width: 100% !important; padding: 16px !important;
+  border-radius: 16px !important; border: none !important;
+  background: linear-gradient(135deg, #e91e8c 0%, #9415f5 50%, #e91e8c 100%) !important;
+  background-size: 220% auto !important;
+  color: #fff !important; font-size: 15px !important; font-weight: 900 !important;
+  letter-spacing: .5px !important; cursor: pointer !important;
+  box-shadow: 0 10px 36px rgba(233,30,140,.5), 0 0 0 1px rgba(255,255,255,.08), inset 0 1px 0 rgba(255,255,255,.22) !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  gap: 10px !important; position: relative !important; overflow: hidden !important;
+  animation: authBtnShift 3.5s linear infinite !important;
+  margin-top: 2px !important;
+  transition: transform .15s, box-shadow .15s !important;
+}
+@keyframes authBtnShift {
+  0%   { background-position: 0% center; }
+  100% { background-position: -220% center; }
+}
+/* Shimmer sweep */
+.auth-submit-btn::before {
+  content: '' !important;
+  position: absolute; top: 0; left: -120%; width: 55%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.22), transparent) !important;
+  transform: skewX(-20deg);
+  animation: authSweep 2.8s ease-in-out infinite !important;
+  pointer-events: none;
+}
+@keyframes authSweep { 0% { left: -120%; } 100% { left: 200%; } }
+.auth-submit-btn:active {
+  transform: scale(.97) !important;
+  box-shadow: 0 5px 18px rgba(233,30,140,.38) !important;
+}
+.auth-submit-btn:disabled { opacity: .5 !important; pointer-events: none !important; }
+
+/* ── Social buttons ── */
+.btn-google-signin {
+  background: rgba(255,255,255,.08) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(255,255,255,.15) !important;
+  border-radius: 16px !important; padding: 15px !important;
+  width: 100% !important; color: #fff !important;
+  font-size: 14px !important; font-weight: 700 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  gap: 12px !important; cursor: pointer !important; margin-bottom: 12px !important;
+  box-shadow: 0 4px 22px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.14) !important;
+  transition: background .2s, transform .15s !important; letter-spacing: .3px !important;
+}
+.btn-google-signin:active {
+  transform: scale(.97) !important; background: rgba(255,255,255,.14) !important;
+}
+
+.btn-facebook-signin {
+  background: linear-gradient(135deg, rgba(24,119,242,.78), rgba(10,80,200,.88)) !important;
+  backdrop-filter: blur(16px) !important;
+  border: 1.5px solid rgba(24,119,242,.48) !important;
+  border-radius: 16px !important; padding: 15px !important;
+  width: 100% !important; color: #fff !important;
+  font-size: 14px !important; font-weight: 700 !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  gap: 12px !important; cursor: pointer !important;
+  box-shadow: 0 4px 26px rgba(24,119,242,.32), inset 0 1px 0 rgba(255,255,255,.22) !important;
+  transition: transform .15s !important; letter-spacing: .3px !important;
+}
+.btn-facebook-signin:active { transform: scale(.97) !important; }
+
+/* ── OR separator ── */
+.auth-or-sep {
+  display: flex !important; align-items: center !important; gap: 14px !important;
+  margin: 18px 0 16px !important; color: rgba(255,255,255,.28) !important;
+  font-size: 11px !important; font-weight: 700 !important;
+  letter-spacing: 1.5px !important; text-transform: uppercase !important;
+}
+.auth-or-sep::before, .auth-or-sep::after {
+  content: '' !important; flex: 1 !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.14), transparent) !important;
+}
+
+/* ── Footer ── */
+.auth-footer { margin-top: 22px !important; text-align: center !important; }
+.auth-country-row {
+  display: inline-flex !important; align-items: center !important; gap: 6px !important;
+  background: rgba(255,255,255,.05) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+  border-radius: 50px !important; padding: 6px 16px !important;
+  font-size: 11.5px !important; color: rgba(255,255,255,.5) !important;
+  margin-bottom: 10px !important; font-weight: 600 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.auth-terms { font-size: 10.5px !important; color: rgba(255,255,255,.28) !important; line-height: 1.7 !important; }
+.auth-terms a { color: rgba(233,30,140,.78) !important; font-weight: 600 !important; }
+/* ── END GLASSMORPHISM AUTH ── */
