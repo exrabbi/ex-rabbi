@@ -13174,7 +13174,7 @@ body { padding-bottom: 100px !important; }
   flex-direction: column;
   gap: 3px;
   z-index: 9999;
-  overflow: hidden;
+  overflow: visible;
   transition: transform 0.5s;
 }
 .pcard:active .pcard-contentBx {
@@ -13209,13 +13209,13 @@ body { padding-bottom: 100px !important; }
   text-decoration: line-through;
 }
 
-/* SIZE chips — exact reference: span:hover { background: #237fea } */
+/* SIZE chips — exact reference: dark bg, white text, span:hover background:#237fea */
 .pcard-size {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  gap: 3px;
-  overflow: hidden;
+  gap: 4px;
+  overflow: visible;
   flex-shrink: 0;
 }
 .pcard-size-lbl {
@@ -13232,25 +13232,25 @@ body { padding-bottom: 100px !important; }
 .pcard-size span {
   font-size: 9px;
   font-weight: 700;
-  color: #444;
+  color: #fff;
   border: none;
-  border-radius: 5px;
-  background: rgba(0,0,0,.08);
-  padding: 2px 5px;
+  border-radius: 6px;
+  background: #1a1a2e;
+  padding: 3px 6px;
   cursor: pointer;
-  transition: background .15s, color .15s;
-  line-height: 1.5;
+  transition: background .15s, color .15s, transform .12s;
+  line-height: 1.4;
   flex-shrink: 0;
 }
 .pcard-size span:hover,
-.pcard-size span.active { background: #237fea; color: #fff; }
+.pcard-size span.active { background: #237fea; transform: scale(1.1); }
 
-/* COLOR dots */
+/* COLOR dots — exact reference: width:20px height:20px border-radius:50% margin:0 5px */
 .pcard-color {
   display: flex;
   align-items: center;
   flex-wrap: nowrap;
-  overflow: hidden;
+  overflow: visible;
   flex-shrink: 0;
 }
 .pcard-color-lbl {
@@ -13265,16 +13265,20 @@ body { padding-bottom: 100px !important; }
   min-width: max-content;
 }
 .pcard-color span {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
-  margin: 0 3px 0 0;
+  margin: 0 4px 0 0;
   cursor: pointer;
-  border: 1.5px solid rgba(0,0,0,.12);
+  border: 1.5px solid rgba(0,0,0,.1);
   flex-shrink: 0;
   transition: transform .15s, box-shadow .15s;
 }
-.pcard-color span:hover { transform: scale(1.3); box-shadow: 0 0 0 2px rgba(0,0,0,.2); }
+.pcard-color span:hover,
+.pcard-color span.active {
+  transform: scale(1.28);
+  box-shadow: 0 0 0 2.5px rgba(0,0,0,.18);
+}
 
 /* Buy Now button — pill shape, gradient matching card */
 .pcard-btn {
