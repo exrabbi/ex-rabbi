@@ -621,12 +621,51 @@ function startCountdown() {
 }
 
 /* ===== RENDER FLASH DEALS ===== */
+/* ── Full-image card: image fills card, white panel overlays bottom ── */
+function flashCardHTML(p) {
+  const inWish = wishlist.includes(p.id);
+  const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
+  const isOOS = p.stock === 0;
+  const sizes = (p.sizes || []).slice(0, 4);
+  const colorDots = (p.colors || []).slice(0, 4);
+  const badge = p.discount >= 40
+    ? `<span class="fc2-badge fc2-badge-flash"><i class="fas fa-bolt"></i> FLASH</span>`
+    : p.tag === 'bestseller' ? `<span class="fc2-badge fc2-badge-best"><i class="fas fa-trophy"></i></span>`
+    : p.tag === 'new' ? `<span class="fc2-badge fc2-badge-new">NEW</span>`
+    : p.discount >= 20 ? `<span class="fc2-badge fc2-badge-disc">-${p.discount}%</span>` : '';
+  return `
+    <div class="fc2-card" onclick="openModal(${p.id})">
+      <div class="fc2-img">
+        <img src="${p.image}" loading="lazy" alt=""
+          onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
+          ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+        ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
+      </div>
+      ${badge}
+      <button class="fc2-wish wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+        <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
+      </button>
+      <div class="fc2-panel">
+        <h3 class="fc2-name">${getName(p)}</h3>
+        <div class="fc2-prices">
+          <span class="fc2-price">${fmt(p.price)}</span>
+          ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
+        </div>
+        ${sizes.length ? `<div class="fc2-row"><span class="fc2-lbl">SIZE :</span>${sizes.map(s => `<span class="fc2-sz">${s}</span>`).join('')}</div>` : ''}
+        ${colorDots.length ? `<div class="fc2-row"><span class="fc2-lbl">COLOR :</span>${colorDots.map(c => `<span class="fc2-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
+        <button class="fc2-btn" onclick="event.stopPropagation();${isOOS ? '' : `nxAtc(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
+          <i class="fas fa-bag-shopping"></i> Buy Now
+        </button>
+      </div>
+    </div>`;
+}
+
 function renderFlashDeals() {
   const pins = JSON.parse(localStorage.getItem('exg_flash_pins') || 'null');
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
     : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
-  document.getElementById('flashProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
+  document.getElementById('flashProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
 }
 
 function _dealMiniCard(p) {
@@ -647,7 +686,7 @@ function _dealMiniCard(p) {
   </div>`;
 }
 
-/* ===== RENDER SUPER DEALS (infinite marquee) ===== */
+/* ===== RENDER SUPER DEALS — Nike pcard in horizontal marquee ===== */
 function renderSuperDeals() {
   const track = document.getElementById('sdealsTrack');
   if (!track) return;
@@ -655,7 +694,7 @@ function renderSuperDeals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 10)
     : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 10);
-  const html = items.map(_dealMiniCard).join('');
+  const html = items.map(p => productCardHTML(p)).join('');
   track.innerHTML = html + html; // duplicate for seamless infinite loop
 }
 
@@ -665,7 +704,7 @@ function renderTrending() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
-  document.getElementById('trendingProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
+  document.getElementById('trendingProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
 }
 
 /* ===== RENDER HOT SELLER ===== */
@@ -674,7 +713,7 @@ function renderHotSeller() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : [...PRODUCTS].sort((a, b) => b.ratingCount - a.ratingCount).slice(0, 4);
-  document.getElementById('hotSellerProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
+  document.getElementById('hotSellerProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
 }
 
 /* ===== RENDER NEW ARRIVALS ===== */
@@ -683,7 +722,7 @@ function renderNewArrivals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'new').concat(PRODUCTS.filter(p => p.tag !== 'new')).slice(0, 4);
-  document.getElementById('newArrivalsProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
+  document.getElementById('newArrivalsProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
 }
 
 /* ===== RENDER CATEGORY STRIPS ===== */
