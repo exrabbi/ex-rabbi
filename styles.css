@@ -13118,16 +13118,16 @@ body { padding-bottom: 100px !important; }
 /* White content box — starts right at image bottom (38% + 110px) */
 .pcard-contentBx {
   position: absolute;
-  top: calc(38% + 110px);
+  top: calc(38% + 100px);
   bottom: 0;
   left: 0;
   right: 0;
   background: #fff;
   border-radius: 16px 16px 20px 20px;
-  padding: 8px 12px 10px;
+  padding: 8px 10px 8px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   z-index: 9999;
   overflow: hidden;
   transition: transform 0.5s;
@@ -13168,19 +13168,21 @@ body { padding-bottom: 100px !important; }
 .pcard-size {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 3px;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .pcard-size-lbl {
   font-size: 9px;
   font-weight: 700;
   color: #888;
-  letter-spacing: .4px;
+  letter-spacing: .3px;
   text-transform: uppercase;
-  margin-right: 1px;
+  margin-right: 2px;
   flex-shrink: 0;
   white-space: nowrap;
+  min-width: max-content;
 }
 .pcard-size span {
   font-size: 9px;
@@ -13198,22 +13200,24 @@ body { padding-bottom: 100px !important; }
 .pcard-size span:hover,
 .pcard-size span.active { background: #237fea; color: #fff; }
 
-/* COLOR dots — exact reference: width:20px height:20px border-radius:50% margin:0 5px */
+/* COLOR dots */
 .pcard-color {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   overflow: hidden;
+  flex-shrink: 0;
 }
 .pcard-color-lbl {
   font-size: 9px;
   font-weight: 700;
   color: #888;
-  letter-spacing: .4px;
+  letter-spacing: .3px;
   text-transform: uppercase;
-  margin-right: 5px;
+  margin-right: 4px;
   flex-shrink: 0;
   white-space: nowrap;
+  min-width: max-content;
 }
 .pcard-color span {
   width: 14px;
@@ -13230,10 +13234,12 @@ body { padding-bottom: 100px !important; }
 /* Buy Now button — pill shape, gradient matching card */
 .pcard-btn {
   border-radius: 30px !important;
-  margin-top: 2px;
-  padding: 6px 10px !important;
+  margin-top: auto !important;
+  padding: 0 10px !important;
+  height: 32px !important;
   font-size: 11px !important;
   background: #1a1a2e !important;
+  flex-shrink: 0;
 }
 .pcard-btn .shirt span,
 .pcard-btn .cart span { font-size: 11px !important; }
