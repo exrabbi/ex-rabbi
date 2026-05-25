@@ -9354,12 +9354,6 @@ body, button, input, select, textarea {
 }
 .pc-star { color: #f59e0b; font-weight: 800; }
 
-.wish-btn {
-  width: 36px !important;
-  height: 36px !important;
-  box-shadow: 0 2px 14px rgba(0,0,0,.14) !important;
-}
-
 /* Badge ribbons — more premium */
 .badge-ribbon {
   font-size: 10px !important;
@@ -13053,10 +13047,10 @@ body { padding-bottom: 100px !important; }
   z-index: 1;
 }
 
-/* Product image — exact reference: top:50% translateY(-50%) z-index:10000 height:220px */
+/* Product image — exact reference: top:38% translateY(-50%) z-index:10000 height:220px */
 .pcard-imgBx {
   position: absolute;
-  top: 50%;
+  top: 38%;
   left: 0;
   width: 100%;
   height: 220px;
@@ -13075,7 +13069,7 @@ body { padding-bottom: 100px !important; }
 
 /* Animation — image lifts on tap (reference hover effect) */
 .pcard:active .pcard-imgBx {
-  transform: translateY(-60%);
+  transform: translateY(-65%);
 }
 
 /* Badge + wishlist row */
@@ -13121,10 +13115,10 @@ body { padding-bottom: 100px !important; }
   white-space: nowrap;
 }
 
-/* White content box — starts right at image bottom (50% + 110px) */
+/* White content box — starts right at image bottom (38% + 110px) */
 .pcard-contentBx {
   position: absolute;
-  top: calc(50% + 90px);
+  top: calc(38% + 110px);
   bottom: 0;
   left: 0;
   right: 0;
@@ -13174,7 +13168,7 @@ body { padding-bottom: 100px !important; }
 .pcard-size {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 3px;
   overflow: hidden;
 }
@@ -13192,22 +13186,23 @@ body { padding-bottom: 100px !important; }
   font-size: 9px;
   font-weight: 700;
   color: #444;
-  border: 1.5px solid #e0e0e0;
-  border-radius: 6px;
+  border: none;
+  border-radius: 5px;
+  background: rgba(0,0,0,.08);
   padding: 2px 5px;
   cursor: pointer;
-  transition: background .15s, border-color .15s, color .15s;
+  transition: background .15s, color .15s;
   line-height: 1.5;
   flex-shrink: 0;
 }
 .pcard-size span:hover,
-.pcard-size span.active { background: #237fea; border-color: #237fea; color: #fff; }
+.pcard-size span.active { background: #237fea; color: #fff; }
 
 /* COLOR dots — exact reference: width:20px height:20px border-radius:50% margin:0 5px */
 .pcard-color {
   display: flex;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   overflow: hidden;
 }
 .pcard-color-lbl {
@@ -13247,7 +13242,7 @@ body { padding-bottom: 100px !important; }
 [data-theme="dark"] .pcard-contentBx { background: #13112a; }
 [data-theme="dark"] .pcard-name { color: #eee; }
 [data-theme="dark"] .pcard-price { color: #fff; }
-[data-theme="dark"] .pcard-size span { border-color: rgba(255,255,255,.14); color: #ccc; background: rgba(255,255,255,.04); }
+[data-theme="dark"] .pcard-size span { background: rgba(255,255,255,.12); border: none; color: #ccc; }
 [data-theme="dark"] .pcard-color span { border-color: rgba(255,255,255,.15); }
 [data-theme="dark"] .pcard-orig { color: #666; }
 
