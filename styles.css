@@ -13676,3 +13676,34 @@ body { padding-bottom: 100px !important; }
 /* Login buttons slide in from right with delay */
 #authModal.open #authLoginView      { animation: authElemIn .45s .44s both; }
 #authModal.open #authLoggedIn       { animation: authElemIn .45s .40s both; }
+
+/* =========================================
+   FOOTER — compact (social + payments + contact only)
+   ========================================= */
+.footer-compact {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 28px 20px 36px;
+  text-align: center;
+}
+.footer-compact .footer-social {
+  justify-content: center;
+}
+.footer-compact .footer-pay-mini {
+  margin-top: 0;
+  align-items: center;
+}
+.footer-compact .fpm-label {
+  justify-content: center;
+}
+.footer-compact .fpm-icons {
+  justify-content: center;
+}
+.footer-compact .footer-contact-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
