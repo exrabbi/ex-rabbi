@@ -3507,6 +3507,8 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 
 function openAuth() {
   closeMe();
+  // Start particle system + mouse glow
+  setTimeout(_startAuthFX, 80);
   // Mascot wave on open
   const mascot = document.getElementById('authMascot');
   if (mascot) {
@@ -3571,6 +3573,85 @@ function closeAuth() {
   document.getElementById('authOverlay').classList.remove('open');
   document.getElementById('authModal').classList.remove('open');
   document.body.style.overflow = '';
+  _stopAuthFX();
+}
+
+/* ══════════════════════════════════════════════
+   ✦ AUTH CANVAS PARTICLES + MOUSE GLOW
+   ══════════════════════════════════════════════ */
+let _authFXRaf = null;
+let _authFXBound = null;
+
+function _startAuthFX() {
+  const modal = document.getElementById('authModal');
+  if (!modal) return;
+
+  /* ── Canvas particle system ── */
+  let canvas = document.getElementById('authParticleCanvas');
+  if (!canvas) {
+    canvas = document.createElement('canvas');
+    canvas.id = 'authParticleCanvas';
+    modal.insertBefore(canvas, modal.firstChild);
+  }
+  const ctx = canvas.getContext('2d');
+  const fit = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+  fit();
+  window.addEventListener('resize', fit);
+
+  const COLS = ['#e91e8c','#FFD700','#7c3aed','#c084fc','#60a5fa','#fff'];
+  const pts = Array.from({length: 55}, (_, i) => ({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.6 + 0.3,
+    vx: (Math.random() - .5) * .35,
+    vy: -(Math.random() * .55 + .18),
+    a: Math.random() * .5 + .18,
+    c: COLS[i % COLS.length],
+    phase: Math.random() * Math.PI * 2,
+  }));
+
+  const tick = (t) => {
+    if (!modal.classList.contains('open')) { _authFXRaf = null; return; }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pts.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      if (p.y < -8)  { p.y = canvas.height + 8; p.x = Math.random() * canvas.width; }
+      if (p.x < -8 || p.x > canvas.width + 8) p.x = Math.random() * canvas.width;
+      const alpha = p.a * (.65 + .35 * Math.sin(t * .0008 + p.phase));
+      ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.c;
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    _authFXRaf = requestAnimationFrame(tick);
+  };
+  _authFXRaf = requestAnimationFrame(tick);
+
+  /* ── Mouse/touch reactive glow ── */
+  const onMove = (e) => {
+    const r = modal.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    modal.style.setProperty('--mx', ((cx - r.left) / r.width * 100).toFixed(1) + '%');
+    modal.style.setProperty('--my', ((cy - r.top) / r.height * 100).toFixed(1) + '%');
+  };
+  _authFXBound = onMove;
+  modal.addEventListener('mousemove', onMove, {passive:true});
+  modal.addEventListener('touchmove', onMove, {passive:true});
+}
+
+function _stopAuthFX() {
+  if (_authFXRaf) { cancelAnimationFrame(_authFXRaf); _authFXRaf = null; }
+  const c = document.getElementById('authParticleCanvas');
+  if (c) c.remove();
+  const modal = document.getElementById('authModal');
+  if (modal && _authFXBound) {
+    modal.removeEventListener('mousemove', _authFXBound);
+    modal.removeEventListener('touchmove', _authFXBound);
+    _authFXBound = null;
+  }
 }
 
 async function signInWithGoogle() {

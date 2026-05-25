@@ -14647,3 +14647,357 @@ body { padding-bottom: 100px !important; }
 
 /* Slow down animation a bit for larger cards */
 .sdeal-track { animation-duration: 34s !important; }
+
+/* ══════════════════════════════════════════════════════════════════
+   ✦ PREMIUM PANDA MASCOT — EX GLOBAL SA  ✦
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Mascot container ── */
+.panda-mascot {
+  position: relative;
+  width: 160px;
+  margin: 0 auto 4px;
+  animation: pmFloat 3.5s ease-in-out infinite;
+  filter:
+    drop-shadow(0 18px 40px rgba(233,30,140,.28))
+    drop-shadow(0 4px 16px rgba(124,58,237,.2));
+  cursor: default;
+}
+@keyframes pmFloat {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33%     { transform: translateY(-10px) rotate(.4deg); }
+  66%     { transform: translateY(-4px) rotate(-.4deg); }
+}
+/* Glow halo under panda */
+.panda-mascot::after {
+  content: '';
+  position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+  width: 90px; height: 18px;
+  background: radial-gradient(ellipse, rgba(233,30,140,.55) 0%, rgba(124,58,237,.3) 40%, transparent 70%);
+  filter: blur(8px); border-radius: 50%;
+  animation: pmGlowPulse 3.5s ease-in-out infinite;
+}
+@keyframes pmGlowPulse {
+  0%,100% { opacity: .6; transform: translateX(-50%) scaleX(1); }
+  50%     { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+}
+
+/* ── Crown ── */
+.pm-crown {
+  position: relative;
+  width: 104px; height: 54px;
+  margin: 0 auto -10px;
+  z-index: 10;
+}
+.pm-crown-base {
+  position: absolute; bottom: 0; left: 12px; right: 12px; height: 20px;
+  background: linear-gradient(135deg, #FFD700 0%, #FFC107 30%, #FF9800 55%, #FFD700 80%, #FFC107 100%);
+  background-size: 200% auto;
+  animation: crownShimmer 2.5s linear infinite;
+  border-radius: 4px 4px 8px 8px;
+  box-shadow: 0 0 22px rgba(255,200,0,.9), inset 0 1px 0 rgba(255,255,255,.35);
+}
+@keyframes crownShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+.pm-crown-pt {
+  position: absolute; bottom: 18px;
+  width: 0; height: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+}
+.pm-crown-pt.pt1 { left: 13px; border-bottom: 22px solid #FFD700; }
+.pm-crown-pt.pt2 { left: 50%; transform: translateX(-50%); border-bottom: 32px solid #FFC107; border-left-width: 13px; border-right-width: 13px; }
+.pm-crown-pt.pt3 { right: 13px; border-bottom: 22px solid #FFD700; }
+/* Gems */
+.pm-gem {
+  position: absolute; border-radius: 50%;
+  animation: gemPulse 2.4s ease-in-out infinite;
+}
+.pm-gem.g1 { width: 11px; height: 11px; left: 20px; bottom: 37px; background: radial-gradient(circle at 35% 35%, #ff80c0, #e91e8c); box-shadow: 0 0 12px rgba(233,30,140,.95); }
+.pm-gem.g2 { width: 14px; height: 14px; left: 50%; transform: translateX(-50%); bottom: 47px; background: radial-gradient(circle at 35% 35%, #86efac, #22c55e); box-shadow: 0 0 14px rgba(34,197,94,.95); animation-delay: .6s; }
+.pm-gem.g3 { width: 11px; height: 11px; right: 20px; bottom: 37px; background: radial-gradient(circle at 35% 35%, #93c5fd, #3b82f6); box-shadow: 0 0 12px rgba(59,130,246,.95); animation-delay: 1.2s; }
+@keyframes gemPulse {
+  0%,100% { opacity: 1; box-shadow-spread: 1; }
+  50%     { opacity: .65; transform: scale(1.25); }
+}
+.pm-gem.g2 { animation-name: gemPulse2; }
+@keyframes gemPulse2 {
+  0%,100% { opacity: 1; transform: translateX(-50%) scale(1); }
+  50%     { opacity: .65; transform: translateX(-50%) scale(1.3); }
+}
+
+/* ── Head ── */
+.pm-head {
+  position: relative;
+  width: 124px; height: 118px; border-radius: 50%;
+  background: linear-gradient(145deg, #fafaf6 0%, #f0ece4 60%, #e8e0d4 100%);
+  margin: 0 auto;
+  box-shadow:
+    0 14px 44px rgba(0,0,0,.28),
+    inset 0 3px 10px rgba(255,255,255,.7),
+    inset 0 -6px 14px rgba(0,0,0,.08);
+  z-index: 3;
+}
+/* Subtle head sheen */
+.pm-head::before {
+  content: '';
+  position: absolute; top: 8px; left: 15px; width: 50px; height: 20px;
+  background: radial-gradient(ellipse, rgba(255,255,255,.5) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+/* ── Ears ── */
+.pm-ear {
+  position: absolute; top: 7px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #2e265a 0%, #18102e 100%);
+  box-shadow: 0 5px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+  z-index: 1;
+}
+.pm-ear-l { left: -10px; }
+.pm-ear-r { right: -10px; }
+.pm-ear-in {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 22px; height: 22px; border-radius: 50%;
+  background: radial-gradient(circle, #3e3070, #261d52);
+}
+
+/* ── Eye patches ── */
+.pm-patch {
+  position: absolute; top: 26px;
+  width: 42px; height: 37px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #2e265a 0%, #18102e 100%);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.5);
+}
+.pm-patch-l { left: 9px; transform: rotate(-10deg); }
+.pm-patch-r { right: 9px; transform: rotate(10deg); }
+
+/* ── Eyes ── */
+.pm-eye {
+  position: absolute; top: 30px;
+  width: 30px; height: 28px; border-radius: 50%;
+  overflow: hidden; z-index: 5;
+}
+.pm-eye-l { left: 13px; }
+.pm-eye-r { right: 13px; }
+.pm-sclera {
+  width: 100%; height: 100%; border-radius: 50%;
+  background: #fff;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,.12);
+  position: relative; overflow: hidden;
+}
+.pm-pupil {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px; height: 18px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 32%, #3d3868 0%, #0a081a 100%);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,.5);
+  transition: transform .12s ease;
+  will-change: transform;
+}
+.pm-shine {
+  position: absolute; top: 2px; right: 2px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,.95);
+}
+/* Eyelid — slides down to close eye */
+.pm-lid {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #2e265a, #18102e);
+  transform: translateY(-105%);
+  transition: transform .22s cubic-bezier(.4,0,.2,1);
+  z-index: 8;
+}
+/* Natural blinking */
+@keyframes pmBlink {
+  0%,91%,100% { transform: translateY(-105%); }
+  93%,97%     { transform: translateY(0); }
+}
+.pm-lid        { animation: pmBlink 4.5s ease-in-out infinite; }
+.pm-eye-r .pm-lid { animation-delay: .09s; }
+
+/* ── Nose ── */
+.pm-nose {
+  position: absolute; top: 73px; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 13px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #3e3070, #18102e);
+  box-shadow: inset 0 2px 5px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.2);
+}
+/* Nose highlight */
+.pm-nose::before {
+  content: '';
+  position: absolute; top: 2px; left: 4px;
+  width: 6px; height: 4px; border-radius: 50%;
+  background: rgba(255,255,255,.18);
+}
+
+/* ── Mouth (happy arc) ── */
+.pm-mouth {
+  position: absolute; top: 88px; left: 50%; transform: translateX(-50%);
+  width: 38px; height: 16px;
+  border-bottom: 3.5px solid rgba(100,65,40,.5);
+  border-left: none; border-right: none; border-top: none;
+  border-radius: 0 0 100% 100%;
+}
+
+/* ── Blush marks ── */
+.pm-blush {
+  position: absolute; top: 68px;
+  width: 26px; height: 13px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,100,140,.38) 0%, transparent 70%);
+  animation: pmBlush 3.5s ease-in-out infinite;
+}
+.pm-blush-l { left: 2px; }
+.pm-blush-r { right: 2px; }
+@keyframes pmBlush {
+  0%,100% { opacity: .7; transform: scale(1); }
+  50%     { opacity: 1; transform: scale(1.1); }
+}
+
+/* ── Body / Hoodie ── */
+.pm-body {
+  position: relative;
+  width: 144px; height: 104px;
+  background: linear-gradient(145deg, #f61595 0%, #a518e8 45%, #5b12b6 80%, #3b0d8c 100%);
+  border-radius: 28px 28px 22px 22px;
+  margin: -13px auto 0;
+  box-shadow:
+    0 14px 44px rgba(124,58,237,.5),
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 0 -5px 14px rgba(0,0,0,.22);
+  overflow: visible;
+  z-index: 2;
+}
+/* Hoodie chest highlight */
+.pm-body::before {
+  content: '';
+  position: absolute; top: 0; left: 22%; right: 22%; height: 45%;
+  background: linear-gradient(180deg, rgba(255,255,255,.18), transparent);
+  border-radius: 0 0 50% 50%;
+}
+/* V-neck collar */
+.pm-collar {
+  position: absolute; top: -1px; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 26px;
+  background: linear-gradient(180deg, #06000e, #120026);
+  clip-path: polygon(12% 0%, 88% 0%, 50% 100%);
+}
+/* EX badge */
+.pm-badge {
+  position: absolute; top: 38px; left: 50%; transform: translateX(-50%);
+  font-size: 13px; font-weight: 900; color: rgba(255,255,255,.55);
+  letter-spacing: 3px; text-shadow: 0 0 14px rgba(255,255,255,.4);
+}
+
+/* ── Arms ── */
+.pm-arm {
+  position: absolute; top: 10px;
+  width: 40px; height: 76px; border-radius: 20px;
+  background: linear-gradient(145deg, #f61595, #a518e8);
+  box-shadow: 0 6px 22px rgba(124,58,237,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  transition: transform .32s cubic-bezier(.34,1.56,.64,1);
+  z-index: 1;
+}
+.pm-arm-l {
+  left: -31px;
+  transform-origin: 100% 12px;
+  transform: rotate(-18deg);
+  animation: pmArmWave 2.4s ease-in-out infinite;
+}
+.pm-arm-r {
+  right: -31px;
+  transform-origin: 0% 12px;
+  transform: rotate(18deg);
+}
+/* Paw (mini round hand) */
+.pm-paw {
+  position: absolute; bottom: -5px;
+  width: 40px; height: 32px;
+  background: linear-gradient(145deg, #fafaf6, #ede8df);
+  border-radius: 50% 50% 16px 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; line-height: 1;
+  box-shadow: 0 5px 14px rgba(0,0,0,.22), inset 0 1px 0 rgba(255,255,255,.5);
+}
+@keyframes pmArmWave {
+  0%,100% { transform: rotate(-18deg); }
+  28%     { transform: rotate(-42deg) translateY(-5px); }
+  72%     { transform: rotate(-6deg); }
+}
+
+/* ── Interaction: Password mode ── */
+#authMascot.pw-mode .pm-lid {
+  transform: translateY(0) !important;
+  animation: none !important;
+  transition: transform .22s cubic-bezier(.4,0,.2,1) !important;
+}
+#authMascot.pw-mode .pm-arm-l {
+  transform: rotate(-82deg) translate(10px, -22px) !important;
+  animation: none !important;
+}
+#authMascot.pw-mode .pm-arm-r {
+  transform: rotate(82deg) translate(-10px, -22px) !important;
+}
+
+/* Peek (password reveal) — lift lid halfway */
+#authMascot.pw-peek .pm-lid {
+  transform: translateY(-45%) !important;
+  animation: none !important;
+}
+
+/* ── Interaction: Look right (email/name focus) ── */
+#authMascot.look-right .pm-pupil {
+  transform: translate(calc(-50% + 4px), calc(-50% + 1px)) !important;
+}
+
+/* ── Speech bubble (premium redesign) ── */
+.am-center-hero .am-bubble {
+  position: absolute !important;
+  top: 8px !important; right: -8px !important; z-index: 20 !important;
+  background: rgba(255,255,255,.97) !important;
+  color: #1a0035 !important; font-size: 12.5px !important; font-weight: 700 !important;
+  padding: 7px 16px !important; border-radius: 20px 20px 20px 4px !important;
+  box-shadow: 0 4px 20px rgba(233,30,140,.28), inset 0 1px 0 rgba(255,255,255,.5) !important;
+  opacity: 0 !important; transform: scale(.7) translateY(5px) !important;
+  transition: all .32s cubic-bezier(.34,1.56,.64,1) !important;
+  pointer-events: none !important; white-space: nowrap !important;
+  border: 1px solid rgba(233,30,140,.18) !important;
+  width: auto !important; left: auto !important; background-image: none !important;
+  background-size: unset !important; animation: none !important;
+}
+.am-center-hero .am-bubble.show {
+  opacity: 1 !important; transform: scale(1) translateY(0) !important;
+}
+
+/* ── Mouse-reactive glow (--mx/--my set by JS) ── */
+.auth-modal {
+  --mx: 50%; --my: 35%;
+}
+.auth-modal::after {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: radial-gradient(380px circle at var(--mx) var(--my),
+    rgba(233,30,140,.08) 0%, rgba(124,58,237,.04) 40%, transparent 70%);
+  transition: background .06s linear;
+}
+
+/* ── Particle canvas (injected by JS) ── */
+#authParticleCanvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0 !important;
+}
+
+/* ── am-center-hero override ── */
+.am-center-hero {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  position: relative !important;
+  margin: 4px auto 10px !important;
+  width: auto !important;
+  padding-top: 0 !important;
+}
+/* ── END PREMIUM PANDA ── */
