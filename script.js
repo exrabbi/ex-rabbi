@@ -1408,16 +1408,65 @@ function updateWishBadge() {
 function toggleWish(id, btn) {
   if (wishlist.includes(id)) {
     wishlist = wishlist.filter(w => w !== id);
-    if (btn) { btn.classList.remove('active'); btn.innerHTML = '<i class="far fa-heart"></i>'; }
+    if (btn) {
+      btn.classList.remove('active');
+      btn.innerHTML = '<i class="far fa-heart"></i>';
+      _springBtn(btn, -5);
+    }
     showToast(t('unwishlisted'));
   } else {
     wishlist.push(id);
-    if (btn) { btn.classList.add('active'); btn.innerHTML = '<i class="fas fa-heart"></i>'; }
+    if (btn) {
+      btn.classList.add('active');
+      btn.innerHTML = '<i class="fas fa-heart"></i>';
+      _springBtn(btn, -10);
+      _heartPop(btn);
+      _wishBurst(btn);
+    }
     _flyWishAnimation(id, btn);
     showToast(t('wishlisted'));
   }
   saveWishlist();
   updateWishBadge();
+}
+
+/* Spring bounce — reference: translateY(var(--button-y)) */
+function _springBtn(btn, peakPx) {
+  if (!btn) return;
+  btn.style.setProperty('--button-y', peakPx + 'px');
+  setTimeout(() => btn.style.setProperty('--button-y', Math.abs(peakPx * 0.3) + 'px'), 140);
+  setTimeout(() => btn.style.setProperty('--button-y', '0px'), 280);
+}
+
+/* Heart icon pop animation */
+function _heartPop(btn) {
+  const ico = btn.querySelector('i');
+  if (!ico) return;
+  ico.classList.remove('popping');
+  void ico.offsetWidth; // reflow
+  ico.classList.add('popping');
+  ico.addEventListener('animationend', () => ico.classList.remove('popping'), { once: true });
+}
+
+/* Particle burst — 8 small dots fly outward */
+function _wishBurst(btn) {
+  if (!btn) return;
+  const rect = btn.getBoundingClientRect();
+  const burst = document.createElement('div');
+  burst.className = 'wish-burst';
+  burst.style.cssText = `left:${rect.left + rect.width/2}px;top:${rect.top + rect.height/2}px;position:fixed;z-index:10003;`;
+  const colors = ['#e91e8c','#ff5ea3','#ff9800','#f44336','#9c27b0','#ff6b9d','#ffd700','#e91e8c'];
+  for (let i = 0; i < 8; i++) {
+    const angle = (i / 8) * 360;
+    const dist = 28 + Math.random() * 14;
+    const dx = Math.cos(angle * Math.PI / 180) * dist;
+    const dy = Math.sin(angle * Math.PI / 180) * dist;
+    const dot = document.createElement('span');
+    dot.style.cssText = `--dx:${dx}px;--dy:${dy}px;background:${colors[i]};left:-3.5px;top:-3.5px;animation-delay:${i*18}ms`;
+    burst.appendChild(dot);
+  }
+  document.body.appendChild(burst);
+  setTimeout(() => burst.remove(), 800);
 }
 
 function _flyWishAnimation(id, srcBtn) {
