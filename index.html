@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=229" />
+  <link rel="stylesheet" href="styles.css?v=230" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1290,17 +1290,30 @@
         <div class="me-hero-uemail">Tap to sign in</div>
         <button class="me-hero-login-pill" onclick="openAuth()">Login / Register</button>
       </div>
-      <!-- USER state -->
-      <div id="meUserState" style="display:none;flex-direction:column;align-items:center">
-        <div class="me-hero-av-ring">
-          <div class="me-big-avatar-wrap" id="meAvatarWrap">
-            <img id="meUserAvatar" src="" alt="" />
-            <span id="meAvatarInitial" class="me-big-initial"></span>
+      <!-- USER state — horizontal card style -->
+      <div id="meUserState" style="display:none;width:100%">
+        <div class="me-profile-card">
+          <!-- Avatar -->
+          <div class="me-pc-avatar" id="meAvatarWrap">
+            <img id="meUserAvatar" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%" />
+            <span id="meAvatarInitial" class="me-pc-initial"></span>
           </div>
+          <!-- Info -->
+          <div class="me-pc-info">
+            <div class="me-pc-name" id="meUserName"></div>
+            <div class="me-pc-badges">
+              <span class="me-pc-lv" id="meUserLevel">LV1</span>
+              <span class="me-pc-tier" id="meUserTier"><i class="fas fa-shield-halved"></i> Free <i class="fas fa-chevron-right" style="font-size:8px"></i></span>
+            </div>
+            <div class="me-pc-id-row">
+              <span class="me-pc-id-lbl">ID</span>
+              <span class="me-pc-id-val" id="meUserId"></span>
+              <button class="me-pc-id-copy" onclick="copyUserId()" title="Copy ID"><i class="fas fa-copy"></i></button>
+            </div>
+          </div>
+          <!-- Edit btn -->
+          <button class="me-pc-edit" onclick="openEditProfile()"><i class="fas fa-pen"></i></button>
         </div>
-        <div class="me-hero-uname" id="meUserName"></div>
-        <div class="me-hero-uemail" id="meUserEmail"></div>
-        <button class="me-hero-edit-pill" onclick="openEditProfile()"><i class="fas fa-pen-to-square"></i> Edit Profile</button>
       </div>
       <!-- Stats row -->
       <div class="me-hero-stats-row">
@@ -2474,7 +2487,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=212"></script>
+  <script src="script.js?v=213"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
