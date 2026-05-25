@@ -3509,6 +3509,22 @@ let currentUser = JSON.parse(localStorage.getItem('exglobal_user') || 'null');
 
 function openAuth() {
   closeMe();
+  // Reset to login mode on every open
+  _authIsLogin = true;
+  const nameWrap = document.getElementById('authNameWrap');
+  const rememberRow = document.getElementById('authRememberRow');
+  if (nameWrap)    nameWrap.style.display    = 'none';
+  if (rememberRow) rememberRow.style.display = 'flex';
+  const wh = document.getElementById('authWelcomeH');
+  const ws = document.getElementById('authWelcomeSub');
+  const st = document.getElementById('authSubmitText');
+  const stxt = document.getElementById('authSwitchText');
+  const sl = document.getElementById('authSwitchLink');
+  if (wh) wh.textContent   = 'Welcome Back';
+  if (ws) ws.textContent   = 'Sign in to your EX GLOBAL SA account';
+  if (st) st.textContent   = 'SIGN IN';
+  if (stxt) stxt.textContent = "Don't have an account?";
+  if (sl) sl.textContent   = 'Create Account ↗';
   // Start particle system + mouse glow
   setTimeout(_startAuthFX, 80);
   // Mascot wave on open
@@ -3743,18 +3759,54 @@ async function signInWithApple() {
   }
 }
 
+let _authIsLogin = true;
+
+function _toggleAuthMode() {
+  _authIsLogin = !_authIsLogin;
+  const nameWrap    = document.getElementById('authNameWrap');
+  const rememberRow = document.getElementById('authRememberRow');
+  const welcomeH    = document.getElementById('authWelcomeH');
+  const welcomeSub  = document.getElementById('authWelcomeSub');
+  const submitText  = document.getElementById('authSubmitText');
+  const switchText  = document.getElementById('authSwitchText');
+  const switchLink  = document.getElementById('authSwitchLink');
+  if (_authIsLogin) {
+    if (nameWrap)    nameWrap.style.display    = 'none';
+    if (rememberRow) rememberRow.style.display = 'flex';
+    if (welcomeH)    welcomeH.textContent      = 'Welcome Back';
+    if (welcomeSub)  welcomeSub.textContent    = 'Sign in to your EX GLOBAL SA account';
+    if (submitText)  submitText.textContent    = 'SIGN IN';
+    if (switchText)  switchText.textContent    = "Don't have an account?";
+    if (switchLink)  switchLink.textContent    = 'Create Account ↗';
+    _amBubble('Welcome back! 👋', false);
+  } else {
+    if (nameWrap)    nameWrap.style.display    = 'flex';
+    if (rememberRow) rememberRow.style.display = 'none';
+    if (welcomeH)    welcomeH.textContent      = 'Create Account';
+    if (welcomeSub)  welcomeSub.textContent    = 'Join EX GLOBAL SA for exclusive rewards';
+    if (submitText)  submitText.textContent    = 'CREATE ACCOUNT';
+    if (switchText)  switchText.textContent    = 'Already have an account?';
+    if (switchLink)  switchLink.textContent    = 'Sign In ↗';
+    _amBubble("Let's get you set up! ✨", false);
+  }
+}
+
 function signInManual() {
-  const name  = (document.getElementById('authName')?.value  || '').trim();
   const email = (document.getElementById('authEmail')?.value || '').trim();
-  if (!name)  { showToast(t('enterName'));       return; }
+  const nameInp = document.getElementById('authName');
+  const name  = _authIsLogin
+    ? (email.split('@')[0].replace(/[^a-zA-Z]/g, '') || 'Member')
+    : (nameInp?.value || '').trim();
+  if (!_authIsLogin && !name)  { showToast(t('enterName'));       return; }
   if (!email || !email.includes('@')) { showToast(t('enterValidEmail')); return; }
   const btn = document.querySelector('.auth-submit-btn');
-  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Please wait…'; }
   setTimeout(() => {
     setUser({ name, email, avatar: null, provider: 'manual' });
     closeAuth();
     showToast('👋 ' + (t('welcome') || 'Welcome, ') + name.split(' ')[0] + '!');
-    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-arrow-right"></i> Continue'; }
+    const label = _authIsLogin ? 'SIGN IN' : 'CREATE ACCOUNT';
+    if (btn) { btn.disabled = false; btn.innerHTML = `<span id="authSubmitText">${label}</span><i class="fas fa-arrow-right"></i>`; }
   }, 600);
 }
 

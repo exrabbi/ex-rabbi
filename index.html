@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=243" />
+  <link rel="stylesheet" href="styles.css?v=244" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
   <!-- Google Maps loaded in body -->
@@ -1778,7 +1778,7 @@
   <!-- AUTH MODAL -->
   <div class="auth-overlay" id="authOverlay" onclick="closeAuth()"></div>
   <div class="auth-modal" id="authModal">
-    <!-- Premium animated glow orbs background -->
+    <!-- Animated glow orbs -->
     <div class="auth-bg-layer" aria-hidden="true">
       <div class="auth-orb auth-orb-1"></div>
       <div class="auth-orb auth-orb-2"></div>
@@ -1788,71 +1788,20 @@
     <!-- Back button -->
     <button class="auth-back" onclick="closeAuth()"><i class="fas fa-chevron-left"></i></button>
 
-    <!-- ✦ Glass card wraps all content ✦ -->
-    <div class="auth-glass-card">
-
-    <!-- Crown badge -->
-    <div class="auth-crown-wrap"><span class="auth-crown-icon">👑</span></div>
-
-    <!-- Brand header -->
-    <div class="auth-header">
+    <!-- Topbar: brand + flag -->
+    <div class="auth-topbar">
       <div class="auth-brand-row">
         <img src="logo.png" class="auth-logo-img" alt="EX GLOBAL" />
         <span class="auth-brand-text">EX GLOBAL</span>
         <span class="auth-brand-sa">SA</span>
       </div>
-      <div class="auth-protected"><i class="fas fa-shield-halved"></i> Your data is encrypted &amp; protected.</div>
-      <h2 class="auth-get-coupon">Unlock Members-Only Rewards</h2>
-      <div class="auth-vip-line">
-        <span class="auth-vip-dot"></span>
-        <span>EXCLUSIVE GOLD MEMBER ACCESS</span>
-        <span class="auth-vip-dot"></span>
-      </div>
+      <span class="auth-flag-badge">🇸🇦 العربية</span>
     </div>
 
-    <!-- Coupon preview cards -->
-    <div class="auth-cpn-row" id="authCpnRow">
-      <div class="auth-cpn-card">
-        <span class="auth-cpn-num">10<sup>%</sup></span>
-        <span class="auth-cpn-lbl">WELCOME</span>
-      </div>
-      <div class="auth-cpn-card">
-        <span class="auth-cpn-num" style="font-size:24px"><i class="fas fa-truck-fast"></i></span>
-        <span class="auth-cpn-lbl">FREE SHIP</span>
-      </div>
-      <div class="auth-cpn-card">
-        <span class="auth-cpn-num">5<sup>%</sup></span>
-        <span class="auth-cpn-lbl">EXTRA VIP</span>
-      </div>
-    </div>
-
-    <!-- Benefits strip -->
-    <div class="auth-benefits-strip">
-      <span><i class="fas fa-bolt"></i> Early Access</span>
-      <span class="auth-benefits-div"></span>
-      <span><i class="fas fa-tag"></i> Flash Deals</span>
-      <span class="auth-benefits-div"></span>
-      <span><i class="fas fa-gift"></i> Birthday Gift</span>
-    </div>
-
-    <!-- Logged-in view -->
-    <div id="authLoggedIn" style="display:none; text-align:center; padding: 10px 0;">
-      <div id="authUserAvatar" style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:rgba(233,30,140,.15);overflow:hidden;border:3px solid #e91e8c;box-shadow:0 0 24px rgba(233,30,140,.5);">
-        <img id="authAvatarImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;" />
-        <div id="authAvatarFallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#e91e8c;"></div>
-      </div>
-      <div id="authUserName" style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;"></div>
-      <div id="authUserEmail" style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;"></div>
-      <button onclick="signOut()" style="width:100%;padding:15px;border-radius:50px;border:none;background:linear-gradient(135deg,#e91e8c,#9415f5);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 28px rgba(233,30,140,.55)">
-        <i class="fas fa-sign-out-alt"></i> <span data-i18n="signOut">Sign Out</span>
-      </button>
-    </div>
-
-    <!-- ✦ Premium Panda Mascot — EX GLOBAL SA ✦ -->
+    <!-- Panda mascot — floats above card -->
     <div class="am-wrap am-center-hero" id="authMascot">
       <div class="am-bubble" id="amBubble">Welcome! 👋</div>
       <div class="panda-mascot">
-        <!-- Crown -->
         <div class="pm-crown">
           <div class="pm-crown-pt pt1"></div>
           <div class="pm-crown-pt pt2"></div>
@@ -1862,7 +1811,6 @@
           <div class="pm-gem g2"></div>
           <div class="pm-gem g3"></div>
         </div>
-        <!-- Head -->
         <div class="pm-head">
           <div class="pm-ear pm-ear-l"><div class="pm-ear-in"></div></div>
           <div class="pm-ear pm-ear-r"><div class="pm-ear-in"></div></div>
@@ -1881,7 +1829,6 @@
           <div class="pm-blush pm-blush-l"></div>
           <div class="pm-blush pm-blush-r"></div>
         </div>
-        <!-- Body / Hoodie -->
         <div class="pm-body">
           <div class="pm-collar"></div>
           <div class="pm-badge">EX</div>
@@ -1891,42 +1838,105 @@
       </div>
     </div>
 
-    <!-- Full-width login form below mascot -->
-    <div id="authLoginView">
-      <button class="btn-google-signin" onclick="signInWithGoogle()">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
-        <span>Continue with Google</span>
-      </button>
-      <button class="btn-facebook-signin" onclick="signInWithFacebook()">
-        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-        <span>Continue with Facebook</span>
-      </button>
+    <!-- ✦ Glass card ✦ -->
+    <div class="auth-glass-card">
 
-      <!-- Email form separator -->
-      <div class="auth-or-sep"><span>or</span></div>
-
-      <!-- Interactive email / password form -->
-      <div id="authEmailForm">
-        <div class="auth-inp-wrap"><i class="fas fa-user auth-inp-icon"></i><input type="text" id="authName" class="auth-inp" placeholder="Your Name" autocomplete="name" onfocus="amFocus('name')" onblur="amBlur()" /></div>
-        <div class="auth-inp-wrap"><i class="fas fa-envelope auth-inp-icon"></i><input type="email" id="authEmail" class="auth-inp" placeholder="Email Address" autocomplete="email" onfocus="amFocus('email')" onblur="amBlur()" /></div>
-        <div class="auth-pw-wrap">
-          <i class="fas fa-lock auth-inp-icon"></i>
-          <input type="password" id="authPass" class="auth-inp" placeholder="Password"     autocomplete="current-password" onfocus="amFocus('pw')"    onblur="amBlur()" />
-          <button type="button" class="auth-pw-eye" onclick="toggleAuthPw()" tabindex="-1">
-            <i class="fas fa-eye" id="authPwEyeIcon"></i>
-          </button>
+      <!-- Logged-in view -->
+      <div id="authLoggedIn" style="display:none; text-align:center; padding: 10px 0;">
+        <div id="authUserAvatar" style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;background:rgba(233,30,140,.15);overflow:hidden;border:3px solid #e91e8c;box-shadow:0 0 24px rgba(233,30,140,.5);">
+          <img id="authAvatarImg" src="" alt="" style="width:100%;height:100%;object-fit:cover;display:none;" />
+          <div id="authAvatarFallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#e91e8c;"></div>
         </div>
-        <button class="auth-submit-btn" onclick="signInManual()">
-          <i class="fas fa-arrow-right"></i> Continue
+        <div id="authUserName" style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;"></div>
+        <div id="authUserEmail" style="font-size:13px;color:rgba(255,255,255,.5);margin-bottom:24px;"></div>
+        <button onclick="signOut()" style="width:100%;padding:15px;border-radius:50px;border:none;background:linear-gradient(135deg,#e91e8c,#9415f5);color:#fff;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 28px rgba(233,30,140,.55)">
+          <i class="fas fa-sign-out-alt"></i> <span data-i18n="signOut">Sign Out</span>
         </button>
       </div>
-    </div>
 
-    <!-- Country + Terms footer -->
-    <div class="auth-footer">
-      <div class="auth-country-row"><i class="fas fa-location-dot"></i> Saudi Arabia</div>
-      <p class="auth-terms">By continuing, you agree to our <a href="#">Privacy &amp; Cookie Policy</a> and <a href="#">Terms &amp; Conditions</a>.</p>
-    </div>
+      <!-- Login / Register view -->
+      <div id="authLoginView">
+        <!-- Dynamic heading -->
+        <h2 class="auth-welcome-h" id="authWelcomeH">Welcome Back</h2>
+        <p class="auth-welcome-sub" id="authWelcomeSub">Sign in to your EX GLOBAL SA account</p>
+
+        <!-- Email form -->
+        <div id="authEmailForm">
+          <!-- Name field — hidden in login mode, shown in register -->
+          <div class="auth-inp-wrap auth-field-register" id="authNameWrap" style="display:none">
+            <i class="fas fa-user auth-inp-icon"></i>
+            <input type="text" id="authName" class="auth-inp" placeholder="Your Name" autocomplete="name" onfocus="amFocus('name')" onblur="amBlur()" />
+          </div>
+          <div class="auth-inp-wrap">
+            <i class="fas fa-envelope auth-inp-icon"></i>
+            <input type="email" id="authEmail" class="auth-inp" placeholder="Email Address" autocomplete="email" onfocus="amFocus('email')" onblur="amBlur()" />
+          </div>
+          <div class="auth-pw-wrap">
+            <i class="fas fa-lock auth-inp-icon"></i>
+            <input type="password" id="authPass" class="auth-inp" placeholder="Password" autocomplete="current-password" onfocus="amFocus('pw')" onblur="amBlur()" />
+            <button type="button" class="auth-pw-eye" onclick="toggleAuthPw()" tabindex="-1">
+              <i class="fas fa-eye" id="authPwEyeIcon"></i>
+            </button>
+          </div>
+          <!-- Remember me + Forgot password (login mode) -->
+          <div class="auth-remember-row auth-field-login" id="authRememberRow">
+            <label class="auth-remember-label">
+              <input type="checkbox" id="authRemember" />
+              <span>Remember me</span>
+            </label>
+            <a href="#" class="auth-forgot-link" onclick="return false;">Forgot Password?</a>
+          </div>
+          <button class="auth-submit-btn" onclick="signInManual()">
+            <span id="authSubmitText">SIGN IN</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- OR separator -->
+        <div class="auth-or-sep"><span>OR</span></div>
+
+        <!-- Social buttons -->
+        <button class="btn-google-signin" onclick="signInWithGoogle()">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          <span>Continue with Google</span>
+        </button>
+        <button class="btn-facebook-signin" onclick="signInWithFacebook()">
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span>Continue with Facebook</span>
+        </button>
+
+        <!-- Toggle login / register -->
+        <div class="auth-switch-row">
+          <span id="authSwitchText">Don't have an account?</span>
+          <a href="#" class="auth-switch-link" id="authSwitchLink" onclick="_toggleAuthMode();return false;">Create Account ↗</a>
+        </div>
+      </div>
+
+      <!-- Bottom trust strip -->
+      <div class="auth-trust-strip">
+        <div class="auth-trust-item">
+          <i class="fas fa-crown"></i>
+          <span>VIP ACCESS</span>
+        </div>
+        <div class="auth-trust-item">
+          <i class="fas fa-shield-halved"></i>
+          <span>SECURE &amp; SAFE</span>
+        </div>
+        <div class="auth-trust-item">
+          <i class="fas fa-truck-fast"></i>
+          <span>FAST DELIVERY</span>
+        </div>
+        <div class="auth-trust-item">
+          <i class="fas fa-headset"></i>
+          <span>24/7 SUPPORT</span>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="auth-footer">
+        <div class="auth-protected"><i class="fas fa-shield-halved"></i> Your data is encrypted &amp; protected.</div>
+        <p class="auth-terms">By continuing you agree to our <a href="#">Privacy Policy</a> and <a href="#">Terms &amp; Conditions</a>.</p>
+      </div>
     </div><!-- /.auth-glass-card -->
   </div><!-- /.auth-modal -->
 
@@ -2525,7 +2535,7 @@
   <script src="translations.js?v=96"></script>
   <script src="products.js?v=83"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=222"></script>
+  <script src="script.js?v=223"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

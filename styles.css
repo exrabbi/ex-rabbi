@@ -15148,3 +15148,247 @@ body { padding-bottom: 100px !important; }
 }
 .bday-close:hover { color: rgba(255,255,255,.6); }
 /* ── END Birthday Wish Overlay ── */
+
+/* ── Auth Modal v2 — Reference Redesign ─────────────────── */
+
+/* Full-screen flex-center container */
+.auth-modal {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 0 16px 40px !important;
+  overflow-y: auto !important;
+  gap: 0 !important;
+}
+
+/* Topbar */
+.auth-topbar {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 420px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 4px 0;
+  flex-shrink: 0;
+}
+.auth-flag-badge {
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,.6);
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 20px; padding: 5px 12px;
+  letter-spacing: .3px;
+}
+
+/* Panda floats above card — outside card, pulled up with negative margin */
+.auth-modal .am-wrap.am-center-hero {
+  position: relative; z-index: 3;
+  width: 100%; max-width: 420px;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin: 20px 0 -70px !important;
+  pointer-events: none;
+}
+.auth-modal .am-wrap.am-center-hero .panda-mascot { pointer-events: all; }
+
+/* Glass card — centered, floating */
+.auth-glass-card {
+  position: relative; z-index: 2;
+  width: 100%; max-width: 420px;
+  background: rgba(255,255,255,.06) !important;
+  backdrop-filter: blur(40px) !important;
+  -webkit-backdrop-filter: blur(40px) !important;
+  border: 1px solid rgba(255,255,255,.14) !important;
+  border-radius: 32px !important;
+  padding: 88px 24px 24px !important;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,.55),
+    0 0 0 1px rgba(255,255,255,.05),
+    inset 0 1px 0 rgba(255,255,255,.12) !important;
+  animation: authCardFloat 5s ease-in-out infinite !important;
+}
+
+/* Welcome heading */
+.auth-welcome-h {
+  font-size: 28px !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  text-align: center !important;
+  margin: 0 0 6px !important;
+  letter-spacing: -.3px !important;
+  text-shadow: 0 2px 20px rgba(233,30,140,.3) !important;
+}
+.auth-welcome-sub {
+  font-size: 13px !important;
+  color: rgba(255,255,255,.5) !important;
+  text-align: center !important;
+  margin: 0 0 24px !important;
+  letter-spacing: .1px !important;
+}
+
+/* Remember me row */
+.auth-remember-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 4px 0 14px !important;
+}
+.auth-remember-label {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: 13px; color: rgba(255,255,255,.6);
+}
+.auth-remember-label input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: #e91e8c;
+  cursor: pointer;
+}
+.auth-forgot-link {
+  font-size: 13px; color: #e91e8c; text-decoration: none; font-weight: 600;
+  transition: opacity .15s;
+}
+.auth-forgot-link:hover { opacity: .75; }
+
+/* SIGN IN button — gold gradient */
+.auth-submit-btn {
+  width: 100% !important;
+  padding: 16px !important;
+  border-radius: 16px !important;
+  border: none !important;
+  background: linear-gradient(135deg, #FFD700 0%, #e91e8c 50%, #7c3aed 100%) !important;
+  background-size: 200% 200% !important;
+  animation: authBtnShimmer 4s ease infinite !important;
+  color: #fff !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.5px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  box-shadow: 0 6px 28px rgba(233,30,140,.5), 0 2px 8px rgba(0,0,0,.3) !important;
+  transition: transform .15s, box-shadow .15s !important;
+  margin-top: 4px !important;
+}
+.auth-submit-btn:active {
+  transform: scale(.97) !important;
+  box-shadow: 0 3px 14px rgba(233,30,140,.35) !important;
+}
+@keyframes authBtnShimmer {
+  0%,100% { background-position: 0% 50%; }
+  50%      { background-position: 100% 50%; }
+}
+
+/* OR separator */
+.auth-or-sep {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 18px 0 14px !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: rgba(255,255,255,.35) !important;
+  letter-spacing: 1px !important;
+}
+.auth-or-sep::before, .auth-or-sep::after {
+  content: ''; flex: 1; height: 1px;
+  background: rgba(255,255,255,.12);
+}
+
+/* Social buttons */
+.btn-google-signin, .btn-facebook-signin {
+  margin-bottom: 10px !important;
+  border-radius: 14px !important;
+  padding: 14px 16px !important;
+  font-size: 14px !important;
+}
+.btn-facebook-signin {
+  background: rgba(24,119,242,.18) !important;
+  border-color: rgba(24,119,242,.4) !important;
+  color: #7eb8ff !important;
+  margin-bottom: 0 !important;
+}
+.btn-facebook-signin svg { color: #7eb8ff !important; }
+
+/* Login / Register toggle */
+.auth-switch-row {
+  text-align: center;
+  margin: 18px 0 0;
+  font-size: 13px;
+  color: rgba(255,255,255,.45);
+}
+.auth-switch-link {
+  color: #e91e8c; font-weight: 700; text-decoration: none; margin-left: 5px;
+  transition: opacity .15s;
+}
+.auth-switch-link:hover { opacity: .75; }
+
+/* 4-icon trust strip */
+.auth-trust-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 6px !important;
+  margin: 22px 0 0 !important;
+  padding: 14px 8px 12px !important;
+  background: rgba(255,255,255,.04) !important;
+  border: 1px solid rgba(255,255,255,.07) !important;
+  border-radius: 18px !important;
+}
+.auth-trust-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 5px;
+  font-size: 8.5px; font-weight: 800;
+  color: rgba(255,255,255,.55);
+  letter-spacing: .4px; text-align: center;
+}
+.auth-trust-item i {
+  font-size: 18px;
+  background: linear-gradient(135deg, #FFD700, #e91e8c);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* Footer */
+.auth-footer {
+  padding-top: 14px !important;
+  margin-top: 0 !important;
+}
+.auth-protected {
+  justify-content: center !important;
+  margin-bottom: 6px !important;
+}
+
+/* Hide old elements that clutter the new design */
+.auth-crown-wrap,
+.auth-cpn-row,
+.auth-benefits-strip,
+.auth-vip-line,
+.auth-get-coupon,
+.auth-country-row { display: none !important; }
+
+/* Back button — repositioned above topbar */
+.auth-back {
+  position: absolute !important;
+  top: 16px !important;
+  left: 12px !important;
+  z-index: 10 !important;
+}
+
+/* Stagger entrance animations for new elements */
+#authModal.open .auth-topbar      { animation: authElemIn .4s .05s both; }
+#authModal.open .am-wrap          { animation: authElemIn .5s .15s both; }
+#authModal.open .auth-glass-card  { animation: authElemIn .5s .22s both; }
+#authModal.open .auth-welcome-h   { animation: authElemIn .4s .30s both; }
+#authModal.open .auth-welcome-sub { animation: authElemIn .4s .36s both; }
+#authModal.open #authEmailForm     { animation: authElemIn .4s .42s both; }
+#authModal.open .auth-or-sep       { animation: authElemIn .4s .50s both; }
+#authModal.open .btn-google-signin { animation: authElemIn .4s .56s both; }
+#authModal.open .btn-facebook-signin { animation: authElemIn .4s .62s both; }
+#authModal.open .auth-switch-row   { animation: authElemIn .4s .68s both; }
+#authModal.open .auth-trust-strip  { animation: authElemIn .4s .74s both; }
+
+/* Input field animation tweaks for new order */
+#authEmailForm > .auth-inp-wrap:nth-child(1) { animation: authInpSlide .3s .44s both; }
+#authEmailForm > .auth-inp-wrap:nth-child(2) { animation: authInpSlide .3s .50s both; }
+#authEmailForm > .auth-pw-wrap               { animation: authInpSlide .3s .56s both; }
+#authEmailForm > .auth-remember-row          { animation: authInpSlide .3s .62s both; }
+#authEmailForm > .auth-submit-btn            { animation: authInpSlide .3s .68s both; }
+/* ── END Auth Modal v2 ── */
