@@ -15001,3 +15001,150 @@ body { padding-bottom: 100px !important; }
   padding-top: 0 !important;
 }
 /* ── END PREMIUM PANDA ── */
+
+/* ── Birthday Wish Overlay ───────────────────────────────── */
+.bday-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(10,8,30,.82); backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none;
+  transition: opacity .35s ease;
+}
+.bday-overlay.open { opacity: 1; pointer-events: all; }
+.bday-modal {
+  position: relative; width: min(360px, 92vw);
+  background: linear-gradient(160deg,#1a1040 0%,#0d0a24 60%,#160d2e 100%);
+  border: 1px solid rgba(233,30,140,.25);
+  border-radius: 28px; padding: 28px 22px 24px;
+  box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 60px rgba(233,30,140,.12);
+  overflow: hidden; text-align: center;
+  transform: scale(.88) translateY(30px);
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.bday-overlay.open .bday-modal { transform: scale(1) translateY(0); }
+.bday-confetti-canvas-wrap {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+#bdayCanvas { width: 100%; height: 100%; }
+.bday-header { position: relative; z-index: 1; margin-bottom: 18px; }
+.bday-emoji-row { font-size: 26px; letter-spacing: 4px; margin-bottom: 8px; }
+.bday-title {
+  font-size: 26px; font-weight: 900; margin: 0 0 6px;
+  background: linear-gradient(135deg, #FFD700, #e91e8c, #7c3aed);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.bday-sub { font-size: 14px; color: rgba(255,255,255,.6); margin: 0; }
+.bday-cake-wrap {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; align-items: center;
+  margin: 0 auto 12px; width: 130px;
+}
+.bday-cake { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.bday-tier {
+  border-radius: 6px 6px 4px 4px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  position: relative;
+}
+.bday-tier::after {
+  content: ''; position: absolute; top: -6px; left: 0; right: 0; height: 10px;
+  background: rgba(255,255,255,.18); border-radius: 6px 6px 0 0;
+}
+.bday-tier-top  { width: 60px;  height: 28px; }
+.bday-tier-mid  { width: 90px;  height: 32px; }
+.bday-tier-bot  { width: 120px; height: 36px; }
+.bday-candle {
+  position: absolute; top: -48px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center;
+  cursor: pointer;
+}
+.bday-candle-body {
+  width: 14px; height: 36px;
+  background: linear-gradient(180deg, #FFD700, #FFA500);
+  border-radius: 4px 4px 2px 2px;
+  box-shadow: 0 0 8px rgba(255,200,0,.4);
+}
+.bday-flame-wrap {
+  position: relative; width: 20px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: -2px;
+}
+.bday-flame-outer {
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 80%, #FFD700 0%, #FF6600 50%, transparent 100%);
+  border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+  animation: bdayFlicker 1.2s ease-in-out infinite alternate;
+}
+.bday-flame-inner {
+  position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+  width: 8px; height: 14px;
+  background: radial-gradient(ellipse at 50% 80%, #fff 0%, #FFD700 60%, transparent 100%);
+  border-radius: 50% 50% 30% 30% / 60% 60% 40% 40%;
+  animation: bdayFlicker 0.9s ease-in-out infinite alternate-reverse;
+}
+.bday-flame-glow {
+  position: absolute; inset: -8px;
+  background: radial-gradient(circle, rgba(255,160,0,.5) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: bdayGlowPulse 1.5s ease-in-out infinite;
+}
+.bday-smoke {
+  position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 20px;
+  background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.5) 50%, transparent 100%);
+  border-radius: 2px; opacity: 0; pointer-events: none;
+}
+.bday-candle.blown .bday-flame-wrap { display: none; }
+.bday-candle.blown .bday-smoke { animation: bdaySmoke 2s ease-out forwards; }
+@keyframes bdayFlicker {
+  0%   { transform: scaleX(1)   scaleY(1)   rotate(-2deg); }
+  100% { transform: scaleX(.85) scaleY(1.1) rotate(3deg); }
+}
+@keyframes bdayGlowPulse {
+  0%,100% { opacity: .7; transform: scale(1); }
+  50%     { opacity: 1;  transform: scale(1.15); }
+}
+@keyframes bdaySmoke {
+  0%   { opacity: .8; transform: translateX(-50%) translateY(0) scaleX(1); }
+  100% { opacity: 0;  transform: translateX(-50%) translateY(-28px) scaleX(2.5); }
+}
+.bday-hint {
+  position: relative; z-index: 1;
+  font-size: 13px; color: rgba(255,255,255,.55);
+  margin: 6px 0 18px;
+}
+.bday-voucher { position: relative; z-index: 1; margin-bottom: 18px; }
+.bday-voucher-inner {
+  background: linear-gradient(135deg, rgba(233,30,140,.15), rgba(124,58,237,.15));
+  border: 1.5px dashed rgba(233,30,140,.5);
+  border-radius: 18px; padding: 18px 16px 16px;
+  animation: bdayVoucherIn .5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes bdayVoucherIn {
+  from { opacity: 0; transform: scale(.8) translateY(16px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.bday-voucher-top { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.bday-voucher-icon { font-size: 24px; }
+.bday-voucher-pct { font-size: 22px; font-weight: 900; color: #FFD700; }
+.bday-voucher-code {
+  font-size: 28px; font-weight: 900; letter-spacing: 4px;
+  background: linear-gradient(135deg, #FFD700, #e91e8c);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  margin-bottom: 6px;
+}
+.bday-voucher-note { font-size: 12px; color: rgba(255,255,255,.5); margin: 0 0 14px; }
+.bday-voucher-copy {
+  width: 100%; padding: 11px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff; font-size: 14px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(233,30,140,.3);
+  transition: transform .15s, box-shadow .15s;
+}
+.bday-voucher-copy:active { transform: scale(.96); }
+.bday-close {
+  position: relative; z-index: 1;
+  background: none; border: none; color: rgba(255,255,255,.35);
+  font-size: 13px; cursor: pointer; padding: 6px 16px; border-radius: 20px;
+}
+.bday-close:hover { color: rgba(255,255,255,.6); }
+/* ── END Birthday Wish Overlay ── */
