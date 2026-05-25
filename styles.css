@@ -7105,14 +7105,14 @@ body.dark-mode .tbar-pill span { color: #e8e8f0; }
   border: 1px solid rgba(255,255,255,.12);
   white-space: nowrap;
 }
-.fpi-mada  { background: #1b4f8a; color: #fff; }
-.fpi-stc   { background: #6D2C8A; color: #fff; }
-.fpi-visa  { background: #1a1f71; color: #fff; }
-.fpi-mc    { background: #eb001b; color: #fff; }
-.fpi-apple { background: #000; color: #fff; }
-.fpi-tamara{ background: #a21caf22; color: #e879f9; border-color: #e879f955; }
-.fpi-tabby { background: #5B2D8E22; color: #c4b5fd; border-color: #7c3aed55; }
-.fpi-cod   { background: #065f4622; color: #34d399; border-color: #34d39955; }
+.fpi-mada  { background: #0070CD; color: #fff; border-color: transparent; }
+.fpi-stc   { background: #6D2C8A; color: #fff; border-color: transparent; }
+.fpi-visa  { background: #1A1F71; color: #fff; border-color: transparent; }
+.fpi-mc    { background: linear-gradient(135deg,#EB001B 0%,#F79E1B 100%); color: #fff; border-color: transparent; }
+.fpi-apple { background: #111; color: #fff; border-color: transparent; }
+.fpi-tamara{ background: #3BB77E; color: #fff; border-color: transparent; }
+.fpi-tabby { background: #3D1A78; color: #BDA9FF; border-color: #7c3aed66; }
+.fpi-cod   { background: #047857; color: #fff; border-color: transparent; }
 
 .footer-grid {
   display: grid; grid-template-columns: 1fr;
@@ -9518,14 +9518,14 @@ body:not([data-theme="dark"]) .tbm-pill i,
 }
 
 /* Real brand colors */
-.fpi-mada   { background: #0072BC !important; color: #fff !important; border-color: transparent !important; }
+.fpi-mada   { background: #0070CD !important; color: #fff !important; border-color: transparent !important; }
 .fpi-stc    { background: #6D2C8A !important; color: #fff !important; border-color: transparent !important; }
-.fpi-visa   { background: #1a1f71 !important; color: #fff !important; border-color: transparent !important; }
-.fpi-mc     { background: linear-gradient(135deg,#eb001b,#f79e1b) !important; color: #fff !important; border-color: transparent !important; }
-.fpi-apple  { background: #000 !important; color: #fff !important; border-color: transparent !important; }
-.fpi-tamara { background: #3d9970 !important; color: #fff !important; border-color: transparent !important; }
-.fpi-tabby  { background: #3d1a78 !important; color: #BDA9FF !important; border-color: #7c3aed88 !important; }
-.fpi-cod    { background: #065f46 !important; color: #6ee7b7 !important; border-color: #34d39955 !important; }
+.fpi-visa   { background: #1A1F71 !important; color: #fff !important; border-color: transparent !important; }
+.fpi-mc     { background: linear-gradient(135deg,#EB001B 0%,#F79E1B 100%) !important; color: #fff !important; border-color: transparent !important; }
+.fpi-apple  { background: #111 !important; color: #fff !important; border-color: transparent !important; }
+.fpi-tamara { background: #3BB77E !important; color: #fff !important; border-color: transparent !important; }
+.fpi-tabby  { background: #3D1A78 !important; color: #BDA9FF !important; border-color: #7c3aed66 !important; }
+.fpi-cod    { background: #047857 !important; color: #fff !important; border-color: transparent !important; }
 .footer-logo {
   font-size: 22px !important;
   font-weight: 900 !important;
