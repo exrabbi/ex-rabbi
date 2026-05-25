@@ -626,23 +626,7 @@ function renderFlashDeals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
     : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
-  document.getElementById('flashProducts').innerHTML = items.map(p => {
-    const name = (typeof getName === 'function' ? getName(p) : (p.names?.en || p.name || ''));
-    return `<div class="flash-card" onclick="openModal(${p.id})">
-      <div class="fc-img-wrap">
-        <img src="${p.image}" loading="lazy" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'" ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
-        <span class="fc-badge">-${p.discount}%</span>
-      </div>
-      <div class="fc-body">
-        <p class="fc-name">${name.substring(0, 26)}</p>
-        <div class="fc-prices">
-          <span class="fc-price">${fmt(p.price)}</span>
-          ${p.originalPrice && p.originalPrice > p.price ? `<span class="fc-orig">${fmt(p.originalPrice)}</span>` : ''}
-        </div>
-        <div class="fc-rating"><span>★</span> ${p.rating}</div>
-      </div>
-    </div>`;
-  }).join('');
+  document.getElementById('flashProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
 }
 
 function _dealMiniCard(p) {
@@ -681,7 +665,7 @@ function renderTrending() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
-  document.getElementById('trendingProducts').innerHTML = items.map(_dealMiniCard).join('');
+  document.getElementById('trendingProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
 }
 
 /* ===== RENDER HOT SELLER ===== */
@@ -690,7 +674,7 @@ function renderHotSeller() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : [...PRODUCTS].sort((a, b) => b.ratingCount - a.ratingCount).slice(0, 4);
-  document.getElementById('hotSellerProducts').innerHTML = items.map(_dealMiniCard).join('');
+  document.getElementById('hotSellerProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
 }
 
 /* ===== RENDER NEW ARRIVALS ===== */
@@ -699,7 +683,7 @@ function renderNewArrivals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'new').concat(PRODUCTS.filter(p => p.tag !== 'new')).slice(0, 4);
-  document.getElementById('newArrivalsProducts').innerHTML = items.map(_dealMiniCard).join('');
+  document.getElementById('newArrivalsProducts').innerHTML = items.map(p => productCardHTML(p)).join('');
 }
 
 /* ===== RENDER CATEGORY STRIPS ===== */

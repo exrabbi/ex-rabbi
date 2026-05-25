@@ -14086,3 +14086,29 @@ body { padding-bottom: 100px !important; }
 .am-wrap.look-right .am-pupil {
   transform: translate(3px, 2px) !important;
 }
+
+/* ===== PCARD GRID FOR ALL SECTION CONTAINERS ===== */
+/* Override flex/scroll layouts so pcard renders in 2-column grid */
+.two-col-products {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  flex-direction: unset !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  scroll-snap-type: unset !important;
+  gap: 10px !important;
+  padding: 10px 12px 16px !important;
+}
+.flash-products {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  gap: 10px !important;
+  padding: 10px 12px 16px !important;
+}
+/* pcards inside these containers fill cell width */
+.two-col-products .pcard,
+.flash-products .pcard {
+  width: 100% !important;
+}
