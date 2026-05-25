@@ -3638,14 +3638,87 @@ async function signInWithApple() {
 }
 
 function signInManual() {
-  const name = document.getElementById('authName').value.trim();
-  const email = document.getElementById('authEmail').value.trim();
-  const phone = document.getElementById('authPhone').value.trim();
-  if (!name) { showToast(t('enterName')); return; }
+  const name  = (document.getElementById('authName')?.value  || '').trim();
+  const email = (document.getElementById('authEmail')?.value || '').trim();
+  if (!name)  { showToast(t('enterName'));       return; }
   if (!email || !email.includes('@')) { showToast(t('enterValidEmail')); return; }
-  setUser({ name, email, phone, avatar: null, provider: 'manual' });
-  closeAuth();
-  showToast(t('welcome') + name.split(' ')[0] + '!');
+  const btn = document.querySelector('.auth-submit-btn');
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…'; }
+  setTimeout(() => {
+    setUser({ name, email, avatar: null, provider: 'manual' });
+    closeAuth();
+    showToast('👋 ' + (t('welcome') || 'Welcome, ') + name.split(' ')[0] + '!');
+    if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-arrow-right"></i> Continue'; }
+  }, 600);
+}
+
+/* ===== MASCOT INTERACTIVITY ===== */
+function amFocus(type) {
+  const mascot = document.getElementById('authMascot');
+  if (!mascot) return;
+  if (type === 'pw') {
+    mascot.classList.add('pw-mode');
+    mascot.classList.remove('look-right');
+    _amBubble("I won't peek! 🙈", true);
+  } else {
+    mascot.classList.remove('pw-mode');
+    mascot.classList.add('look-right');
+    const msg = type === 'name' ? "What's your name? 😊" : "Enter your email 📧";
+    _amBubble(msg, false);
+  }
+}
+function amBlur() {
+  setTimeout(() => {
+    const active = document.activeElement;
+    if (active && active.closest && active.closest('#authEmailForm')) return;
+    const mascot = document.getElementById('authMascot');
+    if (!mascot) return;
+    mascot.classList.remove('pw-mode', 'look-right');
+    _amBubble('', false);
+  }, 120);
+}
+function _amBubble(msg, isPw) {
+  const bubble = document.getElementById('amBubble');
+  if (!bubble) return;
+  if (msg) {
+    bubble.textContent = msg;
+    bubble.style.background = isPw ? 'rgba(148,21,245,.9)' : '#fff';
+    bubble.style.color = isPw ? '#fff' : '#333';
+    bubble.classList.add('show');
+  } else {
+    bubble.classList.remove('show');
+  }
+}
+function toggleAuthPw() {
+  const inp  = document.getElementById('authPass');
+  const icon = document.getElementById('authPwEyeIcon');
+  if (!inp) return;
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.className = 'fas fa-eye-slash';
+    // Reveal = mascot peeks (briefly remove pw-mode)
+    const mascot = document.getElementById('authMascot');
+    if (mascot) {
+      mascot.classList.remove('pw-mode');
+      mascot.classList.add('look-right');
+      _amBubble('Oops! I peeked 👀', false);
+      setTimeout(() => {
+        if (document.activeElement === inp) {
+          mascot.classList.add('pw-mode');
+          mascot.classList.remove('look-right');
+          _amBubble("OK OK, covering again 🙈", true);
+        }
+      }, 1200);
+    }
+  } else {
+    inp.type = 'password';
+    icon.className = 'fas fa-eye';
+    if (document.activeElement === inp) {
+      const mascot = document.getElementById('authMascot');
+      if (mascot) { mascot.classList.add('pw-mode'); mascot.classList.remove('look-right'); }
+      _amBubble("I won't peek! 🙈", true);
+    }
+  }
 }
 
 function getWANumber(){try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');return s.whatsapp||'966546224029';}catch(e){return'966546224029';}}

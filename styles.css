@@ -13940,3 +13940,85 @@ body { padding-bottom: 100px !important; }
 .settings-signout-btn.signing-out i {
   animation: signOutBtnShake .4s ease-in-out infinite alternate;
 }
+
+/* ===== AUTH EMAIL FORM ===== */
+.auth-or-sep {
+  display: flex; align-items: center; gap: 8px;
+  color: rgba(255,255,255,.35); font-size: 11px; font-weight: 700; letter-spacing: .5px;
+  margin: 2px 0;
+}
+.auth-or-sep::before, .auth-or-sep::after {
+  content: ''; flex: 1; height: 1px; background: rgba(255,255,255,.15);
+}
+
+#authEmailForm {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.auth-inp {
+  width: 100%; box-sizing: border-box;
+  padding: 11px 13px; border-radius: 14px; border: none; outline: none;
+  background: rgba(255,255,255,.1); color: #fff;
+  font-size: 13px; font-weight: 600;
+  transition: background .2s, box-shadow .2s, transform .15s;
+  caret-color: #e91e8c;
+}
+.auth-inp::placeholder { color: rgba(255,255,255,.4); font-weight: 500; }
+.auth-inp:focus {
+  background: rgba(255,255,255,.16);
+  box-shadow: 0 0 0 2.5px rgba(233,30,140,.5), 0 4px 16px rgba(0,0,0,.25);
+  transform: scale(1.01);
+}
+.auth-pw-wrap { position: relative; }
+.auth-pw-wrap .auth-inp { padding-right: 40px; }
+.auth-pw-eye {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: rgba(255,255,255,.45);
+  font-size: 13px; cursor: pointer; padding: 4px;
+  transition: color .2s;
+}
+.auth-pw-eye:hover { color: rgba(255,255,255,.8); }
+
+.auth-submit-btn {
+  width: 100%; padding: 12px; border-radius: 14px; border: none;
+  background: linear-gradient(135deg, #e91e8c, #9415f5);
+  color: #fff; font-size: 13px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 18px rgba(233,30,140,.45);
+  transition: transform .15s, box-shadow .15s, opacity .2s;
+}
+.auth-submit-btn:active { transform: scale(.96); box-shadow: 0 2px 8px rgba(233,30,140,.25); }
+.auth-submit-btn:disabled { opacity:.5; pointer-events:none; }
+
+/* Input entrance animation when email form loads */
+@keyframes authInpSlide {
+  from { opacity:0; transform: translateY(8px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+#authEmailForm .auth-inp:nth-child(1) { animation: authInpSlide .3s .05s both; }
+#authEmailForm .auth-inp:nth-child(2) { animation: authInpSlide .3s .12s both; }
+#authEmailForm .auth-pw-wrap          { animation: authInpSlide .3s .19s both; }
+#authEmailForm .auth-submit-btn       { animation: authInpSlide .3s .26s both; }
+
+/* ===== PW-MODE OVERRIDE FOR SPLIT-ROW (fix !important conflicts) ===== */
+.auth-split-row .am-wrap.pw-mode .am-arm-l {
+  transform: rotate(-80deg) translateY(-8px) !important;
+  animation: none !important;
+}
+.auth-split-row .am-wrap.pw-mode .am-arm-r {
+  transform: rotate(80deg) translateY(-8px) !important;
+}
+.auth-split-row .am-wrap.pw-mode .am-scene {
+  animation: am-float 3.5s ease-in-out infinite !important;
+}
+.auth-split-row .am-wrap.pw-mode .am-leg-l,
+.auth-split-row .am-wrap.pw-mode .am-leg-r {
+  animation: none !important;
+}
+.auth-split-row .am-wrap.pw-mode .am-eye {
+  transform: scaleY(0.1) !important;
+  animation: none !important;
+}
+/* Pupil look-right class for email/name focus */
+.am-wrap.look-right .am-pupil {
+  transform: translate(3px, 2px) !important;
+}
