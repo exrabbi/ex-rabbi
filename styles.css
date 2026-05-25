@@ -2654,13 +2654,13 @@ img { max-width: 100%; display: block; }
 .auth-overlay.open { display: block; }
 .auth-modal {
   position: fixed; left: 0; right: 0; bottom: 0; top: 0;
-  transform: translateY(100%);
+  transform: translateX(100%);
   background: linear-gradient(160deg, #0a0018 0%, #1a0035 30%, #0f001f 60%, #080010 100%);
   background-size: 300% 300%;
   animation: authBgAnimate 10s ease infinite;
   z-index: 301;
   opacity: 0; pointer-events: none;
-  transition: transform .4s cubic-bezier(.4,0,.2,1), opacity .25s;
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94), opacity .3s;
   overflow-y: auto;
   display: flex; flex-direction: column;
   padding: 0 22px 36px;
@@ -2673,7 +2673,7 @@ img { max-width: 100%; display: block; }
     radial-gradient(ellipse at 50% 100%, rgba(233,30,140,.08) 0%, transparent 50%);
 }
 .auth-modal > * { position: relative; z-index: 1; }
-.auth-modal.open { transform: translateY(0); opacity: 1; pointer-events: all; }
+.auth-modal.open { transform: translateX(0); opacity: 1; pointer-events: all; }
 .auth-back {
   position: sticky; top: 0; left: 0;
   width: 40px; height: 52px; flex-shrink: 0;
@@ -13651,3 +13651,28 @@ body { padding-bottom: 100px !important; }
   flex-wrap: wrap;
   gap: 6px;
 }
+
+/* =========================================
+   AUTH MODAL — right-slide entrance animations
+   ========================================= */
+@keyframes authElemIn {
+  from { opacity: 0; transform: translateX(48px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes authMascotIn {
+  from { opacity: 0; transform: translateX(-42px) scale(.88); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+/* Staggered entrance for each section */
+#authModal.open .auth-crown-wrap    { animation: authElemIn .4s .08s both; }
+#authModal.open .auth-header        { animation: authElemIn .4s .16s both; }
+#authModal.open .auth-cpn-row       { animation: authElemIn .4s .24s both; }
+#authModal.open .auth-benefits-strip{ animation: authElemIn .4s .32s both; }
+
+/* Character slides in from LEFT while rest comes from RIGHT */
+#authModal.open .am-wrap            { animation: authMascotIn .5s .40s both; }
+
+/* Login buttons slide in from right with delay */
+#authModal.open #authLoginView      { animation: authElemIn .45s .44s both; }
+#authModal.open #authLoggedIn       { animation: authElemIn .45s .40s both; }
