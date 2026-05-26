@@ -16373,3 +16373,68 @@ body { padding-bottom: 100px !important; }
   text-shadow: 0 0 12px rgba(255,255,255,.3) !important;
 }
 /* ════ END PANDA B&W ════ */
+
+/* ════════════════════════════════════════════════════════════
+   AUTH BG: NEAR-BLACK + GOLDEN AMBER ORBS  (reference match)
+   ════════════════════════════════════════════════════════════ */
+#authModal {
+  background: #070512 !important;
+  overflow: hidden !important;
+}
+/* Large golden orb — top-right */
+#authModal .auth-orb-1 {
+  width: 370px !important; height: 370px !important;
+  top: -90px !important; right: -55px !important; left: auto !important;
+  background: radial-gradient(circle, rgba(210,155,18,.58) 0%, rgba(200,140,12,.22) 45%, transparent 70%) !important;
+  filter: blur(72px) !important;
+}
+/* Medium golden orb — bottom-left */
+#authModal .auth-orb-2 {
+  width: 280px !important; height: 280px !important;
+  bottom: 10% !important; left: -45px !important;
+  top: auto !important; right: auto !important;
+  background: radial-gradient(circle, rgba(200,148,14,.44) 0%, rgba(190,138,8,.16) 50%, transparent 70%) !important;
+  filter: blur(62px) !important;
+}
+/* Dim purple orb — mid-screen */
+#authModal .auth-orb-3 {
+  width: 190px !important; height: 190px !important;
+  top: 38% !important; left: 8% !important;
+  bottom: auto !important; right: auto !important;
+  background: radial-gradient(circle, rgba(110,42,200,.26) 0%, transparent 70%) !important;
+  filter: blur(50px) !important;
+}
+/* Dim purple orb — top-left corner */
+#authModal .auth-orb-4 {
+  width: 170px !important; height: 170px !important;
+  top: 8% !important; left: -10px !important;
+  bottom: auto !important; right: auto !important;
+  background: radial-gradient(circle, rgba(75,28,155,.24) 0%, transparent 70%) !important;
+  filter: blur(46px) !important;
+}
+/* Golden ambient halo behind the panda */
+#authModal .am-wrap.am-center-hero {
+  position: relative !important;
+}
+#authModal .am-wrap.am-center-hero::before {
+  content: '' !important;
+  position: absolute !important;
+  inset: -10px -28px !important;
+  background: radial-gradient(ellipse at 50% 65%, rgba(205,152,18,.38) 0%, rgba(180,128,8,.14) 42%, transparent 70%) !important;
+  border-radius: 50% !important;
+  filter: blur(22px) !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+/* Panda drop-shadow — golden glow up, dark shadow down */
+#authModal .panda-mascot {
+  filter:
+    drop-shadow(0 22px 44px rgba(0,0,0,.60))
+    drop-shadow(0 -4px 22px rgba(205,152,18,.38))
+    drop-shadow(0 4px 14px rgba(70,30,160,.22)) !important;
+}
+/* Panda halo under the feet — golden */
+#authModal .panda-mascot::after {
+  background: radial-gradient(ellipse, rgba(205,152,18,.5) 0%, rgba(180,128,8,.22) 42%, transparent 70%) !important;
+}
+/* ════ END AUTH BG GOLDEN ════ */
