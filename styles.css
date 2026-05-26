@@ -16194,3 +16194,123 @@ body { padding-bottom: 100px !important; }
 #authModal.open .auth-footer        { animation: authElemIn .4s .78s both; }
 
 /* ════ END AUTH MODAL FINAL ════ */
+
+/* ════════════════════════════════════════════════════════════
+   AUTH ONE-SCREEN FIT — Everything visible without scrolling
+   ════════════════════════════════════════════════════════════ */
+#authModal {
+  justify-content: center !important;
+  padding: 0 14px 0 !important;
+}
+
+/* Topbar — tight */
+#authModal .auth-topbar {
+  padding: 14px 0 0 !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+}
+#authModal .auth-logo-img  { width: 28px !important; height: 28px !important; }
+#authModal .auth-brand-text { font-size: 17px !important; letter-spacing: 1.5px !important; }
+#authModal .auth-brand-sa   { font-size: 9px !important; }
+#authModal .auth-flag-badge { font-size: 10px !important; padding: 4px 9px !important; }
+
+/* Panda — smaller, less vertical space */
+#authModal .am-wrap.am-center-hero {
+  margin: 10px 0 -68px !important;
+}
+#authModal .am-wrap.am-center-hero .panda-mascot {
+  width: 120px !important;
+}
+#authModal .am-bubble {
+  font-size: 11px !important;
+  padding: 4px 11px !important;
+  margin-bottom: 5px !important;
+}
+
+/* Glass card — reduced top padding, tighter throughout */
+#authModal .auth-glass-card {
+  padding: 76px 18px 16px !important;
+  border-radius: 24px !important;
+}
+
+/* Headings — smaller */
+#authModal .auth-welcome-h {
+  font-size: 22px !important;
+  margin: 0 0 3px !important;
+}
+#authModal .auth-welcome-sub {
+  font-size: 12px !important;
+  margin: 0 0 14px !important;
+}
+
+/* Inputs — shorter height */
+#authModal .auth-inp {
+  padding: 12px 16px 12px 42px !important;
+  font-size: 13px !important;
+}
+#authModal .auth-inp-icon { font-size: 13px !important; left: 13px !important; }
+#authModal .auth-pw-eye   { font-size: 13px !important; right: 12px !important; }
+#authModal .auth-inp-wrap,
+#authModal .auth-pw-wrap  { margin-bottom: 9px !important; }
+
+/* Remember me + Forgot */
+#authModal .auth-remember-row { margin: 1px 0 10px !important; }
+#authModal .auth-remember-label { font-size: 12px !important; }
+#authModal .auth-forgot-link    { font-size: 12px !important; }
+
+/* SIGN IN button — shorter */
+#authModal .auth-submit-btn {
+  height: 48px !important;
+  padding: 5px 5px 5px 18px !important;
+  font-size: 13px !important;
+  margin-top: 2px !important;
+}
+#authModal .auth-arrow-circle {
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 13px !important;
+}
+
+/* OR */
+#authModal .auth-or-sep {
+  margin: 10px 0 8px !important;
+  font-size: 10px !important;
+}
+
+/* Social buttons — shorter */
+#authModal .btn-google-signin {
+  padding: 11px 14px !important;
+  font-size: 13px !important;
+  margin-bottom: 8px !important;
+}
+#authModal .btn-facebook-signin {
+  padding: 11px 14px !important;
+  font-size: 13px !important;
+}
+
+/* Toggle row */
+#authModal .auth-switch-row {
+  margin: 10px 0 0 !important;
+  font-size: 12px !important;
+}
+
+/* Trust strip — compact */
+#authModal .auth-trust-strip {
+  margin: 12px 0 0 !important;
+  padding: 9px 4px 8px !important;
+  border-radius: 14px !important;
+}
+#authModal .auth-trust-item {
+  font-size: 7.5px !important;
+  gap: 3px !important;
+}
+#authModal .auth-trust-item i { font-size: 15px !important; }
+
+/* Footer — minimal */
+#authModal .auth-footer { padding-top: 8px !important; }
+#authModal .auth-protected { font-size: 10px !important; margin-bottom: 3px !important; }
+#authModal .auth-terms     { font-size: 9.5px !important; }
+
+/* Logged-in view — compact */
+#authModal #authLoggedIn { padding: 6px 0 !important; }
+/* ════ END ONE-SCREEN FIT ════ */
