@@ -15678,3 +15678,519 @@ body { padding-bottom: 100px !important; }
 /* Slow scroll speed for wider cards */
 .sdeal-track { animation-duration: 36s !important; }
 /* ── END Super Deals pcard v2 ── */
+
+/* ════════════════════════════════════════════════════════════
+   AUTH MODAL FINAL — Exact reference pixel-match (overrides all)
+   ════════════════════════════════════════════════════════════ */
+
+/* Full-screen dark purple bg, flex-center, scroll */
+#authModal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 301 !important;
+  background: #0a0118 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding: 0 16px 48px !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateX(100%) !important;
+  transition: transform .45s cubic-bezier(.25,.46,.45,.94), opacity .3s !important;
+}
+#authModal.open {
+  opacity: 1 !important;
+  pointer-events: all !important;
+  transform: translateX(0) !important;
+}
+/* Radial glow atmosphere */
+#authModal::before {
+  content: '' !important;
+  position: fixed !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  background:
+    radial-gradient(ellipse 60% 50% at 20% 10%,  rgba(124,58,237,.35) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 80% 20%,  rgba(233,30,140,.28) 0%, transparent 55%),
+    radial-gradient(ellipse 70% 60% at 50% 100%, rgba(124,58,237,.18) 0%, transparent 55%) !important;
+}
+
+/* Back button */
+#authModal .auth-back {
+  position: fixed !important;
+  top: 16px !important;
+  left: 14px !important;
+  z-index: 400 !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,.08) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  color: rgba(255,255,255,.7) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 16px !important;
+}
+
+/* Orb bg layer */
+#authModal .auth-bg-layer {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+#authModal .auth-orb {
+  position: absolute !important;
+  border-radius: 50% !important;
+  filter: blur(55px) !important;
+}
+#authModal .auth-orb-1 {
+  width: 340px !important; height: 340px !important;
+  top: -80px !important; left: -80px !important;
+  background: radial-gradient(circle, rgba(124,58,237,.55) 0%, rgba(124,58,237,.2) 50%, transparent 70%) !important;
+}
+#authModal .auth-orb-2 {
+  width: 280px !important; height: 280px !important;
+  top: 5% !important; right: -70px !important;
+  background: radial-gradient(circle, rgba(233,30,140,.4) 0%, rgba(233,30,140,.15) 50%, transparent 70%) !important;
+}
+#authModal .auth-orb-3 {
+  width: 220px !important; height: 220px !important;
+  bottom: 20% !important; left: 5% !important;
+  background: radial-gradient(circle, rgba(233,30,140,.3) 0%, transparent 70%) !important;
+}
+#authModal .auth-orb-4 {
+  width: 200px !important; height: 200px !important;
+  bottom: 5% !important; right: 0 !important;
+  background: radial-gradient(circle, rgba(124,58,237,.35) 0%, transparent 70%) !important;
+}
+
+/* Topbar — logo + flag */
+#authModal .auth-topbar {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: 380px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 22px 0 0 !important;
+  margin-bottom: 0 !important;
+  flex-shrink: 0 !important;
+}
+#authModal .auth-brand-row {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+#authModal .auth-logo-img {
+  width: 34px !important;
+  height: 34px !important;
+  border: 2px solid rgba(233,30,140,.6) !important;
+  box-shadow: 0 0 14px rgba(233,30,140,.7), 0 0 30px rgba(233,30,140,.3) !important;
+  border-radius: 50% !important;
+}
+#authModal .auth-brand-text {
+  font-size: 20px !important;
+  font-weight: 900 !important;
+  letter-spacing: 2px !important;
+  background: linear-gradient(90deg, #fff 0%, #FFD700 40%, #e91e8c 80%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+#authModal .auth-brand-sa {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  color: #FFD700 !important;
+  margin-bottom: 2px !important;
+  -webkit-text-fill-color: #FFD700 !important;
+}
+#authModal .auth-flag-badge {
+  font-size: 12px !important;
+  color: rgba(255,255,255,.6) !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1px solid rgba(255,255,255,.12) !important;
+  border-radius: 20px !important;
+  padding: 5px 11px !important;
+  letter-spacing: .3px !important;
+}
+
+/* Panda — sits ON TOP of card, overflows upward */
+#authModal .am-wrap.am-center-hero {
+  position: relative !important;
+  z-index: 10 !important;
+  width: 100% !important;
+  max-width: 380px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  margin: 16px 0 -85px !important;
+  pointer-events: none !important;
+}
+#authModal .am-wrap.am-center-hero .panda-mascot {
+  pointer-events: all !important;
+  width: 152px !important;
+  filter:
+    drop-shadow(0 0 30px rgba(124,58,237,.6))
+    drop-shadow(0 16px 36px rgba(0,0,0,.55)) !important;
+}
+
+/* Speech bubble */
+#authModal .am-bubble {
+  background: #fff !important;
+  color: #333 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  border-radius: 20px !important;
+  padding: 6px 14px !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,.3) !important;
+  margin-bottom: 8px !important;
+}
+
+/* ── GLASS CARD ── */
+#authModal .auth-glass-card {
+  position: relative !important;
+  z-index: 5 !important;
+  width: 100% !important;
+  max-width: 380px !important;
+  background: rgba(18, 8, 44, 0.78) !important;
+  backdrop-filter: blur(40px) saturate(1.4) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(1.4) !important;
+  border: 1px solid rgba(160, 100, 255, 0.28) !important;
+  border-radius: 28px !important;
+  padding: 94px 22px 22px !important;
+  box-shadow:
+    0 0 0 1px rgba(233,30,140,.15),
+    0 32px 90px rgba(0,0,0,.72),
+    0 0 100px rgba(124,58,237,.14),
+    inset 0 1.5px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(255,255,255,.04) !important;
+  animation: authGlassPulse 5s ease-in-out infinite !important;
+  overflow: visible !important;
+}
+/* Top shimmer line on glass card */
+#authModal .auth-glass-card::before {
+  content: '' !important;
+  position: absolute !important;
+  top: 0 !important; left: 12% !important; right: 12% !important; height: 1px !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.5), rgba(255,215,0,.4), rgba(233,30,140,.3), transparent) !important;
+  pointer-events: none !important;
+  border-radius: 0 0 0 0 !important;
+}
+
+/* Hide old decorative elements we don't need */
+#authModal .auth-crown-wrap,
+#authModal .auth-cpn-row,
+#authModal .auth-benefits-strip,
+#authModal .auth-vip-line,
+#authModal .auth-get-coupon,
+#authModal .auth-country-row,
+#authModal .auth-header .auth-protected { display: none !important; }
+
+/* Welcome heading */
+#authModal .auth-welcome-h {
+  font-size: 27px !important;
+  font-weight: 900 !important;
+  color: #fff !important;
+  text-align: center !important;
+  margin: 0 0 5px !important;
+  letter-spacing: -.3px !important;
+  line-height: 1.2 !important;
+}
+#authModal .auth-welcome-sub {
+  font-size: 13px !important;
+  color: rgba(255,255,255,.45) !important;
+  text-align: center !important;
+  margin: 0 0 20px !important;
+}
+
+/* ── INPUT FIELDS ── */
+#authModal .auth-inp-wrap,
+#authModal .auth-pw-wrap {
+  margin-bottom: 12px !important;
+}
+#authModal .auth-inp {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: rgba(255,255,255,.07) !important;
+  border: 1.5px solid rgba(255,255,255,.12) !important;
+  border-radius: 14px !important;
+  padding: 15px 16px 15px 44px !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  outline: none !important;
+  caret-color: #e91e8c !important;
+  transition: border-color .2s, box-shadow .2s, background .2s !important;
+  -webkit-text-fill-color: #fff !important;
+}
+#authModal .auth-inp::placeholder {
+  color: rgba(255,255,255,.3) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.3) !important;
+}
+#authModal .auth-inp:focus {
+  border-color: rgba(233,30,140,.65) !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.14), 0 4px 18px rgba(0,0,0,.3) !important;
+  background: rgba(233,30,140,.06) !important;
+}
+#authModal .auth-inp-icon {
+  position: absolute !important;
+  left: 15px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 14px !important;
+  color: rgba(255,255,255,.38) !important;
+  z-index: 3 !important;
+  pointer-events: none !important;
+  transition: color .2s !important;
+}
+#authModal .auth-inp-wrap:focus-within .auth-inp-icon,
+#authModal .auth-pw-wrap:focus-within .auth-inp-icon { color: #e91e8c !important; }
+#authModal .auth-pw-wrap .auth-inp { padding-right: 48px !important; }
+#authModal .auth-pw-eye {
+  position: absolute !important;
+  right: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  color: rgba(255,255,255,.4) !important;
+  font-size: 14px !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  padding: 4px !important;
+  transition: color .2s !important;
+}
+
+/* ── REMEMBER ME + FORGOT ── */
+#authModal .auth-remember-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin: 2px 0 14px !important;
+}
+#authModal .auth-remember-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  color: rgba(255,255,255,.55) !important;
+  cursor: pointer !important;
+}
+#authModal .auth-remember-label input[type="checkbox"] {
+  width: 16px !important; height: 16px !important;
+  accent-color: #4ade80 !important;
+  cursor: pointer !important;
+}
+#authModal .auth-forgot-link {
+  font-size: 13px !important;
+  color: #e91e8c !important;
+  text-decoration: none !important;
+  font-weight: 600 !important;
+}
+
+/* ── SIGN IN BUTTON — gold→orange→pink, pill, circle arrow ── */
+#authModal .auth-submit-btn {
+  width: 100% !important;
+  height: 54px !important;
+  border-radius: 50px !important;
+  border: none !important;
+  background: linear-gradient(90deg, #FFD700 0%, #FFAA00 28%, #FF7000 55%, #e91e8c 82%, #c2185b 100%) !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.2px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 6px 6px 6px 22px !important;
+  box-shadow: 0 8px 32px rgba(255,160,0,.38), 0 4px 14px rgba(233,30,140,.28) !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-top: 4px !important;
+  transition: transform .15s, box-shadow .15s !important;
+  animation: authBtnShimmer 3.5s ease infinite !important;
+  background-size: 200% 100% !important;
+}
+#authModal .auth-submit-btn:active { transform: scale(.97) !important; }
+@keyframes authBtnShimmer {
+  0%,100% { background-position: 0% 0%; }
+  50%      { background-position: 100% 0%; }
+}
+/* Sweep shimmer */
+#authModal .auth-submit-btn::before {
+  content: '' !important;
+  position: absolute !important; top: 0 !important; left: -80% !important;
+  width: 50% !important; height: 100% !important;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent) !important;
+  transform: skewX(-18deg) !important;
+  animation: authSweep 2.5s ease-in-out infinite !important;
+  pointer-events: none !important;
+}
+/* Circle arrow */
+#authModal .auth-arrow-circle {
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: rgba(255,255,255,.24) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 15px !important;
+  flex-shrink: 0 !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+/* ── OR SEPARATOR ── */
+#authModal .auth-or-sep {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  margin: 16px 0 12px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: rgba(255,255,255,.3) !important;
+  letter-spacing: 1.5px !important;
+}
+#authModal .auth-or-sep::before,
+#authModal .auth-or-sep::after {
+  content: '' !important;
+  flex: 1 !important;
+  height: 1px !important;
+  background: rgba(255,255,255,.12) !important;
+}
+
+/* ── SOCIAL BUTTONS ── */
+#authModal .btn-google-signin {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(255,255,255,.18) !important;
+  background: rgba(255,255,255,.09) !important;
+  backdrop-filter: blur(12px) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  margin-bottom: 10px !important;
+  transition: background .2s, transform .12s !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.14) !important;
+}
+#authModal .btn-google-signin:active { transform: scale(.975) !important; }
+#authModal .btn-facebook-signin {
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  padding: 14px 16px !important;
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(66,103,178,.4) !important;
+  background: rgba(24,119,242,.14) !important;
+  backdrop-filter: blur(12px) !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #89b4f8 !important;
+  cursor: pointer !important;
+  transition: background .2s, transform .12s !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+#authModal .btn-facebook-signin svg { color: #89b4f8 !important; }
+#authModal .btn-facebook-signin:active { transform: scale(.975) !important; }
+
+/* ── LOGIN / REGISTER TOGGLE ── */
+#authModal .auth-switch-row {
+  text-align: center !important;
+  margin: 16px 0 0 !important;
+  font-size: 13px !important;
+  color: rgba(255,255,255,.42) !important;
+}
+#authModal .auth-switch-link {
+  color: #e91e8c !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  margin-left: 5px !important;
+}
+
+/* ── TRUST STRIP ── */
+#authModal .auth-trust-strip {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  margin: 20px 0 0 !important;
+  padding: 12px 6px 10px !important;
+  background: rgba(0,0,0,.3) !important;
+  border: 1px solid rgba(255,255,255,.06) !important;
+  border-radius: 18px !important;
+}
+#authModal .auth-trust-item {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 8.5px !important;
+  font-weight: 800 !important;
+  color: rgba(255,255,255,.52) !important;
+  letter-spacing: .4px !important;
+  text-align: center !important;
+}
+#authModal .auth-trust-item i {
+  font-size: 18px !important;
+  background: linear-gradient(135deg, #FFD700, #e91e8c) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+/* ── FOOTER ── */
+#authModal .auth-footer {
+  padding-top: 12px !important;
+  margin-top: 0 !important;
+  text-align: center !important;
+}
+#authModal .auth-protected {
+  font-size: 11px !important;
+  color: #4ade80 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 5px !important;
+  margin-bottom: 6px !important;
+}
+#authModal .auth-terms {
+  font-size: 10.5px !important;
+  color: rgba(255,255,255,.28) !important;
+  text-align: center !important;
+  line-height: 1.6 !important;
+  margin: 0 !important;
+}
+#authModal .auth-terms a { color: rgba(233,30,140,.8) !important; }
+
+/* Stagger entrance animations */
+#authModal.open .auth-topbar        { animation: authElemIn .4s .06s both; }
+#authModal.open .am-wrap            { animation: authElemIn .5s .14s both; }
+#authModal.open .auth-glass-card    { animation: authElemIn .5s .20s both; }
+#authModal.open .auth-welcome-h     { animation: authElemIn .4s .28s both; }
+#authModal.open .auth-welcome-sub   { animation: authElemIn .4s .34s both; }
+#authModal.open #authEmailForm      { animation: authElemIn .4s .40s both; }
+#authModal.open .auth-or-sep        { animation: authElemIn .4s .48s both; }
+#authModal.open .btn-google-signin  { animation: authElemIn .4s .54s both; }
+#authModal.open .btn-facebook-signin{ animation: authElemIn .4s .60s both; }
+#authModal.open .auth-switch-row    { animation: authElemIn .4s .66s both; }
+#authModal.open .auth-trust-strip   { animation: authElemIn .4s .72s both; }
+#authModal.open .auth-footer        { animation: authElemIn .4s .78s both; }
+
+/* ════ END AUTH MODAL FINAL ════ */
