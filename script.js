@@ -652,8 +652,6 @@ function flashCardHTML(p) {
           <span class="fc2-price">${fmt(p.price)}</span>
           ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
         </div>
-        ${sizes.length ? `<div class="fc2-row"><span class="fc2-lbl">SIZE :</span>${sizes.map(s => `<span class="fc2-sz">${s}</span>`).join('')}</div>` : ''}
-        ${colorDots.length ? `<div class="fc2-row"><span class="fc2-lbl">COLOR :</span>${colorDots.map(c => `<span class="fc2-dot" style="background:${c}"></span>`).join('')}</div>` : ''}
         <button class="fc2-btn" onclick="event.stopPropagation();${isOOS ? '' : `nxAtc(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
           <i class="fas fa-bag-shopping"></i> Buy Now
         </button>
@@ -896,8 +894,6 @@ function productCardHTML(p) {
           <span class="pcard-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
-        ${sizes.length ? `<div class="pcard-size"><span class="pcard-size-lbl">SIZE :</span>${sizes.map(s=>`<span onclick="event.stopPropagation()">${s}</span>`).join('')}</div>` : ''}
-        ${colorDots.length ? `<div class="pcard-color"><span class="pcard-color-lbl">COLOR :</span>${colorDots.map(c=>`<span onclick="event.stopPropagation()" style="background:${c}"></span>`).join('')}</div>` : ''}
         <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
