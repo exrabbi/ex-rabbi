@@ -16438,3 +16438,113 @@ body { padding-bottom: 100px !important; }
   background: radial-gradient(ellipse, rgba(205,152,18,.5) 0%, rgba(180,128,8,.22) 42%, transparent 70%) !important;
 }
 /* ════ END AUTH BG GOLDEN ════ */
+
+/* ════════════════════════════════════════════════════════════
+   ANIMATED LOGIN CHARACTER — enhanced interactions
+   (cover eyes on pw • look at form on email • peek on reveal)
+   ════════════════════════════════════════════════════════════ */
+
+/* Default arm/head smooth transition */
+.pm-arm, .pm-head, .pm-pupil {
+  transition:
+    transform .38s cubic-bezier(.34,1.56,.64,1),
+    filter .3s ease !important;
+}
+
+/* ── LOOK AT FORM (email / name focus) ── */
+/* Head leans slightly toward the form */
+#authMascot.look-right .pm-head {
+  transform: rotate(10deg) translateX(6px) translateY(4px) !important;
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1) !important;
+}
+/* Pupils shift down-right (form is below panda) */
+#authMascot.look-right .pm-pupil {
+  transform: translate(calc(-50% + 7px), calc(-50% + 5px)) !important;
+  transition: transform .28s ease !important;
+}
+/* Body leans slightly */
+#authMascot.look-right .pm-body {
+  transform: rotate(5deg) translateX(4px) !important;
+  transition: transform .38s cubic-bezier(.34,1.56,.64,1) !important;
+}
+/* Arm-r lowers as character leans */
+#authMascot.look-right .pm-arm-r {
+  transform: rotate(28deg) !important;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1) !important;
+}
+
+/* ── COVER EYES (password focus) ── */
+/* Arm-L swings up high (springy) */
+#authMascot.pw-mode .pm-arm-l {
+  transform: rotate(-88deg) translate(12px, -26px) !important;
+  animation: none !important;
+  transition: transform .42s cubic-bezier(.34,1.8,.64,1) !important;
+}
+/* Arm-R mirrors */
+#authMascot.pw-mode .pm-arm-r {
+  transform: rotate(88deg) translate(-12px, -26px) !important;
+  transition: transform .42s cubic-bezier(.34,1.8,.64,1) !important;
+}
+/* Head ducks slightly forward */
+#authMascot.pw-mode .pm-head {
+  transform: rotate(0deg) translateY(6px) !important;
+  transition: transform .35s ease !important;
+}
+/* Eyelids close fully */
+#authMascot.pw-mode .pm-lid {
+  transform: translateY(0) !important;
+  animation: none !important;
+  transition: transform .22s cubic-bezier(.4,0,.2,1) !important;
+}
+
+/* ── PEEK (show/hide password toggle) ── */
+/* Arms spread open a little */
+#authMascot.pw-peek .pm-arm-l {
+  transform: rotate(-60deg) translate(8px, -16px) !important;
+  animation: none !important;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1) !important;
+}
+#authMascot.pw-peek .pm-arm-r {
+  transform: rotate(60deg) translate(-8px, -16px) !important;
+  transition: transform .28s cubic-bezier(.34,1.56,.64,1) !important;
+}
+/* Lids half-open (peek through fingers) */
+#authMascot.pw-peek .pm-lid {
+  transform: translateY(-48%) !important;
+  animation: none !important;
+}
+/* Pupils look straight when peeking */
+#authMascot.pw-peek .pm-pupil {
+  transform: translate(-50%, -50%) !important;
+}
+
+/* ── ENTRANCE bounce when auth opens ── */
+@keyframes pmEntranceBounce {
+  0%   { transform: translateY(-40px) scale(.75); opacity: 0; }
+  60%  { transform: translateY(8px)  scale(1.06); opacity: 1; }
+  80%  { transform: translateY(-5px) scale(.97); }
+  100% { transform: translateY(0)   scale(1);    opacity: 1; }
+}
+#authModal.open .panda-mascot {
+  animation: pmEntranceBounce .62s cubic-bezier(.34,1.56,.64,1) forwards !important;
+}
+
+/* ── TYPING JIGGLE — subtle head bob while user types ── */
+@keyframes pmTypeJiggle {
+  0%,100% { transform: rotate(10deg) translateX(6px) translateY(4px); }
+  50%      { transform: rotate(11.5deg) translateX(7px) translateY(3px); }
+}
+#authMascot.look-right.typing .pm-head {
+  animation: pmTypeJiggle .25s ease-in-out infinite !important;
+}
+
+/* ── IDLE FLOAT — smoother than default (while not in any mode) ── */
+@keyframes pmFloatPremium {
+  0%,100% { transform: translateY(0)    rotate(0deg); }
+  30%     { transform: translateY(-9px) rotate(.5deg); }
+  65%     { transform: translateY(-3px) rotate(-.4deg); }
+}
+#authMascot:not(.pw-mode):not(.look-right) .panda-mascot {
+  animation: pmFloatPremium 3.8s ease-in-out infinite !important;
+}
+/* ════ END ANIMATED LOGIN CHARACTER ════ */

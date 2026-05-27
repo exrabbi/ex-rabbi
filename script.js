@@ -3812,14 +3812,30 @@ function amFocus(type) {
   if (!mascot) return;
   if (type === 'pw') {
     mascot.classList.add('pw-mode');
-    mascot.classList.remove('look-right');
+    mascot.classList.remove('look-right', 'typing');
     _amBubble("I won't peek! 🙈", true);
+    // wire typing jiggle for password field
+    _amWireTyping(document.getElementById('authPass'), false);
   } else {
     mascot.classList.remove('pw-mode');
     mascot.classList.add('look-right');
     const msg = type === 'name' ? "What's your name? 😊" : "Enter your email 📧";
     _amBubble(msg, false);
+    // wire typing jiggle for email/name field
+    const inp = type === 'name' ? document.getElementById('authName') : document.getElementById('authEmail');
+    _amWireTyping(inp, true);
   }
+}
+let _amTypingTimer = null;
+function _amWireTyping(inp, addTyping) {
+  if (!inp) return;
+  inp.oninput = () => {
+    const mascot = document.getElementById('authMascot');
+    if (!mascot) return;
+    if (addTyping) mascot.classList.add('typing');
+    clearTimeout(_amTypingTimer);
+    _amTypingTimer = setTimeout(() => mascot.classList.remove('typing'), 500);
+  };
 }
 function amBlur() {
   setTimeout(() => {
@@ -3827,7 +3843,7 @@ function amBlur() {
     if (active && active.closest && active.closest('#authEmailForm')) return;
     const mascot = document.getElementById('authMascot');
     if (!mascot) return;
-    mascot.classList.remove('pw-mode', 'look-right');
+    mascot.classList.remove('pw-mode', 'look-right', 'typing');
     _amBubble('', false);
   }, 120);
 }
