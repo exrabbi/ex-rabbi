@@ -6578,6 +6578,45 @@ function aiChatKeydown(e) {
   if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendAiMessage(); }
 }
 
+/* ── Voice Input ── */
+let _aiSpeechRec = null;
+function _aiVoiceInput() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) { showToast('Voice input not supported on this browser.'); return; }
+  const btn  = document.getElementById('aiMicBtn');
+  const icon = document.getElementById('aiMicIcon');
+  const inp  = document.getElementById('aiChatInput');
+  if (_aiSpeechRec) {
+    _aiSpeechRec.stop(); _aiSpeechRec = null;
+    btn?.classList.remove('listening');
+    icon?.classList.replace('fa-stop','fa-microphone');
+    return;
+  }
+  _aiSpeechRec = new SpeechRec();
+  _aiSpeechRec.lang = currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : currentLang === 'hi' ? 'hi-IN' : 'en-US';
+  _aiSpeechRec.interimResults = true;
+  _aiSpeechRec.maxAlternatives = 1;
+  btn?.classList.add('listening');
+  icon?.classList.replace('fa-microphone','fa-stop');
+  _aiSpeechRec.onresult = e => {
+    const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+    if (inp) inp.value = transcript;
+  };
+  _aiSpeechRec.onend = () => {
+    _aiSpeechRec = null;
+    btn?.classList.remove('listening');
+    icon?.classList.replace('fa-stop','fa-microphone');
+    if (inp?.value.trim()) sendAiMessage();
+  };
+  _aiSpeechRec.onerror = () => {
+    _aiSpeechRec = null;
+    btn?.classList.remove('listening');
+    icon?.classList.replace('fa-stop','fa-microphone');
+    showToast('Could not hear you. Please try again.');
+  };
+  _aiSpeechRec.start();
+}
+
 /* ===== PUSH NOTIFICATIONS ===== */
 let _fcmMessaging = null;
 let _notifListening = false;
