@@ -16840,3 +16840,122 @@ body { padding-bottom: 100px !important; }
   box-shadow: 0 10px 32px rgba(233,30,140,.6) !important;
 }
 /* ════ END AI CHAT PREMIUM ════ */
+
+/* ── AI Video Call ───────────────────────────────────────── */
+.vc-overlay {
+  position: fixed; inset: 0; z-index: 9998;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s ease;
+}
+.vc-overlay.open { opacity: 1; pointer-events: all; }
+.vc-bg {
+  width: 100%; height: 100%; position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: radial-gradient(ellipse at 30% 20%, rgba(124,58,237,.22) 0%, transparent 55%),
+              radial-gradient(ellipse at 72% 78%, rgba(233,30,140,.15) 0%, transparent 55%),
+              #060413;
+}
+.vc-ai-area {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 16px; margin-bottom: 100px;
+}
+.vc-ai-orb-wrap {
+  position: relative; width: 170px; height: 170px;
+  display: flex; align-items: center; justify-content: center;
+}
+.vc-orb-ring {
+  position: absolute; border-radius: 50%;
+  top: 50%; left: 50%; transform: translate(-50%, -50%);
+}
+.vc-orb-ring-1 { width: 170px; height: 170px; border: 1.5px solid rgba(233,30,140,.25); animation: vcRingPulse 2.2s ease-in-out infinite; }
+.vc-orb-ring-2 { width: 134px; height: 134px; border: 1.5px solid rgba(124,58,237,.35); animation: vcRingPulse 2.2s ease-in-out infinite .5s; }
+.vc-orb-ring-3 { width: 104px; height: 104px; border: 2px solid rgba(233,30,140,.4); animation: vcRingPulse 2.2s ease-in-out infinite 1s; }
+.vc-ai-orb {
+  width: 84px; height: 84px; border-radius: 50%;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; color: #fff;
+  box-shadow: 0 0 40px rgba(233,30,140,.5), 0 0 80px rgba(233,30,140,.2);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.vc-overlay.vc-speaking .vc-ai-orb {
+  animation: vcSpeakPulse .45s ease-in-out infinite alternate;
+}
+.vc-ai-label {
+  font-size: 19px; font-weight: 900; color: #fff; letter-spacing: 1px;
+}
+.vc-call-duration {
+  font-size: 14px; color: rgba(255,255,255,.45); font-variant-numeric: tabular-nums;
+}
+
+/* User PiP */
+.vc-user-pip {
+  position: absolute; top: 22px; right: 18px;
+  width: 88px; height: 130px; border-radius: 16px;
+  overflow: hidden; border: 2px solid rgba(255,255,255,.18);
+  box-shadow: 0 8px 28px rgba(0,0,0,.6);
+  background: #1a1a2e;
+}
+#vcUserVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.vc-pip-cam-off {
+  position: absolute; inset: 0; background: #1a1a2e;
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,.35); font-size: 22px;
+}
+.vc-pip-label {
+  position: absolute; bottom: 6px; left: 0; right: 0;
+  text-align: center; font-size: 11px; color: rgba(255,255,255,.55);
+}
+
+/* Captions */
+.vc-captions-wrap {
+  position: absolute; bottom: 108px; left: 16px; right: 16px;
+  text-align: center; pointer-events: none; min-height: 44px;
+}
+.vc-caption {
+  display: inline-block;
+  background: rgba(0,0,0,.72); backdrop-filter: blur(10px);
+  color: #fff; font-size: 14px; line-height: 1.55;
+  padding: 9px 18px; border-radius: 22px;
+  max-width: 320px; word-break: break-word;
+  opacity: 0; transition: opacity .35s;
+}
+.vc-caption.show { opacity: 1; }
+
+/* Controls */
+.vc-controls {
+  position: absolute; bottom: 30px; left: 0; right: 0;
+  display: flex; align-items: center; justify-content: center; gap: 26px;
+}
+.vc-ctrl-btn {
+  width: 58px; height: 58px; border-radius: 50%; border: none;
+  background: rgba(255,255,255,.14); backdrop-filter: blur(10px);
+  color: #fff; font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, transform .15s;
+}
+.vc-ctrl-btn:active { transform: scale(.9); }
+.vc-ctrl-btn.muted { background: rgba(233,30,140,.55); }
+.vc-ctrl-btn.cam-off { background: rgba(233,30,140,.55); }
+.vc-ctrl-end { background: #e53e3e !important; box-shadow: 0 4px 20px rgba(229,62,62,.4); }
+.vc-ctrl-end:hover { background: #c53030 !important; }
+
+/* Video call button in AI header */
+.ai-video-call-btn {
+  background: rgba(255,255,255,.15); border: none;
+  color: #fff; width: 34px; height: 34px; border-radius: 50%;
+  cursor: pointer; font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s, transform .15s;
+}
+.ai-video-call-btn:hover { background: rgba(255,255,255,.28); }
+.ai-video-call-btn:active { transform: scale(.9); }
+
+@keyframes vcRingPulse {
+  0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(1); }
+  50%      { opacity: 1;   transform: translate(-50%,-50%) scale(1.06); }
+}
+@keyframes vcSpeakPulse {
+  from { transform: scale(1);    box-shadow: 0 0 40px rgba(233,30,140,.5), 0 0 80px rgba(233,30,140,.2); }
+  to   { transform: scale(1.1);  box-shadow: 0 0 70px rgba(233,30,140,.8), 0 0 120px rgba(233,30,140,.4); }
+}

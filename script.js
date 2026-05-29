@@ -9120,3 +9120,163 @@ function _stopBdayConfetti() {
   if (_bdayConfRaf) { cancelAnimationFrame(_bdayConfRaf); _bdayConfRaf = null; }
   _bdayParticles = [];
 }
+
+// ── AI Video Call ─────────────────────────────────────────
+let _vcStream     = null;
+let _vcFacing     = 'user';
+let _vcMuted      = false;
+let _vcCamOff     = false;
+let _vcSpeechRec  = null;
+let _vcDurTimer   = null;
+let _vcDurSec     = 0;
+
+function _openVideoCall() {
+  const overlay = document.getElementById('vcOverlay');
+  if (!overlay) return;
+  closeAiChat();
+  overlay.classList.add('open');
+  _vcMuted = false; _vcCamOff = false; _vcDurSec = 0;
+  const muteIcon = document.getElementById('vcMuteIcon');
+  const muteBtn  = document.getElementById('vcMuteBtn');
+  const camIcon  = document.getElementById('vcCamIcon');
+  const camBtn   = document.getElementById('vcCamBtn');
+  if (muteIcon) muteIcon.className = 'fas fa-microphone';
+  if (muteBtn)  muteBtn.classList.remove('muted');
+  if (camIcon)  camIcon.className  = 'fas fa-video';
+  if (camBtn)   camBtn.classList.remove('cam-off');
+  _vcDurTimer = setInterval(() => {
+    _vcDurSec++;
+    const m = String(Math.floor(_vcDurSec / 60)).padStart(2, '0');
+    const s = String(_vcDurSec % 60).padStart(2, '0');
+    const el = document.getElementById('vcDuration');
+    if (el) el.textContent = m + ':' + s;
+  }, 1000);
+  _vcStartCamera();
+  setTimeout(_vcStartListen, 900);
+  setTimeout(() => {
+    const name = currentUser && currentUser.name ? ', ' + currentUser.name.split(' ')[0] : '';
+    _vcSpeak('Hi' + name + '! I\'m your EX GLOBAL assistant. How can I help you today?');
+  }, 1300);
+}
+
+function _endVideoCall() {
+  const overlay = document.getElementById('vcOverlay');
+  if (overlay) overlay.classList.remove('open', 'vc-speaking');
+  if (_vcStream) { _vcStream.getTracks().forEach(t => t.stop()); _vcStream = null; }
+  if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} _vcSpeechRec = null; }
+  if (_vcDurTimer)  { clearInterval(_vcDurTimer); _vcDurTimer = null; }
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+async function _vcStartCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: _vcFacing }, audio: false });
+    _vcStream = stream;
+    const video  = document.getElementById('vcUserVideo');
+    const camOff = document.getElementById('vcPipCamOff');
+    if (video)  { video.srcObject = stream; }
+    if (camOff) { camOff.style.display = 'none'; }
+  } catch(e) {
+    const camOff = document.getElementById('vcPipCamOff');
+    const camBtn = document.getElementById('vcCamBtn');
+    const camIcon = document.getElementById('vcCamIcon');
+    if (camOff) camOff.style.display = '';
+    if (camBtn) camBtn.classList.add('cam-off');
+    if (camIcon) camIcon.className = 'fas fa-video-slash';
+    _vcCamOff = true;
+  }
+}
+
+function _vcToggleCamera() {
+  if (!_vcCamOff && _vcStream) {
+    _vcStream.getVideoTracks().forEach(t => { t.enabled = !t.enabled; });
+    _vcCamOff = !_vcCamOff;
+  } else if (_vcCamOff) {
+    if (_vcStream) { _vcStream.getVideoTracks().forEach(t => { t.enabled = true; }); _vcCamOff = false; }
+    else { _vcStartCamera(); _vcCamOff = false; }
+  }
+  const camOff = document.getElementById('vcPipCamOff');
+  const camBtn = document.getElementById('vcCamBtn');
+  const camIcon = document.getElementById('vcCamIcon');
+  if (camOff) camOff.style.display = _vcCamOff ? '' : 'none';
+  if (camBtn) camBtn.classList.toggle('cam-off', _vcCamOff);
+  if (camIcon) camIcon.className = _vcCamOff ? 'fas fa-video-slash' : 'fas fa-video';
+}
+
+function _vcToggleMute() {
+  _vcMuted = !_vcMuted;
+  const muteBtn  = document.getElementById('vcMuteBtn');
+  const muteIcon = document.getElementById('vcMuteIcon');
+  if (muteBtn)  muteBtn.classList.toggle('muted', _vcMuted);
+  if (muteIcon) muteIcon.className = _vcMuted ? 'fas fa-microphone-slash' : 'fas fa-microphone';
+  if (_vcMuted) {
+    if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} _vcSpeechRec = null; }
+  } else {
+    _vcStartListen();
+  }
+}
+
+function _vcStartListen() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec || _vcMuted) return;
+  if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} }
+  _vcSpeechRec = new SpeechRec();
+  _vcSpeechRec.lang = currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US';
+  _vcSpeechRec.continuous = false;
+  _vcSpeechRec.interimResults = true;
+  let finalText = '';
+  _vcSpeechRec.onresult = (e) => {
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      if (e.results[i].isFinal) finalText += e.results[i][0].transcript;
+      else interim += e.results[i][0].transcript;
+    }
+    _vcShowCaption((finalText || interim).trim(), false);
+  };
+  _vcSpeechRec.onend = () => {
+    if (finalText.trim()) {
+      const userText = finalText.trim();
+      setTimeout(() => {
+        const reply       = _localAiReply(userText);
+        const replyText   = typeof reply === 'object' ? reply.text   : (reply || "I'm here to help!");
+        const replyAction = typeof reply === 'object' ? reply.action : null;
+        _vcSpeak(replyText);
+        if (typeof replyAction === 'function') setTimeout(replyAction, 2200);
+      }, 350);
+    }
+    if (!_vcMuted) {
+      const ov = document.getElementById('vcOverlay');
+      if (ov && ov.classList.contains('open')) setTimeout(_vcStartListen, 900);
+    }
+  };
+  _vcSpeechRec.onerror = (e) => {
+    if (e.error === 'no-speech') { setTimeout(_vcStartListen, 600); return; }
+    if (e.error !== 'aborted') setTimeout(_vcStartListen, 2000);
+  };
+  try { _vcSpeechRec.start(); } catch(e) {}
+}
+
+function _vcSpeak(text) {
+  const cleanText = text.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/[^\x00-\xFF]/g, ' ').trim().substring(0, 220);
+  _vcShowCaption(text, true);
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const overlay = document.getElementById('vcOverlay');
+  if (overlay) overlay.classList.add('vc-speaking');
+  const utt = new SpeechSynthesisUtterance(cleanText);
+  utt.rate = 1.05; utt.pitch = 1.1;
+  utt.lang = currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US';
+  utt.onend  = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
+  utt.onerror = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
+  window.speechSynthesis.speak(utt);
+}
+
+function _vcShowCaption(text, isAi) {
+  const cap = document.getElementById('vcCaption');
+  if (!cap) return;
+  const short = text.length > 110 ? text.substring(0, 110) + '…' : text;
+  cap.textContent = isAi ? ('🤖 ' + short) : short;
+  cap.classList.add('show');
+  clearTimeout(cap._timer);
+  cap._timer = setTimeout(() => cap.classList.remove('show'), 5500);
+}
