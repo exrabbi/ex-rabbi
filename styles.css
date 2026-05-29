@@ -5111,7 +5111,7 @@ html, body { transition: background .35s, color .35s; }
 /* FAB button — draggable */
 .ai-chat-fab {
   position: fixed;
-  bottom: 164px; right: 16px;
+  bottom: 206px; right: 16px;
   width: 54px; height: 62px;
   background: linear-gradient(135deg, #667eea, #764ba2);
   border: none; border-radius: 28px;
@@ -16806,7 +16806,7 @@ body { padding-bottom: 100px !important; }
 /* ── FAB button — premium redesign ── */
 .ai-chat-fab {
   position: fixed !important;
-  bottom: 164px !important; right: 16px !important;
+  bottom: 206px !important; right: 16px !important;
   background: linear-gradient(135deg, #e91e8c 0%, #9c27b0 50%, #7c3aed 100%) !important;
   border-radius: 32px !important;
   width: 58px !important; height: 66px !important;
