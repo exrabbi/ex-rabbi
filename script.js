@@ -894,6 +894,7 @@ function productCardHTML(p) {
           <span class="pcard-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
+        ${p.rating ? `<div class="pcard-rating-row"><span class="pcard-stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span><span class="pcard-rnum">${p.rating}</span><span class="pcard-rcnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span></div>` : ''}
         <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
@@ -6476,7 +6477,11 @@ function _aiAppendMsg(role, text) {
   if (!box) return;
   const div = document.createElement('div');
   div.className = 'ai-msg ai-msg-' + role;
-  div.innerHTML = _aiMarkdown(text);
+  if (role === 'assistant') {
+    div.innerHTML = `<div class="ai-msg-logo"><span>EX</span></div><div class="ai-msg-content">${_aiMarkdown(text)}</div>`;
+  } else {
+    div.innerHTML = _aiMarkdown(text);
+  }
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
@@ -6487,7 +6492,7 @@ function _aiShowTyping() {
   const div = document.createElement('div');
   div.className = 'ai-msg ai-msg-assistant ai-typing';
   div.id = 'aiTypingIndicator';
-  div.innerHTML = '<span></span><span></span><span></span>';
+  div.innerHTML = '<div class="ai-msg-logo"><span>EX</span></div><div class="ai-msg-content"><span></span><span></span><span></span></div>';
   box.appendChild(div);
   box.scrollTop = box.scrollHeight;
 }
@@ -9252,7 +9257,8 @@ function _vcToggleMute() {
 
 function _vcStartListen() {
   const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRec || _vcMuted) return;
+  const _vcOv = document.getElementById('vcOverlay');
+  if (!SpeechRec || _vcMuted || (_vcOv && _vcOv.classList.contains('vc-speaking'))) return;
   if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} }
   _vcSpeechRec = new SpeechRec();
   _vcSpeechRec.lang = currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US';
@@ -9268,19 +9274,21 @@ function _vcStartListen() {
     _vcShowCaption((finalText || interim).trim(), false);
   };
   _vcSpeechRec.onend = () => {
-    if (finalText.trim()) {
-      const userText = finalText.trim();
+    const userText = finalText.trim();
+    if (userText) {
       setTimeout(() => {
         const reply       = _localAiReply(userText);
         const replyText   = typeof reply === 'object' ? reply.text   : (reply || "I'm here to help!");
         const replyAction = typeof reply === 'object' ? reply.action : null;
-        _vcSpeak(replyText);
+        _vcSpeak(replyText); // _vcSpeak restarts listening in its onend
         if (typeof replyAction === 'function') setTimeout(replyAction, 2200);
       }, 350);
-    }
-    if (!_vcMuted) {
+    } else if (!_vcMuted) {
+      // Nothing said — restart listening only if AI is not currently speaking
       const ov = document.getElementById('vcOverlay');
-      if (ov && ov.classList.contains('open')) setTimeout(_vcStartListen, 900);
+      if (ov && ov.classList.contains('open') && !ov.classList.contains('vc-speaking')) {
+        setTimeout(_vcStartListen, 600);
+      }
     }
   };
   _vcSpeechRec.onerror = (e) => {
@@ -9291,16 +9299,34 @@ function _vcStartListen() {
 }
 
 function _vcSpeak(text) {
+  // Stop listening while AI speaks
+  if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} _vcSpeechRec = null; }
+
   // Strip markdown, emojis and non-ASCII (TTS chokes on them)
   const cleanText = text
     .replace(/\*\*/g, '').replace(/\n+/g, '. ')
     .replace(/[^\x00-\x7F]/g, ' ')  // remove all non-ASCII (emojis, Arabic, Bengali)
     .replace(/\s{2,}/g, ' ').trim().substring(0, 200);
   _vcShowCaption(text, true);
-  if (!window.speechSynthesis || !cleanText) return;
+  if (!window.speechSynthesis || !cleanText) {
+    // Still restart listening even if nothing to speak
+    if (!_vcMuted) {
+      const ov = document.getElementById('vcOverlay');
+      if (ov && ov.classList.contains('open')) setTimeout(_vcStartListen, 600);
+    }
+    return;
+  }
   speechSynthesis.cancel();
   const overlay = document.getElementById('vcOverlay');
   if (overlay) overlay.classList.add('vc-speaking');
+
+  function _vcSpeakDone() {
+    if (overlay) overlay.classList.remove('vc-speaking');
+    if (!_vcMuted) {
+      const ov = document.getElementById('vcOverlay');
+      if (ov && ov.classList.contains('open')) setTimeout(_vcStartListen, 600);
+    }
+  }
 
   function doSpeak() {
     _vcLoadVoice();
@@ -9310,11 +9336,10 @@ function _vcSpeak(text) {
     utt.pitch  = 1.05;
     utt.volume = 1.0;
     if (_vcVoice) utt.voice = _vcVoice;
-    utt.onend  = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
+    utt.onend  = _vcSpeakDone;
     utt.onerror = (e) => {
-      if (overlay) overlay.classList.remove('vc-speaking');
-      // On Android: if interrupted, try once more after short delay
-      if (e.error === 'interrupted') setTimeout(() => speechSynthesis.speak(utt), 300);
+      if (e.error === 'interrupted') { setTimeout(() => speechSynthesis.speak(utt), 300); return; }
+      _vcSpeakDone();
     };
     speechSynthesis.speak(utt);
   }
