@@ -9316,7 +9316,7 @@ function _emailBase(bodyHtml) {
 }
 
 function _sendWelcomeEmail(user) {
-  if (!user?.email) return;
+  if (!_ejsReady || !user?.email) return;
   const sentKey = 'exg_welcome_sent_' + user.email;
   if (localStorage.getItem(sentKey)) return;
   localStorage.setItem(sentKey, '1');
