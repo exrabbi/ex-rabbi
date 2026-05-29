@@ -5655,8 +5655,8 @@ function _aiGetUsage() {
   } catch(e) { return { date: new Date().toISOString().slice(0, 10), count: 0 }; }
 }
 function _aiGetLimit() {
-  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 20; }
-  catch(e) { return 20; }
+  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 100; }
+  catch(e) { return 100; }
 }
 function _aiIncrUsage() {
   const u = _aiGetUsage(); u.count++;
@@ -5787,11 +5787,14 @@ function _localAiReply(text) {
     const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
     if (orders.length > 0) {
       const last = orders[orders.length - 1];
-      const statusMap = { pending:'⏳ Pending — being prepared', confirmed:'✅ Confirmed — processing', shipped:'🚚 Shipped — on the way!', delivered:'🎉 Delivered successfully' };
-      const statusIcon = { pending:'⏳', confirmed:'✅', shipped:'🚚', delivered:'🎉' };
-      return `📦 **Your Latest Order**\n\n🔖 Order: #${last.id}\n${statusMap[last.status] || ('Status: ' + last.status)}\n💰 Total: ${cur}${(last.total * rate).toFixed(0)}\n\n📅 Expected: 2–4 business days\n🚀 Express upgrade: +SAR 15 for 1-day\n\n📲 For live tracking, message us:\n👉 ${WA}`;
+      const statusMap = { pending:'⏳ Pending — being prepared', confirmed:'✅ Confirmed — processing', processing:'🔄 Processing — packing your items', shipped:'🚚 Shipped — on the way!', delivered:'🎉 Delivered successfully', cancelled:'❌ Cancelled' };
+      const totalAmt = last.totalSAR ? `${cur}${Math.round(last.totalSAR * rate)}` : (last.total || 'N/A');
+      const recentLines = orders.slice(-3).reverse().map(o =>
+        `• #${o.id} — ${statusMap[o.status] || o.status} — ${o.totalSAR ? cur + Math.round(o.totalSAR * rate) : (o.total || '')}`
+      ).join('\n');
+      return `📦 **Your Orders**\n\n${recentLines}\n\n**Latest Order Details:**\n🔖 #${last.id}\n${statusMap[last.status] || last.status}\n💰 Total: ${totalAmt}\n📅 Expected: 2–4 business days\n🚀 Express upgrade: +SAR 15 for 1-day\n\n📲 Live tracking: ${WA}`;
     }
-    return `📦 **Track Your Order**\n\nNo orders found on this device.\n\nTo track your order, please share your:\n• Order ID (e.g. #EX-12345)\n• Phone number used at checkout\n\n📲 WhatsApp us: ${WA}\nWe respond within 5 minutes! ⚡`;
+    return `📦 **Track Your Order**\n\nNo orders found on this device.\n\nShare your Order ID (e.g. #ORD123) or phone number used at checkout.\n\n📲 WhatsApp us: ${WA}\n⚡ We respond within 5 minutes!`;
   }
 
   // ── CANCEL ORDER ──
@@ -5978,8 +5981,90 @@ function _localAiReply(text) {
     return `ওয়া, দারুণ! 👋\n\nআমি EX GLOBAL-এর সহকারী। আপনাকে সাহায্য করতে পারি:\n\n🛍️ পণ্য খুঁজে পেতে\n📦 অর্ডার ট্র্যাক করতে\n💳 পেমেন্ট সম্পর্কে জানতে\n🚚 ডেলিভারি তথ্য পেতে\n\n🌐 আমাদের ওয়েবসাইট: **exglobal.online**\n📲 WhatsApp: ${WA}\n\nকী জানতে চান? ✍️`;
   }
 
+  // ── CART SUMMARY ──
+  if (/cart|basket|bag|سلة|صيدلة|কার্ট|ব্যাগ|सामान/.test(q)) {
+    const cart = (() => { try { return JSON.parse(localStorage.getItem('exg_cart') || '[]'); } catch(e) { return []; } })();
+    if (cart.length > 0) {
+      const total = cart.reduce((s, i) => s + (i.price || 0) * (i.qty || 1), 0);
+      const lines = cart.slice(0, 5).map(i => `• ${i.name || i.names?.en || 'Item'} × ${i.qty || 1} — ${cur}${Math.round(i.price * rate * (i.qty || 1))}`).join('\n');
+      return `🛒 **Your Cart (${cart.length} item${cart.length > 1 ? 's' : ''}):**\n\n${lines}${cart.length > 5 ? `\n...and ${cart.length - 5} more` : ''}\n\n💰 **Total: ${cur}${Math.round(total * rate)}**\n${total >= 100 ? '✅ Free delivery included!\n' : `💡 Add ${cur}${Math.round((100 - total) * rate)} more for free delivery!\n`}\n👉 Tap **Cart** (bottom right) to checkout.`;
+    }
+    return `🛒 Your cart is empty!\n\n🛍️ Browse products and tap **Buy Now** to add items.\n\n💡 Tip: Orders over SAR 100 get **free delivery**!`;
+  }
+
+  // ── WISHLIST ──
+  if (/wish|saved|favourite|favorite|love|المفضلة|مفضلة|পছন্দ|উইশ|इच्छा/.test(q)) {
+    const wl = (() => { try { return JSON.parse(localStorage.getItem('exg_wishlist') || '[]'); } catch(e) { return []; } })();
+    if (wl.length > 0) {
+      const lines = wl.slice(0, 5).map(id => {
+        const p = PRODUCTS.find(x => x.id === id);
+        return p ? `• ${p.names?.en || p.name} — ${cur}${Math.round(p.price * rate)} (**-${p.discount}%**)` : null;
+      }).filter(Boolean).join('\n');
+      return `❤️ **Your Wishlist (${wl.length} item${wl.length > 1 ? 's' : ''}):**\n\n${lines || 'Items unavailable'}\n\nTap the ❤️ icon on any product to manage your wishlist.`;
+    }
+    return `💔 Your wishlist is empty.\n\nTap the **❤️ heart icon** on any product to save it for later!`;
+  }
+
+  // ── COUPON / DISCOUNT CODE ──
+  if (/coupon|promo|code|discount.*code|voucher|كوبون|خصم|কুপন|ছাড়|कूपन/.test(q)) {
+    return `🏷️ **Active Discount Codes:**\n\n🎁 **WELCOME10** — 10% off your first order\n🎂 **BDAY10** — 10% off on your birthday\n\n**How to use:**\n1. Add items to cart\n2. Tap Checkout\n3. Enter code in **Coupon** field\n4. Tap Apply ✅\n\n💡 Codes are case-insensitive. Only one code per order.\n📲 Exclusive codes: ${WA}`;
+  }
+
+  // ── ALL MY ORDERS ──
+  if (/my order|all order|order history|past order|previous|طلباتي|كل الطلبات|আমার সব অর্ডার|অর্ডার হিস্ট্রি/.test(q)) {
+    const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
+    if (orders.length > 0) {
+      const statusEmoji = { pending:'⏳', confirmed:'✅', processing:'🔄', shipped:'🚚', delivered:'🎉', cancelled:'❌' };
+      const lines = orders.slice(-5).reverse().map(o =>
+        `${statusEmoji[o.status] || '📦'} **#${o.id}** — ${o.totalSAR ? cur + Math.round(o.totalSAR * rate) : ''} — ${o.status || 'pending'}`
+      ).join('\n');
+      return `📋 **Your Order History (${orders.length} total):**\n\n${lines}\n\n📲 For details on any order: ${WA}`;
+    }
+    return `📋 No orders yet on this device.\n\n🛍️ Start shopping at **exglobal.online**!\n\nUse code **WELCOME10** for 10% off your first order! 🎁`;
+  }
+
+  // ── PAYMENT METHODS ──
+  if (/stc|mada|apple pay|pay.*method|how.*pay|payment|بطاقة|بنك|دفع|পেমেন্ট কীভাবে|কীভাবে দিব|ভিসা|মাস্টারকার্ড/.test(q)) {
+    if (/stc/.test(q)) return `📱 **STC Pay Guide:**\n\n1️⃣ Select STC Pay at checkout\n2️⃣ Enter your STC Pay phone number\n3️⃣ Approve the payment in your STC Pay app\n4️⃣ Order confirmed instantly! ✅\n\n💡 STC Pay is available to all Saudi numbers.\n📲 Issues? ${WA}`;
+    if (/binance/.test(q)) return `💛 **Binance Pay Guide:**\n\n1️⃣ Select Binance Pay at checkout\n2️⃣ Open your Binance app\n3️⃣ Scan the QR code or enter Pay ID\n4️⃣ Confirm payment in app\n5️⃣ Screenshot & send to WhatsApp ✅\n\n📲 Send screenshot to: ${WA}`;
+    if (/cash|cod/.test(q)) return `💵 **Cash on Delivery (COD):**\n\n✅ Pay when your order arrives!\n✅ Available across Saudi Arabia\n💰 COD fee: SAR 5 (waived for orders over SAR 200)\n\n📦 Have the exact amount ready for the delivery person.`;
+    return `💳 **Payment Methods:**\n\n💳 **Credit/Debit Card** — Visa, Mastercard, Mada\n📱 **STC Pay** — Saudi mobile payment\n💛 **Binance Pay** — Crypto payment\n💵 **Cash on Delivery** — Pay on arrival\n\n🔒 All payments are **100% secure & encrypted**.\n📲 Help: ${WA}`;
+  }
+
+  // ── FLASH DEALS ──
+  if (/flash|sale today|today.*deal|hot deal|فلاش|عرض اليوم|ফ্লাশ|আজকের ডিল/.test(q)) {
+    const flash = PRODUCTS.filter(p => p.flash || p.discount >= 40).sort((a,b) => b.discount - a.discount).slice(0, 5);
+    if (flash.length) {
+      return `⚡ **Flash Deals — Limited Time!**\n\n` +
+        flash.map(p => `🔥 ${p.names?.en || p.name} — ~~${cur}${Math.round((p.price/(1-p.discount/100))*rate)}~~ **${cur}${Math.round(p.price*rate)}** (-${p.discount}%)`).join('\n') +
+        `\n\n⏰ Hurry! Flash deals end at midnight.\n🏷️ Extra 10% off with code **EXG10**`;
+    }
+    return `⚡ **Flash Deals** are live in the app!\n\nScroll down on the home screen to see the latest flash deals.\n\n🔔 Want deal alerts? WhatsApp us: ${WA}`;
+  }
+
+  // ── SIZE GUIDE ──
+  if (/size|fit|measure|cm|inch|كم مقاس|قياس|সাইজ|মাপ|माप|कितना/.test(q)) {
+    return `📏 **Size Guide:**\n\n👕 **Tops / Shirts:**\n• S = Chest 36–38" | M = 38–40" | L = 40–42" | XL = 42–44"\n\n👗 **Dresses / Abayas:**\n• S = UK 8–10 | M = UK 10–12 | L = UK 12–14 | XL = UK 14–16\n\n👟 **Shoes:**\n• EU 36=UK 3 | EU 38=UK 5 | EU 40=UK 6.5 | EU 42=UK 8\n\n💡 **Tip:** When between sizes, size **up** for comfort.\n📲 Custom size help: ${WA}`;
+  }
+
+  // ── RETURNS & REFUNDS ──
+  if (/return|refund|wrong.*item|damaged|exchange|إرجاع|استرداد|ফেরত|রিফান্ড|वापसी/.test(q)) {
+    return `↩️ **Returns & Refunds Policy:**\n\n✅ **7-day return** from delivery date\n✅ Item must be unused & original packaging\n✅ Damaged/wrong items — full refund guaranteed\n\n**How to return:**\n1. WhatsApp us with your Order ID\n2. Send photos of the item\n3. We'll arrange pickup within 24 hours\n4. Refund processed in 3–5 business days\n\n💰 Refund to original payment method or store credit.\n\n📲 Start a return: ${WA}`;
+  }
+
+  // ── ABOUT STORE ──
+  if (/who are you|about|exglobal|ex global|مين انتم|عن الشركة|কারা তোমরা|আপনারা কে|তোমাদের সম্পর্কে/.test(q)) {
+    return `👑 **About EX GLOBAL SA:**\n\nWe are a **premium online fashion & lifestyle store** based in Saudi Arabia 🇸🇦\n\n🛍️ 1000+ products — fashion, beauty, electronics & more\n🚚 Fast delivery across all Saudi Arabia\n🔒 Secure payments — Card, STC, Binance, COD\n⭐ Rated 4.9/5 by 10,000+ customers\n🌍 Serving Saudi Arabia, UAE, Kuwait & Bahrain\n\n📲 WhatsApp: ${WA}\n🌐 exglobal.online`;
+  }
+
+  // ── CONTACT / SUPPORT ──
+  if (/contact|support|help|human|agent|speak|مساعدة|اتصل|যোগাযোগ|সাপোর্ট|সাহায্য|समर्थन/.test(q)) {
+    return `📞 **Contact EX GLOBAL Support:**\n\n📲 **WhatsApp (fastest):** ${WA}\n⚡ Response time: under 5 minutes\n🕐 Available: 8AM – 12AM (Saudi time)\n\n📧 Or chat here — I can answer most questions instantly!\n\n**Common topics:**\n• Order issue → share your Order ID\n• Return request → share photos\n• Payment help → mention payment method`;
+  }
+
   // ── GENERAL ENGLISH CATCH-ALL ──
-  return `👋 Hi! I'm the EX GLOBAL shopping assistant.\n\nI can help you with:\n🛍️ Finding products\n📦 Order tracking\n💳 Payment info\n🚚 Delivery details\n↩️ Returns & refunds\n\n🌐 Shop now: **exglobal.online**\n📲 WhatsApp: ${WA}`;
+  const suggestions = ['Show me best sellers', 'Track my order', 'What are today\'s deals?', 'How do I pay?'];
+  return `👋 Hi! I'm the EX GLOBAL AI assistant.\n\nI can instantly help with:\n🛍️ **Product search** — "show dresses under SAR 50"\n📦 **Order tracking** — "where is my order"\n💳 **Payment guide** — "how to pay with STC"\n🚚 **Delivery info** — "how long does delivery take"\n🏷️ **Discount codes** — "any coupons available"\n↩️ **Returns** — "how to return an item"\n🛒 **Cart summary** — "what's in my cart"\n\n💡 Try: *"${suggestions[Math.floor(Math.random() * suggestions.length)]}"*\n\n📲 WhatsApp for urgent help: ${WA}`;
 }
 
 function _aiMarkdown(t) {
