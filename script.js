@@ -5723,11 +5723,21 @@ function closeAiChat() {
 function _aiRenderWelcome() {
   const box = document.getElementById('aiChatMessages');
   if (!box) return;
+
+  // Proactive greeting — check cart/VIP state
+  const cartItems = (() => { try { return JSON.parse(localStorage.getItem('exg_cart') || '[]'); } catch(e) { return []; } })();
+  const cartTotal = cartItems.reduce((s,i) => s+(i.price||0)*(i.qty||1), 0);
+  const vipPts = typeof _getVipPoints === 'function' ? _getVipPoints() : 0;
+  const userName = currentUser?.name?.split(' ')[0] || '';
+  const proactive = [];
+  if (cartItems.length) proactive.push(`🛒 You have **${cartItems.length} item(s)** in cart${cartTotal >= 100 ? ' — ✅ Free delivery!' : ` — Add SAR ${Math.ceil(100-cartTotal)} more for free delivery`}`);
+  if (vipPts >= 500) proactive.push(`⭐ You have **${vipPts.toLocaleString()} VIP points** ready to redeem!`);
+
   const greets = {
-    bn: 'আসসালামু আলাইকুম! 👋 আমি EX GLOBAL-এর AI সহকারী। নিচের বিষয়গুলো সরাসরি জিজ্ঞেস করুন:',
-    en: 'Hello! 👋 I\'m EX GLOBAL\'s AI Assistant. Ask me anything:',
-    ar: 'السلام عليكم! 👋 أنا مساعد EX GLOBAL. اسألني عن أي شيء:',
-    hi: 'नमस्ते! 👋 मैं EX GLOBAL का AI Assistant हूं। कुछ भी पूछें:'
+    bn: `আসসালামু আলাইকুম${userName?' '+userName:''}! 👋 আমি EX GLOBAL-এর AI — আমি শুধু কথা না, **কাজও করি!**${proactive.length?'\n\n'+proactive.join('\n'):''}`,
+    en: `Hello${userName?' '+userName:''}! 👋 I'm EX GLOBAL's AI — I don't just answer, **I take action!**${proactive.length?'\n\n'+proactive.join('\n'):''}`,
+    ar: `السلام عليكم${userName?' '+userName:''}! 👋 أنا مساعد EX GLOBAL — لا أجيب فقط، **بل أتصرف!**${proactive.length?'\n\n'+proactive.join('\n'):''}`,
+    hi: `नमस्ते${userName?' '+userName:''}! 👋 मैं EX GLOBAL का AI हूं — मैं सिर्फ जवाब नहीं, **काम भी करता हूं!**${proactive.length?'\n\n'+proactive.join('\n'):''}`
   };
   _aiAppendMsg('assistant', greets[currentLang] || greets.en);
   const chips = [
@@ -6276,6 +6286,170 @@ function _localAiReply(text) {
   if (/what can you|your capabilities|help me|what do you do|ماذا تستطيع|تساعدني|তুমি কী করতে পারো|কী কী পারো/.test(q)) {
     return `🤖 **I can do EVERYTHING for you:**\n\n🛒 **Shopping**\n• "Add [product] to cart"\n• "Open [product name]"\n• "Show dresses under SAR 50"\n• "Surprise me with a pick"\n• "What should I buy?"\n\n📦 **Orders**\n• "Track my order"\n• "Show all my orders"\n• "Track #ORD123456"\n\n💳 **Payments**\n• "Take me to checkout"\n• "Apply WELCOME10"\n• "How to pay with STC?"\n\n🔧 **Controls**\n• "Open cart / wishlist / profile"\n• "Filter by dress / shoes / bags"\n• "Spin the wheel"\n• "Daily check-in"\n• "Sign out"\n\n📊 **Info**\n• "My VIP points"\n• "Compare product A and B"\n• "Budget SAR 100 — what can I get?"\n• "Any coupons?"\n• "Size guide"\n\nJust ask naturally! 💬`;
   }
+
+  // ══════════════════════════════════════════════════════
+  //  SUPER POWER COMMANDS — language, theme, sound, etc.
+  // ══════════════════════════════════════════════════════
+
+  // ── LANGUAGE SWITCH ──
+  if (/switch.*arabic|arabic.*mode|change.*arabic|اللغة العربية|عربي فقط/.test(q))
+    return { text: '🌐 Switching to Arabic! / تحويل إلى العربية!', action: () => setLang('ar') };
+  if (/switch.*bengali|bangla|বাংলা|change.*bangla/.test(q))
+    return { text: '🌐 বাংলায় পরিবর্তন করছি!', action: () => setLang('bn') };
+  if (/switch.*hindi|change.*hindi|हिंदी/.test(q))
+    return { text: '🌐 Hindi में बदल रहे हैं!', action: () => setLang('hi') };
+  if (/switch.*english|change.*english|english.*mode/.test(q))
+    return { text: '🌐 Switching to English!', action: () => setLang('en') };
+
+  // ── DARK / LIGHT MODE ──
+  if (/dark mode|night mode|dark.*theme|تصميم داكن|ডার্ক মোড|अंधेरा/.test(q))
+    return { text: '🌙 Switching to Dark Mode!', action: () => { if (!document.body.classList.contains('dark')) toggleTheme(); } };
+  if (/light mode|day mode|light.*theme|تصميم فاتح|লাইট মোড|उजाला/.test(q))
+    return { text: '☀️ Switching to Light Mode!', action: () => { if (document.body.classList.contains('dark')) toggleTheme(); } };
+
+  // ── SOUND ON / OFF ──
+  if (/mute|no sound|sound off|turn off sound|صامت|সাউন্ড বন্ধ|आवाज बंद/.test(q))
+    return { text: '🔇 Sounds turned off!', action: () => { if (typeof soundEnabled !== 'undefined' && soundEnabled) toggleSound(); } };
+  if (/unmute|sound on|turn on sound|enable sound|صوت|সাউন্ড চালু|आवाज चालू/.test(q))
+    return { text: '🔊 Sounds turned on!', action: () => { if (typeof soundEnabled !== 'undefined' && !soundEnabled) toggleSound(); } };
+
+  // ── ENABLE NOTIFICATIONS ──
+  if (/enable.*notif|turn on.*notif|notif.*on|اشعارات|নোটিফিকেশন চালু|सूचनाएं/.test(q))
+    return { text: '🔔 Enabling push notifications!', action: () => requestNotifPermission() };
+
+  // ── REORDER LAST ORDER ──
+  if (/reorder|order again|buy again|repeat.*order|طلب مرة أخرى|আবার অর্ডার/.test(q)) {
+    const orders = (() => { try { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); } catch(e) { return []; } })();
+    if (orders.length) {
+      const last = orders[orders.length - 1];
+      const itemList = (last.items || []).slice(0, 3).map(i => `• ${i.name || 'Item'} × ${i.qty || 1}`).join('\n');
+      return { text: `🔄 **Reordering your last order!**\n\n${itemList || 'Your previous items'}\n\nAdding items to cart now...`, action: () => typeof orderAgain === 'function' && orderAgain(last.id) };
+    }
+    return `📦 No previous orders found. Start shopping and your order history will appear here!`;
+  }
+
+  // ── CLEAR CART ──
+  if (/clear.*cart|empty.*cart|remove.*all.*cart|مسح.*سلة|কার্ট খালি করো|কার্ট ক্লিয়ার/.test(q)) {
+    const cartNow = (() => { try { return JSON.parse(localStorage.getItem('exg_cart') || '[]'); } catch(e) { return []; } })();
+    if (!cartNow.length) return `🛒 Your cart is already empty!`;
+    return { text: `🗑️ Clearing your cart (${cartNow.length} item${cartNow.length > 1 ? 's' : ''} removed)...`, action: () => {
+      localStorage.setItem('exg_cart', '[]');
+      if (typeof cart !== 'undefined') { cart.length = 0; }
+      if (typeof _saveCart === 'function') _saveCart();
+      if (typeof renderCart === 'function') renderCart();
+      if (typeof updateCartBadge === 'function') updateCartBadge();
+    }};
+  }
+
+  // ── REMOVE FROM WISHLIST ──
+  if (/remove.*wish|delete.*wish|clear.*wish|wish.*remove|احذف.*مفضلة|উইশলিস্ট থেকে সরাও/.test(q)) {
+    return { text: `❤️ Opening wishlist — tap the ❤️ icon on any item to remove it.`, action: () => openWishlist() };
+  }
+
+  // ── GIFT FINDER ──
+  if (/gift.*for|present.*for|shopping.*for|buy.*for|find.*gift|هدية لـ|উপহার|গিফট/.test(q)) {
+    const personMap = { wife:'Women\'s fashion, perfume, beauty', husband:'Men\'s fashion, watches, electronics', mom:'Modest fashion, beauty, accessories', dad:'Electronics, watches, accessories', sister:'Fashion, beauty, bags', brother:'Electronics, shirts, shoes', friend:'Perfume, accessories, bags', baby:'Kids, baby fashion' };
+    const nums = q.match(/\d+/g);
+    const budget = nums ? parseInt(nums[0]) / rate : 200;
+    const person = Object.keys(personMap).find(k => q.includes(k));
+    const catKw = person ? personMap[person].split(',')[0].trim().toLowerCase() : '';
+    const gifts = PRODUCTS.filter(p => !p.outOfStock && p.price <= budget && (!catKw || (p.names?.en||p.name||'').toLowerCase().includes(catKw) || (p.category||'').toLowerCase().includes(catKw))).sort((a,b) => b.discount - a.discount).slice(0, 4);
+    const label = person ? `for your **${person}**` : 'as a gift';
+    if (gifts.length) return `🎁 **Perfect gift ideas ${label} under ${cur}${Math.round(budget*rate)}:**\n\n` + gifts.map(p => `• **${p.names?.en||p.name}** — ${cur}${Math.round(p.price*rate)} (**-${p.discount}%**)`).join('\n') + `\n\n✨ All come in beautiful packaging! 📦\n📲 Order help: ${WA}`;
+    return `🎁 For the perfect gift, try our **beauty, perfume or accessories** section!\n\n📲 Personal shopping: ${WA}`;
+  }
+
+  // ── SIZE RECOMMENDATION ──
+  if (/(?:i am|i'm|my height|height.*cm|cm.*tall|\d+\s*cm|\d+\s*kg|weight.*kg)/.test(q)) {
+    const cm = (q.match(/(\d{2,3})\s*cm/) || q.match(/(\d{2,3})\s*tall/))?.[1];
+    const kg = q.match(/(\d{2,3})\s*kg/)?.[1];
+    if (cm) {
+      const h = parseInt(cm);
+      const size = h < 158 ? 'XS–S' : h < 165 ? 'S–M' : h < 172 ? 'M–L' : h < 180 ? 'L–XL' : 'XL–XXL';
+      const shoe = h < 158 ? '36–37' : h < 165 ? '37–38' : h < 172 ? '38–39' : h < 180 ? '39–41' : '41–43';
+      return `📏 **Size Recommendation for ${cm}cm${kg ? ` / ${kg}kg` : ''}:**\n\n👗 Clothing: **${size}**\n👟 Shoes: **EU ${shoe}**\n\n💡 Tip: If between sizes, go **one size up** for comfort.\n📲 More help: ${WA}`;
+    }
+    return `📏 Tell me your height (cm) and I'll recommend the perfect size!\n\nExample: *"I am 165cm, what size?"*`;
+  }
+
+  // ── WHAT GOES WITH? (outfit / companion) ──
+  if (/goes with|pair with|match with|outfit|coordinate|يناسب|يتناسب|কীসের সাথে মানাবে|কম্বিনেশন/.test(q)) {
+    const nameQ = q.replace(/goes with|pair with|match with|outfit|coordinate|what|يناসب|কীসের সাথে|কম্বিনেশন/gi,'').trim();
+    const src = PRODUCTS.find(p => nameQ.split(' ').some(w => w.length > 2 && (p.names?.en||p.name||'').toLowerCase().includes(w)));
+    const catPairs = { dress:['bags','shoes','jewelry'], abaya:['bags','shoes'], tops:['bags','shoes'], shoes:['bags','dress'], bags:['dress','shoes','jewelry'], watches:['dress','tops'], perfume:['beauty','bags'], electronics:['accessories'] };
+    const srcCat = src?.category || 'dress';
+    const pairedCats = catPairs[srcCat] || ['bags','shoes'];
+    const pairs = PRODUCTS.filter(p => !p.outOfStock && pairedCats.includes(p.category) && p.id !== src?.id).sort((a,b) => b.discount - a.discount).slice(0, 3);
+    const label = src ? `**${src.names?.en||src.name}**` : 'your item';
+    if (pairs.length) return `✨ **Perfect matches for ${label}:**\n\n` + pairs.map(p => `• **${p.names?.en||p.name}** (${p.category}) — ${cur}${Math.round(p.price*rate)} (-${p.discount}%)`).join('\n') + `\n\n🛒 Tap any product to view & add to cart!`;
+    return `✨ Try pairing with accessories, bags or shoes from our collection!\n\n🛍️ Browse **Accessories** category for the best matches.`;
+  }
+
+  // ── SET BIRTHDAY ──
+  if (/my birthday|birthday.*is|born on|birth.*date|عيد ميلادي|আমার জন্মদিন|জন্মতারিখ/.test(q)) {
+    const dateMatch = q.match(/(\d{1,2})[\/\-\s](\d{1,2})(?:[\/\-\s](\d{2,4}))?/) || q.match(/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\s+(\d{1,2})/i);
+    if (dateMatch && currentUser) {
+      return { text: `🎂 Birthday saved! You'll get a special **10% discount** voucher (BDAY10) on your birthday! 🎁`, action: () => {
+        try {
+          const months = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+          let m, d, y = new Date().getFullYear();
+          if (dateMatch[0].match(/[a-z]/i)) { const mn=dateMatch[1].slice(0,3).toLowerCase(); m=months[mn]||1; d=parseInt(dateMatch[2]); } else { d=parseInt(dateMatch[1]); m=parseInt(dateMatch[2]); }
+          const bday = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          currentUser.birthday = bday;
+          localStorage.setItem('exglobal_user', JSON.stringify(currentUser));
+          const bdi = document.getElementById('profileBirthday'); if(bdi) bdi.value = bday;
+        } catch(e){}
+      }};
+    }
+    if (!currentUser) return `🎂 Please **sign in** first, then tell me your birthday!\n\nSay *"sign in"* to get started.`;
+    return `🎂 Tell me your birthday date!\n\nExample: *"My birthday is March 15"* or *"15/03"*\n\n🎁 You'll get a **10% off** gift voucher on your birthday!`;
+  }
+
+  // ── PRICE ALERT ──
+  if (/alert|notify.*price|price.*drop|watch.*price|watch.*product|أبلغني.*سعر|দাম কমলে জানাও/.test(q)) {
+    return { text: `🔔 **Price Alert Setup:**\n\n1️⃣ Enable notifications (say *"enable notifications"*)\n2️⃣ Add the product to your **Wishlist** ❤️\n3️⃣ We'll WhatsApp you when price drops!\n\n📲 Or tell us directly: ${WA}\n✏️ Include: product name + your target price`, action: () => requestNotifPermission() };
+  }
+
+  // ── SMART CART ANALYSIS (proactive tip) ──
+  if (/analyse.*cart|analyze.*cart|cart.*tip|save.*money|best.*deal.*cart|cart.*coupon|تحليل.*سلة|কার্ট অ্যানালাইজ/.test(q)) {
+    const cartNow = (() => { try { return JSON.parse(localStorage.getItem('exg_cart') || '[]'); } catch(e) { return []; } })();
+    if (!cartNow.length) return `🛒 Your cart is empty! Add items and I'll analyze your savings.`;
+    const total = cartNow.reduce((s,i) => s+(i.price||0)*(i.qty||1), 0);
+    const tips = [];
+    if (total >= 100) tips.push('✅ Free delivery unlocked!');
+    else tips.push(`💡 Add ${cur}${Math.round((100-total)*rate)} more for **free delivery**`);
+    if (!getUsedCoupons?.()?.includes?.('WELCOME10') && !isCouponUsed?.('WELCOME10')) tips.push('🏷️ Use **WELCOME10** for 10% off (saves ' + cur + Math.round(total*rate*0.1) + ')');
+    const savings = cartNow.reduce((s,i) => { const orig = i.price/(1-(i.discount||0)/100); return s+(orig-i.price)*(i.qty||1); }, 0);
+    return `🤖 **AI Cart Analysis:**\n\n🛒 ${cartNow.length} items — **${cur}${Math.round(total*rate)}**\n💰 Already saving: ${cur}${Math.round(savings*rate)} off original prices\n\n${tips.join('\n')}\n\n👉 Say *"go to checkout"* when ready!`;
+  }
+
+  // ── SCROLL TO SECTION ──
+  if (/scroll.*top|go.*top|back.*top|العودة لأعلى|উপরে যাও|টপে যাও/.test(q))
+    return { text: '⬆️ Going back to top!', action: () => { closeAiChat(); setTimeout(() => window.scrollTo({top:0,behavior:'smooth'}), 300); } };
+  if (/scroll.*deal|go.*deal|deal.*section|go.*flash|عروض|ডিলে যাও/.test(q))
+    return { text: '🔥 Scrolling to deals section!', action: () => { closeAiChat(); setTimeout(() => document.querySelector('.flash-deals-section, .section-flash, [id*="flash"]')?.scrollIntoView({behavior:'smooth'}), 300); } };
+
+  // ── SHARE PRODUCT ──
+  if (/share.*product|share.*item|send.*product|أرسل المنتج|পণ্য শেয়ার করো/.test(q)) {
+    const nameQ = q.replace(/share|product|item|send|أرسل|শেয়ার|পণ্য/gi,'').trim();
+    const found = PRODUCTS.find(p => nameQ.split(' ').some(w => w.length>2 && (p.names?.en||p.name||'').toLowerCase().includes(w)));
+    if (found) return { text: `📤 Opening share for **${found.names?.en||found.name}**!`, action: () => { openModal(found.id); setTimeout(() => shareProduct?.(found.id), 600); } };
+    return `📤 Open any product and tap the **Share** button to send it to friends!`;
+  }
+
+  // ── RECENTLY VIEWED ──
+  if (/recently viewed|history|last.*viewed|viewed.*before|مشاهدة مؤخرا|সম্প্রতি দেখা/.test(q)) {
+    const rv = (() => { try { return JSON.parse(localStorage.getItem('exg_recently_viewed') || '[]'); } catch(e) { return []; } })();
+    if (rv.length) {
+      const items = rv.slice(0,5).map(id => { const p=PRODUCTS.find(x=>x.id===id); return p ? `• **${p.names?.en||p.name}** — ${cur}${Math.round(p.price*rate)}` : null; }).filter(Boolean);
+      return `👁️ **Recently Viewed:**\n\n${items.join('\n') || 'Items no longer available'}\n\nScroll down on the home screen to see the full history!`;
+    }
+    return `👁️ No recently viewed products yet.\n\nBrowse products and they'll appear here!`;
+  }
+
+  // ── WHATSAPP / LIVE CHAT ──
+  if (/whatsapp|live.*chat|human|agent|speak.*human|real.*person|تحدث.*إنسان|মানুষের সাথে কথা/.test(q))
+    return { text: `📲 Connecting you to our team on WhatsApp!\n\n⚡ Response time: under **5 minutes**\n🕐 Available: 8AM–12AM Saudi time`, action: () => window.open(WA, '_blank') };
 
   // ── GENERAL ENGLISH CATCH-ALL ──
   const suggestions = [
