@@ -9124,13 +9124,25 @@ function _stopBdayConfetti() {
 }
 
 // ── AI Video Call ─────────────────────────────────────────
-let _vcStream     = null;
-let _vcFacing     = 'user';
-let _vcMuted      = false;
-let _vcCamOff     = false;
-let _vcSpeechRec  = null;
-let _vcDurTimer   = null;
-let _vcDurSec     = 0;
+let _vcStream        = null;
+let _vcFacing        = 'user';
+let _vcMuted         = false;
+let _vcCamOff        = false;
+let _vcSpeechRec     = null;
+let _vcDurTimer      = null;
+let _vcDurSec        = 0;
+let _vcSynthAlive    = null; // Chrome Android: keep speechSynthesis from pausing
+let _vcVoice         = null; // best available voice, resolved once
+
+// Resolve best English voice (called once on first speak)
+function _vcLoadVoice() {
+  if (_vcVoice) return;
+  const voices = speechSynthesis.getVoices();
+  _vcVoice = voices.find(v => v.lang === 'en-US' && v.localService) ||
+             voices.find(v => v.lang === 'en-US') ||
+             voices.find(v => v.lang.startsWith('en')) ||
+             voices[0] || null;
+}
 
 function _openVideoCall() {
   const overlay = document.getElementById('vcOverlay');
@@ -9146,6 +9158,25 @@ function _openVideoCall() {
   if (muteBtn)  muteBtn.classList.remove('muted');
   if (camIcon)  camIcon.className  = 'fas fa-video';
   if (camBtn)   camBtn.classList.remove('cam-off');
+
+  // ── Prime speechSynthesis within user-gesture context ──────
+  // Android Chrome requires first speak() to happen in a gesture handler.
+  // We use a silent utterance here so all future setTimeout calls work.
+  if (window.speechSynthesis) {
+    const primer = new SpeechSynthesisUtterance(' ');
+    primer.volume = 0;
+    speechSynthesis.speak(primer);
+    // Chrome Android pauses synth after ~15s of no gesture — keep alive
+    if (_vcSynthAlive) clearInterval(_vcSynthAlive);
+    _vcSynthAlive = setInterval(() => {
+      if (speechSynthesis.paused) speechSynthesis.resume();
+    }, 8000);
+    // Pre-load voice list
+    const preload = () => _vcLoadVoice();
+    if (speechSynthesis.getVoices().length) preload();
+    else speechSynthesis.addEventListener('voiceschanged', preload, { once: true });
+  }
+
   _vcDurTimer = setInterval(() => {
     _vcDurSec++;
     const m = String(Math.floor(_vcDurSec / 60)).padStart(2, '0');
@@ -9157,17 +9188,18 @@ function _openVideoCall() {
   setTimeout(_vcStartListen, 900);
   setTimeout(() => {
     const name = currentUser && currentUser.name ? ', ' + currentUser.name.split(' ')[0] : '';
-    _vcSpeak('Hi' + name + '! I\'m your EX GLOBAL assistant. How can I help you today?');
-  }, 1300);
+    _vcSpeak('Hi' + name + '! I am your EX GLOBAL assistant. How can I help you today?');
+  }, 1400);
 }
 
 function _endVideoCall() {
   const overlay = document.getElementById('vcOverlay');
   if (overlay) overlay.classList.remove('open', 'vc-speaking');
-  if (_vcStream) { _vcStream.getTracks().forEach(t => t.stop()); _vcStream = null; }
+  if (_vcStream)    { _vcStream.getTracks().forEach(t => t.stop()); _vcStream = null; }
   if (_vcSpeechRec) { try { _vcSpeechRec.abort(); } catch(e){} _vcSpeechRec = null; }
   if (_vcDurTimer)  { clearInterval(_vcDurTimer); _vcDurTimer = null; }
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
+  if (_vcSynthAlive){ clearInterval(_vcSynthAlive); _vcSynthAlive = null; }
+  if (window.speechSynthesis) speechSynthesis.cancel();
 }
 
 async function _vcStartCamera() {
@@ -9259,18 +9291,41 @@ function _vcStartListen() {
 }
 
 function _vcSpeak(text) {
-  const cleanText = text.replace(/\*\*/g, '').replace(/\n+/g, ' ').replace(/[^\x00-\xFF]/g, ' ').trim().substring(0, 220);
+  // Strip markdown, emojis and non-ASCII (TTS chokes on them)
+  const cleanText = text
+    .replace(/\*\*/g, '').replace(/\n+/g, '. ')
+    .replace(/[^\x00-\x7F]/g, ' ')  // remove all non-ASCII (emojis, Arabic, Bengali)
+    .replace(/\s{2,}/g, ' ').trim().substring(0, 200);
   _vcShowCaption(text, true);
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
+  if (!window.speechSynthesis || !cleanText) return;
+  speechSynthesis.cancel();
   const overlay = document.getElementById('vcOverlay');
   if (overlay) overlay.classList.add('vc-speaking');
-  const utt = new SpeechSynthesisUtterance(cleanText);
-  utt.rate = 1.05; utt.pitch = 1.1;
-  utt.lang = currentLang === 'ar' ? 'ar-SA' : currentLang === 'bn' ? 'bn-BD' : 'en-US';
-  utt.onend  = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
-  utt.onerror = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
-  window.speechSynthesis.speak(utt);
+
+  function doSpeak() {
+    _vcLoadVoice();
+    const utt = new SpeechSynthesisUtterance(cleanText);
+    utt.lang   = 'en-US';
+    utt.rate   = 1.0;
+    utt.pitch  = 1.05;
+    utt.volume = 1.0;
+    if (_vcVoice) utt.voice = _vcVoice;
+    utt.onend  = () => { if (overlay) overlay.classList.remove('vc-speaking'); };
+    utt.onerror = (e) => {
+      if (overlay) overlay.classList.remove('vc-speaking');
+      // On Android: if interrupted, try once more after short delay
+      if (e.error === 'interrupted') setTimeout(() => speechSynthesis.speak(utt), 300);
+    };
+    speechSynthesis.speak(utt);
+  }
+
+  // Voices may not be loaded yet on first call
+  if (speechSynthesis.getVoices().length > 0) {
+    doSpeak();
+  } else {
+    speechSynthesis.addEventListener('voiceschanged', doSpeak, { once: true });
+    setTimeout(doSpeak, 800); // fallback if voiceschanged never fires
+  }
 }
 
 function _vcShowCaption(text, isAi) {
