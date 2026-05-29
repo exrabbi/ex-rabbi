@@ -16963,6 +16963,7 @@ body { padding-bottom: 100px !important; }
 }
 
 /* ── Buy Now button — brand gradient both themes ─────────── */
+.pcard-contentBx .pcard-btn:not(.oos-btn),
 .pcard-btn:not(.oos-btn) {
   background: linear-gradient(135deg, #e91e8c 0%, #7c3aed 100%) !important;
   color: #fff !important;
@@ -16970,6 +16971,7 @@ body { padding-bottom: 100px !important; }
   box-shadow: 0 4px 16px rgba(233,30,140,.40) !important;
   letter-spacing: .4px !important;
 }
+.pcard-contentBx .pcard-btn:not(.oos-btn):active,
 .pcard-btn:not(.oos-btn):active { transform: scale(.96) !important; }
 [data-theme="dark"] .pcard-btn.oos-btn {
   background: rgba(255,255,255,.07) !important;
@@ -16993,3 +16995,36 @@ body { padding-bottom: 100px !important; }
   background: #fff;
   border-top: 1px solid rgba(0,0,0,.08);
 }
+
+/* ── Product card star ratings ───────────────────────────── */
+.pcard-rating-row {
+  display: flex; align-items: center; gap: 4px;
+  margin: 1px 0 2px; flex-shrink: 0;
+}
+.pcard-stars { color: #FFB800; font-size: 10px; letter-spacing: .5px; }
+.pcard-rnum  { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.75); }
+.pcard-rcnt  { font-size: 10px; color: rgba(255,255,255,.45); }
+[data-theme="light"] .pcard-rnum,
+:root:not([data-theme="dark"]) .pcard-rnum { color: #444; }
+[data-theme="light"] .pcard-rcnt,
+:root:not([data-theme="dark"]) .pcard-rcnt { color: #888; }
+
+/* ── AI chat message with EX logo ────────────────────────── */
+#aiChatPanel .ai-msg-assistant {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 8px !important;
+  padding: 10px 12px !important;
+}
+.ai-msg-logo {
+  width: 26px; height: 26px; min-width: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e91e8c 0%, #7c3aed 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; font-weight: 900; color: #fff;
+  letter-spacing: .5px; flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(233,30,140,.45);
+  margin-top: 1px;
+}
+.ai-msg-content { flex: 1; min-width: 0; }
+#aiChatPanel .ai-typing .ai-msg-content { display: flex; gap: 5px; align-items: center; }
