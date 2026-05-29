@@ -9284,59 +9284,119 @@ function _vcShowCaption(text, isAi) {
 }
 
 // ── Auto Email (EmailJS) ──────────────────────────────────
-// ⚙️  SETUP: https://emailjs.com → free account → add Gmail service
-//   1. Dashboard → Email Services → Add Service (Gmail) → copy Service ID
-//   2. Email Templates → Create two templates (see comments below)
-//   3. Account → General → Public Key → copy it
-//   Fill in the three values below:
-const _EJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';       // e.g. 'abc123XYZ'
-const _EJS_SERVICE_ID  = 'YOUR_SERVICE_ID';       // e.g. 'service_xxxxxx'
-const _EJS_TPL_WELCOME = 'YOUR_WELCOME_TEMPLATE'; // e.g. 'template_welcome'
-const _EJS_TPL_ORDER   = 'YOUR_ORDER_TEMPLATE';   // e.g. 'template_order'
-// ────────────────────────────────────────────────────────
-// Template variables used:
-//   Welcome → {{to_name}}, {{to_email}}, {{coupon_code}}, {{shop_url}}
-//   Order   → {{to_name}}, {{to_email}}, {{order_id}}, {{order_total}},
-//             {{order_items}}, {{order_date}}, {{order_method}}, {{shop_url}}
+// SETUP (5 min, free): https://emailjs.com
+//  1. Sign up → Email Services → Add Service → Gmail → connect your Gmail
+//  2. Email Templates → Create Template → paste EXACTLY:
+//       To:      {{to_email}}
+//       Subject: {{subject}}
+//       Body:    (switch to HTML mode) paste:  {{{html_content}}}
+//     Save → copy the Template ID
+//  3. Account → General → copy Public Key
+//  Put your values below:
+const _EJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';   // e.g. 'user_abc123XYZ'
+const _EJS_SERVICE_ID = 'YOUR_SERVICE_ID';   // e.g. 'service_xxxxxx'
+const _EJS_TEMPLATE   = 'YOUR_TEMPLATE_ID';  // e.g. 'template_xxxxxx'
 
 let _ejsReady = false;
 (function _ejsInit() {
   if (typeof emailjs === 'undefined') { setTimeout(_ejsInit, 800); return; }
-  if (_EJS_PUBLIC_KEY && _EJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+  if (_EJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
     emailjs.init({ publicKey: _EJS_PUBLIC_KEY });
     _ejsReady = true;
   }
 })();
 
+function _ejsSend(to_email, subject, html_content) {
+  if (!_ejsReady || !to_email) return;
+  emailjs.send(_EJS_SERVICE_ID, _EJS_TEMPLATE, { to_email, subject, html_content }).catch(() => {});
+}
+
+function _emailBase(bodyHtml) {
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#f5f5f7;color:#1a1a1a}a{color:#e91e8c;text-decoration:none}.wrap{max-width:560px;margin:0 auto;padding:24px 16px}.header{background:linear-gradient(135deg,#e91e8c 0%,#7c3aed 100%);border-radius:16px 16px 0 0;padding:28px 24px;text-align:center}.header img{height:36px;margin-bottom:8px}.header h1{color:#fff;font-size:22px;font-weight:800;letter-spacing:.5px}.body{background:#fff;padding:28px 24px;border-left:1px solid #e8e8e8;border-right:1px solid #e8e8e8}.footer{background:#f9f9f9;border:1px solid #e8e8e8;border-radius:0 0 16px 16px;padding:18px 24px;text-align:center;font-size:12px;color:#888}.btn{display:inline-block;background:linear-gradient(135deg,#e91e8c,#7c3aed);color:#fff!important;font-size:15px;font-weight:700;padding:14px 32px;border-radius:50px;text-decoration:none;margin:18px 0}.tag{display:inline-block;background:#f0ebff;color:#7c3aed;font-size:12px;font-weight:700;padding:4px 12px;border-radius:20px;letter-spacing:.5px}.code-box{background:#fff8f0;border:2px dashed #e91e8c;border-radius:12px;padding:16px 24px;text-align:center;margin:16px 0}.code{font-size:26px;font-weight:900;letter-spacing:5px;color:#e91e8c}.divider{height:1px;background:#f0f0f0;margin:18px 0}</style></head><body><div class="wrap">${bodyHtml}<div class="footer"><p style="margin-bottom:6px"><strong>EX GLOBAL SA</strong> · Saudi Arabia</p><p>© 2025 EX GLOBAL SA. All rights reserved.</p><p style="margin-top:6px"><a href="https://exglobal.online">exglobal.online</a></p></div></div></body></html>`;
+}
+
 function _sendWelcomeEmail(user) {
-  if (!_ejsReady || !user?.email) return;
+  if (!user?.email) return;
   const sentKey = 'exg_welcome_sent_' + user.email;
-  if (localStorage.getItem(sentKey)) return; // already sent once
+  if (localStorage.getItem(sentKey)) return;
   localStorage.setItem(sentKey, '1');
-  const params = {
-    to_name:    user.name || 'Valued Customer',
-    to_email:   user.email,
-    coupon_code: 'WELCOME10',
-    shop_url:   'https://exglobal.online'
-  };
-  emailjs.send(_EJS_SERVICE_ID, _EJS_TPL_WELCOME, params).catch(() => {});
+  const name = (user.name || 'Valued Customer').split(' ')[0];
+  const html = _emailBase(`
+<div class="header">
+  <h1>🎉 Welcome to EX GLOBAL SA!</h1>
+</div>
+<div class="body">
+  <p style="font-size:16px;margin-bottom:12px">Hi <strong>${name}</strong>,</p>
+  <p style="color:#444;line-height:1.7;margin-bottom:16px">
+    Welcome to <strong>EX GLOBAL SA</strong> — your premium luxury fashion destination.
+    We're thrilled to have you!
+  </p>
+  <p style="color:#444;line-height:1.7;margin-bottom:16px">
+    As a welcome gift, here's your exclusive <strong>10% discount</strong> code for your first order:
+  </p>
+  <div class="code-box">
+    <p style="font-size:13px;color:#888;margin-bottom:6px">YOUR DISCOUNT CODE</p>
+    <div class="code">WELCOME10</div>
+    <p style="font-size:12px;color:#aaa;margin-top:6px">Valid on your first order · One time use</p>
+  </div>
+  <div style="text-align:center">
+    <a class="btn" href="https://exglobal.online">Start Shopping →</a>
+  </div>
+  <div class="divider"></div>
+  <p style="font-size:13px;color:#888;text-align:center">
+    🚚 Free delivery on orders over SAR 100 &nbsp;·&nbsp; 🔒 Secure checkout &nbsp;·&nbsp; ⭐ VIP rewards
+  </p>
+</div>`);
+  _ejsSend(user.email, '🎉 Welcome to EX GLOBAL SA — Here\'s Your Gift!', html);
 }
 
 function _sendOrderEmail(order) {
-  if (!_ejsReady || !order?.customer?.email) return;
-  const itemsList = (order.items || []).map(i =>
-    (i.name || 'Product') + ' × ' + (i.qty || 1)
-  ).join(', ');
-  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
-  const params = {
-    to_name:      order.customer.name   || 'Customer',
-    to_email:     order.customer.email,
-    order_id:     order.id             || '',
-    order_total:  lang.symbol + Math.round((order.totalSAR || 0) * lang.rate),
-    order_items:  itemsList            || 'Items',
-    order_date:   new Date(order.date || Date.now()).toLocaleDateString('en-SA'),
-    order_method: order.method         || 'COD',
-    shop_url:     'https://exglobal.online'
-  };
-  emailjs.send(_EJS_SERVICE_ID, _EJS_TPL_ORDER, params).catch(() => {});
+  if (!order?.customer?.email) return;
+  const name    = (order.customer.name || 'Customer').split(' ')[0];
+  const orderId = order.id || 'N/A';
+  const total   = 'SAR ' + Math.round(order.totalSAR || 0);
+  const date    = new Date(order.date || Date.now()).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+  const method  = (order.method || 'COD').toUpperCase();
+  const itemRows = (order.items || []).map(i =>
+    `<tr><td style="padding:10px 0;border-bottom:1px solid #f5f5f5;font-size:14px">${i.name || 'Product'}${i.size ? ' — ' + i.size : ''}</td><td style="padding:10px 0;border-bottom:1px solid #f5f5f5;text-align:right;font-weight:600;font-size:14px">× ${i.qty || 1}</td></tr>`
+  ).join('');
+  const html = _emailBase(`
+<div class="header">
+  <h1>✅ Order Confirmed!</h1>
+</div>
+<div class="body">
+  <p style="font-size:16px;margin-bottom:12px">Hi <strong>${name}</strong>,</p>
+  <p style="color:#444;line-height:1.7;margin-bottom:20px">
+    Great news! Your order has been confirmed and is being processed. 🛍️
+  </p>
+  <div style="background:#f9f9f9;border-radius:12px;padding:16px 20px;margin-bottom:20px">
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:13px;color:#888">Order ID</span>
+      <span style="font-size:13px;font-weight:700;color:#e91e8c">${orderId}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+      <span style="font-size:13px;color:#888">Date</span>
+      <span style="font-size:13px;font-weight:600">${date}</span>
+    </div>
+    <div style="display:flex;justify-content:space-between">
+      <span style="font-size:13px;color:#888">Payment</span>
+      <span class="tag">${method}</span>
+    </div>
+  </div>
+  <p style="font-size:14px;font-weight:700;margin-bottom:10px">Items Ordered</p>
+  <table style="width:100%;border-collapse:collapse">${itemRows}</table>
+  <div class="divider"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center">
+    <span style="font-size:15px;font-weight:700">Total</span>
+    <span style="font-size:18px;font-weight:900;color:#e91e8c">${total}</span>
+  </div>
+  <div class="divider"></div>
+  <div style="text-align:center">
+    <a class="btn" href="https://exglobal.online">Track Your Order →</a>
+  </div>
+  <p style="font-size:13px;color:#888;text-align:center;margin-top:8px">
+    🚚 Estimated delivery: 2–4 business days
+  </p>
+</div>`);
+  _ejsSend(order.customer.email, `✅ Order Confirmed — ${orderId} | EX GLOBAL SA`, html);
 }
