@@ -3951,6 +3951,7 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
   if (newOrder) {
     setTimeout(() => _automationFire(newOrder), 500);
     setTimeout(() => _showZatcaInvoice(newOrder.id, totalSAR), 800);
+    setTimeout(() => _sendOrderEmail(newOrder), 1200);
   }
   return newOrder;
 }
@@ -4011,6 +4012,7 @@ function setUser(user) {
   localStorage.setItem('exglobal_user', JSON.stringify(user));
   _saveCustomerRecord(user);
   updateAuthUI();
+  setTimeout(() => _sendWelcomeEmail(user), 1500);
   // Animate profile card entrance + avatar welcome pulse
   requestAnimationFrame(() => {
     const card = document.querySelector('.me-profile-card');
@@ -9279,4 +9281,62 @@ function _vcShowCaption(text, isAi) {
   cap.classList.add('show');
   clearTimeout(cap._timer);
   cap._timer = setTimeout(() => cap.classList.remove('show'), 5500);
+}
+
+// ── Auto Email (EmailJS) ──────────────────────────────────
+// ⚙️  SETUP: https://emailjs.com → free account → add Gmail service
+//   1. Dashboard → Email Services → Add Service (Gmail) → copy Service ID
+//   2. Email Templates → Create two templates (see comments below)
+//   3. Account → General → Public Key → copy it
+//   Fill in the three values below:
+const _EJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY';       // e.g. 'abc123XYZ'
+const _EJS_SERVICE_ID  = 'YOUR_SERVICE_ID';       // e.g. 'service_xxxxxx'
+const _EJS_TPL_WELCOME = 'YOUR_WELCOME_TEMPLATE'; // e.g. 'template_welcome'
+const _EJS_TPL_ORDER   = 'YOUR_ORDER_TEMPLATE';   // e.g. 'template_order'
+// ────────────────────────────────────────────────────────
+// Template variables used:
+//   Welcome → {{to_name}}, {{to_email}}, {{coupon_code}}, {{shop_url}}
+//   Order   → {{to_name}}, {{to_email}}, {{order_id}}, {{order_total}},
+//             {{order_items}}, {{order_date}}, {{order_method}}, {{shop_url}}
+
+let _ejsReady = false;
+(function _ejsInit() {
+  if (typeof emailjs === 'undefined') { setTimeout(_ejsInit, 800); return; }
+  if (_EJS_PUBLIC_KEY && _EJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+    emailjs.init({ publicKey: _EJS_PUBLIC_KEY });
+    _ejsReady = true;
+  }
+})();
+
+function _sendWelcomeEmail(user) {
+  if (!_ejsReady || !user?.email) return;
+  const sentKey = 'exg_welcome_sent_' + user.email;
+  if (localStorage.getItem(sentKey)) return; // already sent once
+  localStorage.setItem(sentKey, '1');
+  const params = {
+    to_name:    user.name || 'Valued Customer',
+    to_email:   user.email,
+    coupon_code: 'WELCOME10',
+    shop_url:   'https://exglobal.online'
+  };
+  emailjs.send(_EJS_SERVICE_ID, _EJS_TPL_WELCOME, params).catch(() => {});
+}
+
+function _sendOrderEmail(order) {
+  if (!_ejsReady || !order?.customer?.email) return;
+  const itemsList = (order.items || []).map(i =>
+    (i.name || 'Product') + ' × ' + (i.qty || 1)
+  ).join(', ');
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS['en'];
+  const params = {
+    to_name:      order.customer.name   || 'Customer',
+    to_email:     order.customer.email,
+    order_id:     order.id             || '',
+    order_total:  lang.symbol + Math.round((order.totalSAR || 0) * lang.rate),
+    order_items:  itemsList            || 'Items',
+    order_date:   new Date(order.date || Date.now()).toLocaleDateString('en-SA'),
+    order_method: order.method         || 'COD',
+    shop_url:     'https://exglobal.online'
+  };
+  emailjs.send(_EJS_SERVICE_ID, _EJS_TPL_ORDER, params).catch(() => {});
 }
