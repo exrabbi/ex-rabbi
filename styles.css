@@ -16805,14 +16805,16 @@ body { padding-bottom: 100px !important; }
 
 /* ── FAB button — premium redesign ── */
 .ai-chat-fab {
+  position: fixed !important;
+  bottom: 164px !important; right: 16px !important;
   background: linear-gradient(135deg, #e91e8c 0%, #9c27b0 50%, #7c3aed 100%) !important;
   border-radius: 32px !important;
   width: 58px !important; height: 66px !important;
+  z-index: 2900 !important;
   box-shadow:
     0 6px 24px rgba(233,30,140,.45),
     0 2px 8px rgba(0,0,0,.3) !important;
   border: 1.5px solid rgba(255,255,255,.15) !important;
-  position: relative !important;
 }
 .ai-chat-fab::after {
   content: '';
