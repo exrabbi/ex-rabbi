@@ -2615,54 +2615,14 @@ function codCheckout() {
 /* ===== BOTTOM NAV ===== */
 /* ===== TREND CIRCLE MEDIA ===== */
 function _initTrendCircle() {
-  const data = JSON.parse(localStorage.getItem('exg_trend_content') || 'null');
+  // Clear any previously stored trend circle media
+  localStorage.removeItem('exg_trend_content');
   const wrap = document.querySelector('.bot-center-btn .bot-icon-wrap');
   if (!wrap) return;
-
-  // Remove any previous media
-  wrap.querySelectorAll('video, img.trend-circle-img, .trend-circle-overlay').forEach(el => el.remove());
-
-  if (!data || !data.url) return; // no content — show default lightning icon
-
-  // Hide the lightning bolt icon
+  // Ensure lightning icon is visible
   const icon = wrap.querySelector('i');
-  if (icon) icon.style.display = 'none';
-
-  // Overlay tint
-  const overlay = document.createElement('div');
-  overlay.className = 'trend-circle-overlay';
-  wrap.appendChild(overlay);
-
-  if (data.type === 'video') {
-    const isYT = data.url.includes('youtu');
-    if (isYT) {
-      // YouTube — use thumbnail as still image in circle (can't embed in 52px)
-      const vid = data.url.match(/(?:v=|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-      if (vid) {
-        const img = document.createElement('img');
-        img.className = 'trend-circle-img';
-        img.src = `https://img.youtube.com/vi/${vid[1]}/mqdefault.jpg`;
-        wrap.insertBefore(img, wrap.firstChild);
-      }
-    } else {
-      // MP4 — play inside circle
-      const video = document.createElement('video');
-      video.src = data.url;
-      video.autoplay = true;
-      video.loop = true;
-      video.muted = true;
-      video.playsInline = true;
-      video.setAttribute('playsinline', '');
-      wrap.insertBefore(video, wrap.firstChild);
-      video.play().catch(() => {});
-    }
-  } else {
-    // Image
-    const img = document.createElement('img');
-    img.className = 'trend-circle-img';
-    img.src = data.url;
-    wrap.insertBefore(img, wrap.firstChild);
-  }
+  if (icon) icon.style.display = '';
+  wrap.querySelectorAll('video, img.trend-circle-img, .trend-circle-overlay').forEach(el => el.remove());
 }
 
 function openTrendContent() {
