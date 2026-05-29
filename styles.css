@@ -16961,3 +16961,35 @@ body { padding-bottom: 100px !important; }
   from { transform: scale(1);    box-shadow: 0 0 40px rgba(233,30,140,.5), 0 0 80px rgba(233,30,140,.2); }
   to   { transform: scale(1.1);  box-shadow: 0 0 70px rgba(233,30,140,.8), 0 0 120px rgba(233,30,140,.4); }
 }
+
+/* ── Buy Now button — brand gradient both themes ─────────── */
+.pcard-btn:not(.oos-btn) {
+  background: linear-gradient(135deg, #e91e8c 0%, #7c3aed 100%) !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 16px rgba(233,30,140,.40) !important;
+  letter-spacing: .4px !important;
+}
+.pcard-btn:not(.oos-btn):active { transform: scale(.96) !important; }
+[data-theme="dark"] .pcard-btn.oos-btn {
+  background: rgba(255,255,255,.07) !important;
+  color: rgba(255,255,255,.3) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+}
+
+/* ── Light mode product card content box shadow ──────────── */
+[data-theme="light"] .pcard-contentBx,
+:root:not([data-theme="dark"]) .pcard-contentBx {
+  box-shadow: 0 -8px 20px rgba(0,0,0,.06);
+}
+
+/* ── Light mode body & nav ───────────────────────────────── */
+[data-theme="light"] body,
+:root:not([data-theme="dark"]) body {
+  background: #f4f4f8;
+}
+[data-theme="light"] .bottom-nav,
+:root:not([data-theme="dark"]) .bottom-nav {
+  background: #fff;
+  border-top: 1px solid rgba(0,0,0,.08);
+}
