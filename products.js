@@ -663,8 +663,8 @@ const PRODUCTS = [
 
   /* ── MYSTERY BOXES ───────────────────────────────────── */
   {
-    id: 62, category: "mystery", price: 69, originalPrice: 199, discount: 65,
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80",
+    id: 62, category: "mystery", price: 559, originalPrice: 1597, discount: 65,
+    image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400&q=80",
     rating: 4.7, ratingCount: 3420, sold: "22K+", stock: 50, tag: "bestseller",
     description: "Surprise electronics & gadgets box. Each box contains 3–5 premium tech items worth 3× the price.",
     names: {
@@ -675,8 +675,8 @@ const PRODUCTS = [
     }
   },
   {
-    id: 63, category: "mystery", price: 119, originalPrice: 349, discount: 66,
-    image: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&q=80",
+    id: 63, category: "mystery", price: 1000, originalPrice: 2941, discount: 66,
+    image: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=400&q=80",
     rating: 4.6, ratingCount: 2180, sold: "14K+", stock: 35, tag: "bestseller",
     description: "Premium tech gadgets mystery box. Includes smartwatch, earbuds, or other premium devices.",
     names: {
@@ -687,8 +687,8 @@ const PRODUCTS = [
     }
   },
   {
-    id: 64, category: "mystery", price: 49, originalPrice: 129, discount: 62,
-    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80",
+    id: 64, category: "mystery", price: 1088, originalPrice: 2863, discount: 62,
+    image: "https://images.unsplash.com/photo-1512909006721-3d6018887383?w=400&q=80",
     rating: 4.5, ratingCount: 5600, sold: "38K+", stock: 80, tag: "new",
     description: "Luxury accessories mystery box. Watch, sunglasses, wallet, or more — all premium quality.",
     names: {
@@ -699,8 +699,8 @@ const PRODUCTS = [
     }
   },
   {
-    id: 65, category: "mystery", price: 89, originalPrice: 249, discount: 64,
-    image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80",
+    id: 65, category: "mystery", price: 1618, originalPrice: 4494, discount: 64,
+    image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80",
     rating: 4.8, ratingCount: 4100, sold: "19K+", stock: 45, tag: "bestseller",
     description: "Smart devices mystery box. Could contain smart speaker, tablet, or wireless charger set.",
     names: {
@@ -711,20 +711,20 @@ const PRODUCTS = [
     }
   },
   {
-    id: 66, category: "mystery", price: 159, originalPrice: 499, discount: 68,
-    image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&q=80",
+    id: 66, category: "mystery", price: 2618, originalPrice: 8181, discount: 68,
+    image: "https://images.unsplash.com/photo-1607344645866-009c320b63e0?w=400&q=80",
     rating: 4.9, ratingCount: 1850, sold: "9K+", stock: 20, tag: "new",
-    description: "VIP luxury mystery box worth SAR 500+. Premium brands, surprise gifts, exclusive items.",
+    description: "VIP luxury mystery box worth SAR 250+. Premium brands, surprise gifts, exclusive items.",
     names: {
-      bn: "ভিআইপি লাক্সারি মিস্টেরি বক্স - SAR ৫০০+ মূল্য",
-      en: "VIP Luxury Mystery Box - Worth SAR 500+",
-      ar: "صندوق غامض VIP فاخر - بقيمة 500+ ر.س",
-      hi: "VIP लक्ज़री मिस्ट्री बॉक्स - SAR 500+ की कीमत"
+      bn: "ভিআইপি লাক্সারি মিস্টেরি বক্স - SAR ২৫০+ মূল্য",
+      en: "VIP Luxury Mystery Box - Worth SAR 250+",
+      ar: "صندوق غامض VIP فاخر - بقيمة 250+ ر.س",
+      hi: "VIP लक्ज़री मिस्ट्री बॉक्स - SAR 250+ की कीमत"
     }
   },
   {
-    id: 67, category: "mystery", price: 29, originalPrice: 79, discount: 63,
-    image: "https://images.unsplash.com/photo-1549396535-c11d5c55b9df?w=400&q=80",
+    id: 67, category: "mystery", price: 853, originalPrice: 2305, discount: 63,
+    image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&q=80",
     rating: 4.4, ratingCount: 8900, sold: "55K+", stock: 100, tag: "bestseller",
     description: "Mini beauty & fashion mystery box. Lipstick, perfume, jewellery, or fashion accessories.",
     names: {
