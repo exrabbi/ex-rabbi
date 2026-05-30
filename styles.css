@@ -4107,61 +4107,92 @@ body {
 
 /* ===== SAUDI PRIDE BANNER ===== */
 .saudi-pride-wrap {
-  padding: 10px 16px 4px;
+  padding: 14px 16px 6px;
   display: flex; justify-content: center;
 }
 .saudi-pride-pill {
-  display: flex; align-items: center; gap: 14px;
-  background: linear-gradient(135deg, rgba(220,230,240,.65), rgba(200,215,230,.55));
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.7);
-  border-radius: 40px;
-  padding: 10px 24px;
-  box-shadow: 0 4px 18px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.6);
+  display: flex; align-items: center; gap: 20px;
+  background: linear-gradient(135deg, #0a2a1a 0%, #0d3b22 50%, #0a2a1a 100%);
+  border: 1px solid rgba(198,168,90,.35);
+  border-radius: 50px;
+  padding: 14px 28px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.35),
+    0 0 0 1px rgba(198,168,90,.12),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  position: relative; overflow: hidden;
+}
+.saudi-pride-pill::before {
+  content: '';
+  position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(198,168,90,.08), transparent);
+  animation: prideSheen 4s ease-in-out infinite;
+}
+@keyframes prideSheen {
+  0%   { left: -60%; }
+  100% { left: 160%; }
+}
+.saudi-pride-left,
+.saudi-pride-right {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
 .saudi-pride-text {
-  font-size: 13px; font-weight: 800;
-  color: #1a2a3a; letter-spacing: 2px;
-  text-transform: uppercase; font-family: Georgia, 'Times New Roman', serif;
+  font-size: 14px; font-weight: 900;
+  color: #c6a85a;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: 'Arial Black', Georgia, serif;
   white-space: nowrap;
+  text-shadow: 0 0 20px rgba(198,168,90,.4);
+}
+.saudi-pride-sub {
+  font-size: 15px; line-height: 1;
+  color: rgba(198,168,90,.65);
+  letter-spacing: 1px;
 }
 .saudi-flag-wrap {
   display: flex; flex-direction: column; align-items: center; gap: 0;
   flex-shrink: 0;
 }
 .saudi-flag-pole {
-  width: 2.5px; height: 10px;
-  background: linear-gradient(180deg, #c8a96e, #8B7355);
-  border-radius: 1px 1px 0 0;
+  width: 3px; height: 14px;
+  background: linear-gradient(180deg, #e8d090, #c6a85a, #8B7355);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 0 6px rgba(198,168,90,.5);
 }
 .saudi-flag-img-wrap {
   position: relative; overflow: hidden;
-  border-radius: 3px;
-  box-shadow: 0 3px 12px rgba(0,0,0,.3);
-  animation: flagWave 3s ease-in-out infinite;
+  border-radius: 4px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.5), 0 0 0 1px rgba(198,168,90,.3);
+  animation: flagWave 3.5s ease-in-out infinite;
   transform-origin: left center;
 }
 .saudi-flag-img {
-  width: 54px; height: 36px;
+  width: 80px; height: 53px;
   object-fit: cover; display: block;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 .saudi-flag-shimmer {
   position: absolute; inset: 0;
   background: linear-gradient(105deg,
-    transparent 30%, rgba(255,255,255,.55) 50%, transparent 70%);
-  background-size: 250% 100%;
-  animation: flagShimmer 2.8s ease-in-out infinite;
+    transparent 25%, rgba(255,255,255,.45) 50%, transparent 75%);
+  background-size: 300% 100%;
+  animation: flagShimmer 3s ease-in-out infinite;
 }
 @keyframes flagWave {
-  0%, 100% { transform: perspective(140px) rotateY(0deg) skewY(0deg); }
-  30%       { transform: perspective(140px) rotateY(5deg) skewY(1deg); }
-  65%       { transform: perspective(140px) rotateY(-3deg) skewY(-.5deg); }
+  0%, 100% { transform: perspective(180px) rotateY(0deg) skewY(0deg); }
+  25%       { transform: perspective(180px) rotateY(6deg) skewY(1.2deg); }
+  60%       { transform: perspective(180px) rotateY(-4deg) skewY(-.6deg); }
 }
 @keyframes flagShimmer {
-  0%   { background-position: -150% 0; opacity: 0; }
-  25%  { opacity: 1; }
-  70%  { background-position: 250% 0; opacity: .8; }
-  100% { background-position: 250% 0; opacity: 0; }
+  0%   { background-position: -200% 0; opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { background-position: 300% 0; opacity: .7; }
+  100% { background-position: 300% 0; opacity: 0; }
+}
+[data-theme="dark"] .saudi-pride-pill {
+  background: linear-gradient(135deg, #061810 0%, #0a2a1a 50%, #061810 100%);
 }
 
 /* ===== CART ITEM REDESIGN ===== */
@@ -4818,12 +4849,6 @@ html, body { transition: background .35s, color .35s; }
 /* WhatsApp float button ok as is */
 /* Saudi flag section */
 [data-theme="dark"] .saudi-pride-bar { background: transparent; border-color: transparent; }
-[data-theme="dark"] .saudi-pride-pill {
-  background: linear-gradient(135deg, rgba(201,162,39,.12), rgba(255,215,100,.08));
-  border-color: rgba(201,162,39,.3);
-  box-shadow: 0 4px 18px rgba(0,0,0,.4), inset 0 1px 0 rgba(201,162,39,.1);
-}
-[data-theme="dark"] .saudi-pride-text { color: #e8d8a0; }
 
 /* Binance pay section */
 [data-theme="dark"] .bnc-box { background: #1a1a1a; border-color: rgba(255,255,255,.08); }
