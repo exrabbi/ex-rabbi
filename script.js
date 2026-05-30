@@ -927,7 +927,7 @@ function productCardHTML(p) {
           <span class="pcard-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
         </div>
-        ${p.rating ? `<div class="pcard-rating-row"><span class="pcard-stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span><span class="pcard-rnum">${p.rating}</span><span class="pcard-rcnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span></div>` : ''}
+        ${p.rating ? `<div class="pcard-rating-row"><span class="pcard-stars">★</span><span class="pcard-rnum">${p.rating}</span><span class="pcard-rcnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span>${p.sold?`<span class="pcard-sold">| ${p.sold>=1000?(p.sold/1000).toFixed(1)+'k':p.sold} sold</span>`:''}</div>` : ''}
         <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
@@ -3750,6 +3750,17 @@ async function signInWithApple() {
 }
 
 let _authIsLogin = true;
+
+function _showAuthEmailForm() {
+  const form = document.getElementById('authEmailForm');
+  if (!form) return;
+  if (form.style.display === 'none' || !form.style.display) {
+    form.style.display = 'block';
+    setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+  } else {
+    form.style.display = 'none';
+  }
+}
 
 function _toggleAuthMode() {
   _authIsLogin = !_authIsLogin;
@@ -9612,11 +9623,54 @@ function _renderPlayFeed() {
     const likes = v.likes >= 1000 ? (v.likes/1000).toFixed(1)+'K' : v.likes;
     const initials = (v.creator||'EX').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
     const thumbUrl = `https://img.youtube.com/vi/${v.yt}/hqdefault.jpg`;
-    const productTag = p ? `<div class="play-product-tag" onclick="event.stopPropagation();closePlayFeed();setTimeout(()=>openModal(${p.id}),300)">
-      <i class="fas fa-bag-shopping"></i>
-      <span>${p.names?.en || p.name}</span>
-      <span class="play-product-price">${cur}${Math.round(p.price*rate)}</span>
-    </div>` : '';
+
+    // Build product shelf (Meesho/TikTok Shop style)
+    let shelfHtml = '';
+    if (p) {
+      const pName = p.names?.en || p.name || 'Product';
+      const pBrand = p.brand || p.category || 'EX GLOBAL';
+      const pImg = p.image || p.images?.[0] || `https://picsum.photos/seed/${p.id}/120/120`;
+      const pSale = Math.round(p.price * rate);
+      const pOrig = p.discount ? Math.round(pSale / (1 - p.discount/100)) : null;
+      const pDisc = p.discount ? `<span class="play-shelf-disc">${p.discount}% OFF</span>` : '';
+      const pOrigSpan = pOrig ? `<span class="play-shelf-orig">${cur}${pOrig}</span>` : '';
+      const pRating = p.rating ? `<div class="play-shelf-rating-row"><span class="psr-star">★</span><span class="psr-num">${p.rating}</span><span class="psr-cnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount||0})</span></div>` : '';
+      // Related products (same category, up to 4 including main)
+      const related = PRODUCTS.filter(x => x.id !== p.id && x.category === p.category).slice(0,3);
+      const thumbsHtml = [p, ...related].map((rp,i) => {
+        const rImg = rp.image || rp.images?.[0] || `https://picsum.photos/seed/${rp.id}/80/80`;
+        return `<img class="play-shelf-thumb${i===0?' active':''}" src="${rImg}" alt="${(rp.names?.en||rp.name||'').slice(0,20)}"
+          onerror="this.src='https://picsum.photos/seed/${rp.id}p/80/80'"
+          onclick="event.stopPropagation();_playShelfSelect(this,'${v.id}',${rp.id})" loading="lazy">`;
+      }).join('');
+      shelfHtml = `<div class="play-shelf">
+        <div class="play-shelf-card" id="pshelf-card-${v.id}">
+          <img class="play-shelf-img" src="${pImg}" id="pshelf-img-${v.id}"
+            onerror="this.src='https://picsum.photos/seed/${p.id}s/120/120'" loading="lazy">
+          <div class="play-shelf-details" id="pshelf-det-${v.id}">
+            <div class="play-shelf-brand">${pBrand.slice(0,14)}</div>
+            <div class="play-shelf-name">${pName.slice(0,50)}</div>
+            ${pRating}
+            <div class="play-shelf-price-row">
+              ${pOrigSpan}
+              <span class="play-shelf-sale">${cur}${pSale}</span>
+              ${pDisc}
+            </div>
+          </div>
+          <div class="play-shelf-side">
+            <button class="play-shelf-wish${currentUser&&(currentUser.wishlist||[]).includes(p.id)?' wishlisted':''}"
+              onclick="event.stopPropagation();toggleWishlist(${p.id});this.classList.toggle('wishlisted')">
+              <i class="fas fa-heart"></i>
+            </button>
+            <button class="play-shelf-atb" id="pshelf-atb-${v.id}"
+              onclick="event.stopPropagation();nxAtc(event,${p.id})">
+              Add to Bag
+            </button>
+          </div>
+        </div>
+        <div class="play-shelf-thumbs">${thumbsHtml}</div>
+      </div>`;
+    }
 
     return `<div class="play-card" data-yt="${v.yt}" data-vid="${v.id}">
       <img class="play-thumb" src="${thumbUrl}" alt="${v.title}" onerror="this.style.display='none'">
@@ -9637,24 +9691,21 @@ function _renderPlayFeed() {
           <i class="fas fa-share-nodes"></i>
           <span>Share</span>
         </button>
-        ${v.productId ? `<button class="play-action-btn" onclick="event.stopPropagation();closePlayFeed();setTimeout(()=>openModal(${v.productId}),300)">
-          <i class="fas fa-bag-shopping"></i>
-          <span>Buy</span>
-        </button>` : ''}
       </div>
 
       <button class="play-mute-btn" id="pmute-${v.id}" onclick="event.stopPropagation();_playToggleMute('${v.id}')">
         <i class="fas fa-volume-xmark"></i>
       </button>
 
-      <div class="play-info">
+      ${shelfHtml}
+
+      <div class="play-info${p ? ' has-shelf' : ''}">
         <div class="play-creator-row">
           <div class="play-avatar">${initials}</div>
           <span class="play-creator-name">${v.creator || 'EX GLOBAL'}</span>
           <span class="play-views"><i class="fas fa-eye"></i>${views} views</span>
         </div>
         <div class="play-title">${v.title}</div>
-        ${productTag}
       </div>
     </div>`;
   }).join('');
@@ -9704,6 +9755,37 @@ function _playToggleMute(vid) {
   const yt = card.dataset.yt;
   iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${muted}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`;
   if (btn) btn.innerHTML = `<i class="fas fa-volume-${_playMuted[vid] ? 'high' : 'xmark'}"></i>`;
+}
+
+function _playShelfSelect(thumbEl, vid, productId) {
+  const p = PRODUCTS.find(x => x.id === productId);
+  if (!p) return;
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+  // Update active thumb
+  const thumbsWrap = thumbEl.closest('.play-shelf-thumbs');
+  if (thumbsWrap) thumbsWrap.querySelectorAll('.play-shelf-thumb').forEach(t => t.classList.remove('active'));
+  thumbEl.classList.add('active');
+  // Update shelf card
+  const img = document.getElementById('pshelf-img-' + vid);
+  const det = document.getElementById('pshelf-det-' + vid);
+  const atb = document.getElementById('pshelf-atb-' + vid);
+  if (!img || !det) return;
+  const pImg = p.image || p.images?.[0] || `https://picsum.photos/seed/${p.id}/120/120`;
+  img.src = pImg;
+  const pSale = Math.round(p.price * rate);
+  const pOrig = p.discount ? Math.round(pSale / (1 - p.discount/100)) : null;
+  det.innerHTML = `
+    <div class="play-shelf-brand">${(p.brand || p.category || 'EX GLOBAL').slice(0,14)}</div>
+    <div class="play-shelf-name">${(p.names?.en || p.name || '').slice(0,50)}</div>
+    ${p.rating ? `<div class="play-shelf-rating-row"><span class="psr-star">★</span><span class="psr-num">${p.rating}</span><span class="psr-cnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount||0})</span></div>` : ''}
+    <div class="play-shelf-price-row">
+      ${pOrig ? `<span class="play-shelf-orig">${cur}${pOrig}</span>` : ''}
+      <span class="play-shelf-sale">${cur}${pSale}</span>
+      ${p.discount ? `<span class="play-shelf-disc">${p.discount}% OFF</span>` : ''}
+    </div>`;
+  if (atb) { atb.onclick = (e) => { e.stopPropagation(); nxAtc(e, productId); }; }
 }
 
 function _playToggle(card) {
