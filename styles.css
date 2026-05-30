@@ -8844,7 +8844,7 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   background: var(--c, #ccc);
   border: 2.5px solid transparent;
   cursor: pointer; transition: all .2s cubic-bezier(.34,1.56,.64,1);
-  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  box-shadow: 0 2px 8px rgba(0,0,0,.2), inset 0 0 0 1.5px rgba(0,0,0,.12);
 }
 .lux-color-opt.active {
   transform: scale(1.18);
@@ -13110,6 +13110,7 @@ body { padding-bottom: 100px !important; }
   height: 100%;
   object-fit: contain;
   filter: drop-shadow(0 10px 26px rgba(0,0,0,.40));
+  mix-blend-mode: multiply;
   transition: 0.5s;
 }
 
