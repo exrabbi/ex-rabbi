@@ -6689,12 +6689,12 @@ function _localAiReply(text) {
   const name1 = currentUser?.name ? currentUser.name.split(' ')[0] : '';
   const greetSuffix = name1 ? `, ${name1}` : '';
 
-  // Greetings
-  if (/^(hi|hello|hey|salam|salaam|assalam|হ্যালো|হাই|হেই|সালাম|আসসালামুয়ালাইকুম|ওয়ালাইকুম|নমস্কার|namaste|مرحبا|أهلا|السلام|হ্যা লো|হ্যা|ola|bonjour)[\s!?।]*$/i.test(q)) {
+  // Greetings — broad match including typos (hllo, helo, hii, hai, hye, hey, etc.)
+  if (/^(h+[aeiou]*l+[oO0]*|hi+|hey+|hye|হ্যালো|হাই|হেই|হেলো|হ্যালো|হেলো|সালাম|আস-সালামু|আসসালামু|ওয়ালাইকুম|নমস্কার|salaam|salam|assalam|namaste|مرحبا|أهلا|السلام|ola|bonjour|yo|sup|hola|holla|howdy)[\s!?।🙂😊]*$/i.test(q)) {
     const greets = [
-      `হ্যালো${greetSuffix}! 👋 কেমন আছেন? আজকে কি কিনতে চান? কিছু দারুণ ডিল আছে! 🛍️`,
-      `হাই${greetSuffix}! 😊 আপনাকে দেখে ভালো লাগলো! কোনো প্রোডাক্ট খুঁজছেন?`,
-      `হ্যালো${greetSuffix}! আমি সবসময় এখানে আছি আপনার জন্য। কী দিয়ে সাহায্য করবো? 💬`,
+      `হ্যালো${greetSuffix}! 😊 কেমন আছেন? কিছু জানতে চাইলে বলুন — আমি সাহায্য করতে এখানেই আছি! 🙋`,
+      `হাই${greetSuffix}! 👋 আপনাকে দেখে ভালো লাগলো! কী জানতে চান?`,
+      `আস-সালামুয়ালাইকুম${greetSuffix}! 😊 কেমন আছেন আপনি? যা মনে চায় জিজ্ঞেস করুন!`,
     ];
     return greets[Math.floor(Math.random() * greets.length)];
   }
@@ -6776,18 +6776,49 @@ function _localAiReply(text) {
     return `বিদায়${greetSuffix}! 👋 ভালো থাকুন! আবার আসবেন — নতুন ডিল নিয়ে সবসময় অপেক্ষায় আছি! 😊\n\n🛍️ exglobal.online`;
   }
 
-  // ── GENERAL CATCH-ALL ──
-  const suggestions = [
-    'Add a dress to my cart', 'Track my latest order',
-    'What deals are on today?', 'Surprise me with a pick!',
-    'What should I buy?', 'Apply WELCOME10 coupon'
+  // ── GENERAL CATCH-ALL — smart & conversational ──
+  const isBn = /[ঀ-৿]/.test(text);
+  const isAr = /[؀-ۿ]/.test(text);
+
+  // Try to give a relevant answer based on key words before giving up
+  // General knowledge / casual questions in Bengali
+  if (isBn) {
+    if (/কেমন আছ|কেমন আছেন|কি খবর|কি হাল|ভালো আছ/.test(q))
+      return `আলহামদুলিল্লাহ${greetSuffix}, ভালো আছি! 😊 আপনি কেমন আছেন? কোনো বিষয়ে সাহায্য করতে পারি?`;
+    if (/তোমার নাম|আপনার নাম|তুমি কি|what.*your name|তোমার নাম কি/.test(q))
+      return `আমার নাম **EX GLOBAL Assistant**! 🤖 আমি একটি AI — সাহায্য করার জন্য সবসময় এখানে। যা মনে চায় জিজ্ঞেস করুন!`;
+    if (/ধন্যবাদ|শুকরিয়া|thanks|thank you/.test(q))
+      return `আপনাকে স্বাগতম${greetSuffix}! 😊 আর কিছু জানার থাকলে বলুন!`;
+    if (/সময়|ঘড়ি|কয়টা|বাজে/.test(q)) {
+      const now = new Date();
+      return `এখন ${now.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'})} 🕐`;
+    }
+    if (/রাজধানী|capital|দেশ|country/.test(q))
+      return `😊 আমি মূলত শপিং সহকারী, কিন্তু সাধারণ প্রশ্নও করতে পারেন! যা জানতে চান সরাসরি বলুন।`;
+    // Friendly fallback — not repetitive shopping list
+    const fallbacks = [
+      `বুঝতে একটু সমস্যা হলো${greetSuffix}! 😅 আরেকটু পরিষ্কার করে বলুন — আমি সাহায্য করার চেষ্টা করবো।`,
+      `হুম${greetSuffix}, একটু বুঝতে পারিনি। আপনি কি পণ্য খুঁজছেন, অর্ডার ট্র্যাক করতে চান, নাকি অন্য কিছু? একটু বলুন! 😊`,
+      `আমি নিশ্চিত না${greetSuffix} কী বলতে চাইলেন — আবার বলুন, ভালো করে বুঝতে পারবো! 🙂`,
+      `ওহ${greetSuffix}! আমি সব ধরনের প্রশ্নের উত্তর দিতে পারি — শপিং, ডিল, অর্ডার বা যেকোনো বিষয়ে জিজ্ঞেস করুন!`,
+    ];
+    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+  }
+  if (isAr) {
+    const arFallbacks = [
+      `لم أفهم تماماً${greetSuffix}! 😅 هل يمكنك توضيح سؤالك؟ سأساعدك بكل سرور.`,
+      `عذراً${greetSuffix}، لم أتمكن من فهم رسالتك. حاول مرة أخرى أو اسألني عن المنتجات، الطلبات، أو الدفع.`,
+    ];
+    return arFallbacks[Math.floor(Math.random() * arFallbacks.length)];
+  }
+  // English / other — friendly, not robotic
+  const enFallbacks = [
+    `Hmm${greetSuffix}, I'm not sure I got that! 😅 Could you rephrase? I can help with shopping, orders, deals, payments — or just chat!`,
+    `I didn't quite catch that${greetSuffix}! Try asking me about products, your order status, today's deals, or anything else on your mind. 😊`,
+    `Not sure I understood${greetSuffix}! Feel free to ask me anything — I'm here to help, not just answer shopping questions. 🤖`,
+    `Could you say that differently${greetSuffix}? I want to help! Whether it's shopping, general questions, or just a chat — I'm here. 😊`,
   ];
-  const banglaFallbacks = [
-    `বুঝতে পারিনি${greetSuffix} 😅 কিন্তু আমি অনেক কিছু করতে পারি!\n\n💬 বলুন:\n• *"আমার কার্ট দেখাও"*\n• *"আজকের ডিল কী?"*\n• *"সারপ্রাইজ দাও"*\n• *"অর্ডার ট্র্যাক করো"*\n\n📲 সাহায্য: ${WA}`,
-    `এটা আমি ধরতে পারিনি${greetSuffix}! 🤔 তবে এটা বলুন:\n\n🛒 *"ড্রেস খুঁজে দাও"*\n💰 *"SAR ৫০ এর মধ্যে কী আছে?"*\n📦 *"আমার অর্ডার কোথায়?"*\n🎁 *"আমাকে গিফট আইডিয়া দাও"*\n\n📲 ${WA}`,
-  ];
-  if (/[ঀ-৿]/.test(q)) return banglaFallbacks[Math.floor(Math.random() * banglaFallbacks.length)];
-  return `👋 I'm the EX GLOBAL AI — I can **actually do things**, not just answer!\n\n💬 Try:\n• *"Open my cart"*\n• *"Take me to checkout"*\n• *"Add [product] to cart"*\n• *"What should I buy?"*\n• *"Spin the wheel"*\n• *"My VIP points"*\n\n💡 *"${suggestions[Math.floor(Math.random() * suggestions.length)]}"*\n\n📲 Human support: ${WA}`;
+  return enFallbacks[Math.floor(Math.random() * enFallbacks.length)];
 }
 
 function _aiMarkdown(t) {
