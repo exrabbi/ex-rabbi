@@ -18509,3 +18509,30 @@ body:has(#mePanel.open)    .wa-float-btn {
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,.25);
 }
+
+/* ── New X Logo v276 — navbar lockup ── */
+.nav-logo-lockup { user-select: none; }
+.nav-logo-text {
+  display: flex; flex-direction: column; line-height: 1;
+}
+.nav-logo-ex {
+  font-family: 'Arial Black', sans-serif;
+  font-size: 15px; font-weight: 900;
+  color: #fff; letter-spacing: 1px;
+}
+.nav-logo-global {
+  font-family: Arial, sans-serif;
+  font-size: 8px; font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 3px; margin-top: 1px;
+}
+[data-theme="light"] .nav-logo-ex { color: #0d0a1e; }
+[data-theme="light"] .nav-logo-global { color: rgba(0,0,0,0.4); }
+/* Auth hero logo clean shadow */
+#authModal .auth-hero-logo-wrap {
+  box-shadow: none !important;
+  background: transparent !important;
+}
+#authModal .auth-hero-logo {
+  box-shadow: 0 10px 40px rgba(233,30,140,.35), 0 4px 16px rgba(0,0,0,.25) !important;
+}
