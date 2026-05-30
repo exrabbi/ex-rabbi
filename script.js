@@ -9838,7 +9838,7 @@ function _sendOrderEmail(order) {
 
 // Default sample videos — user can add more via the + button
 const _PLAY_DEFAULTS = [
-  { id:'pv1', yt:'dQw4w9WgXcQ', title:'EX GLOBAL — New Collection 2025', creator:'EX GLOBAL', productId:null, views:12400, likes:840 },
+  { id:'pv1', yt:'SopPnUQQFgc', title:'النشيد الوطني السعودي — عاش المليك', creator:'EX GLOBAL', productId:null, views:12400, likes:840 },
 ];
 
 function _playGetVideos() {
