@@ -18536,3 +18536,18 @@ body:has(#mePanel.open)    .wa-float-btn {
 #authModal .auth-hero-logo {
   box-shadow: 0 10px 40px rgba(233,30,140,.35), 0 4px 16px rgba(0,0,0,.25) !important;
 }
+/* ── Navbar Wordmark ─────────────────────────────────────── */
+.nav-wordmark { display:flex; align-items:center; cursor:pointer; user-select:none; }
+.nwm-ex {
+  font-family: 'Arial Black', Arial, sans-serif;
+  font-size: 19px; font-weight: 900;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  letter-spacing: -0.5px;
+}
+.nwm-global {
+  font-family: Arial, sans-serif;
+  font-size: 19px; font-weight: 700;
+  color: #fff; letter-spacing: 1px;
+}
+[data-theme="light"] .nwm-global { color: #0d0a1e; }

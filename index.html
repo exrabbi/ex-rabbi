@@ -41,11 +41,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="EX GLOBAL" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <!-- Favicon — SVG first (highest priority, sharp at all sizes) -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="apple-touch-icon" href="favicon.png" />
-  <link rel="shortcut icon" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png" />
+  <link rel="shortcut icon" href="favicon.svg" />
 
   <!-- Google Structured Data (JSON-LD) — shows logo & name in search -->
   <script type="application/ld+json">
@@ -54,33 +54,39 @@
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://exrabbi.github.io/ex-rabbi/#organization",
+        "@id": "https://exglobal.online/#organization",
         "name": "EX GLOBAL",
-        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "url": "https://exglobal.online/",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://exrabbi.github.io/ex-rabbi/og-image.png",
-          "width": 1080,
-          "height": 1080
+          "url": "https://exglobal.online/favicon.svg",
+          "width": 512,
+          "height": 512,
+          "caption": "EX GLOBAL"
         },
+        "image": "https://exglobal.online/favicon.svg",
         "description": "Saudi Arabia's fastest online store. Shop fashion, electronics, beauty & more.",
         "areaServed": "SA",
-        "foundingDate": "2024"
+        "foundingDate": "2024",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+966-546-224-029",
+          "contactType": "customer support",
+          "availableLanguage": ["Arabic", "English", "Bengali"]
+        }
       },
       {
         "@type": "WebSite",
-        "@id": "https://exrabbi.github.io/ex-rabbi/#website",
-        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "@id": "https://exglobal.online/#website",
+        "url": "https://exglobal.online/",
         "name": "EX GLOBAL",
         "description": "Online Shopping Saudi Arabia – Fashion, Electronics & More",
-        "publisher": {
-          "@id": "https://exrabbi.github.io/ex-rabbi/#organization"
-        },
+        "publisher": { "@id": "https://exglobal.online/#organization" },
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://exrabbi.github.io/ex-rabbi/?q={search_term_string}"
+            "urlTemplate": "https://exglobal.online/?q={search_term_string}"
           },
           "query-input": "required name=search_term_string"
         }
@@ -107,7 +113,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=276" />
+  <link rel="stylesheet" href="styles.css?v=277" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -193,21 +199,8 @@
         <button class="lang-btn" data-lang="bn" onclick="setLang('bn')">বাং</button>
         <button class="lang-btn" data-lang="hi" onclick="setLang('hi')">हि</button>
       </div>
-      <div class="logo nav-logo-lockup" onclick="scrollToTop?scrollToTop():window.scrollTo(0,0)" style="cursor:pointer;display:flex;align-items:center;gap:9px;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="36" height="36" style="border-radius:10px;flex-shrink:0">
-          <defs>
-            <linearGradient id="nlg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#e91e8c"/>
-              <stop offset="100%" stop-color="#7c3aed"/>
-            </linearGradient>
-          </defs>
-          <rect width="512" height="512" rx="112" fill="url(#nlg)"/>
-          <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(45 256 256)"/>
-          <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(-45 256 256)"/>
-        </svg>
-        <div class="nav-logo-text">
-          <span class="nav-logo-ex">EX</span><span class="nav-logo-global">GLOBAL</span>
-        </div>
+      <div class="logo nav-wordmark" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="cursor:pointer">
+        <span class="nwm-ex">EX</span><span class="nwm-global"> GLOBAL</span>
       </div>
       <button class="icon-btn" id="searchToggleBtn"><i class="fas fa-search"></i></button>
       <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
@@ -249,21 +242,8 @@
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer">
     <div class="drawer-head">
-      <div class="logo nav-logo-lockup" style="display:flex;align-items:center;gap:9px;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="38" height="38" style="border-radius:11px;flex-shrink:0">
-          <defs>
-            <linearGradient id="dlg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
-              <stop offset="0%" stop-color="#e91e8c"/>
-              <stop offset="100%" stop-color="#7c3aed"/>
-            </linearGradient>
-          </defs>
-          <rect width="512" height="512" rx="112" fill="url(#dlg)"/>
-          <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(45 256 256)"/>
-          <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(-45 256 256)"/>
-        </svg>
-        <div class="nav-logo-text">
-          <span class="nav-logo-ex">EX</span><span class="nav-logo-global">GLOBAL</span>
-        </div>
+      <div class="logo nav-wordmark" style="gap:0">
+        <span class="nwm-ex">EX</span><span class="nwm-global"> GLOBAL</span>
       </div>
       <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
     </div>
