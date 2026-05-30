@@ -9329,7 +9329,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ===== 3D TEAM CAROUSEL ===== */
 const TEAM = [
-  { name: 'EX GLOBAL Founder',  role: 'FOUNDER & CEO',       img: 'team-owner.jpg' },
+  { name: 'EX GLOBAL',          role: 'COMPANY OWNER',        img: 'team-owner.jpg' },
   { name: 'Aisha Al-Rashid',   role: 'BRAND MANAGER',        img: 'https://i.pravatar.cc/400?img=47' },
   { name: 'Mohammed Hassan',   role: 'HEAD OF OPERATIONS',   img: 'https://i.pravatar.cc/400?img=68' },
   { name: 'Fatima Al-Zahra',   role: 'CUSTOMER CARE LEAD',  img: 'https://i.pravatar.cc/400?img=48' },
