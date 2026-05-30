@@ -18363,3 +18363,130 @@ body:has(#mePanel.open)    .wa-float-btn {
   gap: 3px;
 }
 .mbox-card-hint i { font-size: 9px; }
+
+/* ══════════════════════════════════════════════
+   DARAZ-STYLE LOGIN  (v274 — white clean theme)
+   ══════════════════════════════════════════════ */
+#authModal {
+  background: #f0f2f5 !important;
+}
+#authModal::before, #authModal::after { display: none !important; }
+
+/* Hero — dark text on white bg */
+#authModal .auth-hero { padding: 36px 0 22px; }
+#authModal .auth-hero-logo-wrap {
+  background: #fff !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,.13), 0 0 0 3px rgba(233,30,140,.18) !important;
+  border-radius: 26px !important;
+  width: 82px !important; height: 82px !important;
+}
+#authModal .auth-hero-logo { border-radius: 22px !important; }
+#authModal .auth-hero-brand {
+  color: #1a1a2e !important; font-size: 24px !important;
+}
+#authModal .auth-hero-brand span { color: #e91e8c !important; }
+#authModal .auth-hero-tag { color: #555 !important; font-size: 14px !important; }
+#authModal .auth-hero-trust { color: #888 !important; }
+#authModal .auth-hero-dot { color: #ccc !important; }
+#authModal .auth-hero-trust i { color: #e91e8c !important; }
+
+/* Card — pure white */
+#authModal .auth-card {
+  background: #fff !important;
+  border: none !important;
+  border-radius: 24px !important;
+  box-shadow: 0 6px 32px rgba(0,0,0,.10) !important;
+  backdrop-filter: none !important;
+  padding: 26px 22px 20px !important;
+}
+#authModal .auth-card-title { color: #1a1a2e !important; }
+#authModal .auth-card-sub { color: #777 !important; }
+
+/* Google — white with border (Daraz exact) */
+#authModal .auth-google-btn {
+  background: #fff !important;
+  border: 1.5px solid #ddd !important;
+  color: #333 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07) !important;
+  border-radius: 50px !important;
+  padding: 15px 18px !important;
+}
+#authModal .auth-google-btn:hover { background: #f9f9f9 !important; box-shadow: 0 4px 16px rgba(0,0,0,.1) !important; }
+
+/* Facebook — brand blue */
+#authModal .auth-fb-btn {
+  background: #1877F2 !important;
+  border-color: #1877F2 !important;
+  color: #fff !important;
+  border-radius: 50px !important;
+  padding: 15px 18px !important;
+}
+#authModal .auth-fb-btn svg { fill: #fff !important; }
+#authModal .auth-fb-btn:hover { background: #1565d8 !important; }
+
+/* Via Email | Register */
+#authModal .auth-alt-row {
+  border: 1.5px solid #eee !important;
+  border-radius: 50px !important;
+  overflow: hidden !important;
+  background: none !important;
+  margin-bottom: 10px !important;
+}
+#authModal .auth-alt-link {
+  color: #e91e8c !important;
+  background: #fff !important;
+  font-size: 13px !important; font-weight: 700 !important;
+  padding: 13px 0 !important;
+}
+#authModal .auth-alt-link:hover { background: rgba(233,30,140,.06) !important; }
+#authModal .auth-alt-link i { color: #e91e8c !important; }
+#authModal .auth-alt-divider { background: #eee !important; }
+
+/* Sign up row */
+#authModal .auth-signup-row {
+  color: #666 !important; border-top-color: #eee !important;
+}
+#authModal .auth-signup-link { color: #e91e8c !important; font-weight: 800 !important; }
+
+/* Footer strip */
+#authModal .auth-footer-strip {
+  color: #aaa !important; border-top-color: #eee !important;
+}
+#authModal .auth-footer-strip i { color: #e91e8c !important; }
+#authModal .auth-footer-strip a { color: #bbb !important; }
+
+/* Back button */
+#authModal .auth-back {
+  color: #444 !important;
+  background: rgba(0,0,0,.07) !important;
+  border: none !important;
+}
+#authModal .auth-back:hover { background: rgba(0,0,0,.12) !important; }
+
+/* Email / password form */
+#authModal .auth-inp-wrap,
+#authModal .auth-pw-wrap {
+  background: #f5f6fa !important;
+  border-color: #e0e0e0 !important;
+}
+#authModal .auth-inp { color: #222 !important; background: transparent !important; }
+#authModal .auth-inp::placeholder { color: #bbb !important; }
+#authModal .auth-inp-icon { color: #bbb !important; }
+#authModal .auth-pw-eye { color: #bbb !important; }
+#authModal .auth-submit-btn {
+  background: linear-gradient(135deg,#e91e8c,#7c3aed) !important;
+  border-radius: 50px !important;
+}
+#authModal .auth-remember-label { color: #666 !important; }
+#authModal .auth-forgot-link { color: #e91e8c !important; }
+#authModal .auth-or-sep span {
+  color: #999 !important; background: #fff !important;
+}
+#authModal .auth-or-sep::before {
+  background: #e0e0e0 !important;
+}
+
+/* Logged-in name / email */
+#authModal #authUserName { color: #1a1a2e !important; }
+#authModal #authUserEmail { color: #888 !important; }
