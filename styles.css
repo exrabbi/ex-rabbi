@@ -2433,7 +2433,10 @@ img { max-width: 100%; display: block; }
 .loc-map-wrap {
   flex: 1; position: relative; overflow: hidden;
 }
-#locMap { width: 100%; height: 100%; }
+#locMap { width: 100%; height: 100%; z-index: 0; }
+/* Leaflet tile z-index fix inside modal overlay */
+#locMap .leaflet-pane { z-index: 1 !important; }
+#locMap .leaflet-top, #locMap .leaflet-bottom { z-index: 2 !important; }
 
 /* Fixed center pin */
 .loc-pin-wrap {
