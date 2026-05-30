@@ -6677,12 +6677,108 @@ function _localAiReply(text) {
   if (/whatsapp|live.*chat|human|agent|speak.*human|real.*person|تحدث.*إنسان|মানুষের সাথে কথা/.test(q))
     return { text: `📲 Connecting you to our team on WhatsApp!\n\n⚡ Response time: under **5 minutes**\n🕐 Available: 8AM–12AM Saudi time`, action: () => window.open(WA, '_blank') };
 
-  // ── GENERAL ENGLISH CATCH-ALL ──
+  // ── CASUAL CONVERSATION / SMALL TALK ──
+  const name1 = currentUser?.name ? currentUser.name.split(' ')[0] : '';
+  const greetSuffix = name1 ? `, ${name1}` : '';
+
+  // Greetings
+  if (/^(hi|hello|hey|salam|salaam|assalam|হ্যালো|হাই|হেই|সালাম|আসসালামুয়ালাইকুম|ওয়ালাইকুম|নমস্কার|namaste|مرحبا|أهلا|السلام|হ্যা লো|হ্যা|ola|bonjour)[\s!?।]*$/i.test(q)) {
+    const greets = [
+      `হ্যালো${greetSuffix}! 👋 কেমন আছেন? আজকে কি কিনতে চান? কিছু দারুণ ডিল আছে! 🛍️`,
+      `হাই${greetSuffix}! 😊 আপনাকে দেখে ভালো লাগলো! কোনো প্রোডাক্ট খুঁজছেন?`,
+      `হ্যালো${greetSuffix}! আমি সবসময় এখানে আছি আপনার জন্য। কী দিয়ে সাহায্য করবো? 💬`,
+    ];
+    return greets[Math.floor(Math.random() * greets.length)];
+  }
+
+  // How are you
+  if (/ভালো আছ|কেমন আছ|কেমন আছেন|তুমি কি ভালো|আপনি ভালো|how are you|how r u|you ok|are you ok|how do you do|كيف حالك|كيف أنت/.test(q)) {
+    const replies = [
+      `হ্যাঁ${greetSuffix}, আলহামদুলিল্লাহ! আমি একদম সুপার! 😄 আপনি কেমন আছেন? কিছু লাগবে?`,
+      `একদম ফাটাফাটি আছি${greetSuffix}! 💪 আপনি ভালো তো? আজকে কি শপিং করবেন?`,
+      `জী, আলহামদুলিল্লাহ ভালো আছি${greetSuffix}! আপনার জন্য সবসময় রেডি! 🛍️`,
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+  }
+
+  // Thank you
+  if (/ধন্যবাদ|থ্যাংকস|শুক্রিয়া|thank you|thanks|thx|شكرا|شكراً|merci/.test(q)) {
+    const replies = [
+      `আপনাকে স্বাগতম${greetSuffix}! 😊 আর কোনো সাহায্য লাগবে?`,
+      `এটাই আমার কাজ! আপনি খুশি হলে আমিও খুশি 😄 কিছু লাগলে বলুন!`,
+      `আপনি আমাদের পরিবারের একজন${greetSuffix}! ধন্যবাদ EX GLOBAL তে শপিং করার জন্য 🎁`,
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+  }
+
+  // Good morning/afternoon/night
+  if (/সুপ্রভাত|শুভ সকাল|good morning|good afternoon|good evening|শুভ রাত|good night|শুভ রাতি|تصبح على خير|صباح الخير|مساء الخير/.test(q)) {
+    const hr = new Date().getHours();
+    const timeGreet = hr < 12 ? 'সুপ্রভাত' : hr < 17 ? 'শুভ বিকাল' : hr < 21 ? 'শুভ সন্ধ্যা' : 'শুভ রাতি';
+    return `${timeGreet}${greetSuffix}! ☀️ EX GLOBAL এ আপনাকে স্বাগতম! আজকে কি কিনতে চান? দারুণ ডিল আছে 🔥`;
+  }
+
+  // Feeling sad / problem
+  if (/মন খারাপ|কষ্ট পাচ্ছি|দুঃখিত|সমস্যা হচ্ছে|আমি দুঃখী|i am sad|feeling sad|i'm sad|bad day|problem|حزين|متضايق/.test(q)) {
+    return `আহ${greetSuffix}, মন খারাপ হলে একটু শপিং করলে কেমন লাগে? 😄 আমার কাছে দারুণ সব প্রোডাক্ট আছে যা আপনাকে খুশি করবে!\n\n🛍️ *"সারপ্রাইজ দাও"* বললে আমি একটা বেস্ট প্রোডাক্ট বেছে দেব!\n\n❤️ আর কোনো সমস্যা থাকলে বলুন — আমি সাহায্য করতে পারি।`;
+  }
+
+  // Bored
+  if (/বোরিং|বিরক্ত|bored|i'm bored|nothing to do|ملل/.test(q)) {
+    const pool = PRODUCTS.filter(p => !p.outOfStock && p.discount >= 30);
+    const pick = pool[Math.floor(Math.random() * pool.length)];
+    return `বোরিং${greetSuffix}? তাহলে একটু শপিং করি! 😄\n\n🎁 এই প্রোডাক্টটা দেখুন — **${pick?.names?.[currentLang] || pick?.names?.en || 'সেরা পিক'}** — মাত্র **${cur}${pick ? Math.round(pick.price * rate) : '?'}** (**-${pick?.discount || 30}%**)!\n\n💡 *"সারপ্রাইজ দাও"* বললে আরো পিক পাবেন!`;
+  }
+
+  // Love / compliment to bot
+  if (/তোমাকে ভালোবাসি|আই লাভ ইউ|i love you|you are great|you are awesome|তুমি দারুণ|তুমি ভালো|أحبك|رائع/.test(q)) {
+    return `আরে${greetSuffix}! 😊❤️ আমিও আপনাকে ভালোবাসি (শপিং আর সাহায্যের মাধ্যমে)! আপনি চাইলে আজকে কিছু কিনে মনটাকে আরো খুশি করুন! 🛍️🎁`;
+  }
+
+  // Who are you / tell me about yourself
+  if (/তুমি কে|তুমি কি|আপনি কে|who are you|what are you|are you ai|are you robot|are you human|من أنت|أنت روبوت/.test(q)) {
+    return `আমি **EX GLOBAL Assistant** ${greetSuffix}! 🤖✨\n\nআমি একটা AI — কিন্তু শুধু জবাব না, আমি সরাসরি কাজ করতে পারি:\n\n🛒 কার্টে পণ্য যোগ করা\n📦 অর্ডার ট্র্যাক করা\n💳 চেকআউটে নিয়ে যাওয়া\n🎯 পণ্য খুঁজে দেওয়া\n\nকী দিয়ে শুরু করবেন? 😊`;
+  }
+
+  // Joke / funny
+  if (/একটা জোক বলো|মজার কথা বলো|tell.*joke|joke|হাসাও|اضحكني/.test(q)) {
+    const jokes = [
+      `কেন শপিং করা উচিত? কারণ ডাক্তার বলেছেন "রিটেইল থেরাপি" সবচেয়ে ভালো! 😂 এই চিকিৎসা আমরাই দিই — EX GLOBAL তে!`,
+      `একজন মানুষ দোকানে গেল। দোকানদার বললো: "কী চাই?" সে বললো: "সব কিছু ৭০% ছাড়ে।" দোকানদার বললো: "exglobal.online তে যান!" 😄`,
+      `আমার জোক: আমি রোবট, কিন্তু শপিং করার ব্যাপারে আমি মানুষের চেয়ে স্মার্ট! কারণ আমি জানি সেরা ডিল কোথায় আছে 😂`,
+    ];
+    return jokes[Math.floor(Math.random() * jokes.length)];
+  }
+
+  // Time / date
+  if (/কয়টা বাজে|এখন কত|what time|what's the time|what day|আজকে কি বার|اي ساعة/.test(q)) {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    const dayStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+    return `🕐 এখন **${timeStr}** — **${dayStr}**\n\nআজকের ফ্ল্যাশ ডিল দেখতে বলুন: *"আজকের ডিল দেখাও"* 🔥`;
+  }
+
+  // OK / sure / alright (very short replies)
+  if (/^(ok|okay|alright|sure|ঠিক আছে|ঠিকাছে|আচ্ছা|হ্যাঁ|জি|জি হ্যাঁ|نعم|حسناً|okay then)[\s!?।]*$/i.test(q)) {
+    return `ঠিক আছে${greetSuffix}! 😊 কিছু লাগলে বলুন — আমি সবসময় এখানে আছি! আজকের ডিল দেখতে বলুন: *"আজকের অফার দেখাও"* 🛍️`;
+  }
+
+  // Bye / goodbye
+  if (/বিদায়|আল্লাহ হাফেজ|bye|goodbye|take care|later|خداحافظ|مع السلامة|tata/.test(q)) {
+    return `বিদায়${greetSuffix}! 👋 ভালো থাকুন! আবার আসবেন — নতুন ডিল নিয়ে সবসময় অপেক্ষায় আছি! 😊\n\n🛍️ exglobal.online`;
+  }
+
+  // ── GENERAL CATCH-ALL ──
   const suggestions = [
     'Add a dress to my cart', 'Track my latest order',
     'What deals are on today?', 'Surprise me with a pick!',
     'What should I buy?', 'Apply WELCOME10 coupon'
   ];
+  const banglaFallbacks = [
+    `বুঝতে পারিনি${greetSuffix} 😅 কিন্তু আমি অনেক কিছু করতে পারি!\n\n💬 বলুন:\n• *"আমার কার্ট দেখাও"*\n• *"আজকের ডিল কী?"*\n• *"সারপ্রাইজ দাও"*\n• *"অর্ডার ট্র্যাক করো"*\n\n📲 সাহায্য: ${WA}`,
+    `এটা আমি ধরতে পারিনি${greetSuffix}! 🤔 তবে এটা বলুন:\n\n🛒 *"ড্রেস খুঁজে দাও"*\n💰 *"SAR ৫০ এর মধ্যে কী আছে?"*\n📦 *"আমার অর্ডার কোথায়?"*\n🎁 *"আমাকে গিফট আইডিয়া দাও"*\n\n📲 ${WA}`,
+  ];
+  if (/[ঀ-৿]/.test(q)) return banglaFallbacks[Math.floor(Math.random() * banglaFallbacks.length)];
   return `👋 I'm the EX GLOBAL AI — I can **actually do things**, not just answer!\n\n💬 Try:\n• *"Open my cart"*\n• *"Take me to checkout"*\n• *"Add [product] to cart"*\n• *"What should I buy?"*\n• *"Spin the wheel"*\n• *"My VIP points"*\n\n💡 *"${suggestions[Math.floor(Math.random() * suggestions.length)]}"*\n\n📲 Human support: ${WA}`;
 }
 
