@@ -5643,11 +5643,11 @@ function markHelpful(btn) {
     const s = document.getElementById('exSplash');
     if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 900); }
   }
-  const t = setTimeout(hideSplash, 5000);
+  const t = setTimeout(hideSplash, 2000);
   window.addEventListener('load', () => {
     if (document.readyState === 'complete') {
       clearTimeout(t);
-      setTimeout(hideSplash, 4500);
+      setTimeout(hideSplash, 1500);
     }
   });
 })();
