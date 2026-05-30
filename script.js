@@ -9891,10 +9891,11 @@ function _renderPlayFeed() {
         if (!card.querySelector('.play-card-iframe')) {
           const iframe = document.createElement('iframe');
           iframe.className = 'play-card-iframe active';
-          iframe.allow = 'autoplay; encrypted-media';
+          iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
           iframe.allowFullscreen = true;
-          // autoplay=1&mute=1 for seamless loop; user can unmute
-          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=1&playsinline=1&rel=0&modestbranding=1&fs=1&vq=hd720`;
+          iframe.setAttribute('loading', 'lazy');
+          // autoplay=1 mute=1 fills screen, user taps to unmute; controls=0 hides YT UI
+          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
           card.appendChild(iframe);
           // Hide thumbnail once iframe loaded
           const thumb = card.querySelector('.play-thumb');
@@ -9924,7 +9925,7 @@ function _playToggleMute(vid) {
   _playMuted[vid] = !_playMuted[vid];
   const muted = _playMuted[vid] ? 0 : 1;
   const yt = card.dataset.yt;
-  iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${muted}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`;
+  iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${muted}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
   if (btn) btn.innerHTML = `<i class="fas fa-volume-${_playMuted[vid] ? 'high' : 'xmark'}"></i>`;
 }
 
