@@ -17717,70 +17717,70 @@ body { padding-bottom: 100px !important; }
 
 /* ── Trustpilot-Style Customer Reviews ───────────────────── */
 .tp-cust-section {
-  padding: 28px 0 10px; overflow: hidden;
+  padding: 20px 0 8px; overflow: hidden;
 }
-.tpr-header { padding: 0 16px 18px; text-align: center; }
+.tpr-header { padding: 0 16px 14px; text-align: center; }
 .tpr-h2 {
-  font-size: 22px; font-weight: 900; color: #fff;
-  margin: 0 0 10px; line-height: 1.2;
+  font-size: 18px; font-weight: 900; color: #fff;
+  margin: 0 0 8px; line-height: 1.25;
 }
 .tpr-sub-row {
   display: flex; align-items: center; justify-content: center;
-  gap: 8px; flex-wrap: wrap; font-size: 13px;
+  gap: 6px; flex-wrap: wrap; font-size: 12px;
 }
-.tpr-count { color: rgba(255,255,255,.7); font-weight: 700; }
+.tpr-count { color: rgba(255,255,255,.65); font-weight: 700; }
 .tpr-sep { color: rgba(255,255,255,.2); }
 .tpr-excellent { color: #10b981; font-weight: 800; }
-.tpr-tp-stars .tpr-star { color: #10b981; font-size: 14px; }
+.tpr-tp-stars .tpr-star { color: #10b981; font-size: 12px; }
 .tpr-tp-badge {
   background: #10b981; color: #fff;
-  font-size: 11px; font-weight: 800; padding: 2px 8px;
-  border-radius: 4px; letter-spacing: .5px;
+  font-size: 10px; font-weight: 800; padding: 2px 7px;
+  border-radius: 4px; letter-spacing: .3px;
 }
 .tpr-scroll {
-  display: flex; gap: 16px;
+  display: flex; gap: 10px;
   overflow-x: auto; scrollbar-width: none;
-  padding: 28px 16px 20px;
+  padding: 26px 14px 16px;
 }
 .tpr-scroll::-webkit-scrollbar { display: none; }
 .tpr-card {
-  flex-shrink: 0; width: 220px;
+  flex-shrink: 0; width: 158px;
   background: rgba(148,125,255,.1);
   border: 1px solid rgba(148,125,255,.18);
-  border-radius: 20px;
-  padding: 48px 16px 18px;
+  border-radius: 16px;
+  padding: 36px 12px 12px;
   position: relative;
-  transition: transform .2s, box-shadow .2s;
+  transition: transform .2s;
 }
-.tpr-card:active { transform: scale(.97); }
+.tpr-card:active { transform: scale(.96); }
 .tpr-av-wrap {
-  position: absolute; top: -28px; left: 50%; transform: translateX(-50%);
-  width: 56px; height: 56px;
+  position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 44px;
   border-radius: 50%;
   background: linear-gradient(135deg,#e91e8c,#7c3aed);
-  border: 3px solid rgba(148,125,255,.3);
-  overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.3);
+  border: 2.5px solid rgba(148,125,255,.4);
+  overflow: hidden; box-shadow: 0 3px 12px rgba(0,0,0,.3);
 }
 .tpr-av { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 .tpr-name {
-  font-size: 14px; font-weight: 800; color: #fff;
-  text-align: center; margin-bottom: 7px;
+  font-size: 12px; font-weight: 800; color: #fff;
+  text-align: center; margin-bottom: 5px;
 }
-.tpr-stars { text-align: center; margin-bottom: 10px; }
-.tpr-gstar { color: #10b981; font-size: 13px; margin: 0 1px; }
+.tpr-stars { text-align: center; margin-bottom: 7px; }
+.tpr-gstar { color: #10b981; font-size: 11px; margin: 0 1px; }
 .tpr-title {
-  font-size: 13px; font-weight: 800; color: #fff;
-  margin-bottom: 6px; line-height: 1.3;
+  font-size: 11px; font-weight: 800; color: #fff;
+  margin-bottom: 4px; line-height: 1.3;
 }
 .tpr-body {
-  font-size: 12px; color: rgba(255,255,255,.6);
-  line-height: 1.5; margin-bottom: 10px;
+  font-size: 11px; color: rgba(255,255,255,.55);
+  line-height: 1.45; margin-bottom: 8px;
 }
 .tpr-meta {
-  font-size: 10px; color: rgba(255,255,255,.35);
-  display: flex; align-items: center; gap: 4px;
+  font-size: 9px; color: rgba(255,255,255,.3);
+  display: flex; align-items: center; gap: 3px;
 }
-.tpr-meta i { color: #10b981; font-size: 10px; }
+.tpr-meta i { color: #10b981; font-size: 9px; }
 
 /* Light mode */
 [data-theme="light"] .tpr-h2 { color: #1a1a2e; }
