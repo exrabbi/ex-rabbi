@@ -112,7 +112,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=288" />
+  <link rel="stylesheet" href="styles.css?v=289" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1850,24 +1850,26 @@
         <h2 class="auth-card-title" id="authWelcomeH">Welcome Back 👋</h2>
         <p class="auth-card-sub" id="authWelcomeSub">Sign in to your EX GLOBAL SA account</p>
 
-        <!-- Social login buttons — FIRST (Daraz style) -->
+        <!-- Social login buttons -->
         <button class="auth-social-btn auth-google-btn" onclick="signInWithGoogle()">
-          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="22"/>
-          <span>Log in with Google</span>
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20"/>
+          <span>Continue with Google</span>
         </button>
         <button class="auth-social-btn auth-fb-btn" onclick="signInWithFacebook()">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span>Log in with Facebook</span>
+          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          <span>Continue with Facebook</span>
         </button>
 
-        <!-- Via Email / Mobile links (Daraz style) -->
+        <!-- OR divider -->
+        <div class="auth-or-divider"><span>OR</span></div>
+
+        <!-- Email / Register row -->
         <div class="auth-alt-row">
           <a href="#" class="auth-alt-link" onclick="_showAuthEmailForm();return false;">
             <i class="fas fa-envelope"></i> Via Email
           </a>
-          <div class="auth-alt-divider"></div>
           <a href="#" class="auth-alt-link" onclick="_showAuthEmailForm();return false;">
-            <i class="fas fa-mobile-alt"></i> Register
+            <i class="fas fa-user-plus"></i> Register
           </a>
         </div>
 
