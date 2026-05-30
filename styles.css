@@ -4972,19 +4972,16 @@ html, body { transition: background .35s, color .35s; }
 }
 .ai-chat-header-left { display: flex; align-items: center; gap: 10px; }
 .ai-chat-avatar {
-  width: 72px; height: 40px;
-  background: #fff;
-  border-radius: 10px;
+  width: 46px; height: 46px;
+  background: rgba(255,255,255,.18);
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,.18);
   flex-shrink: 0;
 }
 .ai-avatar-logo {
-  width: 100%; height: 100%;
+  width: 36px; height: 36px;
   object-fit: contain;
-  mix-blend-mode: multiply;
-  padding: 2px;
 }
 .ai-chat-title { font-weight: 700; font-size: 15px; }
 .ai-chat-status { font-size: 11px; opacity: .85; display: flex; align-items: center; gap: 4px; }
@@ -16620,10 +16617,10 @@ body { padding-bottom: 100px !important; }
 
 /* Avatar with pulse ring */
 #aiChatPanel .ai-chat-avatar {
-  width: 80px; height: 46px;
-  background: #fff !important;
-  border: 1.5px solid rgba(255,255,255,.4) !important;
-  border-radius: 10px !important;
+  width: 46px; height: 46px;
+  background: rgba(255,255,255,.18) !important;
+  border: 2px solid rgba(255,255,255,.3) !important;
+  border-radius: 50% !important;
   position: relative;
   overflow: hidden;
 }
