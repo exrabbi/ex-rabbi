@@ -777,7 +777,7 @@ function renderTrustpilotReviews() {
   const cards = SEED_REVIEWS.slice(0,10).map((r,i) => {
     const txt = r.text[currentLang] || r.text.en || '';
     const firstLine = txt.split(/[.!?।\n]/)[0].trim();
-    const body = txt.slice(firstLine.length+1).trim().split(' ').slice(0,24).join(' ');
+    const body = txt.slice(firstLine.length+1).trim().split(' ').slice(0,14).join(' ');
     const rStars = Array.from({length:5},(_,j)=>`<i class="${j<r.rating?'fas':'far'} fa-star tpr-gstar"></i>`).join('');
     const av = avatars[i % avatars.length];
     return `<div class="tpr-card">
@@ -787,8 +787,8 @@ function renderTrustpilotReviews() {
       <div class="tpr-card-inner">
         <div class="tpr-name">${r.name}</div>
         <div class="tpr-stars">${rStars}</div>
-        <div class="tpr-title">${firstLine.slice(0,55)}${firstLine.length>55?'…':''}</div>
-        <div class="tpr-body">${body.slice(0,120)}${body.length>120?'…':''}</div>
+        <div class="tpr-title">${firstLine.slice(0,36)}${firstLine.length>36?'…':''}</div>
+        <div class="tpr-body">${body.slice(0,80)}${body.length>80?'…':''}</div>
         <div class="tpr-meta"><i class="fas fa-check-circle"></i> Verified Purchase · ${r.country}</div>
       </div>
     </div>`;
