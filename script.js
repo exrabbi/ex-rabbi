@@ -5839,8 +5839,8 @@ function _aiGetUsage() {
   } catch(e) { return { date: new Date().toISOString().slice(0, 10), count: 0 }; }
 }
 function _aiGetLimit() {
-  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 100; }
-  catch(e) { return 100; }
+  try { return parseInt((JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiDailyLimit) || 9999; }
+  catch(e) { return 9999; }
 }
 function _aiIncrUsage() {
   const u = _aiGetUsage(); u.count++;
@@ -5891,6 +5891,14 @@ function openAiChat() {
   document.body.style.overflow = 'hidden';
   const badge = document.getElementById('aiChatBadge');
   if (badge) badge.style.display = 'none';
+  // Reset usage if old limit (≤100) was hit — new limit is 9999
+  try {
+    const u = JSON.parse(localStorage.getItem('exg_ai_usage') || '{}');
+    const today = new Date().toISOString().slice(0, 10);
+    if (u.date === today && u.count >= 100 && _aiGetLimit() > u.count) {
+      localStorage.removeItem('exg_ai_usage');
+    }
+  } catch(e) {}
   _aiUpdateUsageBar();
   if (aiChatHistory.length === 0) _aiRenderWelcome();
   const inp = document.getElementById('aiChatInput');
