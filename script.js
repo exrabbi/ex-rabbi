@@ -6012,15 +6012,15 @@ function _localAiReply(text) {
 
   // ── PERSONAL / OWNER INFO REQUEST ──
   const _isPersonalReq = (
-    /\b(owner|boss|manager|personal.*number|your.*number|phone.*number|number.*give|who.*owns|founder)\b/i.test(q) ||
-    /মালিক.{0,10}নাম্বার|নাম্বার.{0,10}দাও|নাম্বার.{0,10}দিন|ব্যক্তিগত.{0,10}নাম্বার|মালিকের.{0,10}নাম|আপনার.{0,10}নাম্বার|তোমার.{0,10}নাম্বার/.test(text) ||
-    /رقم.{0,10}المالك|رقم.{0,10}شخصي|معلومات.{0,10}شخصية/.test(text)
+    /\b(owner|boss|manager|personal.*number|your.*number|phone.*number|number.*give|who.*owns|founder|ceo|director)\b/i.test(q) ||
+    /মালিক.{0,15}নাম্বার|নাম্বার.{0,10}দাও|নাম্বার.{0,10}দিন|ব্যক্তিগত.{0,10}নাম্বার|মালিকের\s*নাম|তোমার\s*মালিক|আপনার\s*মালিক|আপনার.{0,10}নাম্বার|তোমার.{0,10}নাম্বার|প্রতিষ্ঠাতা|মালিক\s*কে/.test(text) ||
+    /رقم.{0,10}المالك|رقم.{0,10}شخصي|معلومات.{0,10}شخصية|اسم.{0,10}المالك|من.{0,8}يملك/.test(text)
   );
   if (_isPersonalReq) {
     const privMsg = {
-      bn: '🔒 ব্যক্তিগত যোগাযোগের তথ্য শেয়ার করা সম্ভব নয়।\n\n**ব্যবসায়িক যোগাযোগের জন্য:**\n\n📲 WhatsApp: wa.me/966546224029\n📧 support@exglobal.online\n\n⏰ সাড়া দেওয়ার সময়: সকাল ৯টা – রাত ১১টা',
-      en: '🔒 Personal contact details are kept private.\n\n**For business enquiries:**\n\n📲 WhatsApp: ' + WA + '\n📧 support@exglobal.online\n\n⏰ Hours: 9AM – 11PM (Sat–Thu)',
-      ar: '🔒 المعلومات الشخصية سرية.\n\n**للتواصل التجاري:**\n\n📲 واتساب: ' + WA + '\n📧 support@exglobal.online',
+      bn: '🔒 মালিকের ব্যক্তিগত তথ্য শেয়ার করা সম্ভব নয়।\n\n**ব্যবসায়িক যোগাযোগের জন্য:**\n\n📲 WhatsApp: wa.me/966546224029\n📧 exglobalbusiness@gmail.com\n📧 support@exglobal.online\n\n⏰ সাড়া দেওয়ার সময়: সকাল ৯টা – রাত ১১টা (শনি–বৃহস্পতি)',
+      en: '🔒 Personal details of the owner are kept private.\n\n**For business enquiries:**\n\n📲 WhatsApp: ' + WA + '\n📧 exglobalbusiness@gmail.com\n📧 support@exglobal.online\n\n⏰ Hours: 9AM – 11PM (Sat–Thu)',
+      ar: '🔒 المعلومات الشخصية سرية.\n\n**للتواصل التجاري:**\n\n📲 واتساب: ' + WA + '\n📧 exglobalbusiness@gmail.com\n📧 support@exglobal.online',
     };
     return privMsg[currentLang] || privMsg.en;
   }
@@ -6076,7 +6076,7 @@ function _localAiReply(text) {
 
   // ── CANCEL ORDER ──
   if (/cancel|cancellation|إلغاء|بطل|বাতিল|रद्द/.test(q)) {
-    return `❌ **Order Cancellation:**\n\n✅ Orders can be cancelled **within 2 hours** of placing\n✅ After 2 hours — contact support immediately\n✅ Full refund if cancelled before shipping\n\n**How to cancel:**\n1. Open My Cart → My Orders\n2. Tap your order → Request Cancel\n3. Or WhatsApp us with your Order ID\n\n📲 ${WA}\n\n⚠️ Orders already shipped cannot be cancelled — request a return instead.`;
+    return `❌ **Order Cancellation:**\n\n✅ Orders can be cancelled **within 2 hours** of placing\n✅ After 2 hours — contact support immediately\n✅ Full refund if cancelled before shipping\n\n**How to cancel:**\n1. Open My Cart → My Orders\n2. Tap your order → Request Cancel\n3. Or WhatsApp us with your Order ID\n\n📲 ${WA}\n📧 exglobalbusiness@gmail.com\n\n⚠️ Orders already shipped cannot be cancelled — request a return instead.`;
   }
 
   // ── WEBSITE / LINK ──
@@ -6115,7 +6115,7 @@ function _localAiReply(text) {
 
   // ── BESTSELLERS / POPULAR ──
   if (/best|popular|top.*sell|trending|most.*sold|الأكثر|رائج|বেস্ট|জনপ্রিয়|लोकप्रिय/.test(q)) {
-    const best = [...PRODUCTS].sort((a,b) => (b.reviews||0) - (a.reviews||0)).slice(0, 5);
+    const best = [...PRODUCTS].sort((a,b) => (b.ratingCount||0) - (a.ratingCount||0)).slice(0, 5);
     return `⭐ **Most Popular Products:**\n\n` +
       best.map(p => `• ${p.names?.en || p.name} — ${cur}${(p.price*rate).toFixed(0)} (⭐ ${p.rating||4.5})`).join('\n') +
       `\n\nThese are customer favourites! Tap to view.`;
@@ -6139,7 +6139,7 @@ function _localAiReply(text) {
     const top = [...PRODUCTS].sort((a,b) => (b.discount||0) - (a.discount||0)).slice(0, 5);
     return `🔥 **Today's Hottest Deals:**\n\n` +
       top.map(p => `• ${p.names?.en || p.name}: ${cur}${(p.price*rate).toFixed(0)} — **${p.discount}% OFF**`).join('\n') +
-      `\n\n⏰ Flash Deals refresh daily — check the **Flash Deals** section!\n🏷️ Use code **EXG10** for extra 10% off`;
+      `\n\n⏰ Flash Deals refresh daily — check the **Flash Deals** section!\n🏷️ Use code **WELCOME10** for extra 10% off`;
   }
 
   // ── DELIVERY ──
@@ -6149,7 +6149,7 @@ function _localAiReply(text) {
 
   // ── RETURNS & REFUNDS ──
   if (/return|refund|exchange|replace|damage|defect|broken|wrong.*item|إرجاع|استبدال|استرداد|রিটার্ন|ফেরত|রিফান্ড|বদলে|वापसी|रिफंड/.test(q)) {
-    return `↩️ **Return & Refund Policy:**\n\n✅ **7-day return window** from delivery date\n✅ Item must be unused, original packaging\n✅ **Free returns** for damaged or wrong items\n✅ Exchange available for different size/color\n✅ Refund processed in **3–5 business days**\n\n**How to return:**\n1. Message us on WhatsApp with your Order ID\n2. Send photos of the item\n3. We arrange free pickup (defective items)\n4. Refund sent to original payment method\n\n📲 Start your return: ${WA}`;
+    return `↩️ **Return & Refund Policy:**\n\n✅ **7-day return window** from delivery date\n✅ Item must be unused, original packaging\n✅ **Free returns** for damaged or wrong items\n✅ Exchange available for different size/color\n✅ Refund processed in **3–5 business days**\n\n**How to return:**\n1. Message us on WhatsApp with your Order ID\n2. Send photos of the item\n3. We arrange free pickup (defective items)\n4. Refund sent to original payment method\n\n📲 Start your return: ${WA}\n📧 exglobalbusiness@gmail.com`;
   }
 
   // ── PAYMENT METHODS ──
@@ -6203,7 +6203,7 @@ function _localAiReply(text) {
 
   // ── STORE HOURS ──
   if (/open|hours|available|time|when|متى|ساعات|খোলা|সময়|কখন|समय|खुला/.test(q)) {
-    return `🕐 **Customer Support Hours:**\n\n• **Chat & WhatsApp:** 9AM – 11PM (Sat–Thu)\n• **Friday:** 2PM – 11PM\n• **Response time:** ~5 minutes during hours\n• **After hours:** Leave a message, we reply within 12hrs\n\n🌐 **Website:** Available 24/7, shop anytime!\n\n📲 Message us: ${WA}`;
+    return `🕐 **Customer Support Hours:**\n\n• **Chat & WhatsApp:** 9AM – 11PM (Sat–Thu)\n• **Friday:** 2PM – 11PM\n• **Response time:** ~5 minutes during hours\n• **After hours:** Leave a message, we reply within 12hrs\n\n🌐 **Website:** Available 24/7, shop anytime!\n\n📲 Message us: ${WA}\n📧 exglobalbusiness@gmail.com`;
   }
 
   // ── GIFT / PACKAGING ──
@@ -6213,17 +6213,17 @@ function _localAiReply(text) {
 
   // ── CONTACT ──
   if (/contact|support|help|whatsapp|email|تواصل|دعم|رقم الدعم|বাপোর্ট|যোগাযোগ|সাহায্য করুন|संपर्क/.test(q)) {
-    return `📞 **Contact EX GLOBAL Support:**\n\n💬 **WhatsApp (fastest):**\n${WA}\n⚡ Response: ~5 minutes\n\n📧 **Email:**\nsupport@exglobal.online\n\n⏰ **Hours:** 9AM–11PM (Sat–Thu)\n\n📍 **Based in:** Riyadh, Saudi Arabia 🇸🇦`;
+    return `📞 **Contact EX GLOBAL Support:**\n\n💬 **WhatsApp (fastest):**\n${WA}\n⚡ Response: ~5 minutes\n\n📧 **Email:**\nsupport@exglobal.online\nexglobalbusiness@gmail.com\n\n⏰ **Hours:** 9AM–11PM (Sat–Thu)\n\n📍 **Based in:** Riyadh, Saudi Arabia 🇸🇦`;
   }
 
   // ── VAT / INVOICE — uses ভ্যাট only (removed ambiguous কর) ──
   if (/\bvat\b|invoice|zatca|ضريبة|فاتورة|ভ্যাট|इनवॉइस/.test(q)) {
-    return `🧾 **VAT & Tax Invoice:**\n\n• VAT: **15%** included in all displayed prices\n• VAT No: 310000000000003\n• ZATCA Phase 1 compliant ✅\n• Tax invoice auto-generated after every order\n• QR code on every invoice (ZATCA standard)\n\n📄 Your invoice is shown in the **Order Confirmation** screen and sent via WhatsApp after delivery.`;
+    return `🧾 **VAT & Tax Invoice:**\n\n• VAT: **15%** included in all displayed prices\n• ZATCA Phase 1 compliant ✅\n• Tax invoice auto-generated after every order\n• QR code on every invoice (ZATCA standard)\n\n📄 Your invoice is shown in the **Order Confirmation** screen and sent via WhatsApp after delivery.\n\n📧 Invoice questions: exglobalbusiness@gmail.com`;
   }
 
   // ── ABOUT / COMPANY ──
   if (/about|who are you|brand|company|store|شركة|متجر|عن الشركة|সম্পর্কে|ব্র্যান্ড|কারা|कंपनी/.test(q)) {
-    return `👑 **About EX GLOBAL:**\n\nSaudi Arabia's premium online shopping destination.\n\n🛍️ 1,000+ products across fashion, beauty, electronics & lifestyle\n⭐ 4.8/5 average customer rating\n🇸🇦 Saudi-owned · Saudi-operated\n\n**Our Promise:**\n✅ 100% genuine products · ✅ Secure payments\n✅ Fast delivery · ✅ Hassle-free returns\n\n📲 ${WA}`;
+    return `👑 **About EX GLOBAL:**\n\nSaudi Arabia's premium online shopping destination.\n\n🛍️ 1,000+ products across fashion, beauty, electronics & lifestyle\n⭐ 4.8/5 average customer rating\n🇸🇦 Saudi-owned · Saudi-operated\n\n**Our Promise:**\n✅ 100% genuine products · ✅ Secure payments\n✅ Fast delivery · ✅ Hassle-free returns\n\n📲 ${WA}\n📧 exglobalbusiness@gmail.com`;
   }
 
   // ── STOCK / AVAILABILITY ──
@@ -6233,7 +6233,7 @@ function _localAiReply(text) {
 
   // ── PRIVACY ──
   if (/privacy|data|personal.*info|secure|خصوصية|بيانات|গোপনীয়তা|তথ্য সুরক্ষা|गोपनीयता/.test(q)) {
-    return `🔒 **Your Privacy & Data:**\n\n• Your personal info is **never shared** with third parties\n• Payments are processed via secure, encrypted gateways\n• No spam — you control your notifications\n• Delete your data anytime: Contact support\n\n🛡️ EX GLOBAL follows Saudi data protection laws.\n\n📧 Privacy questions: support@exglobal.online`;
+    return `🔒 **Your Privacy & Data:**\n\n• Your personal info is **never shared** with third parties\n• Payments are processed via secure, encrypted gateways\n• No spam — you control your notifications\n• Delete your data anytime: Contact support\n\n🛡️ EX GLOBAL follows Saudi data protection laws.\n\n📧 Privacy questions: support@exglobal.online\n📧 exglobalbusiness@gmail.com`;
   }
 
   // ── ARABIC CATCH-ALL ──
@@ -6256,7 +6256,7 @@ function _localAiReply(text) {
       }
     }
     // No shopping intent — give generic helpful response
-    return `ওয়া, দারুণ! 👋\n\nআমি EX GLOBAL-এর শপিং সহকারী। আপনাকে সাহায্য করতে পারি:\n\n🛍️ পণ্য খুঁজে পেতে\n📦 অর্ডার ট্র্যাক করতে\n💳 পেমেন্ট সম্পর্কে জানতে\n🚚 ডেলিভারি তথ্য পেতে\n↩️ রিটার্ন বা রিফান্ড\n\n🌐 **exglobal.online**\n📲 WhatsApp: ${WA}\n\nকী জানতে চান? ✍️`;
+    return `হ্যালো! 👋 আমি EX GLOBAL-এর শপিং সহকারী।\n\nআপনাকে সাহায্য করতে পারি:\n\n🛍️ পণ্য খুঁজে পেতে\n📦 অর্ডার ট্র্যাক করতে\n💳 পেমেন্ট সম্পর্কে জানতে\n🚚 ডেলিভারি তথ্য পেতে\n↩️ রিটার্ন বা রিফান্ড\n\n🌐 **exglobal.online**\n📲 WhatsApp: ${WA}\n\nকী জানতে চান? ✍️`;
   }
 
   // ── CART SUMMARY (duplicate check for english) ──
@@ -6315,7 +6315,7 @@ function _localAiReply(text) {
     if (flash.length) {
       return `⚡ **Flash Deals — Limited Time!**\n\n` +
         flash.map(p => `🔥 ${p.names?.en || p.name} — ~~${cur}${Math.round((p.price/(1-p.discount/100))*rate)}~~ **${cur}${Math.round(p.price*rate)}** (-${p.discount}%)`).join('\n') +
-        `\n\n⏰ Hurry! Flash deals end at midnight.\n🏷️ Extra 10% off with code **EXG10**`;
+        `\n\n⏰ Hurry! Flash deals end at midnight.\n🏷️ Extra 10% off with code **WELCOME10**`;
     }
     return `⚡ **Flash Deals** are live in the app!\n\nScroll down on the home screen to see the latest flash deals.\n\n🔔 Want deal alerts? WhatsApp us: ${WA}`;
   }
@@ -6337,7 +6337,7 @@ function _localAiReply(text) {
 
   // ── CONTACT (secondary) ──
   if (/contact|support|help|human|agent|speak|مساعدة|اتصل|যোগাযোগ|সাপোর্ট|সাহায্য|समर्थन/.test(q)) {
-    return `📞 **Contact EX GLOBAL Support:**\n\n📲 **WhatsApp (fastest):** ${WA}\n⚡ Response time: under 5 minutes\n🕐 Available: 8AM – 12AM (Saudi time)\n\n📧 Or chat here — I can answer most questions instantly!`;
+    return `📞 **Contact EX GLOBAL Support:**\n\n📲 **WhatsApp (fastest):** ${WA}\n⚡ Response time: under 5 minutes\n🕐 Available: 8AM – 12AM (Saudi time)\n\n📧 Email: support@exglobal.online\n📧 exglobalbusiness@gmail.com\n\n💬 Or chat here — I can answer most questions instantly!`;
   }
 
   // ══════════════════════════════════════════════════════
