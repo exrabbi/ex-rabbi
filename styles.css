@@ -17371,8 +17371,7 @@ body { padding-bottom: 100px !important; }
 .auth-hero-logo-img {
   width: 180px; height: auto;
   display: block; margin: 0 auto;
-  mix-blend-mode: multiply;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,.10));
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.15));
 }
 .auth-hero-logo { width: 72px; height: 72px; object-fit: contain; border-radius: 22px; }
 .auth-hero-logo-fallback {
@@ -18389,8 +18388,7 @@ body:has(#mePanel.open)    .wa-float-btn {
 #authModal .auth-hero-logo-img {
   width: 190px !important; height: auto !important;
   border-radius: 0 !important;
-  mix-blend-mode: multiply !important;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,.10)) !important;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.15)) !important;
 }
 #authModal .auth-hero-brand {
   color: #1a1a2e !important; font-size: 24px !important;
