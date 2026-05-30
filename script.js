@@ -9894,7 +9894,7 @@ function _renderPlayFeed() {
           iframe.allow = 'autoplay; encrypted-media';
           iframe.allowFullscreen = true;
           // autoplay=1&mute=1 for seamless loop; user can unmute
-          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`;
+          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=1&playsinline=1&rel=0&modestbranding=1&fs=1&vq=hd720`;
           card.appendChild(iframe);
           // Hide thumbnail once iframe loaded
           const thumb = card.querySelector('.play-thumb');
