@@ -659,5 +659,79 @@ const PRODUCTS = [
       ar: "حزام أمان سيارة للحيوانات الأليفة قابل للتعديل - 7 ألوان",
       hi: "पालतू जानवरों के लिए कार सीट बेल्ट हार्नेस - 7 रंग"
     }
+  },
+
+  /* ── MYSTERY BOXES ───────────────────────────────────── */
+  {
+    id: 62, category: "mystery", price: 69, originalPrice: 199, discount: 65,
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=400&q=80",
+    rating: 4.7, ratingCount: 3420, sold: "22K+", stock: 50, tag: "bestseller",
+    description: "Surprise electronics & gadgets box. Each box contains 3–5 premium tech items worth 3× the price.",
+    names: {
+      bn: "ইলেকট্রনিক্স মিস্টেরি বক্স - ৩–৫টি গ্যাজেট",
+      en: "Electronics Mystery Box - 3–5 Gadgets Inside",
+      ar: "صندوق غامض للإلكترونيات - 3–5 أجهزة بداخله",
+      hi: "इलेक्ट्रॉनिक्स मिस्ट्री बॉक्स - 3–5 गैजेट"
+    }
+  },
+  {
+    id: 63, category: "mystery", price: 119, originalPrice: 349, discount: 66,
+    image: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=400&q=80",
+    rating: 4.6, ratingCount: 2180, sold: "14K+", stock: 35, tag: "bestseller",
+    description: "Premium tech gadgets mystery box. Includes smartwatch, earbuds, or other premium devices.",
+    names: {
+      bn: "প্রিমিয়াম টেক গ্যাজেট মিস্টেরি বক্স",
+      en: "Premium Tech Gadgets Mystery Box",
+      ar: "صندوق غامض بريميوم للأجهزة التقنية",
+      hi: "प्रीमियम टेक गैजेट्स मिस्ट्री बॉक्स"
+    }
+  },
+  {
+    id: 64, category: "mystery", price: 49, originalPrice: 129, discount: 62,
+    image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80",
+    rating: 4.5, ratingCount: 5600, sold: "38K+", stock: 80, tag: "new",
+    description: "Luxury accessories mystery box. Watch, sunglasses, wallet, or more — all premium quality.",
+    names: {
+      bn: "লাক্সারি এক্সেসরিজ মিস্টেরি বক্স",
+      en: "Luxury Accessories Mystery Box",
+      ar: "صندوق غامض للإكسسوارات الفاخرة",
+      hi: "लक्ज़री एक्सेसरीज़ मिस्ट्री बॉक्स"
+    }
+  },
+  {
+    id: 65, category: "mystery", price: 89, originalPrice: 249, discount: 64,
+    image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=400&q=80",
+    rating: 4.8, ratingCount: 4100, sold: "19K+", stock: 45, tag: "bestseller",
+    description: "Smart devices mystery box. Could contain smart speaker, tablet, or wireless charger set.",
+    names: {
+      bn: "স্মার্ট ডিভাইসেস মিস্টেরি বক্স",
+      en: "Smart Devices Mystery Box",
+      ar: "صندوق غامض للأجهزة الذكية",
+      hi: "स्मार्ट डिवाइसेज़ मिस्ट्री बॉक्स"
+    }
+  },
+  {
+    id: 66, category: "mystery", price: 159, originalPrice: 499, discount: 68,
+    image: "https://images.unsplash.com/photo-1606813907291-d86efa9b94db?w=400&q=80",
+    rating: 4.9, ratingCount: 1850, sold: "9K+", stock: 20, tag: "new",
+    description: "VIP luxury mystery box worth SAR 500+. Premium brands, surprise gifts, exclusive items.",
+    names: {
+      bn: "ভিআইপি লাক্সারি মিস্টেরি বক্স - SAR ৫০০+ মূল্য",
+      en: "VIP Luxury Mystery Box - Worth SAR 500+",
+      ar: "صندوق غامض VIP فاخر - بقيمة 500+ ر.س",
+      hi: "VIP लक्ज़री मिस्ट्री बॉक्स - SAR 500+ की कीमत"
+    }
+  },
+  {
+    id: 67, category: "mystery", price: 29, originalPrice: 79, discount: 63,
+    image: "https://images.unsplash.com/photo-1549396535-c11d5c55b9df?w=400&q=80",
+    rating: 4.4, ratingCount: 8900, sold: "55K+", stock: 100, tag: "bestseller",
+    description: "Mini beauty & fashion mystery box. Lipstick, perfume, jewellery, or fashion accessories.",
+    names: {
+      bn: "মিনি বিউটি ও ফ্যাশন মিস্টেরি বক্স",
+      en: "Mini Beauty & Fashion Mystery Box",
+      ar: "صندوق غامض صغير للجمال والأزياء",
+      hi: "मिनी ब्यूटी और फैशन मिस्ट्री बॉक्स"
+    }
   }
 ];

@@ -18164,3 +18164,178 @@ body:has(#mePanel.open)    .wa-float-btn {
   }
   .pcard:hover .pcard-imgBx img { transform: scale(1.05) !important; }
 }
+
+/* ═══════════════════════════════════════════════
+   MYSTERY BOX SECTION (v269)
+   Alibaba-style · horizontal scroll · surprise cards
+   ═══════════════════════════════════════════════ */
+
+.mbox-section {
+  margin: 14px 10px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  overflow: hidden;
+  padding-bottom: 14px;
+}
+[data-theme="dark"] .mbox-section { background: linear-gradient(135deg, #0a0720 0%, #1a1540 100%); }
+
+.mbox-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px 12px;
+}
+.mbox-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: .2px;
+  margin-bottom: 3px;
+}
+.mbox-sub {
+  font-size: 11px;
+  color: rgba(255,255,255,.55);
+}
+.mbox-see-all {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  color: #fff;
+  font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+.mbox-see-all:hover { background: rgba(255,255,255,.22); }
+
+.mbox-scroll {
+  display: flex;
+  gap: 10px;
+  padding: 0 14px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.mbox-scroll::-webkit-scrollbar { display: none; }
+
+/* Each mystery card */
+.mbox-card {
+  flex-shrink: 0;
+  width: 155px;
+  border-radius: 16px;
+  background: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  scroll-snap-align: start;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,.25);
+  transition: transform .2s, box-shadow .2s;
+}
+.mbox-card:active { transform: scale(.96); }
+@media (hover: hover) {
+  .mbox-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 28px rgba(0,0,0,.35);
+  }
+}
+
+/* Wish button */
+.mbox-wish {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #ccc;
+  z-index: 5; cursor: pointer;
+  box-shadow: 0 1px 5px rgba(0,0,0,.18);
+  transition: color .2s, transform .15s;
+}
+.mbox-wish.active, .mbox-wish:active { color: #e91e8c; transform: scale(1.18); }
+
+/* Image */
+.mbox-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 142px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+.mbox-card-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .4s;
+}
+.mbox-card:active .mbox-card-img-wrap img { transform: scale(1.06); }
+
+/* Mystery badge on image */
+.mbox-card-badge {
+  position: absolute;
+  bottom: 7px; left: 7px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 3px 8px;
+  border-radius: 20px;
+  letter-spacing: .3px;
+}
+
+/* Text body */
+.mbox-card-body {
+  padding: 8px 10px 9px;
+  background: #fff;
+}
+[data-theme="dark"] .mbox-card-body { background: #1a1a2e; }
+
+.mbox-card-name {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #1a1a1a;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.35;
+  margin-bottom: 3px;
+  min-height: 30px;
+}
+[data-theme="dark"] .mbox-card-name { color: #eee; }
+
+.mbox-card-sold {
+  font-size: 10px;
+  color: #999;
+  margin-bottom: 3px;
+}
+
+.mbox-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 3px;
+}
+.mbox-card-orig {
+  font-size: 10px;
+  color: #bbb;
+  text-decoration: line-through;
+}
+.mbox-card-price {
+  font-size: 16px;
+  font-weight: 900;
+  color: #e91e8c;
+}
+[data-theme="dark"] .mbox-card-price { color: #ff5fa8; }
+
+.mbox-card-hint {
+  font-size: 10px;
+  color: #0ab35c;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.mbox-card-hint i { font-size: 9px; }

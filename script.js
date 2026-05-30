@@ -390,6 +390,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   _initTrendCircle(); // show video/image inside Trend circle button
   renderFlashDeals();
   renderBrandDeals();
+  renderMysteryBoxes();
   renderSuperDeals();
   renderTrending();
   renderSponsored();
@@ -8271,6 +8272,38 @@ const _BRAND_DEALS = [
   { brand: "Electronics",     offer: "Best Deals",    cat: "electronics", img: "https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=300&h=280&fit=crop&q=80" },
   { brand: "Kids' World",     offer: "Up to 45% OFF", cat: "kids",  img: "https://images.unsplash.com/photo-1503944583220-79d8926ad5e2?w=300&h=280&fit=crop&q=80" },
 ];
+
+function renderMysteryBoxes() {
+  const wrap = document.getElementById('mboxScroll');
+  if (!wrap) return;
+  const boxes = PRODUCTS.filter(p => p.category === 'mystery');
+  if (!boxes.length) { document.getElementById('mboxSection')?.style && (document.getElementById('mboxSection').style.display = 'none'); return; }
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  wrap.innerHTML = boxes.map(p => {
+    const origPrice = p.discount > 0 ? Math.round(p.price / (1 - p.discount / 100)) : 0;
+    const inWish = wishlist.includes(p.id);
+    const sold = p.sold ? `<div class="mbox-card-sold">${p.sold} ${T.soldOnCard||T.soldText||'sold'}</div>` : '';
+    return `
+    <div class="mbox-card" onclick="openModal(${p.id})">
+      <button class="mbox-wish wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+        <i class="${inWish?'fas':'far'} fa-heart"></i>
+      </button>
+      <div class="mbox-card-img-wrap">
+        <img src="${p.image}" loading="lazy" alt="" onerror="this.src='https://picsum.photos/seed/mb${p.id}/300/300'"/>
+        <div class="mbox-card-badge">🎁 Mystery</div>
+      </div>
+      <div class="mbox-card-body">
+        <div class="mbox-card-name">${p.names?.[currentLang]||p.names?.en||''}</div>
+        ${sold}
+        <div class="mbox-card-price-row">
+          ${origPrice?`<span class="mbox-card-orig">${T.currency}${Math.round(origPrice*T.rate)}</span>`:''}
+          <span class="mbox-card-price">${T.currency}${Math.round(p.price*T.rate)}</span>
+        </div>
+        <div class="mbox-card-hint"><i class="fas fa-check-circle"></i> Lower priced than similar</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 function renderBrandDeals() {
   const track = document.getElementById('bdealTrack');
