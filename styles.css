@@ -17134,27 +17134,35 @@ body { padding-bottom: 100px !important; }
   display: flex; align-items: center; gap: 6px;
 }
 
-/* Feed */
+/* Feed — fills entire panel (header is position:absolute overlay, no offset) */
 .play-feed {
-  flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory;
+  position: absolute; inset: 0;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .play-feed::-webkit-scrollbar { display: none; }
 
-/* Each video card */
+/* Each video card — full screen snap */
 .play-card {
-  width: 100%; height: 100vh;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
   scroll-snap-align: start;
   position: relative; background: #000;
   flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
   overflow: hidden;
 }
+/* TikTok iframe trick:
+   Set iframe exactly 16:9 matching the vh height → YouTube has no black bars.
+   Width = 100vh × 16/9 (wider than screen) → overflow:hidden crops the sides. */
 .play-card-iframe {
   position: absolute;
-  /* Fill full height; width = 16:9 ratio of full height, clipped by overflow:hidden */
-  height: 100%;
-  width: calc(100% * 16 / 9);
+  height: 100vh;
+  height: 100dvh;
+  width: calc(100vh * 16 / 9);
+  width: calc(100dvh * 16 / 9);
   min-width: 100%;
   top: 0; left: 50%;
   transform: translateX(-50%);
