@@ -9522,3 +9522,250 @@ function _sendOrderEmail(order) {
 </div>`);
   _ejsSend(order.customer.email, `✅ Order Confirmed — ${orderId} | EX GLOBAL SA`, html);
 }
+
+/* ═══════════════════════════════════════════════════════
+   PLAY VIDEO FEED
+   ═══════════════════════════════════════════════════════ */
+
+// Default sample videos — user can add more via the + button
+const _PLAY_DEFAULTS = [
+  { id:'pv1', yt:'dQw4w9WgXcQ', title:'EX GLOBAL — New Collection 2025', creator:'EX GLOBAL', productId:null, views:12400, likes:840 },
+];
+
+function _playGetVideos() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
+    return [..._PLAY_DEFAULTS, ...saved];
+  } catch(e) { return _PLAY_DEFAULTS; }
+}
+
+function openPlayFeed() {
+  const panel = document.getElementById('playPanel');
+  if (!panel) return;
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _renderPlayFeed();
+}
+
+function closePlayFeed() {
+  const panel = document.getElementById('playPanel');
+  if (!panel) return;
+  panel.classList.remove('open');
+  document.body.style.overflow = '';
+  // Pause all iframes by reloading src
+  panel.querySelectorAll('.play-card-iframe').forEach(f => { f.src = f.src; });
+}
+
+function _renderPlayFeed() {
+  const feed = document.getElementById('playFeed');
+  if (!feed) return;
+  const videos = _playGetVideos();
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+
+  if (!videos.length) {
+    feed.innerHTML = `<div class="play-empty">
+      <i class="fas fa-play-circle"></i>
+      <h3>No videos yet</h3>
+      <p>Tap <strong>+ Add Video</strong> to add your first product video!</p>
+    </div>`;
+    return;
+  }
+
+  feed.innerHTML = videos.map(v => {
+    const p = v.productId ? PRODUCTS.find(x => x.id === v.productId) : null;
+    const views = v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views;
+    const likes = v.likes >= 1000 ? (v.likes/1000).toFixed(1)+'K' : v.likes;
+    const initials = (v.creator||'EX').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+    const thumbUrl = `https://img.youtube.com/vi/${v.yt}/hqdefault.jpg`;
+    const productTag = p ? `<div class="play-product-tag" onclick="event.stopPropagation();closePlayFeed();setTimeout(()=>openModal(${p.id}),300)">
+      <i class="fas fa-bag-shopping"></i>
+      <span>${p.names?.en || p.name}</span>
+      <span class="play-product-price">${cur}${Math.round(p.price*rate)}</span>
+    </div>` : '';
+
+    return `<div class="play-card" data-yt="${v.yt}" data-vid="${v.id}">
+      <img class="play-thumb" src="${thumbUrl}" alt="${v.title}" onerror="this.style.display='none'">
+      <div class="play-thumb-overlay"></div>
+      <div class="play-tap-area" onclick="_playToggle(this.closest('.play-card'))"></div>
+      <div class="play-big-icon" id="pbi-${v.id}"><i class="fas fa-play"></i></div>
+
+      <div class="play-view-badge">
+        <i class="fas fa-eye"></i>${views}
+      </div>
+
+      <div class="play-actions">
+        <button class="play-action-btn" id="plike-${v.id}" onclick="event.stopPropagation();_playLike('${v.id}',this)">
+          <i class="fas fa-heart"></i>
+          <span>${likes}</span>
+        </button>
+        <button class="play-action-btn" onclick="event.stopPropagation();_playShare('${v.id}')">
+          <i class="fas fa-share-nodes"></i>
+          <span>Share</span>
+        </button>
+        ${v.productId ? `<button class="play-action-btn" onclick="event.stopPropagation();closePlayFeed();setTimeout(()=>openModal(${v.productId}),300)">
+          <i class="fas fa-bag-shopping"></i>
+          <span>Buy</span>
+        </button>` : ''}
+      </div>
+
+      <button class="play-mute-btn" id="pmute-${v.id}" onclick="event.stopPropagation();_playToggleMute('${v.id}')">
+        <i class="fas fa-volume-xmark"></i>
+      </button>
+
+      <div class="play-info">
+        <div class="play-creator-row">
+          <div class="play-avatar">${initials}</div>
+          <span class="play-creator-name">${v.creator || 'EX GLOBAL'}</span>
+          <span class="play-views"><i class="fas fa-eye"></i>${views} views</span>
+        </div>
+        <div class="play-title">${v.title}</div>
+        ${productTag}
+      </div>
+    </div>`;
+  }).join('');
+
+  // IntersectionObserver — load iframe when card enters viewport
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const card = entry.target;
+      const yt = card.dataset.yt;
+      if (!yt) return;
+      if (entry.isIntersecting) {
+        if (!card.querySelector('.play-card-iframe')) {
+          const iframe = document.createElement('iframe');
+          iframe.className = 'play-card-iframe active';
+          iframe.allow = 'autoplay; encrypted-media';
+          iframe.allowFullscreen = true;
+          // autoplay=1&mute=1 for seamless loop; user can unmute
+          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`;
+          card.appendChild(iframe);
+          // Hide thumbnail once iframe loaded
+          const thumb = card.querySelector('.play-thumb');
+          if (thumb) iframe.addEventListener('load', () => { thumb.style.opacity = '0'; });
+        }
+      } else {
+        // Remove iframe when off-screen to save memory
+        const iframe = card.querySelector('.play-card-iframe');
+        if (iframe) { iframe.remove(); }
+        const thumb = card.querySelector('.play-thumb');
+        if (thumb) thumb.style.opacity = '1';
+      }
+    });
+  }, { threshold: 0.6 });
+
+  feed.querySelectorAll('.play-card').forEach(c => observer.observe(c));
+}
+
+let _playMuted = {};
+
+function _playToggleMute(vid) {
+  const card = document.querySelector(`[data-vid="${vid}"]`);
+  if (!card) return;
+  const iframe = card.querySelector('.play-card-iframe');
+  const btn = document.getElementById('pmute-' + vid);
+  if (!iframe) return;
+  _playMuted[vid] = !_playMuted[vid];
+  const muted = _playMuted[vid] ? 0 : 1;
+  const yt = card.dataset.yt;
+  iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${muted}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1`;
+  if (btn) btn.innerHTML = `<i class="fas fa-volume-${_playMuted[vid] ? 'high' : 'xmark'}"></i>`;
+}
+
+function _playToggle(card) {
+  const vid = card.dataset.vid;
+  const icon = document.getElementById('pbi-' + vid);
+  if (!icon) return;
+  icon.querySelector('i').className = 'fas fa-pause';
+  icon.classList.add('pop');
+  setTimeout(() => icon.classList.replace('pop', 'fade'), 500);
+  setTimeout(() => { icon.classList.remove('fade'); }, 900);
+}
+
+const _playLiked = new Set(JSON.parse(localStorage.getItem('exg_play_liked') || '[]'));
+
+function _playLike(vid, btn) {
+  if (_playLiked.has(vid)) return;
+  _playLiked.add(vid);
+  localStorage.setItem('exg_play_liked', JSON.stringify([..._playLiked]));
+  btn.classList.add('liked');
+  const span = btn.querySelector('span');
+  if (span) {
+    const n = parseInt(span.textContent) || 0;
+    span.textContent = n + 1;
+  }
+  // Heart burst animation
+  btn.querySelector('i').style.transform = 'scale(1.5)';
+  setTimeout(() => { btn.querySelector('i').style.transform = ''; }, 300);
+}
+
+function _playShare(vid) {
+  const v = _playGetVideos().find(x => x.id === vid);
+  if (!v) return;
+  const url = `https://youtube.com/watch?v=${v.yt}`;
+  if (navigator.share) {
+    navigator.share({ title: v.title, url }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(url).then(() => showToast('🔗 Link copied!'));
+  }
+}
+
+// ── Upload sheet ──
+function _openPlayUpload() {
+  const sheet = document.getElementById('playUploadSheet');
+  if (!sheet) return;
+  sheet.style.display = 'flex';
+  // Populate product select
+  const sel = document.getElementById('pusProductId');
+  if (sel && sel.options.length === 1) {
+    PRODUCTS.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.id;
+      o.textContent = (p.names?.en || p.name) + ' — SAR ' + p.price;
+      sel.appendChild(o);
+    });
+  }
+}
+
+function _closePlayUpload() {
+  const sheet = document.getElementById('playUploadSheet');
+  if (sheet) sheet.style.display = 'none';
+}
+
+function _savePlayVideo() {
+  const urlInput = document.getElementById('pusYtUrl');
+  const titleInput = document.getElementById('pusTitle');
+  const creatorInput = document.getElementById('pusCreator');
+  const productSel = document.getElementById('pusProductId');
+
+  const rawUrl = urlInput?.value.trim() || '';
+  const ytMatch = rawUrl.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
+  if (!ytMatch) { showToast('⚠️ Please enter a valid YouTube URL'); return; }
+  const ytId = ytMatch[1];
+
+  const newVideo = {
+    id: 'pv_' + Date.now(),
+    yt: ytId,
+    title: titleInput?.value.trim() || 'Product Video',
+    creator: creatorInput?.value.trim() || (currentUser?.name || 'Creator'),
+    productId: productSel?.value ? parseInt(productSel.value) : null,
+    views: 0,
+    likes: 0,
+    addedAt: Date.now(),
+  };
+
+  try {
+    const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
+    saved.unshift(newVideo);
+    localStorage.setItem('exg_play_videos', JSON.stringify(saved));
+  } catch(e) {}
+
+  _closePlayUpload();
+  if (urlInput) urlInput.value = '';
+  if (titleInput) titleInput.value = '';
+  if (creatorInput) creatorInput.value = '';
+  if (productSel) productSel.value = '';
+  _renderPlayFeed();
+  showToast('✅ Video added!');
+}
