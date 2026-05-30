@@ -934,37 +934,28 @@ function productCardHTML(p) {
   const isOOS = p.stock === 0;
   const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
 
-  const CAT_GRAD = {
-    'abaya':['#1a237e','#0d47a1'],'women':['#880e4f','#c2185b'],'men':['#0d47a1','#1565c0'],
-    'kids':['#bf360c','#e64a19'],'beauty':['#4a148c','#7b1fa2'],'electronics':['#004d40','#00695c'],
-    'accessories':['#1b5e20','#2e7d32'],'shoes':['#b71c1c','#c62828'],'bags':['#33691e','#558b2f'],
-    'sport':['#006064','#00838f'],'home':['#37474f','#455a64'],'watches':['#212121','#37474f'],
-    'perfume':['#4a148c','#6a1b9a'],'fashion':['#1a237e','#283593'],
-  };
-  const fallbackPalette = [
-    ['#1a237e','#283593'],['#880e4f','#ad1457'],['#4a148c','#6a1b9a'],
-    ['#004d40','#00695c'],['#b71c1c','#c62828'],['#bf360c','#e64a19'],
-    ['#006064','#00838f'],['#1b5e20','#2e7d32'],
-  ];
-  const catKey = (p.category||'').toLowerCase().split(/[\s/]/)[0];
-  const [g1, g2] = CAT_GRAD[catKey] || fallbackPalette[p.id % fallbackPalette.length];
-
-  const watermark = (p.category||'STYLE').toUpperCase().replace(/['\s]+/g,'').substring(0,8);
-  const sizes = (p.sizes||[]).slice(0,4);
-  const colorDots = (p.colors||[]).slice(0,4);
-
   const badge = p.discount >= 40
     ? `<span class="nx-badge nx-flash"><i class="fas fa-bolt"></i> FLASH</span>`
     : p.tag === 'bestseller' ? `<span class="nx-badge nx-best"><i class="fas fa-trophy"></i></span>`
     : p.tag === 'new' ? `<span class="nx-badge nx-new">NEW</span>`
     : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
 
+  const soldTxt = p.sold
+    ? `<div class="pcard-sold-row">${p.sold>=1000?(p.sold/1000).toFixed(1)+'k+':p.sold}+ ${t('soldOnCard')||'sold'}</div>`
+    : '';
+
+  const couponPrice = p.discount > 0
+    ? `<div class="pcard-coupon-row"><i class="fas fa-tag"></i> ${fmt(p.price)} ${t('withCoupon')||'with coupon'}</div>`
+    : '';
+
   return `
-    <div class="product-card pcard" onclick="openModal(${p.id})" style="--clr:${g1};--clr2:${g2};--wm:'${watermark}'">
+    <div class="product-card pcard nx-card" onclick="openModal(${p.id})">
       <div class="pcard-imgBx">
         <img src="${p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
           ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
+        ${isOOS?`<div class="pcard-oos-overlay">${t('outOfStock')}</div>`:''}
+        ${isLow?`<div class="pcard-low-overlay">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>`:''}
       </div>
       <div class="pcard-top-btns">
         ${badge}
@@ -972,22 +963,14 @@ function productCardHTML(p) {
           <i class="${inWish?'fas':'far'} fa-heart"></i>
         </button>
       </div>
-      ${isOOS ? `<div class="pcard-oos">${t('outOfStock')}</div>` : isLow ? `<div class="pcard-low">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>` : ''}
       <div class="pcard-contentBx">
         <h3 class="pcard-name">${getName(p)}</h3>
+        ${soldTxt}
         <div class="pcard-price-row">
-          <span class="pcard-price">${fmt(p.price)}</span>
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
+          <span class="pcard-price">${fmt(p.price)}</span>
         </div>
-        ${p.rating ? `<div class="pcard-rating-row"><span class="pcard-stars">★</span><span class="pcard-rnum">${p.rating}</span><span class="pcard-rcnt">(${p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'k':p.ratingCount})</span>${p.sold?`<span class="pcard-sold">| ${p.sold>=1000?(p.sold/1000).toFixed(1)+'k':p.sold} sold</span>`:''}</div>` : ''}
-        <button class="pcard-btn nx-btn add-to-cart${isOOS?' oos-btn':''}"
-          onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
-          ${isOOS?'disabled':''}>
-          ${!isOOS?`
-            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>${t('orderNow')||'Buy Now'}</span></span>
-            <span class="cart"><i class="fas fa-check"></i><span>${t('addedTxt')||'Added!'}</span></span>
-          `:`<i class="fas fa-ban"></i><span>${t('outOfStock')||'Out of Stock'}</span>`}
-        </button>
+        ${couponPrice}
       </div>
     </div>
   `;
