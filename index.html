@@ -41,11 +41,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="EX GLOBAL" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png" />
+  <!-- Favicon — SVG first (highest priority, sharp at all sizes) -->
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-  <link rel="apple-touch-icon" href="favicon.png" />
-  <link rel="shortcut icon" href="favicon.png" />
+  <link rel="icon" type="image/png" href="favicon.png" sizes="32x32" />
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-192.png" />
+  <link rel="shortcut icon" href="favicon.svg" />
 
   <!-- Google Structured Data (JSON-LD) — shows logo & name in search -->
   <script type="application/ld+json">
@@ -54,33 +54,39 @@
     "@graph": [
       {
         "@type": "Organization",
-        "@id": "https://exrabbi.github.io/ex-rabbi/#organization",
+        "@id": "https://exglobal.online/#organization",
         "name": "EX GLOBAL",
-        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "url": "https://exglobal.online/",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://exrabbi.github.io/ex-rabbi/og-image.png",
-          "width": 1080,
-          "height": 1080
+          "url": "https://exglobal.online/favicon.svg",
+          "width": 512,
+          "height": 512,
+          "caption": "EX GLOBAL"
         },
+        "image": "https://exglobal.online/favicon.svg",
         "description": "Saudi Arabia's fastest online store. Shop fashion, electronics, beauty & more.",
         "areaServed": "SA",
-        "foundingDate": "2024"
+        "foundingDate": "2024",
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+966-546-224-029",
+          "contactType": "customer support",
+          "availableLanguage": ["Arabic", "English", "Bengali"]
+        }
       },
       {
         "@type": "WebSite",
-        "@id": "https://exrabbi.github.io/ex-rabbi/#website",
-        "url": "https://exrabbi.github.io/ex-rabbi/",
+        "@id": "https://exglobal.online/#website",
+        "url": "https://exglobal.online/",
         "name": "EX GLOBAL",
         "description": "Online Shopping Saudi Arabia – Fashion, Electronics & More",
-        "publisher": {
-          "@id": "https://exrabbi.github.io/ex-rabbi/#organization"
-        },
+        "publisher": { "@id": "https://exglobal.online/#organization" },
         "potentialAction": {
           "@type": "SearchAction",
           "target": {
             "@type": "EntryPoint",
-            "urlTemplate": "https://exrabbi.github.io/ex-rabbi/?q={search_term_string}"
+            "urlTemplate": "https://exglobal.online/?q={search_term_string}"
           },
           "query-input": "required name=search_term_string"
         }

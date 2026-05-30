@@ -1,5 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="12" fill="#ffffff"/>
-  <text x="50" y="48" font-family="Georgia, 'Times New Roman', serif" font-weight="900" font-size="42" fill="#111111" text-anchor="middle" letter-spacing="-1">EX</text>
-  <text x="50" y="68" font-family="Georgia, serif" font-weight="400" font-size="13" fill="#111111" text-anchor="middle" letter-spacing="4">GLOBAL</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e91e8c"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="sh" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.18)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="260" rx="112" fill="url(#sh)"/>
+  <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(45 256 256)"/>
+  <rect x="212" y="66" width="88" height="380" rx="44" fill="white" transform="rotate(-45 256 256)"/>
 </svg>
