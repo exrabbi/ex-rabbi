@@ -17863,3 +17863,58 @@ body { padding-bottom: 100px !important; }
 #authModal .auth-hero-brand span { color: #e91e8c !important; }
 #authModal .auth-hero-tag { color: rgba(255,255,255,.7) !important; }
 #authModal .auth-hero-trust { color: rgba(255,255,255,.6) !important; }
+
+/* ── Hide FABs on all page panels (security, settings, profile, me, etc.) ── */
+body:has(.page-panel.open) .hc-fab,
+body:has(.page-panel.open) .wa-fab,
+body:has(.page-panel.open) .ai-chat-fab,
+body:has(.page-panel.open) .wa-float-btn,
+body:has(#mePanel.open)    .hc-fab,
+body:has(#mePanel.open)    .wa-fab,
+body:has(#mePanel.open)    .ai-chat-fab,
+body:has(#mePanel.open)    .wa-float-btn {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.6) !important;
+  transition: opacity .2s, transform .2s !important;
+}
+
+/* ── Page panel body: light gray bg (more premium, like reference) ── */
+.sec-body,
+.page-panel > .page-body {
+  background: #f4f5f7;
+}
+[data-theme="dark"] .sec-body,
+[data-theme="dark"] .page-panel > .page-body {
+  background: #0e0e1a;
+}
+
+/* ── Product card: ensure gradient always visible (fix white-bg images) ── */
+.pcard-imgBx img {
+  mix-blend-mode: multiply;
+}
+
+/* ── Color swatch: always visible even for white/light colors ── */
+.lux-color-opt {
+  box-shadow: 0 2px 8px rgba(0,0,0,.2), inset 0 0 0 1.5px rgba(0,0,0,.12) !important;
+}
+
+/* ── Security page: section bg uses white cards on gray bg ── */
+.sec-section {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 1px 8px rgba(0,0,0,.07);
+  overflow: hidden;
+}
+[data-theme="dark"] .sec-section {
+  background: #1a1a2e;
+}
+
+/* ── Me panel: open state always slides from right ── */
+#mePanel.open,
+#secPanel.open,
+#settingsPanel.open,
+#profilePanel.open,
+#trackPanel.open {
+  transform: translateX(0);
+}
