@@ -3194,13 +3194,13 @@ function openLocation() {
 }
 
 function _initLocMap() {
-  if (!window.google?.maps) { showToast('Map loading…'); setTimeout(_initLocMap, 800); return; }
+  if (!window.L) { showToast('Map loading…'); setTimeout(_initLocMap, 800); return; }
   if (locMap) {
-    google.maps.event.trigger(locMap, 'resize');
+    locMap.invalidateSize();
     if (savedLocation?.lat) {
       const c = locMap.getCenter();
-      const dist = Math.abs(c.lat() - savedLocation.lat) + Math.abs(c.lng() - savedLocation.lng);
-      if (dist > 0.01) locMap.setCenter({ lat: savedLocation.lat, lng: savedLocation.lng });
+      const dist = Math.abs(c.lat - savedLocation.lat) + Math.abs(c.lng - savedLocation.lng);
+      if (dist > 0.01) locMap.panTo([savedLocation.lat, savedLocation.lng]);
     }
     return;
   }
@@ -3208,24 +3208,24 @@ function _initLocMap() {
   const defaultLng = savedLocation?.lng || 45.0;
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
 
-  locMap = new google.maps.Map(document.getElementById('locMap'), {
-    center: { lat: defaultLat, lng: defaultLng },
+  locMap = L.map(document.getElementById('locMap'), {
+    center: [defaultLat, defaultLng],
     zoom: savedLocation?.lat ? 16 : 6,
-    disableDefaultUI: true,
-    gestureHandling: 'greedy',
-    clickableIcons: false,
+    zoomControl: false,
+    attributionControl: false,
   });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
 
-  locMap.addListener('drag', () => {
+  locMap.on('drag', () => {
     const pin = document.getElementById('locPinWrap');
     if (pin) pin.style.transform = 'translate(-50%,-110%) scale(1.18)';
   });
-  locMap.addListener('idle', () => {
+  locMap.on('moveend', () => {
     const pin = document.getElementById('locPinWrap');
     if (pin) pin.style.transform = 'translate(-50%,-100%)';
     const c = locMap.getCenter();
-    _locCurrLat = c.lat(); _locCurrLng = c.lng();
-    _locReverseGeocode(c.lat(), c.lng());
+    _locCurrLat = c.lat; _locCurrLng = c.lng;
+    _locReverseGeocode(c.lat, c.lng);
   });
 
   _locReverseGeocode(defaultLat, defaultLng);
@@ -3234,16 +3234,14 @@ function _initLocMap() {
 let _locUserDot = null;
 function _locShowUserDot(lat, lng) {
   const addDot = () => {
-    if (!locMap || !window.google?.maps) return;
-    if (_locUserDot) _locUserDot.setMap(null);
-    _locUserDot = new google.maps.Marker({
-      position: { lat, lng }, map: locMap,
-      icon: { path: google.maps.SymbolPath.CIRCLE, scale: 8,
-        fillColor: '#4285F4', fillOpacity: 1, strokeColor: '#fff', strokeWeight: 2 },
-      zIndex: 1,
-    });
+    if (!locMap || !window.L) return;
+    if (_locUserDot) { _locUserDot.remove(); _locUserDot = null; }
+    _locUserDot = L.circleMarker([lat, lng], {
+      radius: 8, color: '#fff', weight: 2,
+      fillColor: '#4285F4', fillOpacity: 1,
+    }).addTo(locMap);
   };
-  if (locMap && window.google?.maps) addDot(); else setTimeout(addDot, 800);
+  if (locMap && window.L) addDot(); else setTimeout(addDot, 800);
 }
 
 let _locNearbyAddrs = [];
@@ -3455,34 +3453,18 @@ function _locSelectResult(lat, lng, displayName) {
   lat = parseFloat(lat); lng = parseFloat(lng);
   _locCurrLat = lat; _locCurrLng = lng;
   if (displayName) { _locCurrentAddr = displayName; const el = document.getElementById('locAddrText'); if (el) el.textContent = displayName; }
-  if (locMap) { locMap.panTo({ lat, lng }); locMap.setZoom(17); }
-  else { _initLocMap(); setTimeout(() => { locMap?.setCenter({ lat, lng }); locMap?.setZoom(17); }, 700); }
+  if (locMap) { locMap.setView([lat, lng], 17); }
+  else { _initLocMap(); setTimeout(() => { locMap?.setView([lat, lng], 17); }, 700); }
 }
 function _locSelectPlace(placeId, description) {
-  const drop = document.getElementById('locSearchDrop');
-  if (drop) drop.style.display = 'none';
-  const inp = document.getElementById('locSearchInput');
-  if (inp) inp.value = '';
-  if (!window.google?.maps?.places) return;
-  const svc = new google.maps.places.PlacesService(document.createElement('div'));
-  svc.getDetails({ placeId, fields: ['geometry', 'formatted_address'] }, (place, status) => {
-    if (status !== google.maps.places.PlacesServiceStatus.OK || !place?.geometry) return;
-    const lat = place.geometry.location.lat();
-    const lng = place.geometry.location.lng();
-    _locCurrLat = lat; _locCurrLng = lng;
-    _locCurrentAddr = place.formatted_address || description;
-    const addrEl = document.getElementById('locAddrText');
-    if (addrEl) addrEl.textContent = _locCurrentAddr;
-    if (locMap) { locMap.panTo({ lat, lng }); locMap.setZoom(17); }
-    else { _initLocMap(); setTimeout(() => { locMap?.setCenter({ lat, lng }); locMap?.setZoom(17); }, 700); }
-  });
+  // No-op: Google Places replaced by Nominatim search
 }
 
 /* GPS helpers */
 function _locSetPos(lat, lng, zoom) {
   _locCurrLat = lat; _locCurrLng = lng;
-  if (!locMap) { _initLocMap(); setTimeout(() => { locMap?.panTo({ lat, lng }); locMap?.setZoom(zoom||17); }, 700); }
-  else { locMap.panTo({ lat, lng }); locMap.setZoom(zoom||17); }
+  if (!locMap) { _initLocMap(); setTimeout(() => { locMap?.setView([lat, lng], zoom||17); }, 700); }
+  else { locMap.setView([lat, lng], zoom||17); }
 }
 function _locSetBtn(html, loading) {
   const btn = document.getElementById('locGpsBtn');
