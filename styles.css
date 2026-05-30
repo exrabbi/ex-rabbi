@@ -17361,12 +17361,17 @@ body { padding-bottom: 100px !important; }
   position: relative; z-index: 1;
 }
 .auth-hero-logo-wrap {
-  width: 76px; height: 76px; border-radius: 24px;
-  background: linear-gradient(135deg,#e91e8c,#7c3aed);
-  margin: 0 auto 14px;
+  width: auto; height: auto; border-radius: 0;
+  background: transparent;
+  margin: 0 auto 10px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 10px 36px rgba(233,30,140,.45), 0 0 0 4px rgba(233,30,140,.12);
-  overflow: hidden;
+  box-shadow: none;
+  overflow: visible;
+}
+.auth-hero-logo-img {
+  width: 180px; height: auto;
+  display: block; margin: 0 auto;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.18));
 }
 .auth-hero-logo { width: 72px; height: 72px; object-fit: contain; border-radius: 22px; }
 .auth-hero-logo-fallback {
@@ -18375,12 +18380,16 @@ body:has(#mePanel.open)    .wa-float-btn {
 /* Hero — dark text on white bg */
 #authModal .auth-hero { padding: 36px 0 22px; }
 #authModal .auth-hero-logo-wrap {
-  background: #fff !important;
-  box-shadow: 0 6px 24px rgba(0,0,0,.13), 0 0 0 3px rgba(233,30,140,.18) !important;
-  border-radius: 26px !important;
-  width: 82px !important; height: 82px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  width: auto !important; height: auto !important;
 }
-#authModal .auth-hero-logo { border-radius: 22px !important; }
+#authModal .auth-hero-logo-img {
+  width: 190px !important; height: auto !important;
+  border-radius: 0 !important;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,.15)) !important;
+}
 #authModal .auth-hero-brand {
   color: #1a1a2e !important; font-size: 24px !important;
 }
@@ -18528,13 +18537,12 @@ body:has(#mePanel.open)    .wa-float-btn {
 }
 [data-theme="light"] .nav-logo-ex { color: #0d0a1e; }
 [data-theme="light"] .nav-logo-global { color: rgba(0,0,0,0.4); }
-/* Auth hero logo clean shadow */
+/* Auth hero logo — official PNG */
 #authModal .auth-hero-logo-wrap {
   box-shadow: none !important;
   background: transparent !important;
-}
-#authModal .auth-hero-logo {
-  box-shadow: 0 10px 40px rgba(233,30,140,.35), 0 4px 16px rgba(0,0,0,.25) !important;
+  width: auto !important; height: auto !important;
+  border-radius: 0 !important;
 }
 /* ── Navbar Wordmark ─────────────────────────────────────── */
 .nav-wordmark { display:flex; align-items:center; cursor:pointer; user-select:none; }
