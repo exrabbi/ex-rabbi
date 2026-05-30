@@ -160,7 +160,7 @@
   transform: translateX(-160%); animation: logoShine 1s ease .85s both;
 }
 @keyframes logoShine { to { transform: translateX(216%); } }
-.exs-logo { width: 116px; height: 116px; object-fit: contain; position: relative; z-index: 2; }
+.exs-logo { width: 180px; height: auto; object-fit: contain; position: relative; z-index: 2; }
 
 /* VIP crown row */
 .exs-crown-row {
