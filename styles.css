@@ -18567,10 +18567,16 @@ body:has(#mePanel.open)    .wa-float-btn {
   color: #fff; letter-spacing: 1px;
 }
 [data-theme="light"] .nwm-global { color: #0d0a1e; }
-/* ── Navbar Logo Image ───────────────────────────────────── */
-.nav-logo-img-wrap { display:flex; align-items:center; }
-.nav-logo-img {
-  height: 40px; width: auto;
+/* ── Navbar Icon (circle) ────────────────────────────────── */
+.nav-icon-wrap {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,.92);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  flex-shrink: 0;
+}
+.nav-icon-img {
+  width: 28px; height: 28px;
   object-fit: contain;
-  filter: drop-shadow(0 1px 4px rgba(0,0,0,.25));
 }
