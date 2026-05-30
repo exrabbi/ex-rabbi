@@ -107,7 +107,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=274" />
+  <link rel="stylesheet" href="styles.css?v=275" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -160,7 +160,7 @@
     <div class="exs-logo-orbit"></div>
     <div class="exs-logo-wrap">
       <div class="exs-logo-shine"></div>
-      <img src="icon-512.png" alt="EX GLOBAL" class="exs-logo" />
+      <img src="logo.svg" alt="EX GLOBAL" class="exs-logo" />
     </div>
   </div>
   <!-- Text -->
@@ -196,7 +196,7 @@
       <div class="logo">
         <div class="logo-ring-wrap">
           <div class="header-logo-wrap">
-            <img src="logo.png" alt="EX GLOBAL" />
+            <img src="logo.svg" alt="EX GLOBAL" />
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@
       <div class="logo">
         <div class="logo-ring-wrap">
           <div class="header-logo-wrap">
-            <img src="logo.png" alt="EX GLOBAL" />
+            <img src="logo.svg" alt="EX GLOBAL" />
           </div>
         </div>
       </div>
@@ -1819,9 +1819,13 @@
     <!-- ── Hero: Logo + tagline ── -->
     <div class="auth-hero">
       <div class="auth-hero-logo-wrap">
-        <img src="logo.png" class="auth-hero-logo" alt="EX GLOBAL"
-          onerror="this.style.display='none';document.getElementById('authHeroFallback').style.display='flex'">
-        <div class="auth-hero-logo-fallback" id="authHeroFallback">EX</div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="72" height="72" class="auth-hero-logo">
+          <rect width="512" height="512" rx="115" fill="#0d0a1e"/>
+          <rect x="2" y="2" width="508" height="508" rx="114" fill="none" stroke="rgba(233,30,140,0.22)" stroke-width="3"/>
+          <text x="256" y="298" font-family="Arial Black,sans-serif" font-weight="900" font-size="232" fill="#ffffff" text-anchor="middle" letter-spacing="-10">EX</text>
+          <rect x="100" y="330" width="312" height="14" rx="7" fill="#e91e8c"/>
+          <text x="256" y="410" font-family="Arial,sans-serif" font-weight="700" font-size="56" fill="#e91e8c" text-anchor="middle" letter-spacing="18" opacity="0.92">GLOBAL</text>
+        </svg>
       </div>
       <div class="auth-hero-brand">EX GLOBAL <span>SA</span></div>
       <p class="auth-hero-tag">Discover Luxury. Shop Smarter. 👑</p>

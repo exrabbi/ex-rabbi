@@ -18490,3 +18490,22 @@ body:has(#mePanel.open)    .wa-float-btn {
 /* Logged-in name / email */
 #authModal #authUserName { color: #1a1a2e !important; }
 #authModal #authUserEmail { color: #888 !important; }
+
+/* ── New Logo v275 — auth hero & navbar tweaks ── */
+#authModal .auth-hero-logo-wrap {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  width: auto !important; height: auto !important;
+  padding: 0 !important;
+}
+#authModal .auth-hero-logo {
+  width: 80px !important; height: 80px !important;
+  border-radius: 22px !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,.28), 0 0 0 2px rgba(233,30,140,.2) !important;
+  display: block !important;
+}
+.header-logo-wrap img[src="logo.svg"] {
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.25);
+}
