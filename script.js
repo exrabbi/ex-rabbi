@@ -335,6 +335,7 @@ function setLang(lang) {
   renderFlashDeals();
   renderSuperDeals();
   renderTrending();
+  renderSponsored();
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
@@ -388,6 +389,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderBrandDeals();
   renderSuperDeals();
   renderTrending();
+  renderSponsored();
   renderHotSeller();
   renderNewArrivals();
   renderCategoryStrips();
@@ -704,6 +706,37 @@ function renderTrending() {
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'bestseller' || p.tag === 'new').slice(0, 4);
   document.getElementById('trendingProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
+}
+
+/* ===== RENDER SPONSORED / FEATURED BRANDS ===== */
+function renderSponsored() {
+  const track = document.getElementById('spTrack');
+  if (!track) return;
+  // Use pinned sponsored IDs or auto-pick top-discount products
+  const pins = JSON.parse(localStorage.getItem('exg_sp_pins') || 'null');
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+  const items = pins
+    ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 8)
+    : [...PRODUCTS].sort((a, b) => (b.discount||0) - (a.discount||0)).slice(0, 8);
+
+  track.innerHTML = items.map(p => {
+    const brand = p.brand || p.category || 'EX GLOBAL';
+    const imgSrc = p.image || (p.images && p.images[0]) || '';
+    const discountLabel = p.discount ? `Up to ${p.discount}% Off` : `${cur}${Math.round(p.price * rate)}`;
+    const name = p.names?.[currentLang] || p.names?.en || p.name || '';
+    return `<div class="sp-card" onclick="openModal(${p.id})">
+      <div class="sp-card-img-wrap">
+        <img class="sp-card-img" src="${imgSrc}" loading="lazy" alt="${name}"
+          onerror="this.src='https://picsum.photos/seed/sp${p.id}/130/120'">
+        <div class="sp-card-brand">${brand.slice(0,12)}</div>
+        <div class="sp-card-ad">AD</div>
+        <div class="sp-card-banner">${discountLabel}</div>
+      </div>
+      <div class="sp-card-name">${name}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ===== RENDER HOT SELLER ===== */
