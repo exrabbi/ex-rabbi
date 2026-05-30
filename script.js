@@ -9329,7 +9329,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ===== 3D TEAM CAROUSEL ===== */
 const TEAM = [
-  { name: 'Aisha Al-Rashid',   role: 'FOUNDER & CEO',       img: 'https://i.pravatar.cc/400?img=47' },
+  { name: 'EX GLOBAL Founder',  role: 'FOUNDER & CEO',       img: 'team-owner.jpg' },
+  { name: 'Aisha Al-Rashid',   role: 'BRAND MANAGER',        img: 'https://i.pravatar.cc/400?img=47' },
   { name: 'Mohammed Hassan',   role: 'HEAD OF OPERATIONS',   img: 'https://i.pravatar.cc/400?img=68' },
   { name: 'Fatima Al-Zahra',   role: 'CUSTOMER CARE LEAD',  img: 'https://i.pravatar.cc/400?img=48' },
   { name: 'Omar Al-Khalid',    role: 'MARKETING DIRECTOR',   img: 'https://i.pravatar.cc/400?img=12' },
