@@ -338,6 +338,7 @@ function setLang(lang) {
   renderSponsored();
   renderHotSeller();
   renderNewArrivals();
+  renderTrustpilotReviews();
   renderCategoryStrips();
   renderRecentlyViewed();
   const si = document.getElementById('searchInput');
@@ -392,6 +393,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderSponsored();
   renderHotSeller();
   renderNewArrivals();
+  renderTrustpilotReviews();
   renderCategoryStrips();
   renderFilterRow();
   renderReviewsStrip();
@@ -755,6 +757,54 @@ function renderNewArrivals() {
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 4)
     : PRODUCTS.filter(p => p.tag === 'new').concat(PRODUCTS.filter(p => p.tag !== 'new')).slice(0, 4);
   document.getElementById('newArrivalsProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
+}
+
+/* ===== TRUSTPILOT STYLE CUSTOMER REVIEWS ===== */
+function renderTrustpilotReviews() {
+  const sec = document.getElementById('tpCustSection');
+  if (!sec || typeof SEED_REVIEWS === 'undefined') return;
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const avgRating = (SEED_REVIEWS.reduce((s,r)=>s+r.rating,0)/SEED_REVIEWS.length).toFixed(1);
+  const avatars = [
+    'https://i.pravatar.cc/80?img=11','https://i.pravatar.cc/80?img=5','https://i.pravatar.cc/80?img=47',
+    'https://i.pravatar.cc/80?img=32','https://i.pravatar.cc/80?img=15','https://i.pravatar.cc/80?img=22',
+    'https://i.pravatar.cc/80?img=9','https://i.pravatar.cc/80?img=41','https://i.pravatar.cc/80?img=38',
+    'https://i.pravatar.cc/80?img=55','https://i.pravatar.cc/80?img=60','https://i.pravatar.cc/80?img=3',
+    'https://i.pravatar.cc/80?img=27','https://i.pravatar.cc/80?img=18'
+  ];
+  const starsFilled = Math.round(parseFloat(avgRating));
+  const starsHtml = Array.from({length:5},(_,i)=>`<i class="${i<starsFilled?'fas':'far'} fa-star tpr-star"></i>`).join('');
+  const cards = SEED_REVIEWS.slice(0,10).map((r,i) => {
+    const txt = r.text[currentLang] || r.text.en || '';
+    const firstLine = txt.split(/[.!?।\n]/)[0].trim();
+    const body = txt.slice(firstLine.length+1).trim().split(' ').slice(0,24).join(' ');
+    const rStars = Array.from({length:5},(_,j)=>`<i class="${j<r.rating?'fas':'far'} fa-star tpr-gstar"></i>`).join('');
+    const av = avatars[i % avatars.length];
+    return `<div class="tpr-card">
+      <div class="tpr-av-wrap">
+        <img class="tpr-av" src="${av}" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
+      </div>
+      <div class="tpr-card-inner">
+        <div class="tpr-name">${r.name}</div>
+        <div class="tpr-stars">${rStars}</div>
+        <div class="tpr-title">${firstLine.slice(0,55)}${firstLine.length>55?'…':''}</div>
+        <div class="tpr-body">${body.slice(0,120)}${body.length>120?'…':''}</div>
+        <div class="tpr-meta"><i class="fas fa-check-circle"></i> Verified Purchase · ${r.country}</div>
+      </div>
+    </div>`;
+  }).join('');
+  sec.innerHTML = `
+    <div class="tpr-header">
+      <h2 class="tpr-h2">What Our Customers Have To Say</h2>
+      <div class="tpr-sub-row">
+        <span class="tpr-count">150,000+ Customers</span>
+        <span class="tpr-sep">|</span>
+        <span class="tpr-excellent">Excellent</span>
+        <span class="tpr-tp-stars">${starsHtml}</span>
+        <span class="tpr-tp-badge">★ Trustpilot</span>
+      </div>
+    </div>
+    <div class="tpr-scroll">${cards}</div>`;
 }
 
 /* ===== RENDER CATEGORY STRIPS ===== */
@@ -2028,14 +2078,40 @@ function openModal(id) {
       <span class="lux-price-current">${fmt(p.price)}</span>
       <span class="lux-price-orig">${fmt(p.originalPrice)}</span>
       <span class="lux-discount-badge">-${p.discount}%</span>
+      <span class="lux-coupon-chip" onclick="_openCouponSheet()">with coupon <i class="fas fa-chevron-right"></i></span>
     </div>
+
+    <!-- Offers scroll row -->
+    <div class="lux-offers-row">
+      ${p.discount?`<div class="lux-offer-pill"><i class="fas fa-tag"></i> ${p.discount}% OFF TODAY</div>`:''}
+      <div class="lux-offer-pill"><i class="fas fa-truck-fast"></i> Free Ship ≥ SAR 99</div>
+      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-ticket"></i> Code: WELCOME10</div>
+      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-gift"></i> Code: BDAY10</div>
+    </div>
+
     <div class="lux-rating-row">
-      <span class="lux-stars">${'★'.repeat(Math.round(p.rating))}${'☆'.repeat(5-Math.round(p.rating))}</span>
+      <span class="lux-stars">★</span>
       <span class="lux-rating-num">${p.rating}</span>
       <span class="lux-rating-count">(${p.ratingCount.toLocaleString()})</span>
       <span class="lux-dot-sep">·</span>
       <span class="lux-sold-count">🔥 ${String(p.sold).replace(/\++$/,'')}+ sold</span>
     </div>
+
+    <!-- Bestseller badge -->
+    ${(()=>{
+      const catProds = PRODUCTS.filter(x=>x.category===p.category).sort((a,b)=>b.ratingCount-a.ratingCount);
+      const rank = catProds.findIndex(x=>x.id===p.id)+1;
+      if(rank>0&&rank<=5&&p.ratingCount>=200){
+        const avatarSeeds = [p.id+10, p.id+23, p.id+37];
+        return `<div class="lux-bestseller-row">
+          <span class="lux-bs-trophy">🏆</span>
+          <span class="lux-bs-text">#${rank} Bestseller in <b>${p.category||'this category'}</b></span>
+          <div class="lux-bs-avatars">${avatarSeeds.map(s=>`<img src="https://i.pravatar.cc/28?img=${s%70}" class="lux-bs-av" loading="lazy">`).join('')}</div>
+        </div>`;
+      }
+      return '';
+    })()}
+
     <div class="lux-meta-row">
       <div class="lux-viewing-chip"><span class="lux-view-pulse"></span><span><b>${15+((p.id*7+p.ratingCount)%70)}</b> viewing now</span></div>
       ${p.stock===0
@@ -2046,20 +2122,34 @@ function openModal(id) {
     </div>
   </div>
 
-  <div class="lux-delivery-card lux-reveal">
-    <div class="lux-del-icon"><i class="fas fa-truck-fast"></i></div>
-    <div class="lux-del-info">
-      <span class="lux-del-title">FREE Delivery</span>
-      <span class="lux-del-date">Estimated ${_deliveryRange()}</span>
+  <!-- Shipping card (SHEIN style) -->
+  <div class="lux-ship-card lux-reveal">
+    <div class="lux-ship-row">
+      <i class="fas fa-location-dot lux-ship-icon"></i>
+      <div class="lux-ship-info">
+        <span class="lux-ship-label">Shipping to</span>
+        <span class="lux-ship-loc">${currentUser?.city||'Riyadh'}, Saudi Arabia</span>
+      </div>
+      <i class="fas fa-chevron-right lux-ship-arrow"></i>
     </div>
-    <div class="lux-del-free-badge">FREE</div>
+    <div class="lux-ship-free-row">
+      <i class="fas fa-truck-fast" style="color:#10b981"></i>
+      <span class="lux-ship-free-txt">Free Shipping (Orders ≥ SAR 99)</span>
+    </div>
+    <div class="lux-ship-date-row">
+      <i class="fas fa-calendar-check" style="color:rgba(255,255,255,.4)"></i>
+      <span class="lux-ship-date-txt">Estimated arrival: ${_deliveryRange()}</span>
+    </div>
   </div>
 
   ${p.sizes&&p.sizes.length>0?`
   <div class="lux-section lux-reveal">
     <div class="lux-section-header">
       <span class="lux-section-title">${t('sizeSelect')||'Select Size'}</span>
-      <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> Size Guide</button>
+      <div class="lux-size-guide-btns">
+        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> Size Guide</button>
+        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-person"></i> Check My Size</button>
+      </div>
     </div>
     <div class="lux-size-grid">
       ${p.sizes.map(s=>`<button class="lux-size-opt${s===selectedSize?' active':''}" onclick="selectSize('${s}',this)">${s}</button>`).join('')}
@@ -2073,10 +2163,13 @@ function openModal(id) {
       <span class="lux-color-selected-name" id="luxColorName">${p.colorNames?(p.colorNames[0]||''):''}</span>
     </div>
     <div class="lux-color-grid">
-      ${p.colors.map((c,i)=>p.colorImages&&p.colorImages[i]
-        ?`<button class="lux-color-img-opt${i===0?' active':''}" onclick="selectColor('${c}',this,${p.id},${i})" data-img="${p.colorImages[i]}" data-name="${p.colorNames?.[i]||''}"><img src="${p.colorImages[i]}" alt="" loading="lazy"/></button>`
-        :`<button class="lux-color-opt${i===0?' active':''}" style="--c:${c}" onclick="selectColor('${c}',this,${p.id},-1)"></button>`
-      ).join('')}
+      ${p.colors.map((c,i)=>{
+        const isHot = i===0 || (p.colors.length>3&&i===p.colors.length-1);
+        const hotBadge = isHot ? '<span class="lux-color-hot">HOT</span>' : '';
+        return p.colorImages&&p.colorImages[i]
+          ?`<div class="lux-color-img-wrap">${hotBadge}<button class="lux-color-img-opt${i===0?' active':''}" onclick="selectColor('${c}',this,${p.id},${i})" data-img="${p.colorImages[i]}" data-name="${p.colorNames?.[i]||''}"><img src="${p.colorImages[i]}" alt="" loading="lazy"/></button></div>`
+          :`<div class="lux-color-img-wrap">${hotBadge}<button class="lux-color-opt${i===0?' active':''}" style="--c:${c}" onclick="selectColor('${c}',this,${p.id},-1)"></button></div>`;
+      }).join('')}
     </div>
   </div>`:''}
 
@@ -2739,6 +2832,84 @@ function showToast(msg) {
   toast.textContent = msg;
   toast.className = 'toast show';
   setTimeout(() => toast.className = 'toast', 2600);
+}
+
+/* ===== COUPON SHEET ===== */
+function _openCouponSheet() {
+  // Remove any existing sheet
+  const old = document.getElementById('couponSheetEl');
+  if (old) old.remove();
+
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const cur = T.currency || 'SAR ';
+  const rate = T.rate || 1;
+  const coupons = [
+    { code: 'WELCOME10', pct: 10, desc: '10% off your first order', note: 'New customers only · One-time use' },
+    { code: 'BDAY10',    pct: 10, desc: '10% off on your birthday', note: 'Applies on your birthday — use every year' },
+  ];
+
+  const el = document.createElement('div');
+  el.id = 'couponSheetEl';
+  el.innerHTML = `
+    <div class="coupon-sheet-overlay" onclick="_closeCouponSheet()"></div>
+    <div class="coupon-sheet" id="csSheet">
+      <div class="coupon-sheet-handle"></div>
+      <div class="coupon-sheet-title">🏷️ Coupons &amp; Offers</div>
+      <div class="coupon-sheet-input-row">
+        <input type="text" class="coupon-sheet-input" id="csInput" placeholder="Enter promo code" autocomplete="off"/>
+        <button class="coupon-sheet-apply" onclick="_applyCouponFromSheet()">APPLY</button>
+      </div>
+      <div class="coupon-sheet-label">Available Coupons</div>
+      ${coupons.map(c => `
+      <div class="coupon-sheet-card" id="csCard-${c.code}" onclick="_applyCouponFromSheet('${c.code}')">
+        <div class="cs-card-left">
+          <div class="cs-card-code">${c.code}</div>
+          <div class="cs-card-desc">${c.desc}</div>
+          <div class="cs-card-note">${c.note}</div>
+        </div>
+        <div class="cs-card-right">
+          <button class="cs-apply-btn" id="csBtn-${c.code}">Apply</button>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  document.body.appendChild(el);
+  requestAnimationFrame(() => document.getElementById('csSheet')?.classList.add('open'));
+}
+
+function _closeCouponSheet() {
+  const el = document.getElementById('couponSheetEl');
+  if (!el) return;
+  const sheet = document.getElementById('csSheet');
+  if (sheet) {
+    sheet.classList.remove('open');
+    setTimeout(() => el.remove(), 360);
+  } else { el.remove(); }
+}
+
+function _applyCouponFromSheet(code) {
+  const inp = document.getElementById('csInput');
+  const codeToApply = code || (inp ? inp.value.trim().toUpperCase() : '');
+  if (!codeToApply) { showToast('Enter a coupon code'); return; }
+  // Apply to coupon input if cart is visible
+  const cf = document.getElementById('couponInput');
+  if (cf) cf.value = codeToApply;
+  // Try to apply immediately
+  if (typeof applyCoupon === 'function') {
+    const result = applyCoupon(codeToApply);
+    if (result !== false) {
+      // Mark applied in sheet
+      const btn = document.getElementById('csBtn-' + codeToApply);
+      const card = document.getElementById('csCard-' + codeToApply);
+      if (btn) { btn.textContent = '✓ Applied'; btn.classList.add('applied'); }
+      if (card) card.classList.add('applied');
+      setTimeout(_closeCouponSheet, 800);
+      return;
+    }
+  }
+  // If cart not open, just copy code and guide user
+  navigator.clipboard?.writeText(codeToApply).catch(()=>{});
+  showToast('✅ Code ' + codeToApply + ' copied! Paste it in cart.');
+  setTimeout(_closeCouponSheet, 1200);
 }
 
 /* ===== ME / PROFILE PAGE ===== */
