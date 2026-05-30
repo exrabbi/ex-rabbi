@@ -376,6 +376,8 @@ function _revealPage() {
 
 /* ===== INIT ===== */
 document.addEventListener('DOMContentLoaded', async () => {
+  if (history.scrollRestoration) history.scrollRestoration = 'manual';
+  window.scrollTo(0, 0);
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery charge, free delivery threshold)
@@ -970,7 +972,7 @@ function productCardHTML(p) {
           <i class="${inWish?'fas':'far'} fa-heart"></i>
         </button>
       </div>
-      ${isOOS ? '<div class="pcard-oos">Out of Stock</div>' : isLow ? `<div class="pcard-low">🔥 Only ${p.stock} left</div>` : ''}
+      ${isOOS ? `<div class="pcard-oos">${t('outOfStock')}</div>` : isLow ? `<div class="pcard-low">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>` : ''}
       <div class="pcard-contentBx">
         <h3 class="pcard-name">${getName(p)}</h3>
         <div class="pcard-price-row">
@@ -982,8 +984,8 @@ function productCardHTML(p) {
           onclick="event.stopPropagation();${isOOS?'':` nxAtc(event,${p.id})`}"
           ${isOOS?'disabled':''}>
           ${!isOOS?`
-            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>Buy Now</span></span>
-            <span class="cart"><i class="fas fa-check"></i><span>Added!</span></span>
+            <span class="shirt"><i class="fas fa-bag-shopping"></i><span>${t('orderNow')||'Buy Now'}</span></span>
+            <span class="cart"><i class="fas fa-check"></i><span>${t('addedTxt')||'Added!'}</span></span>
           `:`<i class="fas fa-ban"></i><span>${t('outOfStock')||'Out of Stock'}</span>`}
         </button>
       </div>
@@ -2076,26 +2078,24 @@ function openModal(id) {
     <h2 class="lux-product-name">${getName(p)}</h2>
     <div class="lux-prices-row">
       <span class="lux-price-current">${fmt(p.price)}</span>
-      <span class="lux-price-orig">${fmt(p.originalPrice)}</span>
-      <span class="lux-discount-badge">-${p.discount}%</span>
-      <span class="lux-coupon-chip" onclick="_openCouponSheet()">with coupon <i class="fas fa-chevron-right"></i></span>
+      ${p.discount>0?`<span class="lux-price-orig">${fmt(p.originalPrice||Math.round(p.price/(1-p.discount/100)))}</span><span class="lux-discount-badge">-${p.discount}%</span>`:''}
+      <span class="lux-coupon-chip" onclick="_openCouponSheet()">${t('withCoupon')||'with coupon'} <i class="fas fa-chevron-right"></i></span>
     </div>
 
     <!-- Offers scroll row -->
     <div class="lux-offers-row">
       ${p.discount?`<div class="lux-offer-pill"><i class="fas fa-tag"></i> ${p.discount}% OFF TODAY</div>`:''}
-      <div class="lux-offer-pill"><i class="fas fa-truck-fast"></i> Free Ship ≥ SAR 99</div>
-      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-ticket"></i> Code: WELCOME10</div>
-      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-gift"></i> Code: BDAY10</div>
+      <div class="lux-offer-pill"><i class="fas fa-truck-fast"></i> ${t('freeShipChip')||'Free Ship ≥ SAR 99'}</div>
+      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-ticket"></i> ${t('codeLabel')||'Code'}: WELCOME10</div>
+      <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-gift"></i> ${t('codeLabel')||'Code'}: BDAY10</div>
     </div>
 
-    <div class="lux-rating-row">
+    ${p.rating||p.ratingCount?`<div class="lux-rating-row">
       <span class="lux-stars">★</span>
-      <span class="lux-rating-num">${p.rating}</span>
-      <span class="lux-rating-count">(${p.ratingCount.toLocaleString()})</span>
-      <span class="lux-dot-sep">·</span>
-      <span class="lux-sold-count">🔥 ${String(p.sold).replace(/\++$/,'')}+ sold</span>
-    </div>
+      <span class="lux-rating-num">${p.rating||'4.8'}</span>
+      <span class="lux-rating-count">(${(p.ratingCount||0).toLocaleString()})</span>
+      ${p.sold?`<span class="lux-dot-sep">·</span><span class="lux-sold-count">🔥 ${String(p.sold).replace(/\++$/,'')}+ sold</span>`:''}
+    </div>`:''}
 
     <!-- Bestseller badge -->
     ${(()=>{
@@ -2105,7 +2105,7 @@ function openModal(id) {
         const avatarSeeds = [p.id+10, p.id+23, p.id+37];
         return `<div class="lux-bestseller-row">
           <span class="lux-bs-trophy">🏆</span>
-          <span class="lux-bs-text">#${rank} Bestseller in <b>${p.category||'this category'}</b></span>
+          <span class="lux-bs-text">#${rank} ${t('bestsellerIn')||'Bestseller in'} <b>${p.category||''}</b></span>
           <div class="lux-bs-avatars">${avatarSeeds.map(s=>`<img src="https://i.pravatar.cc/28?img=${s%70}" class="lux-bs-av" loading="lazy">`).join('')}</div>
         </div>`;
       }
@@ -2113,32 +2113,28 @@ function openModal(id) {
     })()}
 
     <div class="lux-meta-row">
-      <div class="lux-viewing-chip"><span class="lux-view-pulse"></span><span><b>${15+((p.id*7+p.ratingCount)%70)}</b> viewing now</span></div>
+      <div class="lux-viewing-chip"><span class="lux-view-pulse"></span><span><b>${15+((p.id*7+(p.ratingCount||100))%70)}</b> ${t('viewingNow')||'viewing now'}</span></div>
       ${p.stock===0
-        ?`<div class="lux-stock-chip out"><i class="fas fa-times-circle"></i> Out of Stock</div>`
+        ?`<div class="lux-stock-chip out"><i class="fas fa-times-circle"></i> ${t('outOfStock')}</div>`
         :p.stock!==undefined&&p.stock<=5
-          ?`<div class="lux-stock-chip low"><i class="fas fa-fire"></i> Only ${p.stock} left</div>`
-          :`<div class="lux-stock-chip ok"><i class="fas fa-check-circle"></i> In Stock</div>`}
+          ?`<div class="lux-stock-chip low"><i class="fas fa-fire"></i> ${t('lowStock').replace('{n}',p.stock)}</div>`
+          :`<div class="lux-stock-chip ok"><i class="fas fa-check-circle"></i> ${t('inStockLabel')||'In Stock'}</div>`}
     </div>
   </div>
 
-  <!-- Shipping card (SHEIN style) -->
+  <!-- Delivery card -->
   <div class="lux-ship-card lux-reveal">
-    <div class="lux-ship-row">
-      <i class="fas fa-location-dot lux-ship-icon"></i>
-      <div class="lux-ship-info">
-        <span class="lux-ship-label">Shipping to</span>
-        <span class="lux-ship-loc">${currentUser?.city||'Riyadh'}, Saudi Arabia</span>
-      </div>
-      <i class="fas fa-chevron-right lux-ship-arrow"></i>
-    </div>
     <div class="lux-ship-free-row">
       <i class="fas fa-truck-fast" style="color:#10b981"></i>
-      <span class="lux-ship-free-txt">Free Shipping (Orders ≥ SAR 99)</span>
+      <span class="lux-ship-free-txt">${t('freeDeliveryFull')||t('freeDeliveryInfo')||'Free Shipping (Orders ≥ SAR 99)'}</span>
     </div>
     <div class="lux-ship-date-row">
       <i class="fas fa-calendar-check" style="color:rgba(255,255,255,.4)"></i>
-      <span class="lux-ship-date-txt">Estimated arrival: ${_deliveryRange()}</span>
+      <span class="lux-ship-date-txt">${t('estDelivery')}: ${_deliveryRange()}</span>
+    </div>
+    <div class="lux-ship-date-row">
+      <i class="fas fa-rotate-left" style="color:rgba(255,255,255,.4)"></i>
+      <span class="lux-ship-date-txt">${t('returnDays')||t('trustReturns')||'7-Day Returns'}</span>
     </div>
   </div>
 
@@ -2147,8 +2143,8 @@ function openModal(id) {
     <div class="lux-section-header">
       <span class="lux-section-title">${t('sizeSelect')||'Select Size'}</span>
       <div class="lux-size-guide-btns">
-        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> Size Guide</button>
-        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-person"></i> Check My Size</button>
+        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-ruler"></i> ${t('sizeGuide')||'Size Guide'}</button>
+        <button class="lux-size-guide-btn" onclick="openSizeGuide('${p.category}')"><i class="fas fa-person"></i> ${t('checkMySize')||'Check My Size'}</button>
       </div>
     </div>
     <div class="lux-size-grid">
@@ -2173,7 +2169,7 @@ function openModal(id) {
     </div>
   </div>`:''}
 
-  ${p.video?`<button class="modal-video-btn lux-reveal" onclick="_openProductVideo('${p.video}')"><i class="fas fa-play-circle"></i> Watch Video</button>`:''}
+  ${p.video?`<button class="modal-video-btn lux-reveal" onclick="_openProductVideo('${p.video}')"><i class="fas fa-play-circle"></i> ${t('watchVideo')||'Watch Video'}</button>`:''}
 
   ${videoEmbed?`<div class="lux-section lux-reveal">${videoEmbed}</div>`:''}
 
@@ -2181,7 +2177,7 @@ function openModal(id) {
     ${p.description?`
     <div class="lux-accordion-item">
       <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-info-circle"></i> Product Details</span>
+        <span><i class="fas fa-info-circle"></i> ${t('productDetails')||'Product Details'}</span>
         <i class="fas fa-chevron-down lux-chev"></i>
       </button>
       <div class="lux-accordion-body">
@@ -2190,20 +2186,20 @@ function openModal(id) {
     </div>`:''}
     <div class="lux-accordion-item">
       <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-truck"></i> Delivery &amp; Returns</span>
+        <span><i class="fas fa-truck"></i> ${t('deliveryReturnsTitle')||'Delivery & Returns'}</span>
         <i class="fas fa-chevron-down lux-chev"></i>
       </button>
       <div class="lux-accordion-body">
         <div class="lux-accordion-content">
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> Free delivery on orders over SAR 100</p>
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> 7-day hassle-free returns</p>
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> 100% authentic guaranteed</p>
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('freeDeliveryFull')||'Free delivery on orders over SAR 99'}</p>
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('returnDays')||t('trustReturns')||'7-Day Returns'}</p>
+          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('pctAuthentic')||'100% Authentic'}</p>
         </div>
       </div>
     </div>
     <div class="lux-accordion-item">
       <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-shield-halved"></i> Secure Payment</span>
+        <span><i class="fas fa-shield-halved"></i> ${t('securePayment')||'Secure Payment'}</span>
         <i class="fas fa-chevron-down lux-chev"></i>
       </button>
       <div class="lux-accordion-body">
@@ -2218,16 +2214,16 @@ function openModal(id) {
 
   ${p.stock!==0?`
   <div class="lux-section lux-reveal">
-    <div class="lux-section-title-full">💰 Bundle &amp; Save More</div>
+    <div class="lux-section-title-full">💰 ${t('bundleSave')||'Bundle & Save More'}</div>
     <div class="lux-bundle-row">
       <div class="lux-bundle-opt active" onclick="setBundleQty(1,${p.id},this)">
-        <span class="lux-bq">×1</span><span class="lux-bl">Regular</span>
+        <span class="lux-bq">×1</span><span class="lux-bl">${t('bundleOne')||'Regular'}</span>
       </div>
       <div class="lux-bundle-opt" onclick="setBundleQty(2,${p.id},this)">
-        <span class="lux-bq">×2</span><span class="lux-bl">10% off</span>
+        <span class="lux-bq">×2</span><span class="lux-bl">${t('bundleOffPct10')||'10% off'}</span>
       </div>
       <div class="lux-bundle-opt best" onclick="setBundleQty(3,${p.id},this)">
-        <span class="lux-bq">×3</span><span class="lux-bl">🔥 Best</span><span class="lux-bsave">15% off</span>
+        <span class="lux-bq">×3</span><span class="lux-bl">🔥 ${t('bundleBest')||'Best'}</span><span class="lux-bsave">${t('bundleOffPct15')||'15% off'}</span>
       </div>
     </div>
     <div class="lux-qty-row" style="display:none">
@@ -2247,14 +2243,14 @@ function openModal(id) {
     <div class="lux-trust-item"><i class="fas fa-lock"></i><span>${t('securePayment')||'Secure'}</span></div>
     <div class="lux-trust-item"><i class="fas fa-rotate-left"></i><span>${t('returns30')||'30-Day Returns'}</span></div>
     <div class="lux-trust-item"><i class="fas fa-shield-halved"></i><span>${t('authentic')||'Authentic'}</span></div>
-    <div class="lux-trust-item"><i class="fas fa-truck-fast"></i><span>Fast Ship</span></div>
+    <div class="lux-trust-item"><i class="fas fa-truck-fast"></i><span>${t('trustDelivery')||'Fast Ship'}</span></div>
   </div>
 
   <div class="lux-policy-row lux-reveal">
-    <div class="lux-policy-item"><i class="fas fa-truck-fast"></i>Free Delivery<br>Over SAR 100</div>
-    <div class="lux-policy-item"><i class="fas fa-rotate-left"></i>7-Day<br>Returns</div>
-    <div class="lux-policy-item"><i class="fas fa-shield-halved"></i>100%<br>Authentic</div>
-    <div class="lux-policy-item"><i class="fas fa-lock"></i>Secure<br>Payment</div>
+    <div class="lux-policy-item"><i class="fas fa-truck-fast"></i>${t('freeShipping')||'Free Delivery'}<br>≥ SAR 99</div>
+    <div class="lux-policy-item"><i class="fas fa-rotate-left"></i>${t('trustReturns')||'7-Day Returns'}</div>
+    <div class="lux-policy-item"><i class="fas fa-shield-halved"></i>${t('pctAuthentic')||'100% Authentic'}</div>
+    <div class="lux-policy-item"><i class="fas fa-lock"></i>${t('securePayment')||'Secure Payment'}</div>
   </div>
 
   ${_fbtHTML(p)}
@@ -2265,7 +2261,7 @@ function openModal(id) {
     <span class="lux-share-url">${shareUrl}</span>
     <div class="lux-share-actions">
       <button class="lux-share-wa" onclick="window.open('https://wa.me/?text='+encodeURIComponent(document.title+' '+location.href),'_blank')"><i class="fab fa-whatsapp"></i></button>
-      <button class="lux-share-copy" onclick="shareProduct(${id})"><i class="fas fa-copy"></i> Copy</button>
+      <button class="lux-share-copy" onclick="shareProduct(${id})"><i class="fas fa-copy"></i> ${t('copyCode')||'Copy'}</button>
     </div>
   </div>
 
@@ -2276,14 +2272,14 @@ ${p.stock!==0?`
 <div class="lux-atc-bar" id="luxAtcBar">
   <div class="lux-trust-strip">
     <div class="lux-trust-strip-inner">
-      <span class="lux-trust-pill">🔥 Selling Fast</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">⚡ Limited Stock</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">🛡 Secure Checkout</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">🚚 Fast Delivery</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">🔥 Selling Fast</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">⚡ Limited Stock</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">🛡 Secure Checkout</span><span class="lux-sep">·</span>
-      <span class="lux-trust-pill">🚚 Fast Delivery</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🔥 ${t('sellingFast')||'Selling Fast'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">⚡ ${t('limitedStock')||'Limited Stock'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🛡 ${t('securePayment')||'Secure Checkout'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🚚 ${t('trustDelivery')||'Fast Delivery'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🔥 ${t('sellingFast')||'Selling Fast'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">⚡ ${t('limitedStock')||'Limited Stock'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🛡 ${t('securePayment')||'Secure Checkout'}</span><span class="lux-sep">·</span>
+      <span class="lux-trust-pill">🚚 ${t('trustDelivery')||'Fast Delivery'}</span><span class="lux-sep">·</span>
     </div>
   </div>
   <div class="lux-atc-btns">
@@ -2296,7 +2292,7 @@ ${p.stock!==0?`
     <button class="lux-atc-main" id="luxAtcMain" onclick="_luxAddCart(${p.id})">
       <span class="lux-atc-default"><i class="fas fa-bag-shopping"></i> ${t('addToCart')||'Add to Cart'}</span>
       <span class="lux-atc-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
-      <span class="lux-atc-done" style="display:none"><i class="fas fa-check"></i> Added!</span>
+      <span class="lux-atc-done" style="display:none"><i class="fas fa-check"></i> ${t('addedTxt')||'Added!'}</span>
     </button>
     <button class="lux-atc-now" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i></button>
   </div>
@@ -2304,7 +2300,7 @@ ${p.stock!==0?`
 <div class="lux-atc-bar" id="luxAtcBar">
   <div class="lux-atc-btns">
     <button class="lux-atc-main lux-atc-oos" disabled><i class="fas fa-times-circle"></i> ${t('outOfStock')||'Out of Stock'}</button>
-    <button class="lux-notify-btn" onclick="notifyStock(${p.id})"><i class="fas fa-bell"></i> Notify Me</button>
+    <button class="lux-notify-btn" onclick="notifyStock(${p.id})"><i class="fas fa-bell"></i> ${t('notifyBack')||'Notify Me'}</button>
   </div>
 </div>`}
   `
@@ -2410,27 +2406,31 @@ function shareProduct(id) {
 }
 function selectSize(size, el) {
   selectedSize = size;
-  document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.lux-size-opt, .size-opt').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
 }
 function selectColor(color, el, productId, imgIdx) {
   selectedColor = color;
-  document.querySelectorAll('.color-opt, .color-img-opt').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.lux-color-opt, .lux-color-img-opt, .color-opt, .color-img-opt').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
   // Update color name label
-  const nameEl = document.getElementById('colorSelectedLabel');
+  const nameEl = document.getElementById('luxColorName') || document.getElementById('colorSelectedLabel');
   if (nameEl) nameEl.textContent = el.dataset.name || '';
-  // If image thumbnail selected, update the main modal product image
+  // If image thumbnail selected, scroll gallery to that image
   if (imgIdx >= 0) {
     const imgSrc = el.dataset.img;
-    const mainImg = document.getElementById('modalMainImg');
-    if (mainImg && imgSrc) mainImg.src = imgSrc;
+    if (imgSrc) _luxGotoSlide(imgIdx);
   }
 }
 function modalToggleWish(id) {
-  const btn = document.getElementById('modalWishBtn');
-  toggleWish(id, btn);
-  renderProducts(document.getElementById('searchInput')?.value || '');
+  toggleWish(id, null);
+  const isNowWished = wishlist.includes(id);
+  ['luxGalWish','luxAtcWish'].forEach(btnId => {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.classList.toggle('active', isNowWished);
+    btn.querySelector('i').className = isNowWished ? 'fas fa-heart' : 'far fa-heart';
+  });
 }
 function changeModalQty(delta, id) {
   const p = PRODUCTS.find(x => x.id === id);
@@ -8669,7 +8669,7 @@ function toggleGiftWrap() {
 
 /* ===== BUNDLE DEAL ===== */
 function setBundleQty(qty, id, el) {
-  document.querySelectorAll('.bundle-deal-opt').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lux-bundle-opt').forEach(b => b.classList.remove('active'));
   if (el) el.classList.add('active');
   _modalQty = qty;
   const price = document.getElementById('modalQtyPrice');
