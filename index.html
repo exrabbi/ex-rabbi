@@ -112,7 +112,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=297" />
+  <link rel="stylesheet" href="styles.css?v=298" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -253,6 +253,11 @@
       <li><a href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;"><i class="fas fa-tag" style="color:#8b2be2"></i> <span data-i18n="coupon">কুপন</span></a></li>
       <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
       <li><a href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;"><i class="fas fa-gear" style="color:#64748b"></i> <span data-i18n="settings">Settings</span></a></li>
+      <li><a href="#" onclick="closeDrawer();setTimeout(openAiChat,200);return false;" style="position:relative">
+          <span class="drawer-ai-icon"><i class="fas fa-robot"></i></span>
+          <span style="font-weight:800">AI Assistant</span>
+          <span style="font-size:9px;font-weight:800;color:#fff;margin-left:auto;background:linear-gradient(135deg,#e91e8c,#7c3aed);padding:2px 9px;border-radius:20px;box-shadow:0 2px 8px rgba(233,30,140,.4)">NEW</span>
+        </a></li>
       <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">Support</span></a></li>
       <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">Sign Out</span></a></li>
       <li id="drawerInstallItem">
