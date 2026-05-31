@@ -426,7 +426,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initColScroll();
   initScrollReveal();
   _checkBirthdayWish();
-  _initNewRelease();
 });
 
 /* ===== COLLECTION TILES — apply saved admin data ===== */
