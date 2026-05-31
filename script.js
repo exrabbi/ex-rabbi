@@ -163,7 +163,7 @@ let _modalQty = 1;
 let heroIndex = 0;
 let heroTimer;
 let _heroSlideCount = 5;
-let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
+let currentTheme = localStorage.getItem('exglobal_theme') || 'dark';
 
 /* ===== PUBLISHED DATA SYNC ===== */
 async function loadPublishedData() {
@@ -9267,10 +9267,18 @@ function clearCompare() {
 function initScrollReveal() {
   const els = document.querySelectorAll('.reveal');
   if (!els.length) return;
+  // Lower threshold → elements trigger sooner (less than 3% in view)
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.08 });
+  }, { threshold: 0.03, rootMargin: '0px 0px -20px 0px' });
   els.forEach(el => obs.observe(el));
+
+  // Safety fallback: force-show all reveals after 2.5 s if still invisible
+  setTimeout(() => {
+    document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
+    const nr = document.getElementById('nrSection');
+    if (nr && !nr.classList.contains('nr-visible')) nr.classList.add('nr-visible');
+  }, 2500);
 }
 
 /* ===== ESTIMATED DELIVERY ===== */
@@ -9393,8 +9401,12 @@ function _initScrollReveal() {
   if (!window.IntersectionObserver) return;
   const io = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('lux-visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
+  }, { threshold: 0.03, rootMargin: '0px 0px -10px 0px' });
   document.querySelectorAll('.lux-reveal').forEach(el => io.observe(el));
+  // Safety fallback — force visible after 3 s
+  setTimeout(() => {
+    document.querySelectorAll('.lux-reveal:not(.lux-visible)').forEach(el => el.classList.add('lux-visible'));
+  }, 3000);
 }
 
 /* ── RE-INIT REVEALS AFTER MODAL OPEN ── */
