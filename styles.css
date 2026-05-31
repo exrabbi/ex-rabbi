@@ -16971,7 +16971,7 @@ body { padding-bottom: 100px !important; }
 .vc-ctrl-end { background: #e53e3e !important; box-shadow: 0 4px 20px rgba(229,62,62,.4); }
 .vc-ctrl-end:hover { background: #c53030 !important; }
 
-/* Video call button in AI header */
+/* Video call button removed
 .ai-video-call-btn {
   background: rgba(255,255,255,.15); border: none;
   color: #fff; width: 34px; height: 34px; border-radius: 50%;
@@ -16981,6 +16981,7 @@ body { padding-bottom: 100px !important; }
 }
 .ai-video-call-btn:hover { background: rgba(255,255,255,.28); }
 .ai-video-call-btn:active { transform: scale(.9); }
+*/
 
 @keyframes vcRingPulse {
   0%,100% { opacity: .45; transform: translate(-50%,-50%) scale(1); }
