@@ -7221,7 +7221,10 @@ body.dark-mode .tbar-pill span { color: #e8e8f0; }
   display: flex; align-items: center; gap: 8px;
   font-size: 11.5px; color: rgba(255,255,255,.4);
 }
-.fcm-row i { color: #e91e8c; font-size: 12px; width: 14px; flex-shrink: 0; }
+.fcm-row i { font-size: 12px; width: 14px; flex-shrink: 0; }
+.fcm-link { text-decoration: none; color: rgba(255,255,255,.7) !important; transition: color .15s; }
+.fcm-link:hover, .fcm-link:active { color: #fff !important; }
+.fcm-link span { text-decoration: underline; text-decoration-color: rgba(255,255,255,.2); }
 
 .footer-legal-bar {
   background: #060409;
