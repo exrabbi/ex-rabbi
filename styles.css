@@ -19238,3 +19238,182 @@ body.modal-open .ai-chat-fab {
   background: rgba(233,30,140,.25); color: #e91e8c;
   border-radius: 4px; padding: 1px 4px; display: inline-block;
 }
+
+/* ══════════════════════════════════════════════════
+   PRODUCT MODAL — PREMIUM UPGRADE (all elements)
+   ══════════════════════════════════════════════════ */
+
+/* Size selector — gradient fill when active */
+.lux-size-opt {
+  height: 46px !important; min-width: 50px !important;
+  font-size: 14px !important; font-weight: 800 !important;
+  border-radius: 14px !important; border-width: 1.5px !important;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1) !important;
+  position: relative !important; overflow: hidden !important;
+}
+.lux-size-opt.active {
+  background: linear-gradient(135deg, #e91e8c, #7c3aed) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  box-shadow: 0 4px 16px rgba(233,30,140,.45), 0 0 0 3px rgba(233,30,140,.2) !important;
+  transform: scale(1.08) !important;
+}
+.lux-size-opt:not(.active):not(.oos) {
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.15) !important;
+  color: rgba(255,255,255,.85) !important;
+}
+.lux-size-opt:not(.active):hover {
+  border-color: rgba(233,30,140,.5) !important;
+  background: rgba(233,30,140,.08) !important;
+}
+
+/* Color swatches — bigger, more 3D */
+.lux-color-opt {
+  width: 42px !important; height: 42px !important;
+  border-radius: 50% !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,.35) !important;
+  transition: all .2s cubic-bezier(.34,1.56,.64,1) !important;
+  position: relative !important;
+}
+.lux-color-opt.active {
+  box-shadow: 0 0 0 3px #1a1040, 0 0 0 5.5px #e91e8c, 0 6px 18px rgba(233,30,140,.5) !important;
+  transform: scale(1.22) !important;
+}
+/* HOT badge on color circles */
+.lux-color-hot-badge {
+  position: absolute !important; top: -5px !important; left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: linear-gradient(135deg, #ff4444, #e91e8c) !important;
+  color: #fff !important; font-size: 7px !important; font-weight: 900 !important;
+  padding: 1px 5px !important; border-radius: 20px !important;
+  letter-spacing: .5px !important; white-space: nowrap !important;
+  pointer-events: none !important;
+}
+
+/* Offer pills — shimmer border, glow */
+.lux-offer-pill {
+  font-size: 11.5px !important; font-weight: 800 !important;
+  padding: 7px 14px !important; border-radius: 22px !important;
+  background: linear-gradient(135deg, rgba(255,180,0,.12), rgba(255,100,0,.08)) !important;
+  border: 1.5px solid rgba(255,180,0,.4) !important;
+  color: #FFB800 !important;
+  box-shadow: 0 2px 10px rgba(255,180,0,.15), inset 0 1px 0 rgba(255,255,255,.08) !important;
+  transition: box-shadow .2s, transform .15s !important;
+}
+.lux-offer-pill:active {
+  transform: scale(.96) !important;
+  box-shadow: 0 2px 6px rgba(255,180,0,.1) !important;
+}
+
+/* Bestseller row — gold premium */
+.lux-bestseller-row {
+  background: linear-gradient(135deg, rgba(255,180,0,.15), rgba(255,100,0,.1)) !important;
+  border: 1.5px solid rgba(255,180,0,.35) !important;
+  border-radius: 16px !important;
+  padding: 10px 14px !important;
+  box-shadow: 0 4px 16px rgba(255,180,0,.12), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+.lux-bs-trophy { font-size: 20px !important; }
+.lux-bs-text { font-size: 13px !important; font-weight: 700 !important; }
+.lux-bs-text b { color: #FFD700 !important; }
+.lux-bs-av {
+  width: 26px !important; height: 26px !important;
+  border: 2px solid #1a1040 !important;
+}
+
+/* Viewing now chip — animated green pulse */
+.lux-viewing-chip {
+  background: rgba(10,200,100,.12) !important;
+  border: 1px solid rgba(10,200,100,.3) !important;
+  border-radius: 22px !important;
+  font-size: 12.5px !important; font-weight: 700 !important;
+  padding: 6px 14px !important; gap: 7px !important;
+  box-shadow: 0 2px 10px rgba(10,200,100,.1) !important;
+}
+.lux-view-pulse {
+  width: 9px !important; height: 9px !important;
+  background: #10d06e !important;
+  border-radius: 50% !important;
+  box-shadow: 0 0 0 0 rgba(16,208,110,.4) !important;
+  animation: viewingPulse 1.8s ease-in-out infinite !important;
+}
+@keyframes viewingPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(16,208,110,.5); }
+  70%  { box-shadow: 0 0 0 8px rgba(16,208,110,.0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,208,110,.0); }
+}
+
+/* Stock chip */
+.lux-stock-chip {
+  border-radius: 22px !important; font-size: 12.5px !important; font-weight: 700 !important;
+  padding: 6px 14px !important;
+}
+.lux-stock-chip:not(.low) {
+  background: rgba(10,200,100,.1) !important;
+  border: 1px solid rgba(10,200,100,.3) !important;
+  color: #10d06e !important;
+}
+
+/* Delivery info card — premium card */
+.lux-ship-card {
+  border-radius: 18px !important;
+  background: linear-gradient(135deg, rgba(16,208,110,.07) 0%, rgba(10,140,80,.05) 100%) !important;
+  border: 1.5px solid rgba(16,208,110,.2) !important;
+  box-shadow: 0 4px 16px rgba(16,208,110,.08) !important;
+  padding: 14px 16px !important;
+}
+.lux-ship-head {
+  font-size: 14px !important; font-weight: 800 !important; color: #10d06e !important;
+}
+.lux-ship-free {
+  font-size: 11px !important; font-weight: 700 !important; color: rgba(255,255,255,.55) !important;
+}
+
+/* Section titles — gradient */
+.lux-section-title {
+  font-size: 15px !important; font-weight: 900 !important;
+  background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,.7) 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+/* Bottom action bar — more premium */
+.lux-bottom-bar {
+  padding: 12px 16px !important;
+  background: rgba(10,6,30,.96) !important;
+  border-top: 1px solid rgba(233,30,140,.15) !important;
+  backdrop-filter: blur(16px) !important;
+}
+.lux-atc-btn {
+  border-radius: 18px !important;
+  font-size: 15px !important; font-weight: 900 !important;
+  letter-spacing: .3px !important;
+  box-shadow: 0 6px 20px rgba(233,30,140,.4) !important;
+}
+.lux-buy-btn {
+  border-radius: 18px !important;
+  box-shadow: 0 6px 20px rgba(255,100,0,.35) !important;
+}
+.lux-qty-wrap {
+  border-radius: 14px !important;
+  border: 1.5px solid rgba(255,255,255,.15) !important;
+  background: rgba(255,255,255,.06) !important;
+}
+
+/* Coupon chip / strip */
+.lux-coupon-chip {
+  background: linear-gradient(135deg, rgba(233,30,140,.12), rgba(124,58,237,.1)) !important;
+  border: 1.5px dashed rgba(233,30,140,.45) !important;
+  border-radius: 20px !important;
+  font-size: 12px !important; font-weight: 800 !important;
+  padding: 7px 14px !important;
+  box-shadow: 0 2px 10px rgba(233,30,140,.1) !important;
+}
+
+/* Info card overall */
+.lux-info-card {
+  border-radius: 24px !important;
+  box-shadow: 0 8px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04) !important;
+}
