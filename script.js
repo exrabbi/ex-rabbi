@@ -946,8 +946,31 @@ function productCardHTML(p) {
     : p.tag === 'new' ? `<span class="nx-badge nx-new">NEW</span>`
     : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
 
+  // Star rating row
+  const rtg = p.rating || 4.2;
+  const full = Math.floor(rtg), half = rtg - full >= 0.4 ? 1 : 0;
+  const starsHtml = Array.from({length:5},(_,i)=>{
+    if(i<full) return `<i class="fas fa-star pcs"></i>`;
+    if(i===full&&half) return `<i class="fas fa-star-half-alt pcs"></i>`;
+    return `<i class="far fa-star pcs pcs-e"></i>`;
+  }).join('');
+  const rcnt = p.ratingCount ? (p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'K':p.ratingCount) : '';
+  const ratingRow = `<div class="pcard-rating-row">${starsHtml}<span class="pcard-rtg-num">${rtg.toFixed(1)}</span>${rcnt?`<span class="pcard-rcnt">(${rcnt})</span>`:''}</div>`;
+
+  // Sold / choice badge
+  const soldSuffix = t('soldOnCard')||'sold';
   const soldTxt = p.sold
-    ? `<div class="pcard-sold-row">${p.sold>=1000?(p.sold/1000).toFixed(1)+'k+':p.sold}+ ${t('soldOnCard')||'sold'}</div>`
+    ? `<div class="pcard-sold-row">${p.sold>=1000?(p.sold/1000).toFixed(1)+'k+':p.sold}+ ${soldSuffix}</div>`
+    : '';
+
+  // Choice badge for popular products
+  const choiceBadge = (p.ratingCount >= 500 || p.tag === 'bestseller')
+    ? `<div class="pcard-choice"><i class="fas fa-crown"></i> Top Choice</div>`
+    : '';
+
+  // Discount pill overlaid on image
+  const discPill = p.discount > 0
+    ? `<div class="pcard-disc-pill">-${p.discount}%</div>`
     : '';
 
   const couponPrice = p.discount > 0
@@ -962,6 +985,7 @@ function productCardHTML(p) {
           ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
         ${isOOS?`<div class="pcard-oos-overlay">${t('outOfStock')}</div>`:''}
         ${isLow?`<div class="pcard-low-overlay">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>`:''}
+        ${discPill}
       </div>
       <div class="pcard-top-btns">
         ${badge}
@@ -970,7 +994,9 @@ function productCardHTML(p) {
         </button>
       </div>
       <div class="pcard-contentBx">
+        ${choiceBadge}
         <h3 class="pcard-name">${getName(p)}</h3>
+        ${ratingRow}
         ${soldTxt}
         <div class="pcard-price-row">
           ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
