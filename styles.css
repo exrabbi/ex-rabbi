@@ -13078,7 +13078,7 @@ body { padding-bottom: 100px !important; }
   background: linear-gradient(145deg, var(--clr), var(--clr2));
   box-shadow: 0 8px 32px rgba(0,0,0,.2);
   cursor: pointer;
-  height: 380px;
+  height: 400px;
   transition: transform .2s, box-shadow .2s;
 }
 .pcard:active {
@@ -13219,6 +13219,44 @@ body { padding-bottom: 100px !important; }
   font-size: 10px;
   color: #c0c0c0;
   text-decoration: line-through;
+}
+
+/* ── Product card enhancements (Amazon-style + premium) ──── */
+/* Star rating row */
+.pcard-rating-row {
+  display: flex; align-items: center; gap: 2px;
+  margin: 2px 0 1px;
+}
+.pcs { font-size: 10px; color: #f59e0b; }
+.pcs-e { color: #d1d5db; }
+.pcard-rtg-num {
+  font-size: 10px; font-weight: 800;
+  color: #f59e0b; margin-left: 3px;
+}
+.pcard-rcnt {
+  font-size: 9px; color: #aaa; margin-left: 1px;
+}
+[data-theme="dark"] .pcard-rcnt { color: #666; }
+
+/* Choice badge */
+.pcard-choice {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff; font-size: 8.5px; font-weight: 800;
+  padding: 2px 7px; border-radius: 20px;
+  letter-spacing: .3px; width: fit-content;
+  margin-bottom: 2px;
+}
+.pcard-choice i { font-size: 7px; }
+
+/* Discount pill on image (bottom-right) */
+.pcard-disc-pill {
+  position: absolute; bottom: 8px; left: 8px;
+  background: linear-gradient(135deg, #ef4444, #e91e8c);
+  color: #fff; font-size: 10px; font-weight: 900;
+  padding: 3px 8px; border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(233,30,140,.4);
+  z-index: 10001; letter-spacing: .3px;
 }
 
 /* SIZE chips — exact reference: dark bg, white text, span:hover background:#237fea */
