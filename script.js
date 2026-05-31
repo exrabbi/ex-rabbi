@@ -894,6 +894,9 @@ function renderProducts(searchTerm = '') {
   else if (currentSort === 'high') filtered = [...filtered].sort((a, b) => b.price - a.price);
   else if (currentSort === 'popular') filtered = [...filtered].sort((a, b) => b.ratingCount - a.ratingCount);
 
+  // ── Hide Out of Stock products from the grid ──
+  filtered = filtered.filter(p => p.stock !== 0);
+
   const grid = document.getElementById('productsGrid');
   const visible = filtered.slice(0, visibleCount);
 
@@ -915,7 +918,10 @@ function renderProducts(searchTerm = '') {
     const newCards = filtered.slice(_rnCount, visibleCount).map(p => productCardHTML(p)).join('');
     grid.insertAdjacentHTML('beforeend', newCards);
   } else {
-    grid.innerHTML = visible.map(p => productCardHTML(p)).join('');
+    // Inject NEW RELEASE banner card after every 6th product card
+    const cards = visible.map(p => productCardHTML(p));
+    if (cards.length >= 4) cards.splice(4, 0, _nrGridBannerHTML());
+    grid.innerHTML = cards.join('');
   }
   _rnFilter = currentFilter; _rnSort = currentSort; _rnSearch = searchTerm;
   _rnPrice = currentPriceMax; _rnColors = colorsKey; _rnCount = visibleCount;
@@ -932,6 +938,45 @@ function renderProducts(searchTerm = '') {
   if (allDone)  allDone.style.display  = allLoaded ? 'flex'  : 'none';
   if (allDoneSpan) allDoneSpan.textContent = t('allProductsShown') || 'All shown';
   _gsapCardEntrance();
+}
+
+// ── NEW RELEASE banner card injected into the product grid ──
+function _nrGridBannerHTML() {
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const rate = T.rate || 1;
+  const cur  = T.currency || 'SAR ';
+  // Best discounted 'new' product
+  const p = PRODUCTS.filter(x => x.stock !== 0 && x.discount > 0 && x.tag === 'new')
+    .sort((a,b) => b.discount - a.discount)[0]
+    || PRODUCTS.filter(x => x.stock !== 0 && x.discount > 0)
+    .sort((a,b) => b.discount - a.discount)[0]
+    || PRODUCTS.find(x => x.stock !== 0);
+  if (!p) return '';
+  const img  = p.image || (p.images && p.images[0]) || '';
+  const disc = p.discount || 50;
+  const sale = Math.round(p.price * rate);
+  return `<div class="nr-grid-card" onclick="openModal(${p.id})">
+    <div class="nr-gc-deco1"></div>
+    <div class="nr-gc-deco2"></div>
+    <div class="nr-gc-left">
+      <div class="nr-gc-eyebrow"><span class="nr-gc-dot"></span> JUST DROPPED</div>
+      <div class="nr-gc-headline">
+        <span class="nr-gc-new">NEW</span>
+        <span class="nr-gc-rel">RELEASE</span>
+      </div>
+      <div class="nr-gc-price">${cur}${sale}</div>
+      <button class="nr-gc-btn"><i class="fas fa-bolt"></i> ORDER NOW</button>
+    </div>
+    <div class="nr-gc-right">
+      <div class="nr-gc-glow"></div>
+      <img class="nr-gc-img" src="${img}" alt="New Release" loading="lazy">
+      <div class="nr-gc-badge">
+        <span class="nr-gc-badge-special">SPECIAL</span>
+        <span class="nr-gc-badge-pct">${disc}%</span>
+        <span class="nr-gc-badge-off">OFF</span>
+      </div>
+    </div>
+  </div>`;
 }
 
 function productCardHTML(p) {

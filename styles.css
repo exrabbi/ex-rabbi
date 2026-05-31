@@ -19420,3 +19420,117 @@ body.modal-open .ai-chat-fab {
   border-radius: 24px !important;
   box-shadow: 0 8px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04) !important;
 }
+
+/* ══════════════════════════════════════════════════
+   NEW RELEASE — In-grid banner card
+   ══════════════════════════════════════════════════ */
+.nr-grid-card {
+  grid-column: 1 / -1;           /* span both columns */
+  position: relative; overflow: hidden;
+  border-radius: 22px; cursor: pointer;
+  background: linear-gradient(135deg, #0a0020 0%, #180040 45%, #0d0030 100%);
+  border: 1px solid rgba(233,30,140,.25);
+  box-shadow: 0 10px 40px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.05);
+  display: flex; align-items: center;
+  min-height: 170px; padding: 20px 18px;
+  transition: transform .2s;
+}
+.nr-grid-card:active { transform: scale(.98); }
+
+/* Decorative blobs */
+.nr-gc-deco1, .nr-gc-deco2 {
+  position: absolute; border-radius: 50%; pointer-events: none; filter: blur(50px);
+}
+.nr-gc-deco1 {
+  width: 180px; height: 180px;
+  background: rgba(233,30,140,.3);
+  top: -60px; right: 20px;
+}
+.nr-gc-deco2 {
+  width: 130px; height: 130px;
+  background: rgba(124,58,237,.25);
+  bottom: -40px; left: 10px;
+}
+
+/* Left text */
+.nr-gc-left {
+  flex: 1; position: relative; z-index: 1;
+}
+.nr-gc-eyebrow {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 9px; font-weight: 800; letter-spacing: 2px;
+  color: #e91e8c; text-transform: uppercase; margin-bottom: 6px;
+}
+.nr-gc-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #e91e8c; box-shadow: 0 0 8px #e91e8c;
+  animation: nrDotPulse 1.8s ease-in-out infinite; flex-shrink: 0;
+}
+.nr-gc-headline {
+  display: flex; flex-direction: column; line-height: 1;
+  margin-bottom: 8px;
+}
+.nr-gc-new {
+  font-size: 32px; font-weight: 900; color: #fff;
+  letter-spacing: -1px;
+  text-shadow: 0 0 20px rgba(255,255,255,.15);
+}
+.nr-gc-rel {
+  font-size: 22px; font-weight: 900; letter-spacing: 3px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed, #ffd700);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nr-gc-price {
+  font-size: 14px; font-weight: 900; color: #ffd700; margin-bottom: 12px;
+}
+.nr-gc-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff; border: none; border-radius: 50px;
+  padding: 9px 18px; font-size: 12px; font-weight: 900;
+  cursor: pointer; letter-spacing: .5px;
+  box-shadow: 0 4px 16px rgba(233,30,140,.4);
+  animation: nrBtnPulse 2.5s ease-in-out infinite;
+}
+.nr-gc-btn:active { transform: scale(.96); }
+
+/* Right product image */
+.nr-gc-right {
+  position: relative; width: 120px; height: 140px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+.nr-gc-glow {
+  position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle, rgba(233,30,140,.4) 0%, rgba(124,58,237,.2) 50%, transparent 70%);
+  animation: nrGlowPulse 3s ease-in-out infinite;
+}
+.nr-gc-img {
+  position: relative; z-index: 1;
+  width: 110px; height: 130px; object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(233,30,140,.4));
+  animation: nrFloat 3.5s ease-in-out infinite;
+}
+
+/* Scalloped discount badge */
+.nr-gc-badge {
+  position: absolute; bottom: -4px; right: -12px; z-index: 2;
+  width: 62px; height: 62px;
+  background: linear-gradient(135deg, #e91e8c, #b8114a);
+  clip-path: polygon(
+    50% 0%,54% 4%,59% 2%,62% 6%,67% 5%,70% 9%,75% 9%,77% 14%,82% 15%,83% 20%,
+    88% 22%,88% 27%,92% 31%,91% 36%,95% 40%,93% 45%,96% 50%,93% 55%,95% 60%,
+    91% 64%,92% 69%,88% 73%,88% 78%,83% 80%,82% 85%,77% 86%,75% 91%,70% 91%,
+    67% 95%,62% 94%,59% 98%,54% 96%,50% 100%,46% 96%,41% 98%,38% 94%,33% 95%,
+    30% 91%,25% 91%,23% 86%,18% 85%,17% 80%,12% 78%,12% 73%,8% 69%,9% 64%,
+    5% 60%,7% 55%,4% 50%,7% 45%,5% 40%,9% 36%,8% 31%,12% 27%,12% 22%,17% 20%,
+    18% 15%,23% 14%,25% 9%,30% 9%,33% 5%,38% 6%,41% 2%,46% 4%
+  );
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  filter: drop-shadow(0 3px 8px rgba(233,30,140,.5));
+  animation: nrBadgeSpin 6s linear infinite;
+}
+.nr-gc-badge-special { font-size: 6.5px; font-weight: 900; color: rgba(255,255,255,.85); }
+.nr-gc-badge-pct { font-size: 15px; font-weight: 900; color: #fff; line-height: 1.1; }
+.nr-gc-badge-off { font-size: 7px; font-weight: 900; color: rgba(255,255,255,.85); }
