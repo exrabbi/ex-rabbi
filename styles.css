@@ -6784,22 +6784,18 @@ html, body { transition: background .35s, color .35s; }
 /* Hide WA + AI floating buttons when cart or payment is open */
 body:has(.cart-sidebar.open) .wa-float-btn,
 body:has(.cart-sidebar.open) .hc-fab,
-body:has(.cart-sidebar.open) .ai-chat-fab,
+body:has(.cart-sidebar.open) .wa-float-btn,
+body:has(.cart-sidebar.open) .hc-fab,
 body:has(#cartSidebar.open) .wa-float-btn,
 body:has(#cartSidebar.open) .hc-fab,
-body:has(#cartSidebar.open) .ai-chat-fab,
 body:has(#payOverlay.open) .wa-float-btn,
 body:has(#payOverlay.open) .hc-fab,
-body:has(#payOverlay.open) .ai-chat-fab,
 body:has(#payModal.open) .wa-float-btn,
 body:has(#payModal.open) .hc-fab,
-body:has(#payModal.open) .ai-chat-fab,
 body:has(.modal-overlay.open) .wa-float-btn,
 body:has(.modal-overlay.open) .hc-fab,
-body:has(.modal-overlay.open) .ai-chat-fab,
 body:has(#locModal.open) .wa-float-btn,
-body:has(#locModal.open) .hc-fab,
-body:has(#locModal.open) .ai-chat-fab {
+body:has(#locModal.open) .hc-fab {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: scale(0.6) !important;
@@ -9725,12 +9721,18 @@ body:not([data-theme="dark"]) .tbm-pill i,
 
 /* 1. Hide floating buttons when product modal is open */
 body.modal-open .wa-float-btn,
-body.modal-open .hc-fab,
-body.modal-open .ai-chat-fab {
+body.modal-open .hc-fab {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: scale(0.5) !important;
   transition: opacity .2s, transform .2s !important;
+}
+/* AI button: SHOW inside product modal */
+body.modal-open .ai-chat-fab {
+  opacity: 1 !important;
+  pointer-events: all !important;
+  transform: scale(1) !important;
+  transition: opacity .25s, transform .25s !important;
 }
 
 /* 2. Info card — spacing & hierarchy */
@@ -18803,3 +18805,16 @@ body:has(#mePanel.open)    .wa-float-btn {
   color: #0066c0; text-decoration: none;
 }
 .bzr-see-all:hover { text-decoration: underline; }
+
+/* ── AI FAB: hidden on main page, visible only in product modal ── */
+.ai-chat-fab {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.4) !important;
+  transition: opacity .25s, transform .3s cubic-bezier(.34,1.56,.64,1) !important;
+}
+body.modal-open .ai-chat-fab {
+  opacity: 1 !important;
+  pointer-events: all !important;
+  transform: scale(1) !important;
+}
