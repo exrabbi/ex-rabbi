@@ -3732,7 +3732,7 @@ function _startAuthFX() {
   const modal = document.getElementById('authModal');
   if (!modal) return;
 
-  /* ── Canvas particle system ── */
+  /* ── Canvas particle + orb system ── */
   let canvas = document.getElementById('authParticleCanvas');
   if (!canvas) {
     canvas = document.createElement('canvas');
@@ -3744,26 +3744,56 @@ function _startAuthFX() {
   fit();
   window.addEventListener('resize', fit);
 
-  const COLS = ['#e91e8c','#FFD700','#7c3aed','#c084fc','#60a5fa','#fff'];
-  const pts = Array.from({length: 55}, (_, i) => ({
+  // Floating glowing orbs (slow, big, dreamy)
+  const orbs = [
+    { x: .15, y: .1,  r: .32, c: '#e91e8c', speed: .0004, phase: 0 },
+    { x: .82, y: .22, r: .28, c: '#7c3aed', speed: .0003, phase: 2.1 },
+    { x: .5,  y: .85, r: .30, c: '#e91e8c', speed: .00035, phase: 4.2 },
+    { x: .1,  y: .65, r: .22, c: '#3b82f6', speed: .00045, phase: 1.1 },
+    { x: .9,  y: .75, r: .25, c: '#a855f7', speed: .00038, phase: 3.3 },
+  ];
+
+  // Small floating particles
+  const COLS = ['#e91e8c','#FFD700','#7c3aed','#c084fc','#60a5fa','#f9a8d4','#fff'];
+  const pts = Array.from({length: 70}, (_, i) => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
-    r: Math.random() * 1.6 + 0.3,
-    vx: (Math.random() - .5) * .35,
-    vy: -(Math.random() * .55 + .18),
-    a: Math.random() * .5 + .18,
+    r: Math.random() * 2.2 + 0.4,
+    vx: (Math.random() - .5) * .4,
+    vy: -(Math.random() * .6 + .15),
+    a: Math.random() * .55 + .2,
     c: COLS[i % COLS.length],
     phase: Math.random() * Math.PI * 2,
   }));
 
   const tick = (t) => {
     if (!modal.classList.contains('open')) { _authFXRaf = null; return; }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    // Draw orbs first (behind particles)
+    orbs.forEach(o => {
+      const ox = Math.cos(t * o.speed + o.phase) * 80;
+      const oy = Math.sin(t * o.speed * 1.3 + o.phase) * 60;
+      const cx = o.x * W + ox, cy = o.y * H + oy;
+      const rad = o.r * Math.min(W, H);
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+      g.addColorStop(0, o.c + '55');
+      g.addColorStop(.4, o.c + '25');
+      g.addColorStop(1, o.c + '00');
+      ctx.globalAlpha = .7 + .3 * Math.sin(t * .0006 + o.phase);
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.fillStyle = g;
+      ctx.fill();
+    });
+
+    // Draw particles on top
     pts.forEach(p => {
       p.x += p.vx; p.y += p.vy;
-      if (p.y < -8)  { p.y = canvas.height + 8; p.x = Math.random() * canvas.width; }
-      if (p.x < -8 || p.x > canvas.width + 8) p.x = Math.random() * canvas.width;
-      const alpha = p.a * (.65 + .35 * Math.sin(t * .0008 + p.phase));
+      if (p.y < -8)  { p.y = H + 8; p.x = Math.random() * W; }
+      if (p.x < -8 || p.x > W + 8) p.x = Math.random() * W;
+      const alpha = p.a * (.6 + .4 * Math.sin(t * .001 + p.phase));
       ctx.globalAlpha = alpha;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
