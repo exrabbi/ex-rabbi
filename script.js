@@ -10211,7 +10211,8 @@ function _renderPlayFeed() {
     const views = v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views;
     const likes = v.likes >= 1000 ? (v.likes/1000).toFixed(1)+'K' : v.likes;
     const initials = (v.creator||'EX').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const thumbUrl = `https://img.youtube.com/vi/${v.yt}/hqdefault.jpg`;
+    const thumbUrl = `https://img.youtube.com/vi/${v.yt}/maxresdefault.jpg`;
+    const thumbFallback = `https://img.youtube.com/vi/${v.yt}/hqdefault.jpg`;
 
     // Build product shelf (Meesho/TikTok Shop style)
     let shelfHtml = '';
@@ -10272,7 +10273,9 @@ function _renderPlayFeed() {
     return `<div class="play-card" data-yt="${v.yt||''}" data-vid="${v.id}" data-type="${isLocal?'local':'youtube'}" data-idbkey="${v.idbKey||''}">
       ${isLocal
         ? `<div class="play-local-thumb" style="background:#111;position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><i class="fas fa-play-circle" style="font-size:64px;color:rgba(255,255,255,.3)"></i></div>`
-        : `<img class="play-thumb" src="${thumbUrl}" alt="${v.title}" onerror="this.style.display='none'">
+        : `<div class="play-thumb-bg" style="background-image:url('${thumbUrl}')"></div>
+      <img class="play-thumb" src="${thumbUrl}" alt="${v.title}"
+        onerror="this.src='${thumbFallback}';this.onerror=function(){this.style.display='none'}">
       <div class="play-thumb-overlay"></div>`}
       <div class="play-tap-area" ondblclick="_playDblTap('${v.id}',event)" onclick="_playToggle(this.closest('.play-card'))"></div>
       <div class="play-big-icon" id="pbi-${v.id}"><i class="fas fa-play"></i></div>
@@ -10364,9 +10367,28 @@ function _renderPlayFeed() {
         }
       }
     });
-  }, { threshold: 0.6 });
+  }, { threshold: 0.3 });
 
   feed.querySelectorAll('.play-card').forEach(c => observer.observe(c));
+
+  // Eagerly load first card's media without waiting for observer
+  setTimeout(() => {
+    const first = feed.querySelector('.play-card');
+    if (!first) return;
+    const type = first.dataset.type;
+    const yt = first.dataset.yt;
+    if (type !== 'local' && yt && !first.querySelector('.play-card-iframe')) {
+      const iframe = document.createElement('iframe');
+      iframe.className = 'play-card-iframe active';
+      iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
+      iframe.allowFullscreen = true;
+      iframe.setAttribute('loading', 'eager');
+      iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&iv_load_policy=3`;
+      first.appendChild(iframe);
+      const thumb = first.querySelector('.play-thumb');
+      if (thumb) iframe.addEventListener('load', () => { thumb.style.opacity = '0'; });
+    }
+  }, 600);
 }
 
 let _playMuted = {};
