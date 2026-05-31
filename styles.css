@@ -594,7 +594,7 @@ img { max-width: 100%; display: block; }
   gap: 8px; padding: 6px 10px 8px;
 }
 .two-col-card {
-  background: #fff; border-radius: 14px;
+  background: #150030; border-radius: 14px;
   overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,.08);
 }
 .two-col-head {
@@ -666,7 +666,7 @@ img { max-width: 100%; display: block; }
   border-radius: 14px; overflow: hidden;
   box-shadow: 0 2px 10px rgba(0,0,0,.10);
   transition: transform .18s, box-shadow .18s;
-  background: #fff;
+  background: #150030;
 }
 .col-showcase-tile:hover { transform: translateY(-3px); box-shadow: 0 6px 18px rgba(0,0,0,.15); }
 .col-tile-img {
@@ -684,7 +684,7 @@ img { max-width: 100%; display: block; }
 
 /* ===== PRODUCT CARD ===== */
 .product-card {
-  background: #fff; border-radius: 10px; overflow: hidden;
+  background: #150030; border-radius: 10px; overflow: hidden;
   box-shadow: 0 1px 4px rgba(0,0,0,.07);
   cursor: pointer; transition: transform .2s, box-shadow .2s; position: relative;
 }
@@ -831,7 +831,7 @@ img { max-width: 100%; display: block; }
 
 /* Flash card */
 .flash-card {
-  min-width: 130px; background: #fff; border-radius: 10px;
+  min-width: 130px; background: #150030; border-radius: 10px;
   overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.07);
   cursor: pointer; transition: transform .2s;
 }
@@ -10010,9 +10010,9 @@ body.modal-open .ai-chat-fab {
   border-bottom: none !important;
 }
 
-/* 5 — Body: plain white */
-body { background: #fff !important; }
-[data-theme="dark"] body, body[data-theme="dark"] { background: #07061a !important; }
+/* 5 — Body: always dark */
+body { background: #07001a !important; }
+[data-theme="light"] body { background: #f5f5f5 !important; }
 
 /* 6 — Bottom nav: restore original full-width white bar */
 .bottom-nav {
@@ -19534,3 +19534,53 @@ body.modal-open .ai-chat-fab {
 .nr-gc-badge-special { font-size: 6.5px; font-weight: 900; color: rgba(255,255,255,.85); }
 .nr-gc-badge-pct { font-size: 15px; font-weight: 900; color: #fff; line-height: 1.1; }
 .nr-gc-badge-off { font-size: 7px; font-weight: 900; color: rgba(255,255,255,.85); }
+
+/* ════════════════════════════════════════════════════════════
+   ★ FORCE DARK v307 — page NEVER shows white on scroll
+   ════════════════════════════════════════════════════════════ */
+
+/* 1 — Lock page canvas */
+html { background: #07001a !important; }
+[data-theme="light"] html { background: #f5f5f5 !important; }
+
+/* 2 — Reviews entry strip (main page, below product grid) */
+[data-theme="dark"] .rev-entry-strip {
+  background: #120830 !important;
+  border-color: rgba(233,30,140,.2) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.4) !important;
+}
+[data-theme="dark"] .rev-entry-score  { color: #fff !important; }
+[data-theme="dark"] .rev-entry-count  { color: rgba(255,255,255,.55) !important; }
+[data-theme="dark"] .rev-entry-divider { background: rgba(255,255,255,.15) !important; }
+[data-theme="dark"] .rev-entry-left   { color: #eee !important; }
+
+/* 3 — Category circles (icon row) */
+[data-theme="dark"] .circle-img {
+  background: #1e1535 !important;
+  border-color: rgba(255,255,255,.1) !important;
+}
+[data-theme="dark"] .cat-circle span { color: rgba(255,255,255,.75) !important; }
+
+/* 4 — Product image placeholder before image loads */
+[data-theme="dark"] .product-img-wrap {
+  background: linear-gradient(135deg,#1a1a2e,#12122a) !important;
+}
+
+/* 5 — Deal mini cards */
+[data-theme="dark"] .deal-mini-card { background: #1e1e2e !important; }
+
+/* 6 — Collection tile inner text */
+[data-theme="dark"] .col-tile-name { color: #eee !important; }
+[data-theme="dark"] .col-tile-sub  { color: rgba(255,255,255,.55) !important; }
+
+/* 7 — Section titles in dark mode */
+[data-theme="dark"] .section-title { color: #eee !important; }
+[data-theme="dark"] .product-name  { color: #e0e0e0 !important; }
+
+/* 8 — Main scroll container never white */
+[data-theme="dark"] .main-content { background: transparent !important; }
+
+/* 9 — Catch-all: any bare section in main scroll */
+[data-theme="dark"] main > section:not([class*="team"]):not([class*="reviews"]):not([class*="play"]) {
+  background-color: transparent !important;
+}
