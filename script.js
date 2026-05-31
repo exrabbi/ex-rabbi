@@ -3177,6 +3177,7 @@ function closeSettings() {
 let savedLocation = JSON.parse(localStorage.getItem('exglobal_location') || 'null');
 let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
 let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
+const _LOC_DEFAULT_LAT = 24.7136, _LOC_DEFAULT_LNG = 46.6753; // Riyadh center
 let _locGeocodeTimer = null, _locGeocoding = false;
 let _locGpsWatcher = null, _locGpsBestAccuracy = Infinity;
 
@@ -3186,9 +3187,9 @@ function openLocation() {
   document.body.style.overflow = 'hidden';
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
-  setTimeout(() => { _initLocMap(); _locAutoGps(); }, 350);
-  // When user returns from browser settings, retry GPS
-  const _retry = () => { if (document.getElementById('locOverlay')?.classList.contains('open')) _locAutoGps(); };
+  setTimeout(() => { _initLocMap(); }, 350);
+  // When user returns from browser settings after enabling GPS, retry
+  const _retry = () => { if (document.getElementById('locOverlay')?.classList.contains('open') && _locGpsWatcher === null) _locAutoGps(); };
   document.removeEventListener('visibilitychange', _retry);
   document.addEventListener('visibilitychange', _retry);
 }
@@ -3204,13 +3205,13 @@ function _initLocMap() {
     }
     return;
   }
-  const defaultLat = savedLocation?.lat || 24.0;
-  const defaultLng = savedLocation?.lng || 45.0;
+  const defaultLat = savedLocation?.lat || _LOC_DEFAULT_LAT;
+  const defaultLng = savedLocation?.lng || _LOC_DEFAULT_LNG;
   _locCurrLat = defaultLat; _locCurrLng = defaultLng;
 
   locMap = L.map(document.getElementById('locMap'), {
     center: [defaultLat, defaultLng],
-    zoom: savedLocation?.lat ? 16 : 6,
+    zoom: savedLocation?.lat ? 16 : 13,
     zoomControl: false,
     attributionControl: false,
   });
