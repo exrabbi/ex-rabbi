@@ -773,11 +773,16 @@ function renderTrustpilotReviews() {
     'https://i.pravatar.cc/80?img=32','https://i.pravatar.cc/80?img=15','https://i.pravatar.cc/80?img=22',
     'https://i.pravatar.cc/80?img=9','https://i.pravatar.cc/80?img=41','https://i.pravatar.cc/80?img=38',
     'https://i.pravatar.cc/80?img=55','https://i.pravatar.cc/80?img=60','https://i.pravatar.cc/80?img=3',
-    'https://i.pravatar.cc/80?img=27','https://i.pravatar.cc/80?img=18'
+    'https://i.pravatar.cc/80?img=27','https://i.pravatar.cc/80?img=18','https://i.pravatar.cc/80?img=25',
+    'https://i.pravatar.cc/80?img=33','https://i.pravatar.cc/80?img=44','https://i.pravatar.cc/80?img=50',
+    'https://i.pravatar.cc/80?img=12','https://i.pravatar.cc/80?img=7','https://i.pravatar.cc/80?img=63',
+    'https://i.pravatar.cc/80?img=20','https://i.pravatar.cc/80?img=36','https://i.pravatar.cc/80?img=48',
+    'https://i.pravatar.cc/80?img=17','https://i.pravatar.cc/80?img=29','https://i.pravatar.cc/80?img=52',
+    'https://i.pravatar.cc/80?img=8','https://i.pravatar.cc/80?img=43','https://i.pravatar.cc/80?img=57'
   ];
   const starsFilled = Math.round(parseFloat(avgRating));
   const starsHtml = Array.from({length:5},(_,i)=>`<i class="${i<starsFilled?'fas':'far'} fa-star tpr-star"></i>`).join('');
-  const cards = SEED_REVIEWS.slice(0,10).map((r,i) => {
+  const cards = SEED_REVIEWS.slice(0,30).map((r,i) => {
     const txt = r.text[currentLang] || r.text.en || '';
     const firstLine = txt.split(/[.!?।\n]/)[0].trim();
     const body = txt.slice(firstLine.length+1).trim().split(' ').slice(0,14).join(' ');
