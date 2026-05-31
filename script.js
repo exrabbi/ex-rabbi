@@ -9987,12 +9987,43 @@ function _sendOrderEmail(order) {
 }
 
 /* ═══════════════════════════════════════════════════════
-   PLAY VIDEO FEED
+   PLAY VIDEO FEED — TikTok-style with real phone upload
    ═══════════════════════════════════════════════════════ */
 
-// Default sample videos — user can add more via the + button
+// ── IndexedDB for large video blob storage ──────────────
+const _playIDB = (() => {
+  let _db = null;
+  const _open = () => new Promise((res, rej) => {
+    if (_db) { res(_db); return; }
+    const req = indexedDB.open('exg_play_idb', 1);
+    req.onupgradeneeded = e => e.target.result.createObjectStore('videos', { keyPath: 'id' });
+    req.onsuccess = e => { _db = e.target.result; res(_db); };
+    req.onerror = () => rej(req.error);
+  });
+  return {
+    save: async (id, blob) => {
+      const db = await _open();
+      return new Promise((res, rej) => {
+        const tx = db.transaction('videos', 'readwrite');
+        tx.objectStore('videos').put({ id, blob });
+        tx.oncomplete = () => res();
+        tx.onerror = () => rej(tx.error);
+      });
+    },
+    get: async (id) => {
+      const db = await _open();
+      return new Promise((res, rej) => {
+        const req2 = db.transaction('videos', 'readonly').objectStore('videos').get(id);
+        req2.onsuccess = () => res(req2.result?.blob || null);
+        req2.onerror = () => rej(req2.error);
+      });
+    }
+  };
+})();
+
+// Default sample videos
 const _PLAY_DEFAULTS = [
-  { id:'pv1', yt:'SopPnUQQFgc', title:'النشيد الوطني السعودي — عاش المليك', creator:'EX GLOBAL', productId:null, views:12400, likes:840 },
+  { id:'pv1', type:'youtube', yt:'SopPnUQQFgc', title:'النشيد الوطني السعودي — عاش المليك', creator:'EX GLOBAL', creatorId:'exglobal', productId:null, views:12400, likes:840 },
 ];
 
 function _playGetVideos() {
@@ -10031,7 +10062,7 @@ function _renderPlayFeed() {
     feed.innerHTML = `<div class="play-empty">
       <i class="fas fa-play-circle"></i>
       <h3>No videos yet</h3>
-      <p>Tap <strong>+ Add Video</strong> to add your first product video!</p>
+      <p>Tap <strong>+ Add Video</strong> to upload from your phone!</p>
     </div>`;
     return;
   }
@@ -10091,10 +10122,20 @@ function _renderPlayFeed() {
       </div>`;
     }
 
-    return `<div class="play-card" data-yt="${v.yt}" data-vid="${v.id}">
-      <img class="play-thumb" src="${thumbUrl}" alt="${v.title}" onerror="this.style.display='none'">
-      <div class="play-thumb-overlay"></div>
-      <div class="play-tap-area" onclick="_playToggle(this.closest('.play-card'))"></div>
+    const isLocal = v.type === 'local';
+    const commentCount = JSON.parse(localStorage.getItem('exg_comments_' + v.id) || '[]').length;
+    const isFollowing = _playFollowing.has(v.creatorId || v.creator || '');
+    const showFollow = (v.creatorId || v.creator) !== 'exglobal' && (v.creatorId || v.creator) !== 'EX GLOBAL';
+    const followBtn = showFollow
+      ? `<button class="play-follow-btn${isFollowing?' following':''}" onclick="event.stopPropagation();_playFollow('${v.creatorId||v.creator}',this)">${isFollowing?'✓ Following':'+ Follow'}</button>`
+      : `<span class="play-views"><i class="fas fa-eye"></i>${views}</span>`;
+
+    return `<div class="play-card" data-yt="${v.yt||''}" data-vid="${v.id}" data-type="${isLocal?'local':'youtube'}" data-idbkey="${v.idbKey||''}">
+      ${isLocal
+        ? `<div class="play-local-thumb" style="background:#111;position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><i class="fas fa-play-circle" style="font-size:64px;color:rgba(255,255,255,.3)"></i></div>`
+        : `<img class="play-thumb" src="${thumbUrl}" alt="${v.title}" onerror="this.style.display='none'">
+      <div class="play-thumb-overlay"></div>`}
+      <div class="play-tap-area" ondblclick="_playDblTap('${v.id}',event)" onclick="_playToggle(this.closest('.play-card'))"></div>
       <div class="play-big-icon" id="pbi-${v.id}"><i class="fas fa-play"></i></div>
 
       <div class="play-view-badge">
@@ -10102,9 +10143,13 @@ function _renderPlayFeed() {
       </div>
 
       <div class="play-actions">
-        <button class="play-action-btn" id="plike-${v.id}" onclick="event.stopPropagation();_playLike('${v.id}',this)">
+        <button class="play-action-btn${_playLiked.has(v.id)?' liked':''}" id="plike-${v.id}" onclick="event.stopPropagation();_playLike('${v.id}',this)">
           <i class="fas fa-heart"></i>
           <span>${likes}</span>
+        </button>
+        <button class="play-action-btn comment-btn" onclick="event.stopPropagation();_playComment('${v.id}')">
+          <i class="fas fa-comment-dots"></i>
+          <span>${commentCount||0}</span>
         </button>
         <button class="play-action-btn" onclick="event.stopPropagation();_playShare('${v.id}')">
           <i class="fas fa-share-nodes"></i>
@@ -10122,39 +10167,62 @@ function _renderPlayFeed() {
         <div class="play-creator-row">
           <div class="play-avatar">${initials}</div>
           <span class="play-creator-name">${v.creator || 'EX GLOBAL'}</span>
-          <span class="play-views"><i class="fas fa-eye"></i>${views} views</span>
+          ${followBtn}
         </div>
         <div class="play-title">${v.title}</div>
       </div>
     </div>`;
   }).join('');
 
-  // IntersectionObserver — load iframe when card enters viewport
+  // IntersectionObserver — load media when card enters viewport
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    entries.forEach(async entry => {
       const card = entry.target;
-      const yt = card.dataset.yt;
-      if (!yt) return;
+      const vid = card.dataset.vid;
+      const type = card.dataset.type;
       if (entry.isIntersecting) {
-        if (!card.querySelector('.play-card-iframe')) {
-          const iframe = document.createElement('iframe');
-          iframe.className = 'play-card-iframe active';
-          iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
-          iframe.allowFullscreen = true;
-          iframe.setAttribute('loading', 'lazy');
-          // autoplay=1 mute=1 fills screen, user taps to unmute; controls=0 hides YT UI
-          iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
-          card.appendChild(iframe);
-          // Hide thumbnail once iframe loaded
-          const thumb = card.querySelector('.play-thumb');
-          if (thumb) iframe.addEventListener('load', () => { thumb.style.opacity = '0'; });
+        if (type === 'local') {
+          if (!card.querySelector('.play-card-video')) {
+            const idbKey = card.dataset.idbkey;
+            if (!idbKey) return;
+            try {
+              const blob = await _playIDB.get(idbKey);
+              if (!blob) return;
+              const video = document.createElement('video');
+              video.className = 'play-card-video';
+              video.autoplay = true; video.muted = true; video.loop = true; video.playsInline = true;
+              video.src = URL.createObjectURL(blob);
+              card.appendChild(video);
+              const localThumb = card.querySelector('.play-local-thumb');
+              if (localThumb) video.addEventListener('canplay', () => { localThumb.style.opacity = '0'; });
+            } catch(e) {}
+          } else {
+            card.querySelector('.play-card-video')?.play?.().catch(()=>{});
+          }
+        } else {
+          const yt = card.dataset.yt;
+          if (!yt) return;
+          if (!card.querySelector('.play-card-iframe')) {
+            const iframe = document.createElement('iframe');
+            iframe.className = 'play-card-iframe active';
+            iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
+            iframe.allowFullscreen = true;
+            iframe.setAttribute('loading', 'lazy');
+            iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=1&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
+            card.appendChild(iframe);
+            const thumb = card.querySelector('.play-thumb');
+            if (thumb) iframe.addEventListener('load', () => { thumb.style.opacity = '0'; });
+          }
         }
       } else {
-        // Remove iframe when off-screen to save memory
-        const iframe = card.querySelector('.play-card-iframe');
-        if (iframe) { iframe.remove(); }
-        const thumb = card.querySelector('.play-thumb');
-        if (thumb) thumb.style.opacity = '1';
+        if (type === 'local') {
+          card.querySelector('.play-card-video')?.pause?.();
+        } else {
+          const iframe = card.querySelector('.play-card-iframe');
+          if (iframe) { iframe.remove(); }
+          const thumb = card.querySelector('.play-thumb');
+          if (thumb) thumb.style.opacity = '1';
+        }
       }
     });
   }, { threshold: 0.6 });
@@ -10167,14 +10235,36 @@ let _playMuted = {};
 function _playToggleMute(vid) {
   const card = document.querySelector(`[data-vid="${vid}"]`);
   if (!card) return;
-  const iframe = card.querySelector('.play-card-iframe');
   const btn = document.getElementById('pmute-' + vid);
-  if (!iframe) return;
   _playMuted[vid] = !_playMuted[vid];
-  const muted = _playMuted[vid] ? 0 : 1;
-  const yt = card.dataset.yt;
-  iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${muted}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
+  const isMuted = !_playMuted[vid];
+  if (card.dataset.type === 'local') {
+    const video = card.querySelector('.play-card-video');
+    if (video) video.muted = isMuted;
+  } else {
+    const iframe = card.querySelector('.play-card-iframe');
+    if (!iframe) return;
+    const yt = card.dataset.yt;
+    iframe.src = `https://www.youtube.com/embed/${yt}?autoplay=1&mute=${isMuted?1:0}&loop=1&playlist=${yt}&controls=0&playsinline=1&rel=0&modestbranding=1&fs=0&vq=hd1080&iv_load_policy=3`;
+  }
   if (btn) btn.innerHTML = `<i class="fas fa-volume-${_playMuted[vid] ? 'high' : 'xmark'}"></i>`;
+}
+
+function _playDblTap(vid, e) {
+  e.stopPropagation();
+  const likeBtn = document.getElementById('plike-' + vid);
+  if (likeBtn) _playLike(vid, likeBtn);
+  const card = e.currentTarget?.closest?.('.play-card') || document.querySelector(`[data-vid="${vid}"]`);
+  if (!card) return;
+  const rect = card.getBoundingClientRect();
+  const cx = (e.clientX || (e.touches?.[0]?.clientX) || rect.left + rect.width/2) - rect.left;
+  const cy = (e.clientY || (e.touches?.[0]?.clientY) || rect.top + rect.height/2) - rect.top;
+  const heart = document.createElement('div');
+  heart.className = 'play-dbl-heart';
+  heart.textContent = '❤️';
+  heart.style.cssText = `left:${cx}px;top:${cy}px`;
+  card.appendChild(heart);
+  setTimeout(() => heart.remove(), 950);
 }
 
 function _playShelfSelect(thumbEl, vid, productId) {
@@ -10238,20 +10328,116 @@ function _playLike(vid, btn) {
 function _playShare(vid) {
   const v = _playGetVideos().find(x => x.id === vid);
   if (!v) return;
-  const url = `https://youtube.com/watch?v=${v.yt}`;
+  const url = v.type === 'local' ? window.location.href : `https://youtube.com/watch?v=${v.yt}`;
+  const shareData = { title: v.title || 'EX GLOBAL Video', text: v.title, url };
   if (navigator.share) {
-    navigator.share({ title: v.title, url }).catch(() => {});
+    navigator.share(shareData).catch(() => {});
   } else {
     navigator.clipboard?.writeText(url).then(() => showToast('🔗 Link copied!'));
   }
 }
 
-// ── Upload sheet ──
+// ── Follow system ──────────────────────────────────────────
+const _playFollowing = new Set(JSON.parse(localStorage.getItem('exg_play_following') || '[]'));
+
+function _playFollow(creatorId, btn) {
+  if (_playFollowing.has(creatorId)) {
+    _playFollowing.delete(creatorId);
+    if (btn) { btn.classList.remove('following'); btn.textContent = '+ Follow'; }
+    showToast('Unfollowed');
+  } else {
+    _playFollowing.add(creatorId);
+    if (btn) { btn.classList.add('following'); btn.textContent = '✓ Following'; }
+    const name = creatorId.split(' ')[0];
+    showToast('🔔 Following ' + name + '!');
+  }
+  localStorage.setItem('exg_play_following', JSON.stringify([..._playFollowing]));
+}
+
+// ── Comments ───────────────────────────────────────────────
+let _playActiveCommentVid = null;
+
+function _playComment(vid) {
+  _playActiveCommentVid = vid;
+  const comments = JSON.parse(localStorage.getItem('exg_comments_' + vid) || '[]');
+  const drawer = document.getElementById('playCommentsDrawer');
+  const overlay = document.getElementById('pcdOverlay');
+  const list = document.getElementById('pcdList');
+  const countEl = document.getElementById('pcdCount');
+  if (countEl) countEl.textContent = comments.length;
+  if (list) {
+    list.innerHTML = comments.length
+      ? comments.map(c => `
+        <div class="pcd-item">
+          <div class="pcd-item-avatar">${(c.name||'U')[0].toUpperCase()}</div>
+          <div class="pcd-item-body">
+            <div class="pcd-item-name">${_escHtml(c.name||'Anonymous')}</div>
+            <div class="pcd-item-text">${_escHtml(c.text)}</div>
+          </div>
+          <button class="pcd-item-like" onclick="_pcdLike(this)"><i class="fas fa-heart"></i><span>0</span></button>
+        </div>`).join('')
+      : `<div class="pcd-empty">No comments yet. Be the first! 💬</div>`;
+  }
+  const avatarEl = document.getElementById('pcdMyAvatar');
+  if (avatarEl && currentUser?.name) avatarEl.textContent = currentUser.name[0].toUpperCase();
+  if (drawer) drawer.classList.add('open');
+  if (overlay) overlay.classList.add('open');
+}
+
+function _closePlayComments() {
+  document.getElementById('playCommentsDrawer')?.classList.remove('open');
+  document.getElementById('pcdOverlay')?.classList.remove('open');
+  _playActiveCommentVid = null;
+}
+
+function _playAddComment() {
+  const input = document.getElementById('pcdInput');
+  const text = input?.value.trim();
+  if (!text || !_playActiveCommentVid) return;
+  const vid = _playActiveCommentVid;
+  const name = currentUser?.name || 'Customer';
+  const comments = JSON.parse(localStorage.getItem('exg_comments_' + vid) || '[]');
+  comments.push({ id: Date.now(), text, name, ts: Date.now() });
+  localStorage.setItem('exg_comments_' + vid, JSON.stringify(comments));
+  if (input) input.value = '';
+  const countEl = document.getElementById('pcdCount');
+  if (countEl) countEl.textContent = comments.length;
+  const list = document.getElementById('pcdList');
+  if (list) {
+    const emptyEl = list.querySelector('.pcd-empty');
+    if (emptyEl) emptyEl.remove();
+    const item = document.createElement('div');
+    item.className = 'pcd-item pcd-item-new';
+    item.innerHTML = `
+      <div class="pcd-item-avatar">${name[0].toUpperCase()}</div>
+      <div class="pcd-item-body">
+        <div class="pcd-item-name">${_escHtml(name)}</div>
+        <div class="pcd-item-text">${_escHtml(text)}</div>
+      </div>
+      <button class="pcd-item-like" onclick="_pcdLike(this)"><i class="fas fa-heart"></i><span>0</span></button>`;
+    list.appendChild(item);
+    list.scrollTop = list.scrollHeight;
+  }
+  const commentSpan = document.querySelector(`[data-vid="${vid}"] .comment-btn span`);
+  if (commentSpan) commentSpan.textContent = comments.length;
+}
+
+function _pcdLike(btn) {
+  const span = btn.querySelector('span');
+  if (span) span.textContent = (parseInt(span.textContent)||0) + 1;
+  btn.style.color = '#e91e8c';
+}
+
+function _escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Upload sheet ──────────────────────────────────────────
 function _openPlayUpload() {
+  if (!currentUser) { showToast('⚠️ Please log in to upload videos'); return; }
   const sheet = document.getElementById('playUploadSheet');
   if (!sheet) return;
   sheet.style.display = 'flex';
-  // Populate product select
   const sel = document.getElementById('pusProductId');
   if (sel && sel.options.length === 1) {
     PRODUCTS.forEach(p => {
@@ -10266,41 +10452,89 @@ function _openPlayUpload() {
 function _closePlayUpload() {
   const sheet = document.getElementById('playUploadSheet');
   if (sheet) sheet.style.display = 'none';
+  const fileInput = document.getElementById('pusFileInput');
+  if (fileInput) fileInput.value = '';
+  const previewVideo = document.getElementById('pusPreviewVideo');
+  if (previewVideo) { previewVideo.src = ''; previewVideo.load(); }
+  const pickerWrap = document.getElementById('pusPickerWrap');
+  const previewWrap = document.getElementById('pusPreviewWrap');
+  const progressWrap = document.getElementById('pusProgressWrap');
+  const progressBar = document.getElementById('pusProgressBar');
+  if (pickerWrap) pickerWrap.style.display = 'flex';
+  if (previewWrap) previewWrap.style.display = 'none';
+  if (progressWrap) progressWrap.style.display = 'none';
+  if (progressBar) progressBar.style.width = '0%';
+  const titleInput = document.getElementById('pusTitle');
+  if (titleInput) titleInput.value = '';
+  const saveBtn = document.getElementById('pusSaveBtn');
+  if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Post Video ✓'; }
 }
 
-function _savePlayVideo() {
-  const urlInput = document.getElementById('pusYtUrl');
+function _pusFileSelected(input) {
+  const file = input.files?.[0];
+  if (!file) return;
+  const pickerWrap = document.getElementById('pusPickerWrap');
+  const previewWrap = document.getElementById('pusPreviewWrap');
+  const previewVideo = document.getElementById('pusPreviewVideo');
+  if (pickerWrap) pickerWrap.style.display = 'none';
+  if (previewWrap) previewWrap.style.display = 'block';
+  if (previewVideo) previewVideo.src = URL.createObjectURL(file);
+}
+
+async function _savePlayVideo() {
+  const fileInput = document.getElementById('pusFileInput');
   const titleInput = document.getElementById('pusTitle');
-  const creatorInput = document.getElementById('pusCreator');
   const productSel = document.getElementById('pusProductId');
+  const saveBtn = document.getElementById('pusSaveBtn');
+  const progressWrap = document.getElementById('pusProgressWrap');
+  const progressBar = document.getElementById('pusProgressBar');
+  const progressLabel = document.getElementById('pusProgressLabel');
 
-  const rawUrl = urlInput?.value.trim() || '';
-  const ytMatch = rawUrl.match(/(?:v=|youtu\.be\/|embed\/)([A-Za-z0-9_-]{11})/);
-  if (!ytMatch) { showToast('⚠️ Please enter a valid YouTube URL'); return; }
-  const ytId = ytMatch[1];
+  const file = fileInput?.files?.[0];
+  if (!file) { showToast('⚠️ Please select a video first'); return; }
 
-  const newVideo = {
-    id: 'pv_' + Date.now(),
-    yt: ytId,
-    title: titleInput?.value.trim() || 'Product Video',
-    creator: creatorInput?.value.trim() || (currentUser?.name || 'Creator'),
-    productId: productSel?.value ? parseInt(productSel.value) : null,
-    views: 0,
-    likes: 0,
-    addedAt: Date.now(),
-  };
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+  if (progressWrap) progressWrap.style.display = 'block';
+
+  let prog = 0;
+  const progInterval = setInterval(() => {
+    prog = Math.min(prog + 12, 88);
+    if (progressBar) progressBar.style.width = prog + '%';
+  }, 120);
 
   try {
+    const idbKey = 'vid_' + Date.now();
+    await _playIDB.save(idbKey, file);
+
+    clearInterval(progInterval);
+    if (progressBar) progressBar.style.width = '100%';
+    if (progressLabel) progressLabel.textContent = 'Posted! ✓';
+
+    const newVideo = {
+      id: 'pv_' + Date.now(),
+      type: 'local',
+      idbKey,
+      title: titleInput?.value.trim() || 'My Video',
+      creator: currentUser?.name || 'Creator',
+      creatorId: currentUser?.email || 'anon',
+      productId: productSel?.value ? parseInt(productSel.value) : null,
+      views: 0,
+      likes: 0,
+      addedAt: Date.now(),
+    };
     const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
     saved.unshift(newVideo);
     localStorage.setItem('exg_play_videos', JSON.stringify(saved));
-  } catch(e) {}
 
-  _closePlayUpload();
-  if (urlInput) urlInput.value = '';
-  if (titleInput) titleInput.value = '';
-  if (creatorInput) creatorInput.value = '';
-  if (productSel) productSel.value = '';
-  _renderPlayFeed();
-  showToast('✅ Video added!');
+    setTimeout(() => {
+      _closePlayUpload();
+      _renderPlayFeed();
+      showToast('🎉 Video posted!');
+    }, 700);
+  } catch(err) {
+    clearInterval(progInterval);
+    if (progressWrap) progressWrap.style.display = 'none';
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Post Video ✓'; }
+    showToast('❌ Could not save — try a smaller file');
+  }
 }

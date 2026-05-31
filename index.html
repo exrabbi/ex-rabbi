@@ -112,7 +112,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=300" />
+  <link rel="stylesheet" href="styles.css?v=301" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2594,7 +2594,7 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=265"></script>
+  <script src="script.js?v=266"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
@@ -2681,23 +2681,61 @@
   <div class="play-upload-sheet" id="playUploadSheet" style="display:none">
     <div class="pus-inner">
       <div class="pus-handle"></div>
-      <h3 class="pus-title">📹 Add Video</h3>
-      <p class="pus-sub">Paste a YouTube link to add a product video</p>
-      <input class="pus-input" id="pusYtUrl" type="url" placeholder="https://youtube.com/watch?v=..." />
-      <input class="pus-input" id="pusTitle" type="text" placeholder="Video title (e.g. Skincare Review)" />
-      <input class="pus-input" id="pusCreator" type="text" placeholder="Creator name (optional)" />
+      <h3 class="pus-title">📹 Upload Video</h3>
+      <p class="pus-sub">Record or pick a video from your phone</p>
+
+      <!-- File picker tap zone -->
+      <div class="pus-picker-wrap" id="pusPickerWrap" onclick="document.getElementById('pusFileInput').click()">
+        <div class="pus-picker-icon"><i class="fas fa-video"></i></div>
+        <div class="pus-picker-text">Tap to record or choose video</div>
+        <div class="pus-picker-sub">MP4, MOV, AVI — up to 500 MB</div>
+      </div>
+      <input type="file" id="pusFileInput" accept="video/*" style="display:none" onchange="_pusFileSelected(this)">
+
+      <!-- Preview (shown after selection) -->
+      <div class="pus-preview-wrap" id="pusPreviewWrap" style="display:none">
+        <video class="pus-preview-video" id="pusPreviewVideo" playsinline muted controls></video>
+        <button class="pus-preview-change" onclick="event.stopPropagation();document.getElementById('pusFileInput').click()"><i class="fas fa-redo"></i> Change</button>
+      </div>
+
+      <!-- Upload progress -->
+      <div class="pus-progress-wrap" id="pusProgressWrap" style="display:none">
+        <div class="pus-progress-bar-bg"><div class="pus-progress-bar" id="pusProgressBar"></div></div>
+        <div class="pus-progress-label" id="pusProgressLabel">Saving…</div>
+      </div>
+
+      <input class="pus-input" id="pusTitle" type="text" placeholder="Caption (e.g. Love this dress! 😍)" />
       <div class="pus-prod-row">
-        <label class="pus-label">Link a product (optional)</label>
+        <label class="pus-label">Tag a product (optional)</label>
         <select class="pus-input" id="pusProductId">
           <option value="">— No product —</option>
         </select>
       </div>
       <div class="pus-actions">
         <button class="pus-cancel" onclick="_closePlayUpload()">Cancel</button>
-        <button class="pus-save" onclick="_savePlayVideo()">Add Video ✓</button>
+        <button class="pus-save" id="pusSaveBtn" onclick="_savePlayVideo()">Post Video ✓</button>
       </div>
     </div>
   </div>
+
+  <!-- Comments Drawer -->
+  <div class="play-comments-drawer" id="playCommentsDrawer">
+    <div class="pcd-inner">
+      <div class="pcd-handle"></div>
+      <div class="pcd-header">
+        <span class="pcd-title">Comments</span>
+        <span class="pcd-count" id="pcdCount">0</span>
+        <button class="pcd-close-btn" onclick="_closePlayComments()"><i class="fas fa-xmark"></i></button>
+      </div>
+      <div class="pcd-list" id="pcdList"></div>
+      <div class="pcd-input-row">
+        <div class="pcd-my-avatar" id="pcdMyAvatar">Me</div>
+        <input class="pcd-input" id="pcdInput" type="text" placeholder="Add a comment…" maxlength="200" onkeydown="if(event.key==='Enter')_playAddComment()">
+        <button class="pcd-send-btn" onclick="_playAddComment()"><i class="fas fa-paper-plane"></i></button>
+      </div>
+    </div>
+  </div>
+  <div class="pcd-overlay" id="pcdOverlay" onclick="_closePlayComments()"></div>
 
   <!-- Birthday Wish Overlay -->
   <div class="bday-overlay" id="bdayOverlay">
