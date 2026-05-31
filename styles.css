@@ -18536,12 +18536,12 @@ body:has(#mePanel.open)    .wa-float-btn {
    DARAZ-STYLE LOGIN  (v274 — white clean theme)
    ══════════════════════════════════════════════ */
 #authModal {
-  background: #f0f2f5 !important;
+  background: #07001a !important;
 }
 #authModal::before, #authModal::after { display: none !important; }
 
-/* Hero — dark text on white bg */
-#authModal .auth-hero { padding: 36px 0 22px; }
+/* Hero — bright text on dark bg */
+#authModal .auth-hero { padding: 32px 0 20px; }
 #authModal .auth-hero-logo-wrap {
   background: transparent !important;
   box-shadow: none !important;
@@ -18549,22 +18549,44 @@ body:has(#mePanel.open)    .wa-float-btn {
   width: auto !important; height: auto !important;
 }
 #authModal .auth-hero-logo-img {
-  width: 190px !important; height: auto !important;
+  width: 110px !important; height: auto !important;
   border-radius: 0 !important;
-  filter: drop-shadow(0 4px 16px rgba(0,0,0,.15)) !important;
+  filter:
+    drop-shadow(0 0 24px rgba(233,30,140,.7))
+    drop-shadow(0 0 48px rgba(124,58,237,.5)) !important;
+  animation: authLogoFloat 4s ease-in-out infinite !important;
 }
 #authModal .auth-hero-brand {
-  color: #1a1a2e !important; font-size: 24px !important;
-  text-transform: uppercase !important;
+  font-size: 26px !important; font-weight: 900 !important;
+  letter-spacing: 3px !important; text-transform: uppercase !important;
+  background: linear-gradient(90deg, #fff 0%, #f9d5e5 40%, #f472b6 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-shadow: none !important;
+  filter: drop-shadow(0 0 12px rgba(233,30,140,.4)) !important;
 }
-#authModal .auth-hero-brand span { color: #e91e8c !important; }
+#authModal .auth-hero-brand span {
+  background: linear-gradient(90deg, #e91e8c, #ff6eb4) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
 #authModal .auth-hero-tag {
-  color: #555 !important; font-size: 13px !important;
-  text-transform: uppercase !important; letter-spacing: .5px !important;
+  color: rgba(255,255,255,.75) !important;
+  font-size: 11px !important; letter-spacing: 2px !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 0 20px rgba(233,30,140,.4) !important;
 }
-#authModal .auth-hero-trust { color: #888 !important; }
-#authModal .auth-hero-dot { color: #ccc !important; }
-#authModal .auth-hero-trust i { color: #e91e8c !important; }
+#authModal .auth-hero-trust {
+  display: flex !important;
+  align-items: center; justify-content: center; gap: 8px;
+  color: rgba(255,255,255,.55) !important;
+  font-size: 11px !important; font-weight: 600 !important;
+  margin-top: 10px !important;
+}
+#authModal .auth-hero-dot { color: rgba(255,255,255,.25) !important; }
+#authModal .auth-hero-trust i { color: #e91e8c !important; font-size: 10px !important; }
 
 /* Card — pure white */
 #authModal .auth-card {
