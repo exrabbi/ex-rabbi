@@ -426,6 +426,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initColScroll();
   initScrollReveal();
   _checkBirthdayWish();
+  _initNewRelease();
 });
 
 /* ===== COLLECTION TILES — apply saved admin data ===== */
@@ -9984,6 +9985,88 @@ function _sendOrderEmail(order) {
   </p>
 </div>`);
   _ejsSend(order.customer.email, `✅ Order Confirmed — ${orderId} | EX GLOBAL SA`, html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   NEW RELEASE SECTION
+   ═══════════════════════════════════════════════════════ */
+function _initNewRelease() {
+  const section = document.getElementById('nrSection');
+  if (!section) return;
+
+  // Pick featured product: highest discount among 'new' tagged, else highest discount overall
+  const T = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const rate = T.rate || 1;
+  const cur = T.currency || 'SAR ';
+
+  let featured = PRODUCTS.filter(p => p.tag === 'new' && p.discount > 0)
+    .sort((a,b) => b.discount - a.discount)[0]
+    || PRODUCTS.filter(p => p.discount > 0).sort((a,b) => b.discount - a.discount)[0]
+    || PRODUCTS[0];
+
+  if (!featured) return;
+  window._nrFeaturedId = featured.id;
+
+  // Populate hero product
+  const img = document.getElementById('nrProductImg');
+  if (img) {
+    img.src = featured.image || (featured.images && featured.images[0]) || '';
+    img.alt = featured.names?.en || featured.name || 'New Release';
+    img.onclick = () => openModal(featured.id);
+  }
+
+  // Discount badge
+  const discPct = document.getElementById('nrDiscPct');
+  if (discPct && featured.discount) discPct.textContent = featured.discount + '% OFF';
+
+  // Right column: product info
+  const right = document.getElementById('nrRight');
+  if (right) {
+    const salePrice = Math.round(featured.price * rate);
+    const origPrice = featured.discount ? Math.round(salePrice / (1 - featured.discount / 100)) : null;
+    right.innerHTML = `
+      <div class="nr-right-tag">NEW</div>
+      <div class="nr-right-name">${(featured.names?.en || featured.name || '').slice(0, 40)}</div>
+      <div class="nr-right-orig">${origPrice ? cur + origPrice : ''}</div>
+      <div class="nr-right-price">${cur}${salePrice}</div>`;
+  }
+
+  // Description from product brand/category
+  const desc = document.getElementById('nrDesc');
+  if (desc && featured.brand) desc.textContent = featured.brand + ' — New season arrivals';
+
+  // Order button onclick
+  const btn = document.getElementById('nrOrderBtn');
+  if (btn) btn.onclick = () => openModal(featured.id);
+
+  // Horizontal strip: top 6 'new' products (excluding featured)
+  const strip = document.getElementById('nrStripScroll');
+  if (strip) {
+    const newProds = PRODUCTS.filter(p => p.id !== featured.id && (p.tag === 'new' || p.discount >= 20))
+      .sort((a,b) => b.discount - a.discount).slice(0, 8);
+    strip.innerHTML = newProds.map(p => {
+      const sp = Math.round(p.price * rate);
+      const img2 = p.image || (p.images && p.images[0]) || '';
+      return `<div class="nr-strip-card" onclick="openModal(${p.id})">
+        <img class="nr-strip-img" src="${img2}" alt="${p.names?.en||p.name||''}" loading="lazy">
+        <div class="nr-strip-info">
+          <div class="nr-strip-price">${cur}${sp}</div>
+          ${p.discount ? `<div class="nr-strip-disc">-${p.discount}%</div>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Custom scroll-triggered float-up animation (more dramatic than generic .reveal)
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        section.classList.add('nr-visible');
+        io.unobserve(section);
+      }
+    });
+  }, { threshold: 0.06 });
+  io.observe(section);
 }
 
 /* ═══════════════════════════════════════════════════════
