@@ -6030,6 +6030,58 @@ function _localAiReply(text) {
     return privMsg[currentLang] || privMsg.en;
   }
 
+  // ══════════════════════════════════════════════════════
+  //  CASUAL CONVERSATION — catches before shopping logic
+  // ══════════════════════════════════════════════════════
+  const _name1 = currentUser?.name ? currentUser.name.split(' ')[0] : '';
+  const _ns = _name1 ? `, ${_name1}` : '';
+
+  // Bengali: how are you / are you okay
+  if (/[ঀ-৿]/.test(text) && /ভালো\s*আছ|কেমন\s*আছ|কি\s*খবর|কি\s*হাল|ঠিক\s*আছ|কি\s*অবস্থা/.test(text)) {
+    const replies = [
+      `আলহামদুলিল্লাহ${_ns}, ভালো আছি! 😊 আপনি কেমন আছেন? কিছু জানতে চাইলে বলুন!`,
+      `জী, ভালো আছি${_ns}! 😄 আপনি কেমন আছেন? যা মনে চায় জিজ্ঞেস করুন — আমি সাহায্য করতে এখানেই আছি।`,
+      `একদম ফাটাফাটি আছি${_ns}! 💪 আপনি ভালো তো? কিছু লাগলে বলুন!`,
+    ];
+    return replies[Math.floor(Math.random() * replies.length)];
+  }
+
+  // Bengali: greeting (broad — catches any message starting with greeting words or containing them)
+  if (/[ঀ-৿]/.test(text) && /^[\s]*(?:হ্যালো|হাই|হেলো|হেই|সালাম|আস.সালাম|ওয়ালাইকুম|নমস্কার|আদাব|হলো|হলু|হেলু)/i.test(text)) {
+    const greets = [
+      `হ্যালো${_ns}! 😊 কেমন আছেন? কিছু জানতে চাইলে বলুন!`,
+      `হাই${_ns}! 👋 আপনাকে দেখে ভালো লাগলো! কী জানতে চান?`,
+      `আস-সালামুয়ালাইকুম${_ns}! কেমন আছেন আপনি? যা মনে চায় জিজ্ঞেস করুন!`,
+    ];
+    return greets[Math.floor(Math.random() * greets.length)];
+  }
+
+  // Bengali: thanks
+  if (/[ঀ-৿]/.test(text) && /ধন্যবাদ|শুকরিয়া|থ্যাংক/.test(text)) {
+    return `আপনাকে স্বাগতম${_ns}! 😊 আর কিছু জানার থাকলে বলুন!`;
+  }
+
+  // Bengali: compliment / love
+  if (/[ঀ-৿]/.test(text) && /ভালো\s*লাগ|ভালো\s*বাস|দারুণ|সুন্দর|অসাধারণ|বেস্ট|সেরা/.test(text)) {
+    return `ধন্যবাদ${_ns}! 😄 আপনার মতামতে আমরা অনুপ্রাণিত। আর কিছু লাগলে বলুন!`;
+  }
+
+  // Bengali: good morning/night/afternoon
+  if (/[ঀ-৿]/.test(text) && /শুভ\s*(?:সকাল|সন্ধ্যা|বিকাল|রাত|দুপুর)|গুড\s*(?:মর্নিং|ইভনিং|নাইট)/.test(text)) {
+    const timeGreets = [`শুভেচ্ছা${_ns}! 😊 কীভাবে সাহায্য করতে পারি?`, `শুভেচ্ছা${_ns}! আজকে কি কিছু দরকার? 😊`];
+    return timeGreets[Math.floor(Math.random() * timeGreets.length)];
+  }
+
+  // English: how are you
+  if (!/[ঀ-৿؀-ۿ]/.test(text) && /how\s*are\s*you|how\s*r\s*u|hru|you\s*ok|r\s*u\s*ok/i.test(q)) {
+    return `I'm great${_ns}, thanks for asking! 😊 How can I help you today?`;
+  }
+
+  // Arabic: how are you
+  if (/[؀-ۿ]/.test(text) && /كيف\s*حالك|كيف\s*الحال|انت\s*بخير/.test(text)) {
+    return `بخير الحمد لله${_ns}! 😊 كيف يمكنني مساعدتك اليوم؟`;
+  }
+
   // ──────────────────────────────────────────────────────
   //  SHOPPING INTENT DETECTION (for Bengali / Arabic)
   //  If message has NO shopping intent, give friendly
