@@ -112,7 +112,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=296" />
+  <link rel="stylesheet" href="styles.css?v=297" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -942,13 +942,14 @@
       btn.style.right = 'auto'; btn.style.bottom = 'auto';
       btn.style.left = origX + 'px'; btn.style.top = origY + 'px';
       btn.style.transition = 'none';
-      e.preventDefault();
+      // Do NOT preventDefault here — allows click/tap to fire on mobile
     }
     function onMove(e) {
       if (!dragging) return;
       var t = e.touches ? e.touches[0] : e;
       var dx = t.clientX - startX, dy = t.clientY - startY;
-      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) moved = true;
+      if (Math.abs(dx) > 8 || Math.abs(dy) > 8) moved = true;
+      if (!moved) return;
       var nx = Math.max(8, Math.min(window.innerWidth - 60, origX + dx));
       var ny = Math.max(8, Math.min(window.innerHeight - 150, origY + dy));
       btn.style.left = nx + 'px'; btn.style.top = ny + 'px';
@@ -963,12 +964,15 @@
       var snapX = cx < window.innerWidth / 2 ? 12 : window.innerWidth - 64;
       btn.style.left = snapX + 'px';
       localStorage.setItem('wa_btn_pos', JSON.stringify({x: snapX, y: parseFloat(btn.style.top)}));
-      if (moved) e.preventDefault();
+      // If user just tapped (no drag), open WhatsApp
+      if (!moved) {
+        window.open(btn.href, '_blank');
+      }
     }
-    btn.addEventListener('touchstart', onStart, {passive:false});
+    btn.addEventListener('touchstart', onStart, {passive:true});
     btn.addEventListener('touchmove', onMove, {passive:false});
-    btn.addEventListener('touchend', onEnd, {passive:false});
-    btn.addEventListener('click', function(e){ if (moved) e.preventDefault(); });
+    btn.addEventListener('touchend', onEnd, {passive:true});
+    btn.addEventListener('click', function(e){ if (moved) { e.preventDefault(); moved = false; } });
   })();
   </script>
 
