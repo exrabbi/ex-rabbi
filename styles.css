@@ -20064,3 +20064,46 @@ html {
   font-size: 11px !important;
   border-radius: 8px !important;
 }
+
+/* ── Light Mode Full Fix — all sections properly visible ─── */
+
+/* Bottom nav */
+[data-theme="light"] .bottom-nav {
+  background: #fff !important;
+  border-top: 1px solid rgba(0,0,0,.1) !important;
+  box-shadow: 0 -2px 16px rgba(0,0,0,.08) !important;
+}
+[data-theme="light"] .bnav-btn { color: #888 !important; }
+[data-theme="light"] .bnav-btn.active { color: #e91e8c !important; }
+[data-theme="light"] .bnav-label { color: #888 !important; }
+[data-theme="light"] .bnav-btn.active .bnav-label { color: #e91e8c !important; }
+
+/* Flash deal cards in light mode */
+[data-theme="light"] .fc2-card { background: #fff !important; box-shadow: 0 2px 16px rgba(0,0,0,.1) !important; }
+[data-theme="light"] .fc2-panel { background: rgba(255,255,255,.98) !important; }
+[data-theme="light"] .fc2-name { color: #111 !important; }
+
+/* Product cards in light mode */
+[data-theme="light"] .product-card,
+[data-theme="light"] .pcard { background: #fff !important; box-shadow: 0 2px 12px rgba(0,0,0,.08) !important; }
+[data-theme="light"] .pcard-name { color: #111 !important; }
+
+/* Flash deals header */
+[data-theme="light"] .flash-deals-banner { background: linear-gradient(135deg, #e91e8c, #7c3aed) !important; }
+
+/* Section backgrounds */
+[data-theme="light"] .main-wrap,
+[data-theme="light"] body { background: #f4f4f8 !important; }
+[data-theme="light"] .section-header,
+[data-theme="light"] .sec-title { color: #111 !important; }
+
+/* Header / topbar */
+[data-theme="light"] .top-header { background: #fff !important; border-bottom: 1px solid rgba(0,0,0,.08) !important; }
+[data-theme="light"] .icon-btn { color: #333 !important; }
+[data-theme="light"] .search-bar { background: #f0f0f5 !important; border: 1px solid #e0e0e8 !important; }
+[data-theme="light"] #searchInput { color: #333 !important; }
+[data-theme="light"] #searchInput::placeholder { color: #999 !important; }
+
+/* Category chips */
+[data-theme="light"] .cat-chip { background: #fff !important; color: #333 !important; border: 1px solid #e0e0e8 !important; }
+[data-theme="light"] .cat-chip.active { background: #e91e8c !important; color: #fff !important; border-color: #e91e8c !important; }

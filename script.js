@@ -320,12 +320,12 @@ function _applyProductOverrides() {
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
-  sessionStorage.setItem('exg_theme', theme);
-  localStorage.setItem('exglobal_theme', theme);
-  const icon = document.getElementById('themeIcon');
-  if (icon) {
-    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+  // Never persist light mode to storage — dark is always the default on next visit
+  if (theme === 'dark') {
+    localStorage.setItem('exglobal_theme', 'dark');
   }
+  const icon = document.getElementById('themeIcon');
+  if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
 function toggleTheme() {
   applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
