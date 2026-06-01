@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=322" />
+  <link rel="stylesheet" href="styles.css?v=323" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2534,19 +2534,26 @@
 
   <!-- ===== EXIT INTENT POPUP ===== -->
   <div class="promo-overlay" id="exitOverlay" onclick="closeExitPopup()"></div>
-  <div class="promo-popup exit-popup" id="exitPopup">
-    <button class="promo-close" onclick="closeExitPopup()"><i class="fas fa-times"></i></button>
-    <div class="promo-emoji">🎁</div>
-    <div class="promo-title">Wait! Special offer for you</div>
-    <div class="promo-sub">Get <b>10% OFF</b> your entire order right now</div>
-    <div class="promo-coupon-box">
-      <span class="promo-coupon-code">COMEBACK10</span>
-      <span class="promo-coupon-label">Use this code at checkout</span>
+  <div class="exit-popup-new" id="exitPopup">
+    <div class="exit-bg-glow"></div>
+    <button class="exit-close-btn" onclick="closeExitPopup()"><i class="fas fa-times"></i></button>
+    <div class="exit-badge-pill">⚡ LIMITED TIME OFFER</div>
+    <div class="exit-gift-icon">🎁</div>
+    <h2 class="exit-headline">Don't Leave Empty<br>Handed!</h2>
+    <p class="exit-subline">Special deal reserved just for you</p>
+    <div class="exit-pct-wrap">
+      <span class="exit-pct-num">10</span>
+      <span class="exit-pct-label">%<br>OFF</span>
     </div>
-    <button class="promo-cta" onclick="exitGrabDeal()">
+    <div class="exit-coupon-card" onclick="exitGrabDeal()">
+      <div class="exit-coupon-scissors">✂ - - - - - - - - - - - -</div>
+      <div class="exit-coupon-code">COMEBACK10</div>
+      <div class="exit-coupon-hint"><i class="fas fa-hand-pointer"></i> Tap to apply instantly</div>
+    </div>
+    <button class="exit-cta-btn" onclick="exitGrabDeal()">
       <i class="fas fa-bolt"></i> Grab My 10% Discount
     </button>
-    <button class="promo-skip" onclick="closeExitPopup()">No thanks, I'll pay full price</button>
+    <button class="exit-skip-btn" onclick="closeExitPopup()">No thanks, I'll pay full price</button>
   </div>
 
   <!-- WELCOME OFFER POPUP -->
