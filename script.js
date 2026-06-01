@@ -320,6 +320,7 @@ function _applyProductOverrides() {
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
+  sessionStorage.setItem('exg_theme', theme);
   localStorage.setItem('exglobal_theme', theme);
   const icon = document.getElementById('themeIcon');
   if (icon) {
@@ -327,7 +328,6 @@ function applyTheme(theme) {
   }
 }
 function toggleTheme() {
-  localStorage.setItem('exg_theme_user_choice', '1'); // mark as explicit user choice
   applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
 }
 
