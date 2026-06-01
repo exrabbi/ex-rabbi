@@ -3298,13 +3298,59 @@ function selectGender(g) {
   const mBtn = document.getElementById('genderMaleBtn');
   const fBtn = document.getElementById('genderFemaleBtn');
   if (!mBtn || !fBtn) return;
-  if (g === 'male') {
-    mBtn.style.border = '2px solid #e91e8c'; mBtn.style.background = '#fce4f3'; mBtn.style.color = '#e91e8c';
-    fBtn.style.border = '2px solid #ddd';    fBtn.style.background = '#f5f5f5'; fBtn.style.color = '#888';
-  } else {
-    fBtn.style.border = '2px solid #e91e8c'; fBtn.style.background = '#fce4f3'; fBtn.style.color = '#e91e8c';
-    mBtn.style.border = '2px solid #ddd';    mBtn.style.background = '#f5f5f5'; mBtn.style.color = '#888';
-  }
+  mBtn.classList.toggle('active-gender', g === 'male');
+  fBtn.classList.toggle('active-gender', g === 'female');
+}
+
+async function _changeProfilePic() {
+  return new Promise(resolve => {
+    const inp = document.createElement('input');
+    inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = async () => {
+      const file = inp.files[0];
+      if (!file) return resolve();
+      showToast('⏳ Uploading photo…');
+      try {
+        const blob = await _compressProfileImg(file);
+        const fd = new FormData();
+        fd.append('file', blob, 'avatar.jpg');
+        const res = await fetch('https://telegra.ph/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (!Array.isArray(data) || !data[0]?.src) throw new Error('upload failed');
+        const url = 'https://telegra.ph' + data[0].src;
+        const updated = { ...currentUser, avatar: url };
+        setUser(updated);
+        const img = document.getElementById('profileAvatarImg');
+        const fallback = document.getElementById('profileAvatarFallback');
+        if (img) { img.src = url; img.style.display = 'block'; }
+        if (fallback) fallback.style.display = 'none';
+        showToast('✅ Profile photo updated!');
+      } catch(e) {
+        showToast('❌ Upload failed — try a smaller photo');
+      }
+      resolve();
+    };
+    inp.click();
+  });
+}
+
+function _compressProfileImg(file) {
+  return new Promise(resolve => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX = 800;
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; } }
+      else       { if (h > MAX) { w = Math.round(w * MAX / h); h = MAX; } }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(b => resolve(b), 'image/jpeg', 0.82);
+    };
+    img.src = url;
+  });
 }
 
 function saveProfile() {
