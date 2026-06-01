@@ -14600,23 +14600,21 @@ body { padding-bottom: 100px !important; }
 /* ── Card shell ── */
 .fc2-card {
   position: relative;
-  height: 360px;
-  border-radius: 20px;
+  display: flex; flex-direction: column;
+  border-radius: 16px;
   overflow: hidden;
   cursor: pointer;
-  background: #111;
-  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0,0,0,.12);
   transition: transform .18s, box-shadow .18s;
 }
-.fc2-card:active {
-  transform: scale(.97);
-  box-shadow: 0 2px 10px rgba(0,0,0,.15);
-}
+.fc2-card:active { transform: scale(.97); }
 
-/* ── Full-bleed image ── */
+/* ── Image section: top 62% ── */
 .fc2-img {
-  position: absolute; inset: 0; overflow: hidden;
-  background: #f4f4f4;
+  position: relative;
+  flex: 0 0 62%; overflow: hidden;
+  background: #f7f7f7;
 }
 .fc2-img img {
   width: 100%; height: 100%;
@@ -14674,17 +14672,13 @@ body { padding-bottom: 100px !important; }
 
 /* ── Bottom white panel ── */
 .fc2-panel {
-  position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
-  background: rgba(255,255,255,.97);
-  backdrop-filter: blur(6px);
-  border-radius: 16px 16px 20px 20px;
-  padding: 10px 11px 12px;
-  display: flex; flex-direction: column; gap: 4px;
-  box-shadow: 0 -4px 20px rgba(0,0,0,.14);
+  flex: 1;
+  background: #fff;
+  padding: 8px 10px 10px;
+  display: flex; flex-direction: column; gap: 3px;
+  overflow: hidden;
 }
-[data-theme="dark"] .fc2-panel {
-  background: rgba(13,10,30,.96);
-}
+[data-theme="dark"] .fc2-panel { background: #100d22; }
 
 /* ── Name ── */
 .fc2-name {
@@ -20191,3 +20185,55 @@ html {
   display: flex; align-items: center; gap: 4px;
 }
 .fc2-coupon i { font-size: 8px; }
+
+/* ── AliExpress-style card: big image top, compact info bottom ── */
+/* Card sizes in horizontal scroll */
+.flash-products .fc2-card,
+.two-col-products .fc2-card {
+  flex: 0 0 44% !important;
+  width: 44% !important;
+  min-width: 44% !important;
+  height: 370px !important;
+  scroll-snap-align: start !important;
+}
+@media (min-width: 390px) {
+  .flash-products .fc2-card,
+  .two-col-products .fc2-card {
+    flex: 0 0 42% !important;
+    width: 42% !important;
+    height: 390px !important;
+  }
+}
+
+/* Image fills top 62% of card */
+.fc2-img { flex: 0 0 62% !important; }
+
+/* Panel gets remaining 38% — compact */
+.fc2-panel {
+  flex: 1 !important;
+  padding: 7px 9px 8px !important;
+  gap: 2px !important;
+}
+
+/* Compact text sizes */
+.fc2-name { font-size: 11px !important; -webkit-line-clamp: 2 !important; white-space: normal !important; }
+.fc2-meta-row { display: flex; align-items: center; gap: 6px; }
+.fc2-rating-row { margin: 0 !important; gap: 2px !important; }
+.fc2-star { font-size: 9px !important; color: #f59e0b; }
+.fc2-rating-val { font-size: 10px !important; }
+.fc2-rating-cnt { font-size: 9px !important; }
+.fc2-sold { font-size: 9px !important; margin: 0 !important; }
+.fc2-status { font-size: 9px !important; padding: 2px 6px !important; }
+.fc2-prices { display: flex; align-items: center; gap: 6px; }
+.fc2-price { font-size: 14px !important; font-weight: 900; color: #e91e8c; }
+.fc2-orig  { font-size: 10px !important; }
+.fc2-coupon { font-size: 9px !important; margin: 0 !important; }
+.fc2-btn { padding: 6px 8px !important; font-size: 11px !important; border-radius: 8px !important; margin-top: 2px !important; }
+.fc2-choice { font-size: 9px !important; padding: 1px 6px !important; margin: 0 !important; }
+
+/* Light mode card */
+[data-theme="light"] .fc2-card { background: #fff !important; box-shadow: 0 2px 10px rgba(0,0,0,.1) !important; }
+[data-theme="light"] .fc2-panel { background: #fff !important; }
+[data-theme="dark"] .fc2-panel { background: #100d22 !important; }
+[data-theme="dark"] .fc2-name { color: #f0eeff !important; }
+[data-theme="dark"] .fc2-card { background: #100d22 !important; }
