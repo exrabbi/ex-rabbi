@@ -740,17 +740,19 @@ function flashCardHTML(p) {
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
           style="${p.imgFocus?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:'object-position:top center'}"/>
         ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
+        ${badge}
+        <button class="fc2-wish wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
+          <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
+        </button>
         ${discPill}
       </div>
-      ${badge}
-      <button class="fc2-wish wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-        <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
-      </button>
       <div class="fc2-panel">
         ${choiceBadge}
         <h3 class="fc2-name">${getName(p)}</h3>
-        ${ratingRow}
-        ${soldTxt}
+        <div class="fc2-meta-row">
+          ${ratingRow}
+          ${soldTxt}
+        </div>
         ${statusBadge}
         <div class="fc2-prices">
           <span class="fc2-price">${fmt(p.price)}</span>
