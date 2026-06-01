@@ -737,15 +737,15 @@ function flashCardHTML(p) {
       <div class="fc2-img${p.imgFit==='contain'?' img-fit-contain':''}">
         <img src="${p.cardImg || p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
-          style="object-fit:${p.imgFit||'cover'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
+          style="object-fit:${p.imgFit||'contain'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
         ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
+        ${discPill}
       </div>
       ${badge}
       <button class="fc2-wish wish-btn ${inWish ? 'active' : ''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
         <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
       </button>
       <div class="fc2-panel">
-        ${discPill}
         ${choiceBadge}
         <h3 class="fc2-name">${getName(p)}</h3>
         ${ratingRow}
