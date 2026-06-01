@@ -3763,22 +3763,37 @@ async function publishToWebsite() {
 
   try {
     const storeData = collectStoreData();
-    // Strip base64 data URLs — they make the file too large for GitHub API
-    function stripBase64(obj) {
-      if (!obj || typeof obj !== 'object') return obj;
-      if (Array.isArray(obj)) return obj.map(stripBase64);
-      const out = {};
-      for (const [k, v] of Object.entries(obj)) {
-        if (typeof v === 'string' && v.startsWith('data:')) out[k] = '';
-        else out[k] = stripBase64(v);
+
+    // Auto-upload any base64 images to Telegra.ph before publishing
+    async function upgradeBase64(val) {
+      if (typeof val === 'string') {
+        if (!val.startsWith('data:image/')) return val;
+        try {
+          const blob = await (await fetch(val)).blob();
+          const fd = new FormData();
+          fd.append('file', blob, 'image.jpg');
+          const r = await fetch('https://telegra.ph/upload', { method: 'POST', body: fd });
+          const d = await r.json();
+          if (Array.isArray(d) && d[0]?.src) return 'https://telegra.ph' + d[0].src;
+        } catch(e) {}
+        return ''; // strip if upload failed
       }
-      return out;
+      if (Array.isArray(val)) return Promise.all(val.map(upgradeBase64));
+      if (val && typeof val === 'object') {
+        const out = {};
+        for (const [k, v] of Object.entries(val)) out[k] = await upgradeBase64(v);
+        return out;
+      }
+      return val;
     }
-    const cleanData = stripBase64(storeData);
+
+    btnText.textContent = 'Uploading images...';
+    const cleanData = await upgradeBase64(storeData);
     const jsonStr = JSON.stringify(cleanData, null, 2);
-    if (jsonStr.length > 800000) {
-      toast('⚠️ ডেটা অনেক বড় — ছবির URL ব্যবহার করুন, base64 নয়'); return;
+    if (jsonStr.length > 1200000) {
+      toast('⚠️ ডেটা অনেক বড় — কিছু পুরানো product মুছুন'); return;
     }
+    btnText.textContent = 'Publishing...';
     const content = toBase64UTF8(jsonStr);
     const apiBase = 'https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json';
 
