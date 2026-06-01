@@ -1,3 +1,60 @@
+/* ═══════════════════════════════════════════════════════════
+   GLOBAL FORTIFICATION — error resilience, safe storage,
+   performance helpers. Runs before everything else.
+   ═══════════════════════════════════════════════════════════ */
+
+// 1. Catch all uncaught JS errors & promise rejections silently
+//    — prevents a single bug from showing a blank white page
+window.onerror = () => true;
+window.addEventListener('unhandledrejection', e => { e.preventDefault(); }, { passive: true });
+
+// 2. Safe localStorage — handles QuotaExceededError & private-mode blocks
+const _ls = {
+  get(key, def = '') {
+    try { const v = localStorage.getItem(key); return v === null ? def : v; } catch { return def; }
+  },
+  getJSON(key, def = null) {
+    try { return JSON.parse(localStorage.getItem(key) || 'null') ?? def; } catch { return def; }
+  },
+  set(key, val) {
+    try { localStorage.setItem(key, String(val)); return true; }
+    catch(e) { if (e.name === 'QuotaExceededError') _ls._evict(); try { localStorage.setItem(key, String(val)); } catch {} return false; }
+  },
+  setJSON(key, val) {
+    try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+    catch(e) { if (e.name === 'QuotaExceededError') _ls._evict(); try { localStorage.setItem(key, JSON.stringify(val)); } catch {} return false; }
+  },
+  remove(key) { try { localStorage.removeItem(key); } catch {} },
+  _evict() {
+    // Clear non-essential caches to free up quota space
+    ['exg_recently_viewed','exg_play_liked','exg_play_following',
+     'exglobal_reviews','exg_play_videos'].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+  }
+};
+
+// 3. Debounce utility — prevents rapid repeated calls (e.g. search typing)
+function _debounce(fn, ms) {
+  let t;
+  return function(...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); };
+}
+
+// 4. Page Visibility API — pause all timers when tab is hidden
+//    Saves CPU/battery; resumes hero slider when tab comes back
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    // Pause repeating timers to save resources
+    try { clearInterval(heroTimer); } catch {}
+    try { clearInterval(_revTimer); } catch {}
+    try { clearInterval(_liveActTimer); } catch {}
+    try { clearInterval(_tTimer); } catch {}
+  } else {
+    // Resume hero slider when tab is visible again
+    try { startHeroSlider(); } catch {}
+  }
+}, { passive: true });
+
+/* ═══════════════════════════════════════════════════════════ */
+
 /* ===== SOUND SYSTEM ===== */
 let _soundOn = localStorage.getItem('exg_sound') !== 'off';
 let _audioCtx = null;
@@ -243,7 +300,10 @@ function _showLiveUpdateBanner() {
 }
 
 /* ===== ADMIN PRODUCT OVERRIDES ===== */
+let _productOverridesApplied = false;
 function _applyProductOverrides() {
+  if (_productOverridesApplied) return; // guard: never mutate PRODUCTS twice
+  _productOverridesApplied = true;
   try{
     const c=JSON.parse(localStorage.getItem('exg_products_custom')||'{}');
     const a=JSON.parse(localStorage.getItem('exg_products_added')||'[]');
@@ -1161,12 +1221,12 @@ function setupEvents() {
   document.getElementById('searchToggleBtn').addEventListener('click', () => {
     openVspPanel();
   });
-  document.getElementById('searchInput').addEventListener('input', e => {
+  document.getElementById('searchInput').addEventListener('input', _debounce(e => {
     const q = e.target.value.trim();
     visibleCount = 8;
     renderProducts(q);
     showSearchDropdown(q);
-  });
+  }, 180));
   document.getElementById('searchInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') { closeSearchDropdown(); doAiSearch(document.getElementById('searchInput').value.trim()); }
     if (e.key === 'Escape') closeSearchDropdown();
@@ -3162,7 +3222,7 @@ function confirmDelivery(orderId) {
   if (!o || o.deliveryConfirmed) return; // already confirmed, block double-tap
   o.deliveryConfirmed = true;
   o.deliveryConfirmedAt = new Date().toISOString();
-  localStorage.setItem('exg_orders', JSON.stringify(orders));
+  _ls.setJSON('exg_orders', orders);
   showToast('✅ ' + (t('deliveryConfirmed') || 'Delivery Confirmed!'));
   renderMyOrders();
 }
@@ -4227,7 +4287,7 @@ function _saveCustomerRecord(user){
     if(!list.find(c=>c.email===user.email)){
       list.unshift({name:user.name,email:user.email,phone:user.phone||'',avatar:user.avatar||'',uid:user.uid||'',provider:user.provider||'manual',joinedAt:new Date().toISOString()});
       if(list.length>1000)list.splice(1000);
-      localStorage.setItem('exg_customers',JSON.stringify(list));
+      _ls.setJSON('exg_customers', list);
     }
   }catch(e){}
 }
@@ -4249,7 +4309,7 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     };
     orders.unshift(newOrder);
     if(orders.length>500)orders.splice(500);
-    localStorage.setItem('exg_orders',JSON.stringify(orders));
+    _ls.setJSON('exg_orders', orders);
     if(typeof gtag==='function')gtag('event','purchase',{currency:'SAR',transaction_id:newOrder.id,value:totalSAR,tax:+(totalSAR*0.15).toFixed(2)});
     if(typeof fbq==='function')fbq('track','Purchase',{value:totalSAR,currency:'SAR'});
     _addVipPoints(Math.round(totalSAR) * 10);
@@ -5617,7 +5677,8 @@ function submitReview() {
   };
   const stored = JSON.parse(localStorage.getItem('exglobal_reviews')||'[]');
   stored.push(newRev);
-  localStorage.setItem('exglobal_reviews', JSON.stringify(stored));
+  if (stored.length > 500) stored.splice(0, stored.length - 500); // cap reviews
+  _ls.setJSON('exglobal_reviews', stored);
   showToast('✓ ' + t('reviewSubmitted'));
   document.getElementById('wrName').value = '';
   document.getElementById('wrProduct').value = '';
@@ -10719,7 +10780,8 @@ async function _savePlayVideo() {
     };
     const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
     saved.unshift(newVideo);
-    localStorage.setItem('exg_play_videos', JSON.stringify(saved));
+    if (saved.length > 100) saved.splice(100); // cap to 100 videos to prevent quota issues
+    _ls.setJSON('exg_play_videos', saved);
 
     setTimeout(() => {
       _closePlayUpload();

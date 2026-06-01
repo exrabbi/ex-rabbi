@@ -19825,3 +19825,53 @@ html { background: #07001a !important; }
 [data-theme="dark"] #authModal .btn-facebook-signin span {
   color: #fff !important;
 }
+
+/* ═══════════════════════════════════════════════════════════
+   PERFORMANCE FORTIFICATION v277
+   content-visibility: auto → browser skips off-screen render
+   contain: layout style → prevents unnecessary reflows
+   ═══════════════════════════════════════════════════════════ */
+
+/* Heavy below-fold sections — paint lazily */
+.bzr-section,
+.mbox-section,
+.rev-section,
+.play-section,
+#aboutSection,
+.team-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 420px;
+}
+
+/* Animating elements — promote to GPU layer */
+.sdeal-track,
+.bdeal-track,
+.sp-track,
+.hero-slider,
+.bottom-nav,
+.bday-modal {
+  will-change: transform;
+}
+
+/* Prevent reflow cascade from modal overlays */
+#authModal,
+#productModal,
+#cartPanel,
+#mePanel {
+  contain: layout style;
+}
+
+/* Image rendering quality vs speed trade-off for non-hero images */
+.play-thumb,
+.bzr-img,
+.bdeal-card-img {
+  image-rendering: auto;
+}
+
+/* Stable scrollbar gutter — prevents layout shift on scroll */
+html {
+  scrollbar-gutter: stable both-edges;
+}
+@supports not (scrollbar-gutter: stable) {
+  html { overflow-y: scroll; }
+}
