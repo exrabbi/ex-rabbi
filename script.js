@@ -220,7 +220,7 @@ let _modalQty = 1;
 let heroIndex = 0;
 let heroTimer;
 let _heroSlideCount = 5;
-let currentTheme = localStorage.getItem('exglobal_theme') || 'dark';
+let currentTheme = localStorage.getItem('exglobal_theme') || 'light';
 
 /* ===== PUBLISHED DATA SYNC ===== */
 async function loadPublishedData() {
@@ -320,10 +320,7 @@ function _applyProductOverrides() {
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.setAttribute('data-theme', theme);
-  // Never persist light mode to storage — dark is always the default on next visit
-  if (theme === 'dark') {
-    localStorage.setItem('exglobal_theme', 'dark');
-  }
+  localStorage.setItem('exglobal_theme', theme); // save customer choice
   const icon = document.getElementById('themeIcon');
   if (icon) icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
 }
