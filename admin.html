@@ -406,15 +406,21 @@
 
     <!-- ORDERS -->
     <div class="tab-panel" id="tab-orders">
-      <div class="filter-row" id="orderFilters">
-        <button class="adm-btn sm" id="ofilter-all" onclick="filterOrders('all')">All</button>
-        <button class="adm-btn sm gray" id="ofilter-awaiting_stc" onclick="filterOrders('awaiting_stc')" style="border-color:#f59e0b;color:#f59e0b"><i class="fas fa-hourglass-half"></i> Awaiting STC <span id="stcPendBadge" style="background:#f59e0b;color:#000;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:2px"></span></button>
-        <button class="adm-btn sm gray" id="ofilter-pending" onclick="filterOrders('pending')"><i class="fas fa-clock"></i> Pending</button>
-        <button class="adm-btn sm gray" id="ofilter-processing" onclick="filterOrders('processing')"><i class="fas fa-spinner"></i> Processing</button>
-        <button class="adm-btn sm gray" id="ofilter-shipped" onclick="filterOrders('shipped')"><i class="fas fa-truck"></i> Shipped</button>
-        <button class="adm-btn sm gray" id="ofilter-delivered" onclick="filterOrders('delivered')"><i class="fas fa-check"></i> Delivered</button>
-        <button class="adm-btn sm gray" id="ofilter-cancelled" onclick="filterOrders('cancelled')"><i class="fas fa-ban"></i> Cancelled</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap">
+        <div class="filter-row" id="orderFilters" style="flex:1">
+          <button class="adm-btn sm" id="ofilter-all" onclick="filterOrders('all')">All</button>
+          <button class="adm-btn sm gray" id="ofilter-awaiting_stc" onclick="filterOrders('awaiting_stc')" style="border-color:#f59e0b;color:#f59e0b"><i class="fas fa-hourglass-half"></i> Awaiting STC <span id="stcPendBadge" style="background:#f59e0b;color:#000;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:800;margin-left:2px"></span></button>
+          <button class="adm-btn sm gray" id="ofilter-pending" onclick="filterOrders('pending')"><i class="fas fa-clock"></i> Pending</button>
+          <button class="adm-btn sm gray" id="ofilter-processing" onclick="filterOrders('processing')"><i class="fas fa-spinner"></i> Processing</button>
+          <button class="adm-btn sm gray" id="ofilter-shipped" onclick="filterOrders('shipped')"><i class="fas fa-truck"></i> Shipped</button>
+          <button class="adm-btn sm gray" id="ofilter-delivered" onclick="filterOrders('delivered')"><i class="fas fa-check"></i> Delivered</button>
+          <button class="adm-btn sm gray" id="ofilter-cancelled" onclick="filterOrders('cancelled')"><i class="fas fa-ban"></i> Cancelled</button>
+        </div>
+        <button class="adm-btn sm" style="background:linear-gradient(135deg,#e91e8c,#7c3aed);border:none;white-space:nowrap" onclick="_loadFirestoreOrders().then(()=>toast('✅ Orders refreshed'))">
+          <i class="fas fa-rotate"></i> Refresh
+        </button>
       </div>
+      <div id="orderCountBar" style="font-size:12px;color:#888;margin-bottom:8px;padding:0 2px"></div>
       <div id="orderList"></div>
     </div>
 
@@ -1398,6 +1404,8 @@ function initAdmin() {
   renderDashboard();
   loadSettings();
   loadCatImages();
+  // Load Firestore orders in background so dashboard shows real data
+  _loadFirestoreOrders();
 }
 
 /* ===== PRODUCT OVERRIDES ===== */
@@ -1424,7 +1432,7 @@ function showTab(tab) {
   currentTab = tab;
   if (tab === 'dashboard') renderDashboard();
   else if (tab === 'products') renderProductList();
-  else if (tab === 'orders') renderOrders();
+  else if (tab === 'orders') { renderOrders(); _loadFirestoreOrders(); }
   else if (tab === 'customers') renderCustomers();
   else if (tab === 'coupons') renderCoupons();
   else if (tab === 'promos') { showHeroSlide(0); loadFeaturedPins(); loadColTiles(); _loadTrendContentForm(); loadPromoBanners(); }
@@ -2070,7 +2078,42 @@ function exportProductsJS() {
 
 /* ===== ORDERS ===== */
 let _orderFilter = 'all';
-function getOrders() { return JSON.parse(localStorage.getItem('exg_orders') || '[]'); }
+// Firestore orders cache (all customers)
+let _firestoreOrders = [];
+
+function getOrders() {
+  const local = JSON.parse(localStorage.getItem('exg_orders') || '[]');
+  // Merge Firestore (all customers) with any local-only orders, dedup by id
+  const merged = [..._firestoreOrders, ...local];
+  const seen = new Set();
+  return merged.filter(o => { if (seen.has(o.id)) return false; seen.add(o.id); return true; });
+}
+
+async function _loadFirestoreOrders() {
+  try {
+    const db = typeof firebase !== 'undefined' && firebase.apps?.length
+      ? firebase.firestore() : null;
+    if (!db) return;
+    const snap = await db.collection('orders').orderBy('date', 'desc').limit(500).get();
+    _firestoreOrders = snap.docs.map(d => ({ ...d.data(), _fsId: d.id }));
+    renderOrders();
+    if (currentTab === 'dashboard') renderDashboard();
+  } catch(e) {
+    console.warn('Firestore orders load error:', e);
+  }
+}
+
+async function _updateOrderInFirestore(orderId, updates) {
+  try {
+    const db = typeof firebase !== 'undefined' && firebase.apps?.length
+      ? firebase.firestore() : null;
+    if (!db) return;
+    await db.collection('orders').doc(orderId).update({
+      ...updates,
+      _updatedAt: new Date().toISOString()
+    });
+  } catch(e) {}
+}
 
 function filterOrders(status) {
   _orderFilter = status;
@@ -2087,6 +2130,13 @@ function renderOrders() {
   document.getElementById('orderList').innerHTML = filtered.length
     ? filtered.map(o => orderRowHTML(o)).join('')
     : emptyState('fa-inbox', 'No orders in this category');
+  // Order count bar
+  const bar = document.getElementById('orderCountBar');
+  if (bar) {
+    const total = orders.length;
+    const fsCount = _firestoreOrders.length;
+    bar.innerHTML = `<i class="fas fa-cloud" style="color:#7c3aed"></i> ${fsCount} from customers &nbsp;·&nbsp; <i class="fas fa-list" style="color:#10b981"></i> ${total} total`;
+  }
   // Update awaiting STC badge
   const stcCount = orders.filter(o => o.status === 'awaiting_stc').length;
   const badge = document.getElementById('stcPendBadge');
@@ -2209,6 +2259,9 @@ function toggleOrderBody(id) {
 }
 
 function updateOrderStatus(orderId, status) {
+  // Update in-memory Firestore cache + localStorage
+  const fsIdx = _firestoreOrders.findIndex(x => x.id === orderId);
+  if (fsIdx >= 0) _firestoreOrders[fsIdx].status = status;
   const orders = getOrders();
   const o = orders.find(x => x.id === orderId);
   if (!o) return;
@@ -2217,6 +2270,8 @@ function updateOrderStatus(orderId, status) {
   renderOrders();
   if (currentTab === 'dashboard') renderDashboard();
   toast('✅ Status → ' + status);
+  // Sync to Firestore so customer can see their order status
+  _updateOrderInFirestore(orderId, { status });
 }
 
 function approveStcOrder(orderId) {
@@ -2226,7 +2281,10 @@ function approveStcOrder(orderId) {
   o.status = 'processing';
   o.stcApproved = true;
   o.stcApprovedAt = new Date().toISOString();
+  const fsIdx = _firestoreOrders.findIndex(x => x.id === orderId);
+  if (fsIdx >= 0) { _firestoreOrders[fsIdx].status = 'processing'; _firestoreOrders[fsIdx].stcApproved = true; }
   localStorage.setItem('exg_orders', JSON.stringify(orders));
+  _updateOrderInFirestore(orderId, { status: 'processing', stcApproved: true, stcApprovedAt: o.stcApprovedAt });
   renderOrders();
   if (currentTab === 'dashboard') renderDashboard();
   toast('✅ STC Payment approved — order moved to Processing');
