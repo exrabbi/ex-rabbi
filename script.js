@@ -698,9 +698,19 @@ function renderSuperDeals() {
   const track = document.getElementById('sdealsTrack');
   if (!track) return;
   const pins = JSON.parse(localStorage.getItem('exg_super_pins') || 'null');
-  const items = pins
+  let items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 12)
     : PRODUCTS.filter(p => p.tag === 'sale' || p.tag === 'hot' || p.discount >= 25).slice(0, 12);
+  // Fallback: if no items matched, use top 12 by discount
+  if (items.length === 0) {
+    items = [...PRODUCTS].sort((a, b) => (b.discount || 0) - (a.discount || 0)).slice(0, 12);
+  }
+  // If still nothing, hide the section
+  if (items.length === 0) {
+    const wrap = track.closest('.sdeal-wrap');
+    if (wrap) wrap.style.display = 'none';
+    return;
+  }
   const html = items.map(p => productCardHTML(p)).join('');
   track.innerHTML = html + html; // duplicate for seamless infinite loop
 }
@@ -7061,12 +7071,14 @@ async function sendAiMessage() {
     inp.value = '';
     _aiAppendMsg('user', text);
     aiChatHistory.push({ role: 'user', content: text });
+    if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
     _aiShowTyping();
     _aiIncrUsage();
     setTimeout(() => {
       _aiRemoveTyping();
       _aiAppendMsg('assistant', replyText);
       aiChatHistory.push({ role: 'assistant', content: replyText });
+      if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
       if (typeof replyAction === 'function') setTimeout(replyAction, 420);
     }, 480);
     return;
@@ -7077,12 +7089,14 @@ async function sendAiMessage() {
     inp.value = '';
     _aiAppendMsg('user', text);
     aiChatHistory.push({ role: 'user', content: text });
+    if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
     _aiAppendMsg('assistant', "I'm here to help! You can ask me about products, delivery, returns, payment methods, or coupons. 😊");
     return;
   }
   inp.value = '';
   _aiAppendMsg('user', text);
   aiChatHistory.push({ role: 'user', content: text });
+  if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
   _aiShowTyping();
   const sendBtn = document.getElementById('aiChatSendBtn');
   if (sendBtn) sendBtn.disabled = true;
@@ -7096,6 +7110,7 @@ async function sendAiMessage() {
     _aiRemoveTyping();
     const reply = data?.content?.[0]?.text || 'Sorry, I could not respond. Please try again.';
     aiChatHistory.push({ role: 'assistant', content: reply });
+    if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
     _aiAppendMsg('assistant', reply);
     _aiIncrUsage(); // increment AFTER successful response
   } catch(e) {
@@ -8602,7 +8617,7 @@ function renderMysteryBoxes() {
 
 function renderBrandDeals() {
   const track = document.getElementById('bdealTrack');
-  if (!track) return;
+  if (!track || track.children.length > 0) return; // already rendered
   // Double for seamless infinite loop
   const cards = [..._BRAND_DEALS, ..._BRAND_DEALS].map(d => `
     <div class="bdeal-card" onclick="filterCategory('${d.cat}');document.querySelector('.tab-btn[data-tab=products]')?.click();window.scrollTo({top:document.getElementById('productsSection')?.offsetTop-60,behavior:'smooth'})">

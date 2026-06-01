@@ -19768,3 +19768,60 @@ html { background: #07001a !important; }
 .auth-form-slide-in {
   animation: authFormSlideIn .38s cubic-bezier(.34,1.56,.64,1) forwards !important;
 }
+
+/* ── Super Deals card contrast fix v314 ─────────────────── */
+/* Cards inside dark sdeal-wrap need to stand out from the bg */
+.sdeal-track .pcard,
+.sdeal-track .product-card.pcard,
+.sdeal-track .product-card.pcard.nx-card {
+  background: #1e1545 !important;
+  border: 1px solid rgba(233,30,140,.22) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.06) !important;
+}
+[data-theme="dark"] .sdeal-track .pcard-name { color: #f0f0f0 !important; }
+[data-theme="dark"] .sdeal-track .pcard-price { color: #ff5eab !important; }
+[data-theme="dark"] .sdeal-track .pcard .pcard-contentBx { background: #1e1545 !important; }
+[data-theme="dark"] .sdeal-track .pcard .pcard-imgBx { background: #130d30 !important; }
+
+/* ── Brand Deals (EID Deals) light-mode visibility fix ──── */
+[data-theme="light"] .bdeal-section,
+:root:not([data-theme="dark"]) .bdeal-section {
+  background: #f5f0ff !important;
+  border-radius: 16px !important;
+  margin: 8px 10px !important;
+  padding-bottom: 4px !important;
+}
+[data-theme="light"] .bdeal-card,
+:root:not([data-theme="dark"]) .bdeal-card {
+  box-shadow: 0 3px 14px rgba(0,0,0,.14) !important;
+  border: 1px solid rgba(0,0,0,.07) !important;
+}
+
+/* ── Auth social buttons dark mode text fix ─────────────── */
+[data-theme="dark"] #authModal .btn-google-signin span,
+[data-theme="dark"] #authModal .btn-facebook-signin span {
+  color: #fff !important;
+}
+[data-theme="dark"] #authModal .auth-social-btn span { color: #fff !important; }
+
+/* === BUG FIX: Super Deals card visibility against dark background === */
+.sdeal-track .pcard { background: #1e1240 !important; border: 1px solid rgba(233,30,140,.25) !important; }
+[data-theme="dark"] .sdeal-track .pcard-name { color: #fff !important; }
+[data-theme="dark"] .sdeal-track .pcard-price { color: #ff5eab !important; }
+
+/* === BUG FIX: Brand deals light-mode visibility === */
+[data-theme="light"] .bdeal-section, :root:not([data-theme="dark"]) .bdeal-section {
+  background: #f8f8fc !important;
+  border-radius: 16px !important;
+  margin: 8px 10px !important;
+}
+[data-theme="light"] .bdeal-card, :root:not([data-theme="dark"]) .bdeal-card {
+  box-shadow: 0 2px 14px rgba(0,0,0,.12) !important;
+  border: 1px solid rgba(0,0,0,.07) !important;
+}
+
+/* === BUG FIX: Auth modal social login button text in dark mode === */
+[data-theme="dark"] #authModal .btn-google-signin span,
+[data-theme="dark"] #authModal .btn-facebook-signin span {
+  color: #fff !important;
+}
