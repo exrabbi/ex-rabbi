@@ -19688,3 +19688,83 @@ html { background: #07001a !important; }
 
 /* Reviews entry strip */
 [data-theme="dark"] .rev-entry-stars { color: #ffd700 !important; }
+
+/* ── AUTH DARK MODE FIX v313 ────────────────────────────── */
+/* Override the light-mode wrap/input styles (lines 18707-18714) */
+[data-theme="dark"] #authModal .auth-inp-wrap,
+[data-theme="dark"] #authModal .auth-pw-wrap {
+  background: rgba(255,255,255,.07) !important;
+  border: 1.5px solid rgba(255,255,255,.12) !important;
+}
+[data-theme="dark"] #authModal .auth-inp {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  background: transparent !important;
+  border: none !important;
+  caret-color: #e91e8c !important;
+}
+[data-theme="dark"] #authModal .auth-inp::placeholder {
+  color: rgba(255,255,255,.3) !important;
+  -webkit-text-fill-color: rgba(255,255,255,.3) !important;
+}
+[data-theme="dark"] #authModal .auth-inp:focus {
+  background: rgba(233,30,140,.07) !important;
+}
+[data-theme="dark"] #authModal .auth-inp-icon { color: rgba(255,255,255,.38) !important; }
+[data-theme="dark"] #authModal .auth-pw-eye { color: rgba(255,255,255,.42) !important; }
+[data-theme="dark"] #authModal .auth-remember-label { color: rgba(255,255,255,.52) !important; }
+[data-theme="dark"] #authModal .auth-forgot-link { color: #e91e8c !important; }
+[data-theme="dark"] #authModal .auth-or-sep span {
+  color: rgba(255,255,255,.4) !important;
+  background: transparent !important;
+}
+[data-theme="dark"] #authModal .auth-or-sep::before,
+[data-theme="dark"] #authModal .auth-or-sep::after {
+  background: rgba(255,255,255,.13) !important;
+}
+[data-theme="dark"] #authModal #authUserName { color: #fff !important; }
+[data-theme="dark"] #authModal #authUserEmail { color: rgba(255,255,255,.55) !important; }
+[data-theme="dark"] #authModal .auth-switch-row,
+[data-theme="dark"] #authModal .auth-signup-row { color: rgba(255,255,255,.5) !important; }
+[data-theme="dark"] #authModal .auth-signup-link { color: #e91e8c !important; }
+[data-theme="dark"] #authModal .auth-footer-strip { color: rgba(255,255,255,.35) !important; }
+[data-theme="dark"] #authModal .auth-footer-strip a { color: rgba(255,255,255,.55) !important; }
+/* Browser autocomplete fill override */
+[data-theme="dark"] #authModal .auth-inp:-webkit-autofill,
+[data-theme="dark"] #authModal .auth-inp:-webkit-autofill:hover,
+[data-theme="dark"] #authModal .auth-inp:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px rgba(18, 6, 46, 0.96) inset !important;
+  -webkit-text-fill-color: #fff !important;
+  caret-color: #e91e8c !important;
+}
+/* Alt row chips (Via Email / Register) */
+[data-theme="dark"] #authModal .auth-alt-row {
+  background: rgba(255,255,255,.05) !important;
+  border: 1px solid rgba(255,255,255,.1) !important;
+}
+[data-theme="dark"] #authModal .auth-alt-link { color: rgba(255,255,255,.82) !important; }
+/* Social login buttons */
+[data-theme="dark"] #authModal .auth-social-btn,
+[data-theme="dark"] #authModal .btn-google-signin,
+[data-theme="dark"] #authModal .btn-facebook-signin {
+  background: rgba(255,255,255,.06) !important;
+  border-color: rgba(255,255,255,.12) !important;
+  color: #fff !important;
+}
+
+/* ── Auth mode toggle slide animation ───────────────────── */
+@keyframes authFormSlideIn {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+@keyframes authFormSlideOut {
+  from { opacity: 1; transform: translateY(0)    scale(1); }
+  to   { opacity: 0; transform: translateY(-10px) scale(.97); }
+}
+.auth-form-slide-out {
+  animation: authFormSlideOut .22s ease forwards !important;
+  pointer-events: none;
+}
+.auth-form-slide-in {
+  animation: authFormSlideIn .38s cubic-bezier(.34,1.56,.64,1) forwards !important;
+}
