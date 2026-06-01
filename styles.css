@@ -6348,9 +6348,9 @@ html, body { transition: background .35s, color .35s; }
   font-size: 11px; font-weight: 700; color: #e91e8c;
   letter-spacing: .2px;
 }
-[data-theme="dark"] .bdeal-card { background: #1a1a1a; }
-[data-theme="dark"] .bdeal-card-body { background: #1e1e1e; border-color: #2a2a2a; }
-[data-theme="dark"] .bdeal-card-brand { color: #eee; }
+[data-theme="dark"] .bdeal-card { background: #1e1b38; border: 1px solid rgba(255,255,255,.1); }
+[data-theme="dark"] .bdeal-card-body { background: #1a1730; border-color: rgba(255,255,255,.08); }
+[data-theme="dark"] .bdeal-card-brand { color: #fff; }
 [data-theme="dark"] .bdeal-badge { box-shadow: 0 4px 20px rgba(200,169,110,.15); }
 
 /* ===== ORDER SPLIT BUTTON (modal) ===== */
@@ -19622,3 +19622,69 @@ html { background: #07001a !important; }
 [data-theme="dark"] main > section:not([class*="team"]):not([class*="reviews"]):not([class*="play"]) {
   background-color: transparent !important;
 }
+
+/* ════════════════════════════════════════════════════════════
+   ★ DARK MODE CLARITY v311 — every section clearly visible
+   ════════════════════════════════════════════════════════════ */
+
+/* Section-level separation — subtle card backgrounds */
+[data-theme="dark"] .bdeal-section { background: rgba(255,255,255,.02); border-radius: 16px; margin: 8px 10px; }
+[data-theme="dark"] .sdeal-wrap { background: rgba(255,255,255,.02); border-radius: 16px; padding: 10px 0; }
+[data-theme="dark"] .bzr-section { background: rgba(255,255,255,.02); border-radius: 16px; margin: 8px 10px; padding: 14px 10px; }
+
+/* Flash deals & two-col section */
+[data-theme="dark"] .flash-deals-banner { border: 1px solid rgba(233,30,140,.25) !important; }
+
+/* Product section header */
+[data-theme="dark"] .products-header { border-bottom: 1px solid rgba(255,255,255,.06) !important; padding-bottom: 10px !important; }
+
+/* Category circles — text visible */
+[data-theme="dark"] .cat-circle span { color: rgba(255,255,255,.8) !important; }
+
+/* Section titles — brighter */
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .sdeal-title,
+[data-theme="dark"] .bzr-title { color: #fff !important; }
+
+/* Prices everywhere — bright */
+[data-theme="dark"] .price-current,
+[data-theme="dark"] .fc2-price,
+[data-theme="dark"] .mbox-price { color: #ff5eab !important; }
+
+/* Product name text */
+[data-theme="dark"] .product-name,
+[data-theme="dark"] .fc2-name,
+[data-theme="dark"] .mbox-name { color: #f0f0f0 !important; }
+
+/* Info bar visible */
+[data-theme="dark"] .info-item span { color: #e0e0e0 !important; }
+
+/* Sort buttons */
+[data-theme="dark"] .sort-btn { color: rgba(255,255,255,.65) !important; }
+
+/* Countdown timer */
+[data-theme="dark"] .cd-block { background: rgba(255,255,255,.15) !important; }
+[data-theme="dark"] .cd-block span { color: #fff !important; }
+
+/* Mystery box section better contrast */
+[data-theme="dark"] .mbox-title { color: #fff !important; }
+[data-theme="dark"] .mbox-sub { color: rgba(255,255,255,.6) !important; }
+
+/* Bazaar tiles */
+[data-theme="dark"] .bzr-cat { color: #fff !important; }
+[data-theme="dark"] .bzr-tile { border: 1px solid rgba(255,255,255,.08); }
+
+/* EID DEALS badge always visible */
+[data-theme="dark"] .bdeal-badge { background: linear-gradient(135deg,#1a1040,#2d1b4e) !important; color: #e8c06a !important; border-color: rgba(232,192,106,.4) !important; }
+
+/* Super deals section */
+[data-theme="dark"] .sdeal-card { background: #1a1838 !important; border: 1px solid rgba(255,255,255,.07) !important; }
+[data-theme="dark"] .sdeal-name { color: #f0f0f0 !important; }
+[data-theme="dark"] .sdeal-price { color: #ff5eab !important; }
+
+/* Trust info bar */
+[data-theme="dark"] .tbar-marquee-wrap { background: #0c0922 !important; }
+[data-theme="dark"] .tbm-pill { color: rgba(255,255,255,.8) !important; }
+
+/* Reviews entry strip */
+[data-theme="dark"] .rev-entry-stars { color: #ffd700 !important; }
