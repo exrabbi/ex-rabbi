@@ -267,6 +267,7 @@ function applyTheme(theme) {
   }
 }
 function toggleTheme() {
+  localStorage.setItem('exg_theme_user_choice', '1'); // mark as explicit user choice
   applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
 }
 
