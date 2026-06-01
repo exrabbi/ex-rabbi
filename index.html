@@ -95,11 +95,16 @@
   </script>
   <script>
     (function(){
-      /* Always dark — remove any stored light preference */
-      localStorage.setItem('exglobal_theme','dark');
-      document.documentElement.setAttribute('data-theme','dark');
-      document.documentElement.style.background='#07001a';
-      document.documentElement.style.colorScheme='dark';
+      /* Default dark for new visitors; respect saved preference for returning ones */
+      if (!localStorage.getItem('exglobal_theme')) {
+        localStorage.setItem('exglobal_theme','dark');
+      }
+      var t = localStorage.getItem('exglobal_theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+      if (t === 'dark') {
+        document.documentElement.style.background = '#07001a';
+        document.documentElement.style.colorScheme = 'dark';
+      }
     })();
     /* Force-clear old SW caches so stale CSS/JS never shows */
     (function(){
