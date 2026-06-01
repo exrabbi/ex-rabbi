@@ -671,28 +671,7 @@ function renderFlashDeals() {
   const items = pins
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
     : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
-  const container = document.getElementById('flashProducts');
-  if (!container) return;
-  container.innerHTML = items.map(p => flashCardHTML(p)).join('');
-
-  // Dots indicator
-  const dotsEl = document.getElementById('flashDots');
-  if (dotsEl && items.length > 1) {
-    dotsEl.innerHTML = items.map((_, i) =>
-      `<span class="flash-dot${i === 0 ? ' active' : ''}" onclick="_flashScrollTo(${i})"></span>`
-    ).join('');
-    container.addEventListener('scroll', () => {
-      const idx = Math.round(container.scrollLeft / container.offsetWidth);
-      dotsEl.querySelectorAll('.flash-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-    }, { passive: true });
-  } else if (dotsEl) { dotsEl.innerHTML = ''; }
-}
-
-function _flashScrollTo(idx) {
-  const container = document.getElementById('flashProducts');
-  if (!container) return;
-  const card = container.children[idx];
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  document.getElementById('flashProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
 }
 
 function _dealMiniCard(p) {
