@@ -732,12 +732,14 @@ function flashCardHTML(p) {
     ? `<div class="fc2-status fc2-status-del"><i class="fas fa-truck"></i> Free Delivery</div>`
     : `<div class="fc2-status fc2-status-del"><i class="fas fa-truck-fast"></i> Fast Delivery</div>`;
 
+  const imgSrc = p.cardImg || p.image;
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
-      <div class="fc2-img${p.imgFit==='contain'?' img-fit-contain':''}">
-        <img src="${p.cardImg || p.image}" loading="lazy" alt=""
+      <div class="fc2-img">
+        <div class="fc2-img-blur" style="background-image:url('${imgSrc}')"></div>
+        <img src="${imgSrc}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
-          style="object-fit:${p.imgFit||'contain'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
+          style="${p.imgFocus?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
         ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
         ${discPill}
       </div>
