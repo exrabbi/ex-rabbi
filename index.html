@@ -95,16 +95,13 @@
   </script>
   <script>
     (function(){
-      /* Default dark for new visitors; respect saved preference for returning ones */
-      if (!localStorage.getItem('exglobal_theme')) {
-        localStorage.setItem('exglobal_theme','dark');
-      }
-      var t = localStorage.getItem('exglobal_theme') || 'dark';
+      /* Dark by default. Only use saved theme if user explicitly toggled it. */
+      var userChose = localStorage.getItem('exg_theme_user_choice');
+      var t = userChose ? (localStorage.getItem('exglobal_theme') || 'dark') : 'dark';
+      localStorage.setItem('exglobal_theme', t);
       document.documentElement.setAttribute('data-theme', t);
-      if (t === 'dark') {
-        document.documentElement.style.background = '#07001a';
-        document.documentElement.style.colorScheme = 'dark';
-      }
+      document.documentElement.style.background = t === 'dark' ? '#07001a' : '#f5f5f5';
+      document.documentElement.style.colorScheme = t;
     })();
     /* Force-clear old SW caches so stale CSS/JS never shows */
     (function(){
@@ -123,7 +120,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=310" />
+  <link rel="stylesheet" href="styles.css?v=311" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2605,7 +2602,7 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=273"></script>
+  <script src="script.js?v=274"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
