@@ -19956,7 +19956,7 @@ html {
   width: 43% !important;
   min-width: 43% !important;
   scroll-snap-align: start !important;
-  height: 320px !important;
+  height: 360px !important;
 }
 
 /* Slightly taller on wider phones */
@@ -19966,7 +19966,7 @@ html {
     flex: 0 0 41% !important;
     width: 41% !important;
     min-width: 41% !important;
-    height: 340px !important;
+    height: 380px !important;
   }
 }
 

@@ -733,6 +733,9 @@ function flashCardHTML(p) {
           ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
         </div>
         ${couponRow}
+        <button class="fc2-btn" onclick="event.stopPropagation();${isOOS ? '' : `nxAtc(event,${p.id})`}" ${isOOS ? 'disabled style="opacity:.45;cursor:not-allowed"' : ''}>
+          <i class="fas fa-bag-shopping"></i> ${isOOS ? 'Out of Stock' : 'Buy Now'}
+        </button>
       </div>
     </div>`;
 }
