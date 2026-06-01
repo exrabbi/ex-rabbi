@@ -20154,3 +20154,14 @@ html {
   background: #e91e8c;
   width: 18px; border-radius: 3px;
 }
+
+/* Email login button */
+.auth-email-btn {
+  background: rgba(233,30,140,.1) !important;
+  border: 1.5px solid rgba(233,30,140,.35) !important;
+  color: #fff !important;
+}
+.auth-email-btn:hover { background: rgba(233,30,140,.18) !important; box-shadow: 0 4px 16px rgba(233,30,140,.2) !important; }
+.auth-email-btn span { color: #fff !important; }
+/* Hide dark mode toggle */
+.theme-toggle-btn { display: none !important; }
