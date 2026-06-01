@@ -120,7 +120,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=321" />
+  <link rel="stylesheet" href="styles.css?v=322" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -210,7 +210,6 @@
         <img src="exglobal-icon.png" alt="EX GLOBAL" class="nav-icon-img" />
       </div>
       <button class="icon-btn" id="searchToggleBtn"><i class="fas fa-search"></i></button>
-      <button class="icon-btn theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button>
       <button class="icon-btn" id="wishlistBtn"><i class="fas fa-heart"></i><span class="badge" id="wishBadge" style="display:none">0</span></button>
       <button class="icon-btn" id="cartBtn"><i class="fas fa-shopping-cart"></i><span class="badge" id="cartBadge" style="display:none">0</span></button>
     </div>
@@ -1916,24 +1915,13 @@
           <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20"/>
           <span>Continue with Google</span>
         </button>
-        <button class="auth-social-btn auth-fb-btn" onclick="signInWithFacebook()">
-          <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-          <span>Continue with Facebook</span>
-        </button>
-
         <!-- OR divider -->
         <div class="auth-or-divider"><span>OR</span></div>
 
-        <!-- Email / Register row — Daraz style -->
-        <div class="auth-alt-row">
-          <a href="#" class="auth-alt-link" onclick="_showAuthEmailForm();return false;">
-            <i class="fas fa-lock"></i> Via Email
-          </a>
-          <div class="auth-alt-divider"></div>
-          <a href="#" class="auth-alt-link" onclick="_showAuthEmailForm();return false;">
-            <i class="fas fa-mobile-alt"></i> Register
-          </a>
-        </div>
+        <button class="auth-social-btn auth-email-btn" onclick="_showAuthEmailForm()">
+          <i class="fas fa-envelope" style="font-size:16px;color:#e91e8c"></i>
+          <span>Continue with Email</span>
+        </button>
 
         <!-- Email form (hidden by default, shown on "Via Email" click) -->
         <div id="authEmailForm" style="display:none">
@@ -2610,7 +2598,7 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=281"></script>
+  <script src="script.js?v=282"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
