@@ -95,13 +95,14 @@
   </script>
   <script>
     (function(){
-      /* ALWAYS dark. Light mode only lives in memory — never saved to storage. */
-      localStorage.removeItem('exg_theme_user_choice');
-      sessionStorage.removeItem('exg_theme');
-      localStorage.setItem('exglobal_theme', 'dark');
-      document.documentElement.setAttribute('data-theme', 'dark');
-      document.documentElement.style.background = '#07001a';
-      document.documentElement.style.colorScheme = 'dark';
+      /* Default = light. Dark only if customer previously chose dark. */
+      var saved = localStorage.getItem('exglobal_theme');
+      var theme = (saved === 'dark') ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.style.background = '#07001a';
+        document.documentElement.style.colorScheme = 'dark';
+      }
     })();
     /* Force-clear old SW caches so stale CSS/JS never shows */
     (function(){
