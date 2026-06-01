@@ -20011,3 +20011,56 @@ html {
     height: 410px !important;
   }
 }
+
+/* ── Compact Noon-style card fix ─────────────────────────── */
+
+/* Card: image fills top 58%, panel pinned at bottom */
+.flash-products .fc2-card,
+.two-col-products .fc2-card {
+  height: 340px !important;
+}
+@media (min-width: 390px) {
+  .flash-products .fc2-card,
+  .two-col-products .fc2-card { height: 360px !important; }
+}
+
+/* Panel: compact padding */
+.fc2-panel {
+  padding: 7px 9px 9px !important;
+  gap: 3px !important;
+}
+
+/* Name: 1 line, small */
+.fc2-name {
+  font-size: 11px !important;
+  -webkit-line-clamp: 1 !important;
+}
+
+/* Rating row: tight */
+.fc2-rating-row { gap: 3px !important; margin: 0 !important; }
+.fc2-star       { font-size: 9px !important; }
+.fc2-rating-val { font-size: 10px !important; }
+.fc2-rating-cnt { font-size: 9px !important; }
+
+/* Price row */
+.fc2-price { font-size: 13px !important; }
+.fc2-orig  { font-size: 10px !important; }
+
+/* Status badge: tiny pill */
+.fc2-status {
+  font-size: 9px !important;
+  padding: 2px 6px !important;
+  border-radius: 5px !important;
+  gap: 3px !important;
+}
+
+/* Best price: single compact line */
+.fc2-bestprice       { font-size: 9px !important; }
+.fc2-bestprice span  { font-size: 10px !important; }
+
+/* Buy Now button: shorter */
+.fc2-btn {
+  padding: 7px 8px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
+}
