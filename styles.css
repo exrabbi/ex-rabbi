@@ -19969,3 +19969,45 @@ html {
     height: 340px !important;
   }
 }
+
+/* ── Noon-style card detail rows ─────────────────────────── */
+.fc2-rating-row {
+  display: flex; align-items: center; gap: 3px;
+}
+.fc2-star { font-size: 10px; color: #f59e0b; }
+.fc2-rating-val { font-size: 11px; font-weight: 700; color: #111; }
+[data-theme="dark"] .fc2-rating-val { color: #eee; }
+.fc2-rating-cnt { font-size: 10px; color: #888; }
+
+.fc2-status {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 600;
+  padding: 3px 7px; border-radius: 6px;
+  width: fit-content;
+}
+.fc2-status-del { background: #e8f5e9; color: #2e7d32; }
+.fc2-status-hot { background: #fff3e0; color: #e65100; }
+.fc2-status-oos { background: #fce4ec; color: #c62828; }
+[data-theme="dark"] .fc2-status-del { background: rgba(46,125,50,.2); color: #81c784; }
+[data-theme="dark"] .fc2-status-hot { background: rgba(230,81,0,.2); color: #ffb74d; }
+[data-theme="dark"] .fc2-status-oos { background: rgba(198,40,40,.2); color: #ef9a9a; }
+
+.fc2-bestprice {
+  font-size: 10px; color: #888;
+}
+.fc2-bestprice span {
+  font-size: 11px; font-weight: 900;
+  color: #e91e8c;
+}
+
+/* Taller card to fit extra details */
+.flash-products .fc2-card,
+.two-col-products .fc2-card {
+  height: 390px !important;
+}
+@media (min-width: 390px) {
+  .flash-products .fc2-card,
+  .two-col-products .fc2-card {
+    height: 410px !important;
+  }
+}

@@ -695,13 +695,39 @@ function flashCardHTML(p) {
   const inWish = wishlist.includes(p.id);
   const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
   const isOOS = p.stock === 0;
-  const sizes = (p.sizes || []).slice(0, 4);
-  const colorDots = (p.colors || []).slice(0, 4);
+  const isLowStock = !isOOS && p.stock > 0 && p.stock <= 5;
   const badge = p.discount >= 40
     ? `<span class="fc2-badge fc2-badge-flash"><i class="fas fa-bolt"></i> FLASH</span>`
     : p.tag === 'bestseller' ? `<span class="fc2-badge fc2-badge-best"><i class="fas fa-trophy"></i></span>`
     : p.tag === 'new' ? `<span class="fc2-badge fc2-badge-new">NEW</span>`
     : p.discount >= 20 ? `<span class="fc2-badge fc2-badge-disc">-${p.discount}%</span>` : '';
+
+  // Rating row
+  const rating = p.rating || 4.5;
+  const ratingCount = p.ratingCount || 0;
+  const ratingStr = ratingCount >= 1000
+    ? (ratingCount / 1000).toFixed(1).replace('.0','') + 'K'
+    : ratingCount > 0 ? ratingCount : '';
+  const ratingRow = `<div class="fc2-rating-row">
+    <i class="fas fa-star fc2-star"></i>
+    <span class="fc2-rating-val">${rating}</span>
+    ${ratingStr ? `<span class="fc2-rating-cnt">(${ratingStr})</span>` : ''}
+  </div>`;
+
+  // Status badge (Selling out fast / Free Delivery / Out of Stock)
+  const statusBadge = isOOS
+    ? `<div class="fc2-status fc2-status-oos"><i class="fas fa-ban"></i> Out of Stock</div>`
+    : isLowStock
+    ? `<div class="fc2-status fc2-status-hot"><i class="fas fa-fire"></i> Selling out fast</div>`
+    : p.tag === 'bestseller' || (p.ratingCount && p.ratingCount > 500)
+    ? `<div class="fc2-status fc2-status-del"><i class="fas fa-truck"></i> Free Delivery</div>`
+    : `<div class="fc2-status fc2-status-del"><i class="fas fa-truck-fast"></i> Fast Delivery</div>`;
+
+  // Best price row
+  const bestPriceRow = p.discount > 0
+    ? `<div class="fc2-bestprice">Best Price <span>${fmt(p.price)}</span></div>`
+    : '';
+
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
       <div class="fc2-img${p.imgFit==='contain'?' img-fit-contain':''}">
@@ -716,10 +742,13 @@ function flashCardHTML(p) {
       </button>
       <div class="fc2-panel">
         <h3 class="fc2-name">${getName(p)}</h3>
+        ${ratingRow}
         <div class="fc2-prices">
           <span class="fc2-price">${fmt(p.price)}</span>
           ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
         </div>
+        ${statusBadge}
+        ${bestPriceRow}
         <button class="fc2-btn" onclick="event.stopPropagation();${isOOS ? '' : `nxAtc(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
           <i class="fas fa-bag-shopping"></i> Buy Now
         </button>
