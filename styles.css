@@ -14183,12 +14183,15 @@ body { padding-bottom: 100px !important; }
   padding: 10px 12px 16px !important;
 }
 .flash-products {
-  display: grid !important;
-  grid-template-columns: repeat(2, 1fr) !important;
-  overflow-x: visible !important;
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
   overflow-y: visible !important;
-  gap: 10px !important;
-  padding: 10px 12px 16px !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important;
+  padding: 8px 12px 16px !important;
+  gap: 12px !important;
 }
 /* pcards inside these containers fill cell width */
 .two-col-products .pcard,
@@ -14556,8 +14559,46 @@ body { padding-bottom: 100px !important; }
    ✦ FC2 CARD — Full-image + White Panel (Flash/Trending/Hot/New)
    ══════════════════════════════════════════════════════════ */
 
-/* Container grid for flash + section cards */
-.flash-products,
+/* Flash carousel dots */
+.flash-dots {
+  display: flex; justify-content: center; align-items: center;
+  gap: 6px; padding: 4px 0 10px;
+}
+.flash-dot {
+  width: 6px; height: 6px; border-radius: 3px;
+  background: rgba(255,255,255,.25); transition: all .25s;
+  cursor: pointer;
+}
+.flash-dot.active {
+  width: 18px; background: #e91e8c;
+}
+
+/* ── Flash Deals — full-width horizontal carousel ── */
+.flash-products {
+  display: flex !important;
+  flex-direction: row !important;
+  grid-template-columns: unset !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  scrollbar-width: none !important;
+  gap: 12px !important;
+  padding: 8px 12px 16px !important;
+}
+.flash-products::-webkit-scrollbar { display: none !important; }
+
+/* Each flash card = full-width (one visible at a time) */
+.flash-products .fc2-card {
+  flex: 0 0 calc(100vw - 40px) !important;
+  width: calc(100vw - 40px) !important;
+  max-width: 560px !important;
+  height: 320px !important;
+  scroll-snap-align: center !important;
+  border-radius: 22px !important;
+}
+
+/* Two-col-products stays as 2-column grid */
 .two-col-products {
   display: grid !important;
   grid-template-columns: repeat(2, 1fr) !important;
