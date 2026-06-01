@@ -4009,31 +4009,49 @@ function _showAuthEmailForm() {
 
 function _toggleAuthMode() {
   _authIsLogin = !_authIsLogin;
-  const nameWrap    = document.getElementById('authNameWrap');
-  const rememberRow = document.getElementById('authRememberRow');
-  const welcomeH    = document.getElementById('authWelcomeH');
-  const welcomeSub  = document.getElementById('authWelcomeSub');
-  const submitText  = document.getElementById('authSubmitText');
-  const switchText  = document.getElementById('authSwitchText');
-  const switchLink  = document.getElementById('authSwitchLink');
-  if (_authIsLogin) {
-    if (nameWrap)    nameWrap.style.display    = 'none';
-    if (rememberRow) rememberRow.style.display = 'flex';
-    if (welcomeH)    welcomeH.textContent      = 'Welcome Back';
-    if (welcomeSub)  welcomeSub.textContent    = 'Sign in to your EX GLOBAL SA account';
-    if (submitText)  submitText.textContent    = 'SIGN IN';
-    if (switchText)  switchText.textContent    = "Don't have an account?";
-    if (switchLink)  switchLink.textContent    = 'Create Account ↗';
-    _amBubble('Welcome back! 👋', false);
+  const form = document.getElementById('authEmailForm');
+
+  const _applyAuthModeContent = () => {
+    const nameWrap    = document.getElementById('authNameWrap');
+    const rememberRow = document.getElementById('authRememberRow');
+    const welcomeH    = document.getElementById('authWelcomeH');
+    const welcomeSub  = document.getElementById('authWelcomeSub');
+    const submitText  = document.getElementById('authSubmitText');
+    const switchText  = document.getElementById('authSwitchText');
+    const switchLink  = document.getElementById('authSwitchLink');
+    if (_authIsLogin) {
+      if (nameWrap)    nameWrap.style.display    = 'none';
+      if (rememberRow) rememberRow.style.display = 'flex';
+      if (welcomeH)    welcomeH.textContent      = 'Welcome Back';
+      if (welcomeSub)  welcomeSub.textContent    = 'Sign in to your EX GLOBAL SA account';
+      if (submitText)  submitText.textContent    = 'SIGN IN';
+      if (switchText)  switchText.textContent    = "Don't have an account?";
+      if (switchLink)  switchLink.textContent    = 'Create Account ↗';
+      _amBubble('Welcome back! 👋', false);
+    } else {
+      if (nameWrap)    nameWrap.style.display    = 'flex';
+      if (rememberRow) rememberRow.style.display = 'none';
+      if (welcomeH)    welcomeH.textContent      = 'Create Account';
+      if (welcomeSub)  welcomeSub.textContent    = 'Join EX GLOBAL SA for exclusive rewards';
+      if (submitText)  submitText.textContent    = 'CREATE ACCOUNT';
+      if (switchText)  switchText.textContent    = 'Already have an account?';
+      if (switchLink)  switchLink.textContent    = 'Sign In ↗';
+      _amBubble("Let's get you set up! ✨", false);
+    }
+  };
+
+  if (form && form.style.display !== 'none') {
+    form.classList.remove('auth-form-slide-in');
+    form.classList.add('auth-form-slide-out');
+    setTimeout(() => {
+      form.classList.remove('auth-form-slide-out');
+      _applyAuthModeContent();
+      void form.offsetHeight;
+      form.classList.add('auth-form-slide-in');
+      setTimeout(() => form.classList.remove('auth-form-slide-in'), 420);
+    }, 220);
   } else {
-    if (nameWrap)    nameWrap.style.display    = 'flex';
-    if (rememberRow) rememberRow.style.display = 'none';
-    if (welcomeH)    welcomeH.textContent      = 'Create Account';
-    if (welcomeSub)  welcomeSub.textContent    = 'Join EX GLOBAL SA for exclusive rewards';
-    if (submitText)  submitText.textContent    = 'CREATE ACCOUNT';
-    if (switchText)  switchText.textContent    = 'Already have an account?';
-    if (switchLink)  switchLink.textContent    = 'Sign In ↗';
-    _amBubble("Let's get you set up! ✨", false);
+    _applyAuthModeContent();
   }
 }
 
