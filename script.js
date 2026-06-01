@@ -4392,8 +4392,23 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     setTimeout(() => _automationFire(newOrder), 500);
     setTimeout(() => _showZatcaInvoice(newOrder.id, totalSAR), 800);
     setTimeout(() => _sendOrderEmail(newOrder), 1200);
+    // Push to Firestore so admin sees ALL customer orders
+    setTimeout(() => _pushOrderToFirestore(newOrder), 300);
   }
   return newOrder;
+}
+
+async function _pushOrderToFirestore(order) {
+  try {
+    const db = typeof firebase !== 'undefined' && firebase.apps?.length
+      ? firebase.firestore() : null;
+    if (!db) return;
+    await db.collection('orders').doc(order.id).set({
+      ...order,
+      _savedAt: new Date().toISOString(),
+      _source: 'customer_app'
+    });
+  } catch(e) {}
 }
 
 /* ===== AUTOMATIONS ===== */
