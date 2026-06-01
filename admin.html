@@ -768,7 +768,7 @@ service cloud.firestore {
         </div>
         <div class="setting-row">
           <div class="setting-label">📸 Image Upload API Key (imgBB)</div>
-          <div class="setting-desc" style="line-height:1.6">Get a <strong style="color:var(--gold)">FREE</strong> key: go to <strong>imgbb.com</strong> → Sign up → click <strong>"API"</strong> → copy key. Without key, photos are compressed locally (device only).</div>
+          <div class="setting-desc" style="line-height:1.6">✅ <strong style="color:#34d399">ছবি আপলোড এখন কোনো key ছাড়াই কাজ করে</strong> — Telegra.ph auto-upload built-in! imgBB key দিলে আরো reliable হবে: <strong>imgbb.com</strong> → Sign up → "API" → copy key.</div>
           <input type="text" id="setImgBBKey" class="adm-input" placeholder="Paste imgBB API key here (e.g. a1b2c3d4e5f6...)"/>
         </div>
 
@@ -781,7 +781,7 @@ service cloud.firestore {
             3️⃣ Settings → Upload → <strong>"Upload presets"</strong> → <strong>Add upload preset</strong><br/>
             4️⃣ <strong>Signing mode = Unsigned</strong> সেট করুন → Save<br/>
             5️⃣ Preset-এর নাম কপি করুন → নিচে পেস্ট করুন → Save Settings ✅<br/>
-            <div style="color:#666;margin-top:4px">💡 Cloudinary সেট করলে ফোন থেকে সরাসরি ছবি ও ভিডিও আপলোড হবে। YouTube লিংক দিলে লাগে না।</div>
+            <div style="color:#666;margin-top:4px">💡 <strong style="color:#34d399">ছবির জন্য Cloudinary দরকার নেই</strong> — Telegra.ph auto-upload আছে। তবে ভিডিও আপলোডের জন্য Cloudinary লাগবে।</div>
           </div>
           <input type="text" id="setCloudName" class="adm-input" placeholder="Cloud name (যেমন: my-store-abc123)" style="margin-bottom:7px"/>
           <input type="text" id="setCloudPreset" class="adm-input" placeholder="Upload preset name (যেমন: unsigned_videos)"/>
@@ -3236,8 +3236,10 @@ function pickImage(inputId, previewImgId) {
   input.onchange = async function(e) {
     const file = e.target.files[0];
     if (!file) return;
-    const btnId = inputId === 'pImage' ? 'pImgUploadBtn' : 'hsUploadBtn';
-    const btn = document.getElementById(btnId);
+    const btnMap = { pImage: 'pImgUploadBtn', hsImage: 'hsUploadBtn', pCardImg: null };
+    const btn = document.getElementById(btnMap[inputId] ?? null) ||
+                document.querySelector(`button[onclick*="pickImage('${inputId}'"]`);
+
     const origBtnText = btn ? btn.innerHTML : '';
     if (btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
     try {
@@ -3279,6 +3281,14 @@ async function uploadImage(file) {
       if (data.success) return data.data.display_url || data.data.url;
     } catch(e) { /* fall through */ }
   }
+  // Telegra.ph — free, anonymous, no API key needed
+  try {
+    const fd = new FormData();
+    fd.append('file', file, 'image.jpg');
+    const res = await fetch('https://telegra.ph/upload', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (Array.isArray(data) && data[0]?.src) return 'https://telegra.ph' + data[0].src;
+  } catch(e) { /* fall through */ }
   const isHEIC = /^image\/(heic|heif)$/i.test(file.type) || /\.(heic|heif)$/i.test(file.name);
   if (isHEIC) throw new Error('iPhone HEIC ছবি — Settings-এ Cloudinary সেট করুন (ফ্রি)');
   return await compressToBase64(file);
