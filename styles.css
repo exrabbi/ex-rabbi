@@ -20165,3 +20165,25 @@ html {
 .auth-email-btn span { color: #fff !important; }
 /* Hide dark mode toggle */
 .theme-toggle-btn { display: none !important; }
+
+/* ── fc2-card unified detail rows ── */
+.fc2-disc-pill {
+  display: inline-block; background: #ff5722;
+  color: #fff; font-size: 10px; font-weight: 800;
+  padding: 2px 7px; border-radius: 6px; margin-bottom: 4px;
+}
+.fc2-choice {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(233,30,140,.18); color: #e91e8c;
+  font-size: 9px; font-weight: 700; padding: 2px 7px;
+  border-radius: 6px; margin-bottom: 4px;
+}
+.fc2-sold {
+  font-size: 9px; color: rgba(255,255,255,.5);
+  margin-bottom: 3px;
+}
+.fc2-coupon {
+  font-size: 9px; color: #e91e8c; margin-top: 3px;
+  display: flex; align-items: center; gap: 4px;
+}
+.fc2-coupon i { font-size: 8px; }

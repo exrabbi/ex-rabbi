@@ -696,38 +696,23 @@ function flashCardHTML(p) {
   const inWish = wishlist.includes(p.id);
   const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
   const isOOS = p.stock === 0;
-  const isLowStock = !isOOS && p.stock > 0 && p.stock <= 5;
+
   const badge = p.discount >= 40
     ? `<span class="fc2-badge fc2-badge-flash"><i class="fas fa-bolt"></i> FLASH</span>`
     : p.tag === 'bestseller' ? `<span class="fc2-badge fc2-badge-best"><i class="fas fa-trophy"></i></span>`
-    : p.tag === 'new' ? `<span class="fc2-badge fc2-badge-new">NEW</span>`
-    : p.discount >= 20 ? `<span class="fc2-badge fc2-badge-disc">-${p.discount}%</span>` : '';
+    : p.tag === 'new' ? `<span class="fc2-badge fc2-badge-new">NEW</span>` : '';
 
-  // Rating row
-  const rating = p.rating || 4.5;
-  const ratingCount = p.ratingCount || 0;
-  const ratingStr = ratingCount >= 1000
-    ? (ratingCount / 1000).toFixed(1).replace('.0','') + 'K'
-    : ratingCount > 0 ? ratingCount : '';
-  const ratingRow = `<div class="fc2-rating-row">
-    <i class="fas fa-star fc2-star"></i>
-    <span class="fc2-rating-val">${rating}</span>
-    ${ratingStr ? `<span class="fc2-rating-cnt">(${ratingStr})</span>` : ''}
-  </div>`;
+  const discPill = p.discount > 0 ? `<div class="fc2-disc-pill">-${p.discount}%</div>` : '';
 
-  // Status badge (Selling out fast / Free Delivery / Out of Stock)
-  const statusBadge = isOOS
-    ? `<div class="fc2-status fc2-status-oos"><i class="fas fa-ban"></i> Out of Stock</div>`
-    : isLowStock
-    ? `<div class="fc2-status fc2-status-hot"><i class="fas fa-fire"></i> Selling out fast</div>`
-    : p.tag === 'bestseller' || (p.ratingCount && p.ratingCount > 500)
-    ? `<div class="fc2-status fc2-status-del"><i class="fas fa-truck"></i> Free Delivery</div>`
-    : `<div class="fc2-status fc2-status-del"><i class="fas fa-truck-fast"></i> Fast Delivery</div>`;
+  const choiceBadge = (p.ratingCount >= 300 || p.tag === 'bestseller')
+    ? `<div class="fc2-choice"><i class="fas fa-crown"></i> Top Choice</div>` : '';
 
-  // Best price row
-  const bestPriceRow = p.discount > 0
-    ? `<div class="fc2-bestprice">Best Price <span>${fmt(p.price)}</span></div>`
-    : '';
+  const soldRaw = p.sold || p.ratingCount || 0;
+  const soldTxt = soldRaw > 0
+    ? `<div class="fc2-sold">${soldRaw >= 1000 ? Math.floor(soldRaw/1000)+'K' : soldRaw}++ sold</div>` : '';
+
+  const couponRow = p.discount > 0
+    ? `<div class="fc2-coupon"><i class="fas fa-tag"></i> ${fmt(p.price)} with coupon</div>` : '';
 
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
@@ -742,17 +727,15 @@ function flashCardHTML(p) {
         <i class="${inWish ? 'fas' : 'far'} fa-heart"></i>
       </button>
       <div class="fc2-panel">
+        ${discPill}
+        ${choiceBadge}
         <h3 class="fc2-name">${getName(p)}</h3>
-        ${ratingRow}
+        ${soldTxt}
         <div class="fc2-prices">
           <span class="fc2-price">${fmt(p.price)}</span>
           ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
         </div>
-        ${statusBadge}
-        ${bestPriceRow}
-        <button class="fc2-btn" onclick="event.stopPropagation();${isOOS ? '' : `nxAtc(event,${p.id})`}" ${isOOS ? 'disabled' : ''}>
-          <i class="fas fa-bag-shopping"></i> Buy Now
-        </button>
+        ${couponRow}
       </div>
     </div>`;
 }
@@ -1126,77 +1109,7 @@ function _nrGridBannerHTML() {
 }
 
 function productCardHTML(p) {
-  const inWish = wishlist.includes(p.id);
-  const origPrice = p.discount > 0 ? fmt(Math.round(p.price / (1 - p.discount / 100))) : '';
-  const isOOS = p.stock === 0;
-  const isLow = !isOOS && p.stock !== undefined && p.stock <= 5;
-
-  const badge = p.discount >= 40
-    ? `<span class="nx-badge nx-flash"><i class="fas fa-bolt"></i> FLASH</span>`
-    : p.tag === 'bestseller' ? `<span class="nx-badge nx-best"><i class="fas fa-trophy"></i></span>`
-    : p.tag === 'new' ? `<span class="nx-badge nx-new">NEW</span>`
-    : p.discount >= 20 ? `<span class="nx-badge nx-disc">-${p.discount}%</span>` : '';
-
-  // Star rating row
-  const rtg = p.rating || 4.2;
-  const full = Math.floor(rtg), half = rtg - full >= 0.4 ? 1 : 0;
-  const starsHtml = Array.from({length:5},(_,i)=>{
-    if(i<full) return `<i class="fas fa-star pcs"></i>`;
-    if(i===full&&half) return `<i class="fas fa-star-half-alt pcs"></i>`;
-    return `<i class="far fa-star pcs pcs-e"></i>`;
-  }).join('');
-  const rcnt = p.ratingCount ? (p.ratingCount>=1000?(p.ratingCount/1000).toFixed(1)+'K':p.ratingCount) : '';
-  const ratingRow = `<div class="pcard-rating-row">${starsHtml}<span class="pcard-rtg-num">${rtg.toFixed(1)}</span>${rcnt?`<span class="pcard-rcnt">(${rcnt})</span>`:''}</div>`;
-
-  // Sold / choice badge
-  const soldSuffix = t('soldOnCard')||'sold';
-  const soldTxt = p.sold
-    ? `<div class="pcard-sold-row">${p.sold>=1000?(p.sold/1000).toFixed(1)+'k+':p.sold}+ ${soldSuffix}</div>`
-    : '';
-
-  // Choice badge for popular products
-  const choiceBadge = (p.ratingCount >= 500 || p.tag === 'bestseller')
-    ? `<div class="pcard-choice"><i class="fas fa-crown"></i> Top Choice</div>`
-    : '';
-
-  // Discount pill overlaid on image
-  const discPill = p.discount > 0
-    ? `<div class="pcard-disc-pill">-${p.discount}%</div>`
-    : '';
-
-  const couponPrice = p.discount > 0
-    ? `<div class="pcard-coupon-row"><i class="fas fa-tag"></i> ${fmt(p.price)} ${t('withCoupon')||'with coupon'}</div>`
-    : '';
-
-  return `
-    <div class="product-card pcard nx-card" onclick="openModal(${p.id})">
-      <div class="pcard-imgBx${p.imgFit==='contain'?' img-fit-contain':''}">
-        <img src="${p.cardImg || p.image}" loading="lazy" alt=""
-          onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
-          style="object-fit:${p.imgFit||'cover'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
-        ${isOOS?`<div class="pcard-oos-overlay">${t('outOfStock')}</div>`:''}
-        ${isLow?`<div class="pcard-low-overlay">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>`:''}
-        ${discPill}
-      </div>
-      <div class="pcard-top-btns">
-        ${badge}
-        <button class="wish-btn ${inWish?'active':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">
-          <i class="${inWish?'fas':'far'} fa-heart"></i>
-        </button>
-      </div>
-      <div class="pcard-contentBx">
-        ${choiceBadge}
-        <h3 class="pcard-name">${getName(p)}</h3>
-        ${ratingRow}
-        ${soldTxt}
-        <div class="pcard-price-row">
-          ${origPrice?`<span class="pcard-orig">${origPrice}</span>`:''}
-          <span class="pcard-price">${fmt(p.price)}</span>
-        </div>
-        ${couponPrice}
-      </div>
-    </div>
-  `;
+  return flashCardHTML(p).replace('class="fc2-card"', 'class="fc2-card product-card"');
 }
 
 function nxAtc(ev, id) {
