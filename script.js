@@ -704,10 +704,10 @@ function flashCardHTML(p) {
     : p.discount >= 20 ? `<span class="fc2-badge fc2-badge-disc">-${p.discount}%</span>` : '';
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
-      <div class="fc2-img">
-        <img src="${p.image}" loading="lazy" alt=""
+      <div class="fc2-img${p.imgFit==='contain'?' img-fit-contain':''}">
+        <img src="${p.cardImg || p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
-          ${p.imgFocus ? `style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"` : ''} />
+          style="object-fit:${p.imgFit||'cover'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
         ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
       </div>
       ${badge}
@@ -1095,10 +1095,10 @@ function productCardHTML(p) {
 
   return `
     <div class="product-card pcard nx-card" onclick="openModal(${p.id})">
-      <div class="pcard-imgBx">
-        <img src="${p.image}" loading="lazy" alt=""
+      <div class="pcard-imgBx${p.imgFit==='contain'?' img-fit-contain':''}">
+        <img src="${p.cardImg || p.image}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/400'"
-          ${p.imgFocus?`style="object-position:${p.imgFocus.x}% ${p.imgFocus.y}%"`:''}/>
+          style="object-fit:${p.imgFit||'cover'};${p.imgFocus&&!p.imgFit?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
         ${isOOS?`<div class="pcard-oos-overlay">${t('outOfStock')}</div>`:''}
         ${isLow?`<div class="pcard-low-overlay">🔥 ${t('lowStock').replace('{n}',p.stock)}</div>`:''}
         ${discPill}

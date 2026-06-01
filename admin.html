@@ -1131,6 +1131,50 @@ service cloud.firestore {
         <button class="adm-btn" onclick="pickImage('pImage','imgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px" id="pImgUploadBtn"><i class="fas fa-camera"></i> Upload HD Photo from Phone</button>
       </div>
 
+      <!-- CARD IMAGE DISPLAY SETTINGS -->
+      <div class="field-wrap" style="background:var(--bg1);border:1px solid rgba(201,168,76,.15);border-radius:12px;padding:12px;margin-top:4px">
+        <div class="field-label" style="color:var(--gold);margin-bottom:8px"><i class="fas fa-id-card" style="color:var(--gold)"></i> Card Display Settings</div>
+
+        <!-- Card Image Override (optional) -->
+        <div style="margin-bottom:10px">
+          <div style="font-size:11px;color:#888;margin-bottom:6px">Card Image (optional) — দোকানের card-এ আলাদা ছবি দেখাতে চাইলে এখানে URL দিন</div>
+          <input type="url" id="pCardImg" class="adm-input" placeholder="Leave empty to use main photo" oninput="_updateCardPreview()"/>
+          <button class="adm-btn" onclick="pickImage('pCardImg','cardImgPreviewEl')" style="width:100%;justify-content:center;margin-top:7px;background:rgba(201,168,76,.08);border-color:rgba(201,168,76,.3);color:var(--gold)"><i class="fas fa-camera"></i> Upload Card Photo</button>
+          <div id="cardImgPreviewWrap" style="margin-top:8px;border-radius:10px;overflow:hidden;height:120px;background:#111;display:none;position:relative">
+            <img id="cardImgPreviewEl" style="width:100%;height:100%;object-fit:contain;background:#1a1a2e" src="" alt=""/>
+          </div>
+        </div>
+
+        <!-- Image Fit Style -->
+        <div>
+          <div style="font-size:11px;color:#888;margin-bottom:8px">Card-এ ছবি কিভাবে দেখাবে?</div>
+          <div style="display:flex;gap:8px">
+            <button class="adm-btn sm" id="imgFitCover" onclick="setImgFit('cover')" style="flex:1;justify-content:center;flex-direction:column;gap:4px;padding:10px 6px;height:auto">
+              <i class="fas fa-crop-alt" style="font-size:16px;display:block;margin-bottom:4px"></i>
+              <span style="font-size:11px">Cropped Fill</span>
+              <span style="font-size:10px;color:#888;font-weight:400">ছবি কেটে fill হবে</span>
+            </button>
+            <button class="adm-btn sm gray" id="imgFitContain" onclick="setImgFit('contain')" style="flex:1;justify-content:center;flex-direction:column;gap:4px;padding:10px 6px;height:auto">
+              <i class="fas fa-expand" style="font-size:16px;display:block;margin-bottom:4px"></i>
+              <span style="font-size:11px">Full Photo ✨</span>
+              <span style="font-size:10px;color:#888;font-weight:400">পুরো ছবি দেখাবে</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mini card preview -->
+        <div style="margin-top:10px">
+          <div style="font-size:11px;color:#888;margin-bottom:6px">Preview:</div>
+          <div id="cardPreviewMini" style="width:140px;height:200px;border-radius:14px;overflow:hidden;background:#1a1a2e;border:1px solid rgba(255,255,255,.1);position:relative">
+            <img id="cardPreviewImg" style="width:100%;height:68%;object-fit:cover" src="" alt=""/>
+            <div style="padding:6px 8px;position:absolute;bottom:0;left:0;right:0;background:#1a1a2e">
+              <div id="cardPreviewName" style="font-size:10px;color:#fff;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Product name</div>
+              <div id="cardPreviewPrice" style="font-size:12px;color:#ff5eab;font-weight:800;margin-top:2px">SAR —</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- EXTRA IMAGES (multi-upload gallery) -->
       <div class="field-wrap" style="background:#111;border-radius:12px;padding:11px;border:1px solid #2a2a2a">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
@@ -1241,6 +1285,8 @@ service cloud.firestore {
       <div class="field-wrap" style="margin-bottom:4px">
         <div class="field-label">🎨 Color সিলেক্ট করুন</div>
         <div class="color-selector" id="colorSelectorWrap"></div>
+        <!-- Color photos row (shown when colors are selected) -->
+        <div id="colorImagesRow" style="display:none;margin-top:8px;background:var(--bg1);border-radius:10px;padding:10px;border:1px solid rgba(201,168,76,.08)"></div>
         <div class="color-add-row">
           <input type="color" id="customColorHex" class="color-hex-input" value="#e91e8c" style="padding:2px;height:34px;cursor:pointer"/>
           <input type="text" id="customColorName" class="color-name-input" placeholder="Custom রঙের নাম (e.g. Sky Blue)"/>
@@ -1495,9 +1541,13 @@ function openProductForm(id) {
     document.getElementById('pStock').value = p.stock !== undefined ? p.stock : '';
     document.getElementById('pDesc').value = p.description || '';
     initSizeSelector(p.sizes || []);
-    initColorSelector(p.colors || []);
+    initColorSelector(p.colors || [], p.colorImages || []);
     previewImg(p.image || '');
     setImgFocus(p.imgFocus || {x:50,y:50,scale:1});
+    document.getElementById('pCardImg').value = p.cardImg || '';
+    _imgFit = p.imgFit || 'cover';
+    setImgFit(_imgFit);
+    _updateCardPreview();
   } else {
     document.getElementById('pEditId').value = '';
     ['pImage','pVideo','pNameEn','pNameAr','pNameBn','pPrice','pOrigPrice','pDiscount','pRating','pRatingCount','pSold','pStock','pDesc'].forEach(id => {
@@ -1507,9 +1557,13 @@ function openProductForm(id) {
     document.getElementById('pCategory').value = 'women';
     document.getElementById('pTag').value = '';
     initSizeSelector([]);
-    initColorSelector([]);
+    initColorSelector([], []);
     imgResetFocus();
     clearExtraImgs();
+    document.getElementById('pCardImg').value = '';
+    _imgFit = 'cover';
+    setImgFit('cover');
+    _updateCardPreview();
   }
   document.getElementById('prodModalOverlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1534,6 +1588,7 @@ function previewImg(url) {
     wrap.classList.remove('has-img');
     if (toolbar) toolbar.style.display = 'none';
   }
+  _updateCardPreview();
 }
 
 /* ===== IMAGE FOCUS (DRAG + ZOOM) ===== */
@@ -1756,6 +1811,7 @@ const PRESET_COLORS = [
 
 let _selSizes = [];
 let _selColors = []; // array of {name, hex}
+let _selColorImages = []; // parallel array of photo URLs for each selected color
 let _extraColors = []; // custom colors added by user
 
 function initSizeSelector(saved) {
@@ -1776,7 +1832,7 @@ function renderSizeSelector() {
 }
 function getSelectedSizes() { return [..._selSizes]; }
 
-function initColorSelector(savedHexes) {
+function initColorSelector(savedHexes, savedColorImages) {
   _selColors = [];
   savedHexes.forEach(h => {
     const preset = PRESET_COLORS.find(c => c.hex.toLowerCase() === h.toLowerCase());
@@ -1784,6 +1840,7 @@ function initColorSelector(savedHexes) {
     else _selColors.push({name: h, hex: h});
   });
   _extraColors = _selColors.filter(c => !PRESET_COLORS.find(p => p.hex.toLowerCase() === c.hex.toLowerCase()));
+  _selColorImages = (savedColorImages || []).slice();
   renderColorSelector();
 }
 function toggleColor(hex) {
@@ -1817,8 +1874,75 @@ function renderColorSelector() {
       <div class="color-chip-label">${c.name}</div>
     </div>`;
   }).join('');
+
+  // Show image upload row for each selected color
+  const imgRow = document.getElementById('colorImagesRow');
+  if (imgRow) {
+    if (_selColors.length === 0) {
+      imgRow.style.display = 'none';
+      return;
+    }
+    imgRow.style.display = 'block';
+    imgRow.innerHTML = `
+      <div style="font-size:12px;color:var(--gold);font-weight:700;margin-bottom:8px"><i class="fas fa-camera"></i> Color Photos (optional) — প্রতিটা রঙের আলাদা ছবি</div>
+      ${_selColors.map((c, i) => `
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;background:var(--bg2);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06)">
+          <div style="width:28px;height:28px;border-radius:50%;background:${c.hex};border:2px solid rgba(255,255,255,.2);flex-shrink:0"></div>
+          <span style="font-size:11px;color:#888;width:60px;flex-shrink:0">${c.name}</span>
+          <input type="url" id="colorImg_${i}" class="adm-input" style="flex:1;font-size:11px;padding:7px 10px;margin:0" placeholder="Photo URL for this color (optional)" value="${_selColorImages[i]||''}" oninput="_selColorImages[${i}]=this.value;_previewColorImg(${i})"/>
+          <button class="adm-btn xs gray" onclick="pickImage('colorImg_${i}','colorImgThumb_${i}')" style="flex-shrink:0;font-size:10px;padding:6px 8px"><i class="fas fa-camera"></i></button>
+          <img id="colorImgThumb_${i}" src="${_selColorImages[i]||''}" style="width:36px;height:36px;border-radius:6px;object-fit:cover;border:1px solid #333;display:${_selColorImages[i]?'block':'none'}" alt=""/>
+        </div>
+      `).join('')}
+    `;
+  }
+}
+function _previewColorImg(i) {
+  const url = _selColorImages[i];
+  const thumb = document.getElementById(`colorImgThumb_${i}`);
+  if (thumb) { thumb.src = url || ''; thumb.style.display = url ? 'block' : 'none'; }
 }
 function getSelectedColors() { return _selColors.map(c => c.hex); }
+
+/* ===== CARD DISPLAY SETTINGS ===== */
+let _imgFit = 'cover';
+function setImgFit(mode) {
+  _imgFit = mode;
+  const coverBtn = document.getElementById('imgFitCover');
+  const containBtn = document.getElementById('imgFitContain');
+  if (coverBtn && containBtn) {
+    if (mode === 'cover') {
+      coverBtn.className = 'adm-btn sm';
+      containBtn.className = 'adm-btn sm gray';
+    } else {
+      coverBtn.className = 'adm-btn sm gray';
+      containBtn.className = 'adm-btn sm';
+    }
+  }
+  _updateCardPreview();
+}
+
+function _updateCardPreview() {
+  const previewImg = document.getElementById('cardPreviewImg');
+  const previewName = document.getElementById('cardPreviewName');
+  const previewPrice = document.getElementById('cardPreviewPrice');
+  if (!previewImg) return;
+  const cardImgUrl = (document.getElementById('pCardImg')?.value || document.getElementById('pImage')?.value || '').trim();
+  const name = document.getElementById('pNameEn')?.value || 'Product name';
+  const price = document.getElementById('pPrice')?.value;
+  previewImg.src = cardImgUrl || '';
+  previewImg.style.objectFit = _imgFit;
+  previewImg.style.background = '#2a2040';
+  if (previewName) previewName.textContent = name;
+  if (previewPrice) previewPrice.textContent = price ? 'SAR ' + price : 'SAR —';
+  // show/hide card preview wrap
+  const wrap = document.getElementById('cardImgPreviewWrap');
+  const cardImg = document.getElementById('pCardImg')?.value?.trim();
+  if (wrap) wrap.style.display = cardImg ? 'block' : 'none';
+  if (cardImg && document.getElementById('cardImgPreviewEl')) {
+    document.getElementById('cardImgPreviewEl').src = cardImg;
+  }
+}
 
 function saveProduct() {
   const nameEn = document.getElementById('pNameEn').value.trim();
@@ -1842,8 +1966,11 @@ function saveProduct() {
     tag: document.getElementById('pTag').value,
     sizes: getSelectedSizes(),
     colors: getSelectedColors(),
+    colorImages: _selColorImages.some(Boolean) ? _selColorImages : undefined,
     description: document.getElementById('pDesc').value.trim(),
     imgFocus: getImgFocus(),
+    cardImg: document.getElementById('pCardImg').value.trim() || undefined,
+    imgFit: _imgFit !== 'cover' ? _imgFit : undefined,
     stock: document.getElementById('pStock').value !== '' ? parseInt(document.getElementById('pStock').value) : undefined,
     rating: parseFloat(document.getElementById('pRating').value) || 4.5,
     ratingCount: parseInt(document.getElementById('pRatingCount').value) || 0,
