@@ -736,10 +736,9 @@ function flashCardHTML(p) {
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
       <div class="fc2-img">
-        <div class="fc2-img-blur" style="background-image:url('${imgSrc}')"></div>
         <img src="${imgSrc}" loading="lazy" alt=""
           onerror="this.onerror=null;this.src='https://picsum.photos/seed/p${p.id}/400/500'"
-          style="${p.imgFocus?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:''}"/>
+          style="${p.imgFocus?`object-position:${p.imgFocus.x}% ${p.imgFocus.y}%`:'object-position:top center'}"/>
         ${isOOS ? '<div class="fc2-oos"><span>Out of Stock</span></div>' : ''}
         ${discPill}
       </div>
