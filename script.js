@@ -711,6 +711,27 @@ function flashCardHTML(p) {
   const couponRow = p.discount > 0
     ? `<div class="fc2-coupon"><i class="fas fa-tag"></i> ${fmt(p.price)} with coupon</div>` : '';
 
+  // Rating row
+  const rating = p.rating || 4.5;
+  const ratingCount = p.ratingCount || 0;
+  const ratingStr = ratingCount >= 1000
+    ? (ratingCount/1000).toFixed(1).replace('.0','') + 'K'
+    : ratingCount > 0 ? ratingCount : '';
+  const ratingRow = `<div class="fc2-rating-row">
+    <i class="fas fa-star fc2-star"></i>
+    <span class="fc2-rating-val">${rating}</span>
+    ${ratingStr ? `<span class="fc2-rating-cnt">(${ratingStr})</span>` : ''}
+  </div>`;
+
+  // Delivery / status badge
+  const isLowStock = !isOOS && p.stock > 0 && p.stock <= 5;
+  const statusBadge = isOOS ? ''
+    : isLowStock
+    ? `<div class="fc2-status fc2-status-hot"><i class="fas fa-fire"></i> Selling out fast</div>`
+    : (p.tag === 'bestseller' || ratingCount > 500)
+    ? `<div class="fc2-status fc2-status-del"><i class="fas fa-truck"></i> Free Delivery</div>`
+    : `<div class="fc2-status fc2-status-del"><i class="fas fa-truck-fast"></i> Fast Delivery</div>`;
+
   return `
     <div class="fc2-card" onclick="openModal(${p.id})">
       <div class="fc2-img${p.imgFit==='contain'?' img-fit-contain':''}">
@@ -727,7 +748,9 @@ function flashCardHTML(p) {
         ${discPill}
         ${choiceBadge}
         <h3 class="fc2-name">${getName(p)}</h3>
+        ${ratingRow}
         ${soldTxt}
+        ${statusBadge}
         <div class="fc2-prices">
           <span class="fc2-price">${fmt(p.price)}</span>
           ${origPrice ? `<span class="fc2-orig">${origPrice}</span>` : ''}
