@@ -19931,3 +19931,41 @@ html {
   object-fit: cover;
   display: block;
 }
+
+/* ── Noon-style horizontal scroll for Flash Deals & product sections ── */
+.flash-products,
+.two-col-products {
+  display: flex !important;
+  flex-direction: row !important;
+  overflow-x: auto !important;
+  overflow-y: visible !important;
+  scroll-snap-type: x mandatory !important;
+  -webkit-overflow-scrolling: touch !important;
+  grid-template-columns: unset !important;
+  gap: 10px !important;
+  padding: 8px 10px 16px !important;
+  scrollbar-width: none !important;
+}
+.flash-products::-webkit-scrollbar,
+.two-col-products::-webkit-scrollbar { display: none !important; }
+
+/* Each card: fixed width so ~2.3 cards visible (Noon peek style) */
+.flash-products .fc2-card,
+.two-col-products .fc2-card {
+  flex: 0 0 43% !important;
+  width: 43% !important;
+  min-width: 43% !important;
+  scroll-snap-align: start !important;
+  height: 320px !important;
+}
+
+/* Slightly taller on wider phones */
+@media (min-width: 390px) {
+  .flash-products .fc2-card,
+  .two-col-products .fc2-card {
+    flex: 0 0 41% !important;
+    width: 41% !important;
+    min-width: 41% !important;
+    height: 340px !important;
+  }
+}
