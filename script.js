@@ -487,6 +487,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initColScroll();
   initScrollReveal();
   _checkBirthdayWish();
+  renderPromoBanners();
 });
 
 /* ===== COLLECTION TILES — apply saved admin data ===== */
@@ -762,6 +763,51 @@ function renderFlashDeals() {
     ? pins.map(id => PRODUCTS.find(p => p.id === id)).filter(Boolean).slice(0, 6)
     : PRODUCTS.filter(p => p.discount >= 45).slice(0, 6);
   document.getElementById('flashProducts').innerHTML = items.map(p => flashCardHTML(p)).join('');
+}
+
+/* ── Promo Banner Slider ── */
+let _promoIdx = 0, _promoTimer = null, _promoBanners = [];
+function renderPromoBanners() {
+  _promoBanners = JSON.parse(localStorage.getItem('exg_promo_banners') || '[]')
+    .filter(b => b && b.img);
+  const wrap = document.getElementById('promoSliderWrap');
+  const track = document.getElementById('promoSliderTrack');
+  const dots = document.getElementById('promoSliderDots');
+  if (!wrap || !track || !dots) return;
+  if (!_promoBanners.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  track.innerHTML = _promoBanners.map((b, i) =>
+    `<div class="promo-slide" onclick="${b.link ? `window.open('${b.link}','_blank')` : ''}">
+       <img src="${b.img}" alt="" loading="lazy" onerror="this.style.display='none'"/>
+     </div>`
+  ).join('');
+  dots.innerHTML = _promoBanners.map((_, i) =>
+    `<div class="promo-dot${i===0?' active':''}" onclick="_promGoTo(${i})"></div>`
+  ).join('');
+  _promoIdx = 0; _promoSetPos();
+  if (_promoTimer) clearInterval(_promoTimer);
+  if (_promoBanners.length > 1) {
+    _promoTimer = setInterval(() => _promGoTo((_promoIdx + 1) % _promoBanners.length), 3500);
+  }
+  // Touch swipe
+  let tx = 0;
+  const vp = document.getElementById('promoSliderVp');
+  vp.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  vp.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) _promGoTo(dx < 0
+      ? Math.min(_promoIdx + 1, _promoBanners.length - 1)
+      : Math.max(_promoIdx - 1, 0));
+  }, { passive: true });
+}
+function _promGoTo(i) {
+  _promoIdx = i; _promoSetPos();
+  document.querySelectorAll('.promo-dot').forEach((d, j) =>
+    d.classList.toggle('active', j === i));
+}
+function _promoSetPos() {
+  const t = document.getElementById('promoSliderTrack');
+  if (t) t.style.transform = `translateX(-${_promoIdx * 100}%)`;
 }
 
 function _dealMiniCard(p) {
