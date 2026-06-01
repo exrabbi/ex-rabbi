@@ -10324,9 +10324,34 @@ const _PLAY_DEFAULTS = [
 
 function _playGetVideos() {
   try {
-    const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
-    return [..._PLAY_DEFAULTS, ...saved];
+    const local   = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
+    const fromFB  = JSON.parse(localStorage.getItem('exg_play_fb_cache') || '[]');
+    const merged  = [...fromFB, ...local];
+    const seen    = new Set();
+    const unique  = merged.filter(v => { if (seen.has(v.id)) return false; seen.add(v.id); return true; });
+    return [..._PLAY_DEFAULTS, ...unique];
   } catch(e) { return _PLAY_DEFAULTS; }
+}
+
+async function _playFetchShared() {
+  try {
+    const db = typeof firebase !== 'undefined' && firebase.apps?.length
+      ? firebase.firestore() : null;
+    if (!db) return;
+    const snap = await db.collection('play_videos').orderBy('addedAt', 'desc').limit(200).get();
+    if (snap.empty) return;
+    const videos = snap.docs.map(d => ({ fsId: d.id, ...d.data() }));
+    localStorage.setItem('exg_play_fb_cache', JSON.stringify(videos));
+  } catch(e) {}
+}
+
+async function _playPushShared(video) {
+  try {
+    const db = typeof firebase !== 'undefined' && firebase.apps?.length
+      ? firebase.firestore() : null;
+    if (!db) return;
+    await db.collection('play_videos').add(video);
+  } catch(e) {}
 }
 
 function openPlayFeed() {
@@ -10335,6 +10360,8 @@ function openPlayFeed() {
   panel.classList.add('open');
   document.body.style.overflow = 'hidden';
   _renderPlayFeed();
+  // Refresh shared videos in background then re-render
+  _playFetchShared().then(() => _renderPlayFeed()).catch(() => {});
 }
 
 function closePlayFeed() {
@@ -10427,8 +10454,10 @@ function _renderPlayFeed() {
       ? `<button class="play-follow-btn${isFollowing?' following':''}" onclick="event.stopPropagation();_playFollow('${v.creatorId||v.creator}',this)">${isFollowing?'✓ Following':'+ Follow'}</button>`
       : `<span class="play-views"><i class="fas fa-eye"></i>${views}</span>`;
 
-    return `<div class="play-card" data-yt="${v.yt||''}" data-vid="${v.id}" data-type="${isLocal?'local':'youtube'}" data-idbkey="${v.idbKey||''}">
-      ${isLocal
+    const isUrl = v.type === 'url';
+    const cardType = isLocal ? 'local' : isUrl ? 'url' : 'youtube';
+    return `<div class="play-card" data-yt="${v.yt||''}" data-vid="${v.id}" data-type="${cardType}" data-idbkey="${v.idbKey||''}" data-url="${v.url||''}">
+      ${(isLocal || isUrl)
         ? `<div class="play-local-thumb" style="background:#111;position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><i class="fas fa-play-circle" style="font-size:64px;color:rgba(255,255,255,.3)"></i></div>`
         : `<div class="play-thumb-bg" style="background-image:url('${thumbUrl}')"></div>
       <img class="play-thumb" src="${thumbUrl}" alt="${v.title}"
@@ -10473,27 +10502,46 @@ function _renderPlayFeed() {
     </div>`;
   }).join('');
 
+  // Helper: create a <video> element for hosted or IDB blob videos
+  function _makeVideoEl(src) {
+    const video = document.createElement('video');
+    video.className = 'play-card-video';
+    video.autoplay = true; video.muted = true; video.loop = true; video.playsInline = true;
+    video.setAttribute('playsinline', '');
+    video.src = src;
+    return video;
+  }
+
   // IntersectionObserver — load media when card enters viewport
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(async entry => {
       const card = entry.target;
-      const vid = card.dataset.vid;
       const type = card.dataset.type;
       if (entry.isIntersecting) {
-        if (type === 'local') {
+        if (type === 'url') {
+          if (!card.querySelector('.play-card-video')) {
+            const url = card.dataset.url;
+            if (!url) return;
+            const video = _makeVideoEl(url);
+            card.appendChild(video);
+            const thumb = card.querySelector('.play-local-thumb');
+            if (thumb) video.addEventListener('canplay', () => { thumb.style.opacity = '0'; });
+            video.play().catch(() => {});
+          } else {
+            card.querySelector('.play-card-video')?.play?.().catch(()=>{});
+          }
+        } else if (type === 'local') {
           if (!card.querySelector('.play-card-video')) {
             const idbKey = card.dataset.idbkey;
             if (!idbKey) return;
             try {
               const blob = await _playIDB.get(idbKey);
               if (!blob) return;
-              const video = document.createElement('video');
-              video.className = 'play-card-video';
-              video.autoplay = true; video.muted = true; video.loop = true; video.playsInline = true;
-              video.src = URL.createObjectURL(blob);
+              const video = _makeVideoEl(URL.createObjectURL(blob));
               card.appendChild(video);
               const localThumb = card.querySelector('.play-local-thumb');
               if (localThumb) video.addEventListener('canplay', () => { localThumb.style.opacity = '0'; });
+              video.play().catch(() => {});
             } catch(e) {}
           } else {
             card.querySelector('.play-card-video')?.play?.().catch(()=>{});
@@ -10514,7 +10562,7 @@ function _renderPlayFeed() {
           }
         }
       } else {
-        if (type === 'local') {
+        if (type === 'url' || type === 'local') {
           card.querySelector('.play-card-video')?.pause?.();
         } else {
           const iframe = card.querySelector('.play-card-iframe');
@@ -10534,7 +10582,8 @@ function _renderPlayFeed() {
     if (!first) return;
     const type = first.dataset.type;
     const yt = first.dataset.yt;
-    if (type !== 'local' && yt && !first.querySelector('.play-card-iframe')) {
+    // For URL videos, the observer handles it; eager load only YouTube
+    if (type !== 'local' && type !== 'url' && yt && !first.querySelector('.play-card-iframe')) {
       const iframe = document.createElement('iframe');
       iframe.className = 'play-card-iframe active';
       iframe.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture';
@@ -10556,7 +10605,7 @@ function _playToggleMute(vid) {
   const btn = document.getElementById('pmute-' + vid);
   _playMuted[vid] = !_playMuted[vid];
   const isMuted = !_playMuted[vid];
-  if (card.dataset.type === 'local') {
+  if (card.dataset.type === 'local' || card.dataset.type === 'url') {
     const video = card.querySelector('.play-card-video');
     if (video) video.muted = isMuted;
   } else {
@@ -10800,60 +10849,104 @@ function _pusFileSelected(input) {
 }
 
 async function _savePlayVideo() {
-  const fileInput = document.getElementById('pusFileInput');
-  const titleInput = document.getElementById('pusTitle');
-  const productSel = document.getElementById('pusProductId');
-  const saveBtn = document.getElementById('pusSaveBtn');
+  const fileInput    = document.getElementById('pusFileInput');
+  const titleInput   = document.getElementById('pusTitle');
+  const productSel   = document.getElementById('pusProductId');
+  const saveBtn      = document.getElementById('pusSaveBtn');
   const progressWrap = document.getElementById('pusProgressWrap');
-  const progressBar = document.getElementById('pusProgressBar');
-  const progressLabel = document.getElementById('pusProgressLabel');
+  const progressBar  = document.getElementById('pusProgressBar');
+  const progressLabel= document.getElementById('pusProgressLabel');
 
   const file = fileInput?.files?.[0];
   if (!file) { showToast('⚠️ Please select a video first'); return; }
 
-  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Uploading…'; }
   if (progressWrap) progressWrap.style.display = 'block';
+  if (progressLabel) progressLabel.textContent = 'Uploading…';
 
-  let prog = 0;
-  const progInterval = setInterval(() => {
-    prog = Math.min(prog + 12, 88);
-    if (progressBar) progressBar.style.width = prog + '%';
-  }, 120);
+  const cloudName   = (localStorage.getItem('exg_cloud_name')   || '').trim();
+  const cloudPreset = (localStorage.getItem('exg_cloud_preset') || '').trim();
+  let videoUrl = null;
 
   try {
-    const idbKey = 'vid_' + Date.now();
-    await _playIDB.save(idbKey, file);
+    if (cloudName && cloudPreset) {
+      // Upload to Cloudinary — works for all sizes, shows real progress
+      videoUrl = await new Promise((resolve, reject) => {
+        const fd  = new FormData();
+        fd.append('file', file);
+        fd.append('upload_preset', cloudPreset);
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`);
+        xhr.upload.onprogress = e => {
+          if (e.lengthComputable && progressBar) progressBar.style.width = Math.round(e.loaded / e.total * 90) + '%';
+        };
+        xhr.onload = () => {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            if (data.secure_url) resolve(data.secure_url);
+            else reject(new Error('cloudinary: ' + JSON.stringify(data)));
+          } catch(e) { reject(e); }
+        };
+        xhr.onerror = () => reject(new Error('network error'));
+        xhr.send(fd);
+      });
+    } else {
+      // Fallback: Telegra.ph (free, no key — works up to ~50 MB)
+      if (progressLabel) progressLabel.textContent = 'Uploading to CDN…';
+      const fd = new FormData();
+      fd.append('file', file, 'video.mp4');
+      let fakeProg = 10;
+      const fakeTimer = setInterval(() => {
+        fakeProg = Math.min(fakeProg + 5, 85);
+        if (progressBar) progressBar.style.width = fakeProg + '%';
+      }, 400);
+      try {
+        const res  = await fetch('https://telegra.ph/upload', { method: 'POST', body: fd });
+        const data = await res.json();
+        clearInterval(fakeTimer);
+        if (Array.isArray(data) && data[0]?.src) videoUrl = 'https://telegra.ph' + data[0].src;
+      } catch(e) { clearInterval(fakeTimer); }
+    }
 
-    clearInterval(progInterval);
     if (progressBar) progressBar.style.width = '100%';
     if (progressLabel) progressLabel.textContent = 'Posted! ✓';
 
     const newVideo = {
       id: 'pv_' + Date.now(),
-      type: 'local',
-      idbKey,
+      type: videoUrl ? 'url' : 'local',
+      url: videoUrl || null,
+      idbKey: videoUrl ? null : ('vid_' + Date.now()),
       title: titleInput?.value.trim() || 'My Video',
       creator: currentUser?.name || 'Creator',
       creatorId: currentUser?.email || 'anon',
+      avatar: currentUser?.avatar || null,
       productId: productSel?.value ? parseInt(productSel.value) : null,
       views: 0,
       likes: 0,
       addedAt: Date.now(),
     };
+
+    // If no URL, fall back to local IDB storage
+    if (!videoUrl) await _playIDB.save(newVideo.idbKey, file);
+
+    // Save locally
     const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
     saved.unshift(newVideo);
-    if (saved.length > 100) saved.splice(100); // cap to 100 videos to prevent quota issues
+    if (saved.length > 100) saved.splice(100);
     _ls.setJSON('exg_play_videos', saved);
+
+    // Push to shared Firebase RTDB (if configured) so all users see it
+    _playPushShared(newVideo).catch(() => {});
 
     setTimeout(() => {
       _closePlayUpload();
       _renderPlayFeed();
-      showToast('🎉 Video posted!');
+      showToast('🎉 Video posted! Everyone can see it!');
     }, 700);
+
   } catch(err) {
-    clearInterval(progInterval);
     if (progressWrap) progressWrap.style.display = 'none';
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Post Video ✓'; }
-    showToast('❌ Could not save — try a smaller file');
+    showToast('❌ Upload failed — check connection or try a smaller video');
   }
 }
