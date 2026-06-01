@@ -759,11 +759,13 @@ function renderPromoBanners() {
   if (!wrap || !track || !dots) return;
   if (!_promoBanners.length) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-  track.innerHTML = _promoBanners.map((b, i) =>
-    `<div class="promo-slide" onclick="${b.link ? `window.open('${b.link}','_blank')` : ''}">
-       <img src="${b.img}" alt="" loading="lazy" onerror="this.style.display='none'"/>
-     </div>`
-  ).join('');
+  track.innerHTML = _promoBanners.map((b, i) => {
+    const isVid = /\.(mp4|webm|mov|ogg)(\?|$)/i.test(b.img);
+    const media = isVid
+      ? `<video src="${b.img}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`
+      : `<img src="${b.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>`;
+    return `<div class="promo-slide" onclick="${b.link ? `window.open('${b.link}','_blank')` : ''}">${media}</div>`;
+  }).join('');
   dots.innerHTML = _promoBanners.map((_, i) =>
     `<div class="promo-dot${i===0?' active':''}" onclick="_promGoTo(${i})"></div>`
   ).join('');
