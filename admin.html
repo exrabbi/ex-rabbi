@@ -1128,7 +1128,7 @@ service cloud.firestore {
       <div class="sec" style="border:1px solid #1e3a5f;border-radius:10px;padding:14px;background:#071428;margin-bottom:10px">
         <div class="sec-title" style="margin-bottom:10px;color:#60a5fa"><i class="fas fa-database"></i> Data Size</div>
         <div id="dataSizeBar" style="margin-bottom:10px"></div>
-        <button class="adm-btn" onclick="slimData()" style="background:linear-gradient(135deg,#7c3aed,#e91e8c);width:100%;margin-bottom:8px">
+        <button class="adm-btn" onclick="['exg_city_video','exg_play_fb_cache','exg_play_videos','exg_ai_usage'].forEach(k=>localStorage.removeItem(k));Object.keys(localStorage).forEach(k=>{try{const v=localStorage.getItem(k)||'';if(v.startsWith('data:')&&v.length>5000)localStorage.removeItem(k);}catch(e){}});slimData();" style="background:linear-gradient(135deg,#7c3aed,#e91e8c);width:100%;margin-bottom:8px">
           <i class="fas fa-compress-alt"></i> ⚡ Slim Data — একক্লিকে data ছোট করুন
         </button>
         <div style="font-size:11px;color:#666">Base64 ছবি সরায়, ডুপ্লিকেট পরিষ্কার করে, পুরনো ডেটা সরিয়ে দেয়</div>
