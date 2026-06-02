@@ -20716,9 +20716,9 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 /* ── Checkout card mini-badge SVGs ─────────────────────────── */
 .ck-card-logos-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
 .ck-cl-svg {
-  height: 22px;
+  height: 26px;
   width: auto;
-  border-radius: 4px;
+  border-radius: 5px;
   box-shadow: none;
   flex-shrink: 0;
   display: block;

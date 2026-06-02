@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=338" />
+  <link rel="stylesheet" href="styles.css?v=339" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1702,16 +1702,16 @@
             <div>
               <div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div>
               <div class="ck-card-logos-row">
-                <!-- mada: official blue #005A9C + green bottom stripe #00A14B -->
-                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#005A9C"/><path d="M0 22 H50 V26 Q50 30 46 30 H4 Q0 30 0 26 Z" fill="#00A14B"/><text x="25" y="17" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".3">mada</text></svg>
-                <!-- VISA: official #1A1F71 bold italic on white -->
-                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="25" y="22" text-anchor="middle" fill="#1A1F71" font-size="19" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.5">VISA</text></svg>
-                <!-- Mastercard: official EB001B + F79E1B circles, FF5F00 overlap -->
-                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><circle cx="18" cy="15" r="9.5" fill="#EB001B"/><circle cx="32" cy="15" r="9.5" fill="#F79E1B"/><path d="M25 7.72A9.5 9.5 0 0 1 25 22.28A9.5 9.5 0 0 1 25 7.72Z" fill="#FF5F00"/></svg>
-                <!-- American Express: official #016FD0 blue with AMERICAN / EXPRESS -->
-                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#016FD0"/><text x="25" y="13" text-anchor="middle" fill="#fff" font-size="5.8" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">AMERICAN</text><text x="25" y="22" text-anchor="middle" fill="#fff" font-size="5.8" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">EXPRESS</text></svg>
-                <!-- Discover: official white + F76F20 orange disc -->
-                <svg class="ck-cl-svg" viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg"><rect width="62" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="21" y="19" text-anchor="middle" fill="#231F20" font-size="8.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text><circle cx="51" cy="15" r="11" fill="#F76F20"/></svg>
+                <!-- mada: #005A9C blue + #00A14B green stripe -->
+                <svg class="ck-cl-svg" viewBox="0 0 52 32" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="32" rx="5" fill="#005A9C"/><rect y="23" width="52" height="9" rx="0" fill="#00A14B"/><rect y="23" width="52" height="1" fill="#007A35" opacity=".4"/><text x="26" y="18" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".2">mada</text></svg>
+                <!-- VISA: #1A1F71 bold italic on white -->
+                <svg class="ck-cl-svg" viewBox="0 0 52 32" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="32" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="26" y="23" text-anchor="middle" fill="#1A1F71" font-size="21" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.5">VISA</text></svg>
+                <!-- Mastercard: EB001B red + F79E1B orange, FF5F00 overlap -->
+                <svg class="ck-cl-svg" viewBox="0 0 52 32" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="32" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><circle cx="19" cy="16" r="10" fill="#EB001B"/><circle cx="33" cy="16" r="10" fill="#F79E1B"/><path d="M26 8.3A10 10 0 0 1 26 23.7A10 10 0 0 1 26 8.3Z" fill="#FF5F00"/></svg>
+                <!-- Amex: #016FD0 with clean AMEX text -->
+                <svg class="ck-cl-svg" viewBox="0 0 52 32" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="32" rx="5" fill="#016FD0"/><text x="26" y="21" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1">AMEX</text></svg>
+                <!-- Discover: white + #F76F20 orange disc -->
+                <svg class="ck-cl-svg" viewBox="0 0 64 32" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="32" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="22" y="21" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">discover</text><circle cx="52" cy="16" r="12" fill="#F76F20"/></svg>
               </div>
             </div>
           </div>
@@ -1803,16 +1803,16 @@
           <div class="ck-pm-left"><div class="ck-pm-ico" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#6D2C8A"/><text x="32" y="17" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1.5">stc</text><text x="32" y="31" text-anchor="middle" fill="#E0B8F5" font-size="11" font-weight="600" font-family="Arial,sans-serif" letter-spacing="2">pay</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
         </div>
 
-        <!-- Binance Pay: official #0B0E11 bg + #F3BA2F BNB diamond -->
+        <!-- Binance Pay: official BNB diamond — 5 diamonds in cross, #F3BA2F on #0B0E11 -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon fill="#F3BA2F" points="50,4 62,16 72,50 50,30 28,50 38,16"/><polygon fill="#F3BA2F" points="4,50 16,38 28,50 16,62"/><polygon fill="#F3BA2F" points="50,30 72,50 50,70 28,50"/><polygon fill="#F3BA2F" points="96,50 84,38 72,50 84,62"/><polygon fill="#F3BA2F" points="50,96 62,84 72,50 50,70 28,50 38,84"/><polygon fill="#0B0E11" points="50,42 58,50 50,58 42,50"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="100" height="100" fill="#0B0E11"/><!-- top small diamond --><polygon fill="#F3BA2F" points="50,6 61,17 50,28 39,17"/><!-- center large diamond --><polygon fill="#F3BA2F" points="50,28 72,50 50,72 28,50"/><!-- right small diamond --><polygon fill="#F3BA2F" points="72,50 83,39 94,50 83,61"/><!-- bottom small diamond --><polygon fill="#F3BA2F" points="50,72 61,83 50,94 39,83"/><!-- left small diamond --><polygon fill="#F3BA2F" points="28,50 17,39 6,50 17,61"/><!-- center hole --><polygon fill="#0B0E11" points="50,42 58,50 50,58 42,50"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
         </div>
 
-        <!-- Google Pay: official G (#4285F4) + Pay (#5F6368) on white -->
+        <!-- Google Pay: multicolor Google G + Pay -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><text x="18" y="28" text-anchor="middle" fill="#4285F4" font-size="22" font-weight="700" font-family="Arial,sans-serif">G</text><text x="44" y="27" text-anchor="middle" fill="#5F6368" font-size="16" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><defs><clipPath id="gClip"><text x="5" y="31" font-size="26" font-weight="700" font-family="Arial,sans-serif">G</text></clipPath></defs><!-- 4-color Google G --><rect x="5" y="8" width="11" height="12" clip-path="url(#gClip)" fill="#4285F4"/><!-- blue top --><rect x="16" y="8" width="10" height="12" clip-path="url(#gClip)" fill="#EA4335"/><!-- red top-right --><rect x="5" y="20" width="11" height="12" clip-path="url(#gClip)" fill="#34A853"/><!-- green bottom --><rect x="16" y="20" width="10" height="12" clip-path="url(#gClip)" fill="#FBBC05"/><!-- yellow bottom-right --><!-- crossbar (blue) --><rect x="18" y="18" width="10" height="5" clip-path="url(#gClip)" fill="#4285F4"/><text x="44" y="27" text-anchor="middle" fill="#5F6368" font-size="15" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
         </div>
 
         <!-- PayPal: official #003087 "Pay" + #009CDE "Pal" italic on white -->
