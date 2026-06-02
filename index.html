@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=338" />
+  <link rel="stylesheet" href="styles.css?v=336" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1690,186 +1690,139 @@
         <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
       </div>
 
-      <!-- 5. PAY WITH — Premium redesign v338 -->
-      <div class="ck-sec pw2-wrap">
+      <!-- 5. PAY WITH -->
+      <div class="ck-sec">
+        <div class="ck-sec-lbl">Pay with</div>
 
-        <!-- Section header -->
-        <div class="pw2-hdr">
-          <span class="pw2-hdr-title">Pay with</span>
-          <span class="pw2-secure-pill"><i class="fas fa-lock"></i> Secure Payment</span>
-        </div>
-
-        <!-- ══════════════ 1. CREDIT / DEBIT CARD ══════════════ -->
-        <div class="pw2-card-tile ck-pm" id="pmCard" onclick="selectPayMethod('card')">
-          <div class="pw2-tile-top">
-            <div class="pw2-radio" id="checkCard"><span class="pw2-rdot"></span></div>
-            <div class="pw2-card-icon-col">
-              <svg viewBox="0 0 36 24" width="36" height="24" xmlns="http://www.w3.org/2000/svg">
-                <rect width="36" height="24" rx="4" fill="url(#cardGrad)"/>
-                <defs><linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#1e3a8a"/><stop offset="100%" stop-color="#2563eb"/></linearGradient></defs>
-                <rect x="3" y="8" width="9" height="7" rx="1.5" fill="#fbbf24"/>
-                <rect x="3" y="17" width="30" height="2" rx="1" fill="rgba(255,255,255,.4)"/>
-              </svg>
-            </div>
-            <div class="pw2-card-main">
-              <div class="pw2-card-title" id="pmCardLabel">Credit / Debit Card</div>
-              <div class="pw2-logos-row">
-                <!-- mada -->
-                <svg viewBox="0 0 52 30" class="pw2-logo-badge" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="30" rx="5" fill="#0070CD"/><text x="26" y="20" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg>
-                <!-- Visa -->
-                <svg viewBox="0 0 52 30" class="pw2-logo-badge" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="30" rx="5" fill="#fff" stroke="#e0e0e0" stroke-width="1"/><text x="26" y="21" text-anchor="middle" fill="#1A1F71" font-size="16" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text></svg>
-                <!-- Mastercard -->
-                <svg viewBox="0 0 52 30" class="pw2-logo-badge" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="30" rx="5" fill="#fff" stroke="#e0e0e0" stroke-width="1"/><circle cx="20" cy="15" r="9" fill="#EB001B"/><circle cx="32" cy="15" r="9" fill="#F79E1B"/><path d="M26 8.2a9 9 0 0 1 0 13.6A9 9 0 0 1 26 8.2Z" fill="#FF5F00"/></svg>
-                <!-- Amex -->
-                <svg viewBox="0 0 52 30" class="pw2-logo-badge" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="30" rx="5" fill="#016FD0"/><text x="26" y="20" text-anchor="middle" fill="#fff" font-size="10" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">AMEX</text></svg>
-                <!-- Discover -->
-                <svg viewBox="0 0 64 30" class="pw2-logo-badge pw2-logo-wide" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="30" rx="5" fill="#fff" stroke="#e0e0e0" stroke-width="1"/><text x="22" y="20" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="700" font-family="Arial,sans-serif">discover</text><circle cx="51" cy="15" r="11" fill="#E65C00"/></svg>
+        <!-- Card -->
+        <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
+          <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left">
+            <div class="ck-pm-ico ck-pm-ico-card"><i class="fas fa-credit-card"></i></div>
+            <div>
+              <div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div>
+              <div class="ck-card-logos-row">
+                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#0070CD"/><text x="22" y="18" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg>
+                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><text x="22" y="19" text-anchor="middle" fill="#1A1F71" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text></svg>
+                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><circle cx="16" cy="13" r="8" fill="#EB001B"/><circle cx="28" cy="13" r="8" fill="#F79E1B"/><path d="M22 7.71 A8 8 0 0 1 22 18.29 A8 8 0 0 0 22 7.71 Z" fill="#FF5F00"/></svg>
+                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#016FD0"/><text x="22" y="18" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="900" font-family="Arial,sans-serif">AMEX</text></svg>
+                <svg class="ck-cl-svg" viewBox="0 0 60 26" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><text x="25" y="18" text-anchor="middle" fill="#231F20" font-size="8.5" font-weight="700" font-family="Arial,sans-serif">discover</text><circle cx="51" cy="13" r="10" fill="#E65C00"/></svg>
               </div>
             </div>
-            <div class="pw2-tick" id="pw2TickCard"><i class="fas fa-check"></i></div>
           </div>
-
-          <!-- Security badge — shown by JS (display:flex when card selected) -->
-          <div class="pw2-secure-bar" id="ckCardProtect" style="display:flex">
-            <i class="fas fa-shield-halved"></i>
-            <span>Your card information is protected with 256-bit encryption</span>
-          </div>
-
-          <!-- Card form -->
-          <div id="cardForm" style="display:none">
-            <div class="cc-scene">
-              <div class="cc-card" id="ccCard">
-                <div class="cc-front">
-                  <div class="cc-bg-glow"></div>
-                  <div class="cc-top-row">
-                    <span class="cc-bank" id="ccBank"></span>
-                    <div class="cc-network" id="ccNetwork">
-                      <svg viewBox="0 0 48 30" width="48" height="30"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/><path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/></svg>
-                    </div>
-                  </div>
-                  <div class="cc-chip"><div class="cc-chip-line"></div><div class="cc-chip-line"></div><div class="cc-chip-line cc-chip-mid"></div></div>
-                  <div class="cc-number" id="ccNumber">#### #### #### ####</div>
-                  <div class="cc-bottom-row">
-                    <div><div class="cc-lbl">Card Holder</div><div class="cc-holder" id="ccHolder">NAME ON CARD</div></div>
-                    <div><div class="cc-lbl">Expires</div><div class="cc-expiry" id="ccExpiry">MM/YY</div></div>
+          <div class="ck-pm-right"><span class="ck-pm-add">Add/change</span></div>
+        </div>
+        <!-- Green protection badge -->
+        <div class="ck-card-protect" id="ckCardProtect" style="display:flex">
+          <i class="fas fa-shield-halved"></i>
+          <span>Your card information is protected with 256-bit encryption</span>
+        </div>
+        <!-- Card form -->
+        <div id="cardForm" style="display:none">
+          <!-- Animated card preview -->
+          <div class="cc-scene">
+            <div class="cc-card" id="ccCard">
+              <!-- Front -->
+              <div class="cc-front">
+                <div class="cc-bg-glow"></div>
+                <div class="cc-top-row">
+                  <span class="cc-bank" id="ccBank"></span>
+                  <div class="cc-network" id="ccNetwork">
+                    <svg viewBox="0 0 48 30" width="48" height="30">
+                      <circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".9"/>
+                      <circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".9"/>
+                      <path d="M24 4.8a13 13 0 0 1 0 20.4A13 13 0 0 1 24 4.8z" fill="#ff5f00" opacity=".9"/>
+                    </svg>
                   </div>
                 </div>
-                <div class="cc-back">
-                  <div class="cc-stripe"></div>
-                  <div class="cc-sig-row"><div class="cc-sig-lines"></div><div class="cc-cvv-box"><div class="cc-lbl" style="color:#333">CVV</div><div class="cc-cvv-val" id="ccCvv">•••</div></div></div>
-                  <div class="cc-back-network"><svg viewBox="0 0 48 30" width="40" height="24"><circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".6"/><circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".6"/></svg></div>
+                <div class="cc-chip">
+                  <div class="cc-chip-line"></div>
+                  <div class="cc-chip-line"></div>
+                  <div class="cc-chip-line cc-chip-mid"></div>
+                </div>
+                <div class="cc-number" id="ccNumber">#### #### #### ####</div>
+                <div class="cc-bottom-row">
+                  <div>
+                    <div class="cc-lbl">Card Holder</div>
+                    <div class="cc-holder" id="ccHolder">NAME ON CARD</div>
+                  </div>
+                  <div>
+                    <div class="cc-lbl">Expires</div>
+                    <div class="cc-expiry" id="ccExpiry">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Back -->
+              <div class="cc-back">
+                <div class="cc-stripe"></div>
+                <div class="cc-sig-row">
+                  <div class="cc-sig-lines"></div>
+                  <div class="cc-cvv-box">
+                    <div class="cc-lbl" style="color:#333">CVV</div>
+                    <div class="cc-cvv-val" id="ccCvv">•••</div>
+                  </div>
+                </div>
+                <div class="cc-back-network">
+                  <svg viewBox="0 0 48 30" width="40" height="24">
+                    <circle cx="18" cy="15" r="13" fill="#eb001b" opacity=".6"/>
+                    <circle cx="30" cy="15" r="13" fill="#f79e1b" opacity=".6"/>
+                  </svg>
                 </div>
               </div>
             </div>
-            <div class="card-form-wrap">
-              <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);_updateCCPreview()" onfocus="_updateCCPreview()" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
-              <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this);_updateCCPreview()" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" oninput="_updateCCPreview()" onfocus="_ccFlip(true)" onblur="_ccFlip(false)" /></div></div>
-              <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName();_updateCCPreview()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName();_updateCCPreview()" /></div></div>
-            </div>
-            <input type="hidden" id="cardName" />
           </div>
+
+          <div class="card-form-wrap">
+            <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);_updateCCPreview()" onfocus="_updateCCPreview()" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
+            <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this);_updateCCPreview()" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" oninput="_updateCCPreview()" onfocus="_ccFlip(true)" onblur="_ccFlip(false)" /></div></div>
+            <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName();_updateCCPreview()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName();_updateCCPreview()" /></div></div>
+          </div>
+          <input type="hidden" id="cardName" />
         </div>
-
-        <!-- OR divider -->
-        <div class="pw2-or"><span>or pay with</span></div>
-
-        <!-- ══════════════ 2. FAST CHECKOUT ══════════════ -->
-        <div class="pw2-group-lbl">Fast Checkout</div>
-        <div class="pw2-express-grid">
-
-          <!-- Google Pay -->
-          <div class="pw2-express ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
-            <div class="pw2-radio" id="checkGpay"><span class="pw2-rdot"></span></div>
-            <svg viewBox="0 0 80 34" xmlns="http://www.w3.org/2000/svg" class="pw2-express-logo">
-              <text x="14" y="25" font-family="Arial,sans-serif" font-size="22" font-weight="700" fill="#4285F4">G</text>
-              <text x="35" y="25" font-family="Arial,sans-serif" font-size="18" font-weight="500" fill="#5F6368">Pay</text>
-            </svg>
-            <div class="pw2-tick" id="pw2TickGpay"><i class="fas fa-check"></i></div>
-          </div>
-
-          <!-- PayPal -->
-          <div class="pw2-express ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
-            <div class="pw2-radio" id="checkPaypal"><span class="pw2-rdot"></span></div>
-            <svg viewBox="0 0 90 34" xmlns="http://www.w3.org/2000/svg" class="pw2-express-logo">
-              <text x="8" y="25" font-family="Arial,sans-serif" font-size="20" font-weight="900" font-style="italic" fill="#003087">Pay</text>
-              <text x="44" y="25" font-family="Arial,sans-serif" font-size="20" font-weight="900" font-style="italic" fill="#009cde">Pal</text>
-            </svg>
-            <div class="pw2-tick" id="pw2TickPaypal"><i class="fas fa-check"></i></div>
-          </div>
-
-        </div>
-        <div id="paypalBtnContainer" style="display:none;margin-top:10px"></div>
-
-        <!-- ══════════════ 3. PAY LATER ══════════════ -->
-        <div class="pw2-group-lbl">Pay Later</div>
 
         <!-- Tamara -->
-        <div class="pw2-method ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
-          <div class="pw2-radio" id="checkTamara"><span class="pw2-rdot"></span></div>
-          <div class="pw2-logo-box pw2-logo-tamara">
-            <svg viewBox="0 0 72 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="tamG2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs><rect width="72" height="40" rx="8" fill="url(#tamG2)"/><text x="36" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif">tamara</text></svg>
-          </div>
-          <div class="pw2-method-text">
-            <div class="pw2-method-name">Tamara</div>
-            <div class="pw2-method-sub">4 installments · 0% interest</div>
-          </div>
-          <div class="pw2-rec-badge">Recommended</div>
-          <div class="pw2-tick" id="pw2TickTamara"><i class="fas fa-check"></i></div>
+        <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
+          <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><defs><linearGradient id="tamGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs><rect width="64" height="40" rx="7" fill="url(#tamGrad)"/><text x="32" y="23" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-style="italic" font-family="Arial,sans-serif">tamara</text></svg></div><div><div class="ck-pm-name">Tamara: split in 4 <i class="fas fa-circle-question" style="font-size:13px;color:#bbb;margin-left:3px"></i></div></div></div>
         </div>
 
-        <!-- ══════════════ 4. DIGITAL WALLETS ══════════════ -->
-        <div class="pw2-group-lbl">Digital Wallets</div>
+        <!-- Cash on Delivery -->
+        <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+          <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><rect x="8" y="7" width="48" height="30" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/><circle cx="32" cy="22" r="7" fill="none" stroke="#16a34a" stroke-width="1.8"/><text x="32" y="26" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="900" font-family="Arial,sans-serif">$</text><line x1="13" y1="13" x2="21" y2="13" stroke="#16a34a" stroke-width="1.2" opacity="0.5"/><line x1="43" y1="13" x2="51" y2="13" stroke="#16a34a" stroke-width="1.2" opacity="0.5"/></svg></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
+        </div>
 
         <!-- STC Pay -->
-        <div class="pw2-method ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
-          <div class="pw2-radio" id="checkStc"><span class="pw2-rdot"></span></div>
-          <div class="pw2-logo-box pw2-logo-stc">
-            <svg viewBox="0 0 72 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="72" height="40" rx="8" fill="#6D2C8A"/><text x="36" y="17" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="36" y="32" text-anchor="middle" fill="#DDB8FF" font-size="12" font-weight="600" font-family="Arial,sans-serif">Pay</text></svg>
-          </div>
-          <div class="pw2-method-text">
-            <div class="pw2-method-name">STC Pay</div>
-            <div class="pw2-method-sub">Instant SAR transfer</div>
-          </div>
-          <div class="pw2-tick" id="pw2TickStc"><i class="fas fa-check"></i></div>
+        <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
+          <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#6D2C8A"/><text x="32" y="16" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="32" y="30" text-anchor="middle" fill="#DDB8FF" font-size="11" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
         </div>
 
         <!-- Binance Pay -->
-        <div class="pw2-method ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
-          <div class="pw2-radio" id="checkBinance"><span class="pw2-rdot"></span></div>
-          <div class="pw2-logo-box pw2-logo-binance">
-            <svg viewBox="0 0 72 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><rect width="72" height="40" rx="8" fill="#0B0E11"/>
-            <!-- BNB diamond -->
-            <g transform="translate(36,20)">
-              <polygon fill="#F3BA2F" points="0,-10 6,-4 0,-8 -6,-4"/>
-              <polygon fill="#F3BA2F" points="-10,0 -7,-3 -4,0 -7,3"/>
-              <polygon fill="#F3BA2F" points="0,-8 6,-4 0,8 -6,-4"/>
-              <polygon fill="#F3BA2F" points="10,0 7,-3 4,0 7,3"/>
-              <polygon fill="#F3BA2F" points="0,8 6,4 0,10 -6,4"/>
-              <polygon fill="#0B0E11" points="0,-3 3,0 0,3 -3,0"/>
-            </g></svg>
-          </div>
-          <div class="pw2-method-text">
-            <div class="pw2-method-name">Binance Pay</div>
-            <div class="pw2-method-sub">USDT · BNB · Crypto</div>
-          </div>
-          <div class="pw2-tick" id="pw2TickBinance"><i class="fas fa-check"></i></div>
+        <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
+          <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon fill="#F3BA2F" points="50,4 62,16 72,50 50,30 28,50 38,16"/><polygon fill="#F3BA2F" points="4,50 16,38 28,50 16,62"/><polygon fill="#F3BA2F" points="50,30 72,50 50,70 28,50"/><polygon fill="#F3BA2F" points="96,50 84,38 72,50 84,62"/><polygon fill="#F3BA2F" points="50,96 62,84 72,50 50,70 28,50 38,84"/><polygon fill="#0B0E11" points="50,42 58,50 50,58 42,50"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
         </div>
 
-        <!-- Binance + STC forms (unchanged) -->
+        <!-- Google Pay -->
+        <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
+          <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay"><span class="gpay-g">G</span><span class="gpay-pay">Pay</span></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
+        </div>
+
+        <!-- PayPal -->
+        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
+          <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-paypal"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="40" fill="#fff"/><text x="10" y="26" font-family="Arial,sans-serif" font-size="16" font-weight="900" font-style="italic" fill="#003087">Pay</text><text x="36" y="26" font-family="Arial,sans-serif" font-size="16" font-weight="900" font-style="italic" fill="#009cde">Pal</text></svg></div><div><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div></div>
+        </div>
+
+        <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
+
+        <!-- Binance form -->
         <div id="binanceForm" style="display:none"><div class="binance-box"><div id="bncPayState"><div class="binance-box-header"><div class="binance-bnc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/></svg></div><div class="binance-box-title-wrap"><div class="binance-box-title">Binance Pay</div><div class="binance-box-net">Fast &amp; Secure Crypto</div></div><div class="binance-usdt-pill"><span class="binance-usdt-val" id="binanceUSDT">-- USDT</span></div></div><div class="binance-id-wrap"><div class="binance-id-lbl">Binance Pay ID</div><div class="binance-id-row"><span class="binance-id-num" id="binanceAddrTxt">1167244565</span><button class="binance-copy-btn" onclick="copyBinanceAddr()"><i class="fas fa-copy"></i></button></div><div class="binance-id-hint"><i class="fas fa-mobile-screen-button"></i> Binance App → Pay → Send → Enter ID above</div></div><div class="binance-amount-row"><span class="binance-amount-lbl">Send exactly:</span><span class="binance-amount-val" id="binanceAmtSAR"></span></div><div class="binance-ref-wrap"><label class="binance-ref-lbl"><i class="fas fa-receipt"></i> Binance Order / Reference No.</label><input class="binance-ref-input" type="text" id="binanceRefInput" placeholder="e.g. 12345678901234" maxlength="30" oninput="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'')" /><div class="binance-ref-hint">Copy the reference from your Binance payment receipt</div></div></div><div id="bncVerifyState" style="display:none"><div class="bnc-verify-anim"><div class="bnc-spinner"></div><div class="bnc-verify-text">Verifying payment...</div></div></div><div id="bncSuccessState" style="display:none"><div class="bnc-success"><div class="bnc-success-icon"><i class="fas fa-circle-check"></i></div><div class="bnc-success-title">Order Confirmed!</div><div class="bnc-order-badge" id="bncOrderNum">#EX-00000</div><div class="bnc-success-sub">Payment verified ✓<br>WhatsApp confirmation sending...</div></div></div></div></div>
+
+        <!-- STC form -->
         <div id="stcForm" style="display:none"><div class="stc-box"><div class="stc-box-header"><div class="stc-logo-wrap"><svg width="36" height="26" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg></div><div class="stc-title-wrap"><div class="stc-box-title">STC Pay</div><div class="stc-box-sub">Instant SAR · المدفوعات الفورية</div></div><div class="stc-amount-pill"><span id="stcAmtSAR" class="stc-amt-val"></span></div></div><div class="stc-num-wrap"><div class="stc-num-lbl">Send to this number</div><div class="stc-num-row"><span class="stc-num" id="stcPhoneTxt">0546224029</span><button class="stc-copy-btn" onclick="copyStcNumber()"><i class="fas fa-copy"></i></button></div><div class="stc-num-hint"><i class="fas fa-mobile-screen-button"></i> STC Pay App → Send Money → Enter number above</div></div><div class="stc-amount-row"><span class="stc-amount-lbl">Send exactly:</span><span class="stc-amount-val" id="stcAmtDisplay"></span></div><div class="stc-steps"><div class="stc-step"><span class="stc-step-num">1</span><span>Open STC Pay app</span></div><div class="stc-step"><span class="stc-step-num">2</span><span>Tap <b>Send Money</b> → enter number</span></div><div class="stc-step"><span class="stc-step-num">3</span><span>Send the exact amount shown</span></div><div class="stc-step"><span class="stc-step-num">4</span><span>Enter the transaction ID below</span></div></div><div class="stc-ref-wrap"><label class="stc-ref-lbl"><i class="fas fa-receipt"></i> STC Pay Transaction ID</label><input class="stc-ref-input" type="text" id="stcRefInput" placeholder="e.g. 12345678" maxlength="20" oninput="this.value=this.value.replace(/[^0-9a-zA-Z]/g,'')" /><div class="stc-ref-hint">Copy the transaction ID from your STC Pay receipt</div></div></div></div>
-
-        <!-- ══════════════ 5. CASH ON DELIVERY ══════════════ -->
-        <div class="pw2-cod ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
-          <div class="pw2-radio" id="checkWhatsapp"><span class="pw2-rdot"></span></div>
-          <div class="pw2-cod-icon"><i class="fas fa-money-bill-wave"></i></div>
-          <div class="pw2-method-text">
-            <div class="pw2-method-name">Cash on Delivery</div>
-            <div class="pw2-method-sub">Pay when you receive · الدفع عند الاستلام</div>
-          </div>
-          <div class="pw2-tick" id="pw2TickWhatsapp"><i class="fas fa-check"></i></div>
-        </div>
-
       </div>
 
       <!-- 6. PAYMENT SUMMARY -->
