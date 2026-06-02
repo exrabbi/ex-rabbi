@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Checkout — ExGlobal Store</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #1a1a2e;
+    --accent: #e91e8c;
+    --accent2: #7c3aed;
+    --green: #16a34a;
+    --text: #1a1a2e;
+    --sub: #6b7280;
+    --border: #e5e7eb;
+    --bg: #f5f5f7;
+    --white: #ffffff;
+    --radius: 14px;
+    --shadow: 0 2px 12px rgba(0,0,0,.07);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .co-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,.06);
+  }
+  .co-logo {
+    font-size: 20px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-decoration: none;
+    letter-spacing: -.5px;
+  }
+  .co-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--green);
+    font-weight: 600;
+  }
+  .co-header-right i { font-size: 15px; }
+
+  /* ── BREADCRUMB ── */
+  .co-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--sub);
+    padding: 14px 24px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+  }
+  .co-breadcrumb span { display: flex; align-items: center; gap: 6px; }
+  .co-breadcrumb .active { color: var(--accent); font-weight: 700; }
+  .co-breadcrumb i { font-size: 10px; color: #ccc; }
+
+  /* ── PAYMENT BADGE ROW ── */
+  .co-badge-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .co-badge-row .sep {
+    font-size: 11px;
+    color: var(--sub);
+    font-weight: 500;
+    letter-spacing: .3px;
+  }
+  .badge-cards { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+  /* ── MAIN LAYOUT ── */
+  .co-main {
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 28px 16px 60px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── SECTION CARD ── */
+  .co-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .co-card + .co-card { margin-top: 16px; }
+  .co-card-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .co-card-head .num {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .co-card-head h2 { font-size: 15px; font-weight: 700; }
+  .co-card-body { padding: 20px 22px; }
+
+  /* ── FORM FIELDS ── */
+  .f-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .f-grid.f-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .f-full { grid-column: 1 / -1; }
+  .f-group { display: flex; flex-direction: column; gap: 5px; }
+  .f-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--sub);
+    letter-spacing: .3px;
+    text-transform: uppercase;
+  }
+  .f-group input,
+  .f-group select {
+    padding: 11px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    color: var(--text);
+    background: #fafafa;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .f-group input:focus,
+  .f-group select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(233,30,140,.1);
+    background: var(--white);
+  }
+  .f-group .f-icon-wrap { position: relative; }
+  .f-group .f-icon-wrap input { padding-left: 38px; }
+  .f-group .f-icon-wrap .f-ico {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: #bbb;
+    font-size: 14px;
+  }
+
+  /* ── PHONE GROUP ── */
+  .phone-wrap { display: flex; gap: 8px; }
+  .phone-wrap .dial {
+    padding: 11px 10px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fafafa;
+    color: var(--text);
+    width: 90px;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    outline: none;
+  }
+  .phone-wrap input { flex: 1; }
+
+  /* ── PAYMENT METHOD CARDS ── */
+  .pm-grid { display: flex; flex-direction: column; gap: 10px; }
+  .pm-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+    background: #fafafa;
+    position: relative;
+  }
+  .pm-card:hover {
+    border-color: rgba(233,30,140,.3);
+    box-shadow: 0 4px 16px rgba(0,0,0,.06);
+    background: var(--white);
+  }
+  .pm-card.active {
+    border-color: var(--accent);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(233,30,140,.1), 0 4px 16px rgba(233,30,140,.08);
+  }
+  .pm-radio {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s, background .2s;
+  }
+  .pm-card.active .pm-radio {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .pm-radio-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #fff;
+    transform: scale(0);
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+  }
+  .pm-card.active .pm-radio-dot { transform: scale(1); }
+  .pm-logo-box {
+    width: 56px; height: 36px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; padding: 3px; flex-shrink: 0;
+  }
+  .pm-logo-box svg { width: 100%; height: 100%; }
+  .pm-info { flex: 1; min-width: 0; }
+  .pm-name { font-size: 14px; font-weight: 700; }
+  .pm-sub { font-size: 12px; color: var(--sub); margin-top: 2px; }
+  .pm-check {
+    color: var(--accent);
+    font-size: 18px;
+    opacity: 0;
+    transform: scale(.6);
+    transition: opacity .2s, transform .25s cubic-bezier(.34,1.56,.64,1);
+    flex-shrink: 0;
+  }
+  .pm-card.active .pm-check { opacity: 1; transform: scale(1); }
+
+  /* card logos strip */
+  .pm-card-logos { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+  .pm-cl { height: 22px; width: auto; border-radius: 4px; }
+
+  /* card form */
+  .card-form {
+    margin-top: 14px;
+    padding: 16px;
+    background: #fafafa;
+    border-radius: 12px;
+    border: 1px dashed #e0e0e0;
+    display: none;
+  }
+  .card-form.open { display: block; }
+  .card-form .f-grid { margin-top: 10px; }
+
+  /* security badge */
+  .sec-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #166534;
+    font-weight: 600;
+    margin-top: 14px;
+  }
+  .sec-badge i { font-size: 14px; color: var(--green); flex-shrink: 0; }
+
+  /* ── ORDER SUMMARY ── */
+  .sum-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+  .sum-head {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 15px;
+    font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .sum-head i { color: var(--sub); font-size: 14px; }
+  .sum-body { padding: 18px 22px; }
+  .sum-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f5f5;
+  }
+  .sum-item:last-child { border-bottom: none; }
+  .sum-img {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #f0f0f5, #e0e0ea);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+    border: 1px solid #eee;
+  }
+  .sum-item-info { flex: 1; min-width: 0; }
+  .sum-item-name { font-size: 13px; font-weight: 600; }
+  .sum-item-qty { font-size: 12px; color: var(--sub); margin-top: 2px; }
+  .sum-item-price { font-size: 14px; font-weight: 700; color: var(--text); flex-shrink: 0; }
+  .sum-divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+  .sum-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    padding: 6px 0;
+  }
+  .sum-row .label { color: var(--sub); }
+  .sum-row.total {
+    font-size: 16px;
+    font-weight: 800;
+    padding-top: 10px;
+    border-top: 2px solid var(--border);
+    margin-top: 4px;
+  }
+  .sum-row.total .price { color: var(--accent); }
+  .sum-row .free { color: var(--green); font-weight: 600; }
+  .sum-promo {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .sum-promo input {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-size: 13px;
+    background: #fafafa;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .sum-promo input:focus { border-color: var(--accent); background: #fff; }
+  .sum-promo button {
+    padding: 10px 16px;
+    background: var(--text);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .sum-trust {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .sum-trust span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    color: var(--sub);
+    font-weight: 600;
+  }
+  .sum-trust i { color: var(--green); font-size: 12px; }
+
+  /* ── PLACE ORDER BUTTON ── */
+  .co-submit-wrap { margin-top: 20px; }
+  .co-submit {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, #e91e8c, #7c3aed);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    letter-spacing: .3px;
+    box-shadow: 0 6px 20px rgba(233,30,140,.35);
+    transition: transform .15s, box-shadow .15s, opacity .15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .co-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(233,30,140,.4); }
+  .co-submit:active { transform: scale(.98); opacity: .9; }
+  .co-submit-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--sub);
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  .co-submit-note i { color: var(--green); }
+
+  /* ── FOOTER ── */
+  .co-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 12px;
+    color: var(--sub);
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .co-footer a { color: var(--sub); text-decoration: none; }
+  .co-footer a:hover { color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 820px) {
+    .co-main { grid-template-columns: 1fr; }
+    .co-breadcrumb { overflow-x: auto; white-space: nowrap; }
+  }
+  @media (max-width: 480px) {
+    .f-grid { grid-template-columns: 1fr; }
+    .f-grid.f-3 { grid-template-columns: 1fr 1fr; }
+    .co-card-body { padding: 16px; }
+    .co-card-head { padding: 14px 16px 12px; }
+    .sum-trust { gap: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="co-header">
+  <a class="co-logo" href="#">ExGlobal Store</a>
+  <div class="co-header-right">
+    <i class="fas fa-lock"></i>
+    Secure Checkout
+  </div>
+</header>
+
+<!-- BREADCRUMB -->
+<div class="co-breadcrumb">
+  <span>Cart</span>
+  <i class="fas fa-chevron-right"></i>
+  <span>Information</span>
+  <i class="fas fa-chevron-right"></i>
+  <span class="active">
+    <i class="fas fa-circle" style="font-size:7px; color:var(--accent)"></i>
+    Payment
+  </span>
+  <i class="fas fa-chevron-right"></i>
+  <span>Confirmation</span>
+</div>
+
+<!-- PAYMENT BADGE ROW -->
+<div class="co-badge-row">
+  <span class="sep">Accepted cards:</span>
+  <div class="badge-cards">
+
+    <!-- VISA -->
+    <svg height="30" viewBox="0 0 72 44" xmlns="http://www.w3.org/2000/svg">
+      <rect width="72" height="44" rx="7" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+      <text x="36" y="30" text-anchor="middle" fill="#1434CB" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
+    </svg>
+
+    <!-- MASTERCARD -->
+    <svg height="30" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+      <rect width="110" height="44" rx="7" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+      <circle cx="22" cy="22" r="13" fill="#EB001B"/>
+      <circle cx="38" cy="22" r="13" fill="#F79E1B"/>
+      <path d="M30,9.2 A13,13 0 0,1 30,34.8 A13,13 0 0,1 30,9.2 Z" fill="#FF5F00"/>
+      <text x="74" y="27" text-anchor="middle" fill="#231F20" font-size="11" font-weight="700" font-family="Arial,sans-serif" letter-spacing="-.2">mastercard</text>
+    </svg>
+
+    <!-- AMEX -->
+    <svg height="30" viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+      <rect width="90" height="44" rx="7" fill="#016FD0"/>
+      <text x="45" y="19" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">AMERICAN</text>
+      <text x="45" y="30" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">EXPRESS</text>
+    </svg>
+
+    <!-- DISCOVER -->
+    <svg height="30" viewBox="0 0 100 44" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="44" rx="7" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+      <text x="33" y="27" text-anchor="middle" fill="#231F20" font-size="11" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".4">DISCOVER</text>
+      <circle cx="81" cy="22" r="16" fill="#F76F20"/>
+    </svg>
+
+    <!-- MADA -->
+    <svg height="30" viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+      <rect width="80" height="44" rx="7" fill="#005A9C"/>
+      <path d="M0 32 H80 V38 Q80 44 74 44 H6 Q0 44 0 38 Z" fill="#00A14B"/>
+      <text x="40" y="20" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text>
+      <text x="40" y="31" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text>
+    </svg>
+
+  </div>
+</div>
+
+<!-- MAIN GRID -->
+<main class="co-main">
+
+  <!-- LEFT: FORM COLUMN -->
+  <div>
+
+    <!-- CONTACT INFO -->
+    <div class="co-card">
+      <div class="co-card-head">
+        <div class="num">1</div>
+        <h2>Contact Information</h2>
+      </div>
+      <div class="co-card-body">
+        <div class="f-grid">
+          <div class="f-group">
+            <label>First Name</label>
+            <div class="f-icon-wrap">
+              <i class="fas fa-user f-ico"></i>
+              <input type="text" placeholder="Mohammed">
+            </div>
+          </div>
+          <div class="f-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Al-Ahmadi">
+          </div>
+          <div class="f-group f-full">
+            <label>Email Address</label>
+            <div class="f-icon-wrap">
+              <i class="fas fa-envelope f-ico"></i>
+              <input type="email" placeholder="you@example.com">
+            </div>
+          </div>
+          <div class="f-group f-full">
+            <label>Phone Number</label>
+            <div class="phone-wrap">
+              <select class="dial">
+                <option>🇸🇦 +966</option>
+                <option>🇦🇪 +971</option>
+                <option>🇰🇼 +965</option>
+                <option>🇶🇦 +974</option>
+                <option>🇧🇭 +973</option>
+              </select>
+              <div class="f-icon-wrap" style="flex:1">
+                <i class="fas fa-phone f-ico"></i>
+                <input type="tel" placeholder="5X XXX XXXX">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHIPPING ADDRESS -->
+    <div class="co-card">
+      <div class="co-card-head">
+        <div class="num">2</div>
+        <h2>Shipping Address</h2>
+      </div>
+      <div class="co-card-body">
+        <div class="f-grid">
+          <div class="f-group f-full">
+            <label>Country</label>
+            <div class="f-icon-wrap">
+              <i class="fas fa-globe f-ico"></i>
+              <select>
+                <option>Saudi Arabia</option>
+                <option>UAE</option>
+                <option>Kuwait</option>
+                <option>Qatar</option>
+                <option>Bahrain</option>
+                <option>Oman</option>
+              </select>
+            </div>
+          </div>
+          <div class="f-group f-full">
+            <label>Street Address</label>
+            <div class="f-icon-wrap">
+              <i class="fas fa-map-marker-alt f-ico"></i>
+              <input type="text" placeholder="Building, Street, District">
+            </div>
+          </div>
+          <div class="f-group">
+            <label>City</label>
+            <input type="text" placeholder="Riyadh">
+          </div>
+          <div class="f-group">
+            <label>Postal Code</label>
+            <input type="text" placeholder="12271">
+          </div>
+          <div class="f-group f-full">
+            <label>Apt / Floor / Notes (optional)</label>
+            <input type="text" placeholder="Apt 4B, near Al-Nakheel Mall">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT METHOD -->
+    <div class="co-card">
+      <div class="co-card-head">
+        <div class="num">3</div>
+        <h2>Payment Method</h2>
+      </div>
+      <div class="co-card-body">
+        <div class="pm-grid">
+
+          <!-- Credit/Debit Card -->
+          <div class="pm-card active" onclick="selectPM(this, 'card')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-info">
+              <div class="pm-name">Credit / Debit Card</div>
+              <div class="pm-card-logos">
+                <!-- mada -->
+                <svg class="pm-cl" viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="80" height="44" rx="6" fill="#005A9C"/>
+                  <path d="M0 32 H80 V38 Q80 44 74 44 H6 Q0 44 0 38 Z" fill="#00A14B"/>
+                  <text x="40" y="20" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text>
+                  <text x="40" y="31" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text>
+                </svg>
+                <!-- visa -->
+                <svg class="pm-cl" viewBox="0 0 72 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="72" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+                  <text x="36" y="30" text-anchor="middle" fill="#1434CB" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
+                </svg>
+                <!-- mastercard -->
+                <svg class="pm-cl" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="110" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+                  <circle cx="22" cy="22" r="13" fill="#EB001B"/>
+                  <circle cx="38" cy="22" r="13" fill="#F79E1B"/>
+                  <path d="M30,9.2 A13,13 0 0,1 30,34.8 A13,13 0 0,1 30,9.2 Z" fill="#FF5F00"/>
+                  <text x="74" y="27" text-anchor="middle" fill="#231F20" font-size="11" font-weight="700" font-family="Arial,sans-serif" letter-spacing="-.2">mastercard</text>
+                </svg>
+                <!-- amex -->
+                <svg class="pm-cl" viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="90" height="44" rx="6" fill="#016FD0"/>
+                  <text x="45" y="19" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">AMERICAN</text>
+                  <text x="45" y="30" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">EXPRESS</text>
+                </svg>
+                <!-- discover -->
+                <svg class="pm-cl" viewBox="0 0 100 44" xmlns="http://www.w3.org/2000/svg">
+                  <rect width="100" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
+                  <text x="33" y="27" text-anchor="middle" fill="#231F20" font-size="11" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".4">DISCOVER</text>
+                  <circle cx="81" cy="22" r="16" fill="#F76F20"/>
+                </svg>
+              </div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- Card Form -->
+          <div class="card-form open" id="cardForm">
+            <div class="f-group">
+              <label>Card Number</label>
+              <div class="f-icon-wrap">
+                <i class="fas fa-credit-card f-ico"></i>
+                <input type="text" placeholder="1234  5678  9012  3456" maxlength="19" id="cardNumInput">
+              </div>
+            </div>
+            <div class="f-grid f-3" style="margin-top:10px">
+              <div class="f-group" style="grid-column:span 2">
+                <label>Cardholder Name</label>
+                <input type="text" placeholder="MOHAMMED AL-AHMADI">
+              </div>
+              <div class="f-group">
+                <label>Expiry</label>
+                <input type="text" placeholder="MM / YY" maxlength="7">
+              </div>
+            </div>
+            <div class="f-grid" style="margin-top:10px">
+              <div class="f-group">
+                <label>CVV</label>
+                <div class="f-icon-wrap">
+                  <i class="fas fa-lock f-ico"></i>
+                  <input type="text" placeholder="•••" maxlength="4">
+                </div>
+              </div>
+              <div class="f-group" style="justify-content:flex-end; padding-top:22px">
+                <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)">
+                  <i class="fas fa-shield-halved" style="color:var(--green)"></i>
+                  256-bit SSL encrypted
+                </div>
+              </div>
+            </div>
+            <div class="sec-badge">
+              <i class="fas fa-lock"></i>
+              Your card details are encrypted and never stored on our servers.
+            </div>
+          </div>
+
+          <!-- mada (separate) -->
+          <div class="pm-card" onclick="selectPM(this, 'mada')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#005A9C"/>
+                <path d="M0 32 H80 V38 Q80 44 74 44 H6 Q0 44 0 38 Z" fill="#00A14B"/>
+                <text x="40" y="20" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text>
+                <text x="40" y="31" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">mada</div>
+              <div class="pm-sub">Saudi debit cards — instant approval</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- Apple Pay -->
+          <div class="pm-card" onclick="selectPM(this, 'applepay')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box" style="background:#000">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#000"/>
+                <text x="40" y="26" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".5"> Pay</text>
+                <text x="26" y="26" text-anchor="middle" fill="#fff" font-size="16" font-family="Arial,sans-serif">&#63743;</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">Apple Pay</div>
+              <div class="pm-sub">Touch ID or Face ID — one tap checkout</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- STC Pay -->
+          <div class="pm-card" onclick="selectPM(this, 'stcpay')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box" style="background:#6D2C8A">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#6D2C8A"/>
+                <text x="40" y="20" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1">STC</text>
+                <text x="40" y="34" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" font-family="Arial,sans-serif" letter-spacing=".5">pay</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">STC Pay</div>
+              <div class="pm-sub">Saudi Telecom — fast mobile wallet</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- Google Pay -->
+          <div class="pm-card" onclick="selectPM(this, 'gpay')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#fff" stroke="#eee" stroke-width="1.5"/>
+                <text x="14" y="30" fill="#4285F4" font-size="22" font-weight="900" font-family="Arial,sans-serif">G</text>
+                <text x="33" y="29" fill="#5F6368" font-size="16" font-weight="600" font-family="Arial,sans-serif">Pay</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">Google Pay</div>
+              <div class="pm-sub">One-tap with your Google account</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- Tamara BNPL -->
+          <div class="pm-card" onclick="selectPM(this, 'tamara')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box" style="background:#000">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#000"/>
+                <text x="40" y="27" text-anchor="middle" fill="#fff" font-size="13" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".5">tamara</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">Tamara — Buy Now, Pay Later</div>
+              <div class="pm-sub">Split into 3 payments — 0% interest</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+          <!-- Cash on Delivery -->
+          <div class="pm-card" onclick="selectPM(this, 'cod')">
+            <div class="pm-radio"><div class="pm-radio-dot"></div></div>
+            <div class="pm-logo-box" style="background:#f0fdf4">
+              <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
+                <rect width="80" height="44" rx="7" fill="#f0fdf4" stroke="#bbf7d0" stroke-width="1.5"/>
+                <text x="40" y="29" text-anchor="middle" fill="#16a34a" font-size="22" font-family="Arial,sans-serif">💵</text>
+              </svg>
+            </div>
+            <div class="pm-info">
+              <div class="pm-name">Cash on Delivery</div>
+              <div class="pm-sub">Pay when you receive your order</div>
+            </div>
+            <div class="pm-check"><i class="fas fa-circle-check"></i></div>
+          </div>
+
+        </div><!-- /pm-grid -->
+
+        <!-- PLACE ORDER -->
+        <div class="co-submit-wrap">
+          <button class="co-submit" onclick="placeOrder()">
+            <i class="fas fa-lock"></i>
+            Place Order — SAR <span id="totalAmt">627</span>
+          </button>
+          <div class="co-submit-note">
+            <i class="fas fa-shield-halved"></i>
+            Encrypted by 256-bit SSL · PCI DSS Compliant
+          </div>
+        </div>
+
+      </div><!-- /co-card-body -->
+    </div><!-- /co-card payment -->
+
+  </div><!-- /left col -->
+
+  <!-- RIGHT: ORDER SUMMARY -->
+  <div>
+    <div class="sum-card">
+      <div class="sum-head">
+        <i class="fas fa-bag-shopping"></i>
+        Order Summary (3 items)
+      </div>
+      <div class="sum-body">
+
+        <div class="sum-item">
+          <div class="sum-img">⌚</div>
+          <div class="sum-item-info">
+            <div class="sum-item-name">Premium Watch — Black</div>
+            <div class="sum-item-qty">Qty: 1</div>
+          </div>
+          <div class="sum-item-price">SAR 299</div>
+        </div>
+
+        <div class="sum-item">
+          <div class="sum-img">🕶️</div>
+          <div class="sum-item-info">
+            <div class="sum-item-name">Sunglasses — Polarized</div>
+            <div class="sum-item-qty">Qty: 1</div>
+          </div>
+          <div class="sum-item-price">SAR 129</div>
+        </div>
+
+        <div class="sum-item">
+          <div class="sum-img">🌸</div>
+          <div class="sum-item-info">
+            <div class="sum-item-name">Perfume — Oud Intense</div>
+            <div class="sum-item-qty">Qty: 1</div>
+          </div>
+          <div class="sum-item-price">SAR 199</div>
+        </div>
+
+        <hr class="sum-divider" style="margin:12px 0">
+
+        <div class="sum-row">
+          <span class="label">Subtotal</span>
+          <span>SAR 627</span>
+        </div>
+        <div class="sum-row">
+          <span class="label">Shipping</span>
+          <span class="free"><i class="fas fa-truck"></i> FREE</span>
+        </div>
+        <div class="sum-row">
+          <span class="label">VAT (15%)</span>
+          <span>SAR 94.05</span>
+        </div>
+        <div class="sum-row total">
+          <span>Total</span>
+          <span class="price">SAR 721.05</span>
+        </div>
+
+        <!-- PROMO CODE -->
+        <div class="sum-promo">
+          <input type="text" placeholder="Promo / discount code">
+          <button>Apply</button>
+        </div>
+
+      </div><!-- /sum-body -->
+
+      <!-- TRUST BADGES -->
+      <div class="sum-trust">
+        <span><i class="fas fa-shield-halved"></i> Secure Payment</span>
+        <span><i class="fas fa-rotate-left"></i> Easy Returns</span>
+        <span><i class="fas fa-truck-fast"></i> Fast Delivery</span>
+        <span><i class="fas fa-star"></i> 100% Authentic</span>
+      </div>
+    </div>
+  </div><!-- /right col -->
+
+</main>
+
+<!-- FOOTER -->
+<footer class="co-footer">
+  <span>© 2026 ExGlobal Store</span>
+  <a href="#">Privacy Policy</a>
+  <a href="#">Terms of Service</a>
+  <a href="#">Refund Policy</a>
+  <a href="#">Contact Us</a>
+</footer>
+
+<script>
+  function selectPM(el, method) {
+    document.querySelectorAll('.pm-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    const cf = document.getElementById('cardForm');
+    cf.classList.toggle('open', method === 'card');
+  }
+
+  document.getElementById('cardNumInput').addEventListener('input', function() {
+    let v = this.value.replace(/\D/g, '').slice(0, 16);
+    this.value = v.replace(/(.{4})/g, '$1  ').trim();
+  });
+
+  function placeOrder() {
+    const btn = document.querySelector('.co-submit');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
+    btn.style.opacity = '.8';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-circle-check"></i> Order Placed!';
+      btn.style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
+      btn.style.boxShadow = '0 6px 20px rgba(22,163,74,.35)';
+      btn.style.opacity = '1';
+    }, 1800);
+  }
+</script>
+</body>
+</html>
