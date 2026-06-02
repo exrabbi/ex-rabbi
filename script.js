@@ -789,9 +789,12 @@ function renderPromoBanners() {
   track.innerHTML = _promoBanners.map((b, i) => {
     const isVid = /\.(mp4|webm|mov|ogg)(\?|$)/i.test(b.img);
     const media = isVid
-      ? `<video src="${b.img}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:cover;"></video>`
-      : `<img src="${b.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:cover;" onerror="this.style.display='none'"/>`;
-    return `<div class="promo-slide" onclick="${b.link ? `window.open('${b.link}','_blank')` : ''}">${media}</div>`;
+      ? `<video src="${b.img}" autoplay muted loop playsinline style="width:100%;height:100%;object-fit:contain;"></video>`
+      : `<img src="${b.img}" alt="" loading="lazy" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"/>`;
+    const clickAct = b.link
+      ? `window.open('${b.link}','_blank')`
+      : `_openPromoLightbox('${b.img}')`;
+    return `<div class="promo-slide" onclick="${clickAct}">${media}</div>`;
   }).join('');
   dots.innerHTML = _promoBanners.map((_, i) =>
     `<div class="promo-dot${i===0?' active':''}" onclick="_promGoTo(${i})"></div>`
@@ -11424,4 +11427,25 @@ async function _savePlayVideo() {
     if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Post Video ✓'; }
     showToast('❌ Upload failed — check connection or try a smaller video');
   }
+}
+
+// ── Promo Banner Lightbox ─────────────────────────────────
+function _openPromoLightbox(src) {
+  let lb = document.getElementById('promoLightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.className = 'promo-lightbox';
+    lb.id = 'promoLightbox';
+    lb.innerHTML = `<button class="promo-lb-close" onclick="_closePromoLightbox()"><i class="fas fa-times"></i></button><img id="promoLbImg" src="" alt=""/>`;
+    lb.addEventListener('click', e => { if (e.target === lb) _closePromoLightbox(); });
+    document.body.appendChild(lb);
+  }
+  document.getElementById('promoLbImg').src = src;
+  requestAnimationFrame(() => lb.classList.add('open'));
+  document.body.style.overflow = 'hidden';
+}
+function _closePromoLightbox() {
+  const lb = document.getElementById('promoLightbox');
+  if (lb) lb.classList.remove('open');
+  document.body.style.overflow = '';
 }
