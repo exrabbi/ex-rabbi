@@ -1778,298 +1778,655 @@ function _flyWishAnimation(id, srcBtn) {
 
 /* ===== STATIC PAGES ===== */
 const PAGE_CONTENT = {
+  terms: {
+    en: { title: 'Terms of Service', body: `
+      <p style="color:#888;font-size:12px">Effective date: January 2025 · Governed by the laws of the Kingdom of Saudi Arabia</p>
+      <div class="info-card">📜 By using EX GLOBAL, you agree to these terms. Please read them carefully before placing an order.</div>
+
+      <h2>1. 🧑‍💼 Account & Eligibility</h2>
+      <ul>
+        <li>You must be at least <strong>18 years old</strong> to create an account and place orders</li>
+        <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+        <li>You agree to provide accurate, current, and complete information during registration</li>
+        <li>EX GLOBAL reserves the right to suspend accounts that violate these terms</li>
+      </ul>
+
+      <h2>2. 🛍️ Products & Pricing</h2>
+      <ul>
+        <li>All prices are displayed in <strong>Saudi Riyal (SAR)</strong> and include <strong>15% VAT</strong> as required by ZATCA</li>
+        <li>We strive to display accurate product descriptions, colours, and sizes — minor variations may occur</li>
+        <li>EX GLOBAL reserves the right to modify prices without prior notice</li>
+        <li>In the event of a pricing error, we will contact you before processing the order</li>
+        <li>Product availability is not guaranteed; orders may be cancelled if items go out of stock</li>
+      </ul>
+
+      <h2>3. 📦 Orders & Payment</h2>
+      <ul>
+        <li>An order confirmation does not constitute a binding contract until we confirm dispatch</li>
+        <li>We accept: Mada, Visa, Mastercard, Apple Pay, STC Pay, Tamara, Tabby, Binance Pay, and Cash on Delivery</li>
+        <li>Orders can be cancelled within <strong>2 hours</strong> of placement if not yet processed — contact us via WhatsApp</li>
+        <li>EX GLOBAL is not liable for delays caused by courier partners, force majeure, or address errors</li>
+      </ul>
+
+      <h2>4. 🔄 Returns & Refunds</h2>
+      <p>Returns are subject to our <a href="#" onclick="openPage('refund');return false" style="color:#e91e8c">Refund Policy</a>, which offers a 14-day return window from the date of delivery.</p>
+
+      <h2>5. 🔒 Intellectual Property</h2>
+      <ul>
+        <li>All content on this website (logos, images, text, design) is owned by EX GLOBAL or licensed to us</li>
+        <li>You may not copy, reproduce, or redistribute any content without written permission</li>
+      </ul>
+
+      <h2>6. 🚫 Prohibited Uses</h2>
+      <ul>
+        <li>Using the platform for fraudulent transactions or fake orders</li>
+        <li>Attempting to hack, scrape, or disrupt the website</li>
+        <li>Impersonating another person or entity</li>
+        <li>Reselling products purchased from EX GLOBAL without authorization</li>
+      </ul>
+
+      <h2>7. ⚖️ Limitation of Liability</h2>
+      <p>To the maximum extent permitted by Saudi law, EX GLOBAL's liability is limited to the value of the order in dispute. We are not liable for indirect, incidental, or consequential damages.</p>
+
+      <h2>8. 🏛️ Governing Law & Disputes</h2>
+      <ul>
+        <li>These terms are governed by the laws of the <strong>Kingdom of Saudi Arabia</strong></li>
+        <li>Disputes will first be resolved through direct negotiation</li>
+        <li>If unresolved, you may refer your complaint to the <strong>Consumer Protection Association (CPA)</strong> or the <strong>Ministry of Commerce</strong></li>
+        <li>CPA hotline: <strong>1900</strong> · Ministry of Commerce: <strong>1900</strong></li>
+      </ul>
+
+      <h2>9. 📝 Changes to Terms</h2>
+      <p>We may update these terms at any time. Continued use of the platform after changes constitutes acceptance of the new terms. Major changes will be communicated via WhatsApp or email.</p>
+
+      <div class="info-card">📞 Questions about these terms? Contact us at <strong>exglobalbusiness@gmail.com</strong> or WhatsApp <strong>+966 546 224 029</strong></div>
+    `},
+    ar: { title: 'شروط الخدمة', body: `
+      <p style="color:#888;font-size:12px">تاريخ السريان: يناير 2025 · تخضع لقوانين المملكة العربية السعودية</p>
+      <div class="info-card">📜 باستخدامك لـ EX GLOBAL، فإنك توافق على هذه الشروط. يرجى قراءتها بعناية قبل تقديم طلبك.</div>
+
+      <h2>1. 🧑‍💼 الحساب والأهلية</h2>
+      <ul>
+        <li>يجب أن يكون عمرك <strong>18 عامًا</strong> على الأقل لإنشاء حساب وتقديم الطلبات</li>
+        <li>أنت مسؤول عن الحفاظ على سرية بيانات حسابك</li>
+        <li>تلتزم بتقديم معلومات دقيقة وصحيحة عند التسجيل</li>
+      </ul>
+
+      <h2>2. 🛍️ المنتجات والأسعار</h2>
+      <ul>
+        <li>جميع الأسعار بـ <strong>الريال السعودي (SAR)</strong> وتشمل <strong>ضريبة القيمة المضافة 15%</strong></li>
+        <li>نحرص على عرض أوصاف دقيقة للمنتجات — قد تحدث اختلافات طفيفة في الألوان</li>
+        <li>يحق لـ EX GLOBAL تعديل الأسعار دون إشعار مسبق</li>
+      </ul>
+
+      <h2>3. 📦 الطلبات والدفع</h2>
+      <ul>
+        <li>يمكن إلغاء الطلبات خلال <strong>ساعتين</strong> من الطلب إذا لم تتم المعالجة</li>
+        <li>نقبل: مدى، فيزا، ماستركارد، Apple Pay، STC Pay، تمارا، تابي، والدفع عند الاستلام</li>
+      </ul>
+
+      <h2>4. ⚖️ القانون المعمول به</h2>
+      <ul>
+        <li>تخضع هذه الشروط لقوانين <strong>المملكة العربية السعودية</strong></li>
+        <li>للشكاوى: جمعية حماية المستهلك — الخط الساخن <strong>1900</strong></li>
+      </ul>
+    `},
+    bn: { title: 'সেবার শর্তাবলী', body: `
+      <p style="color:#888;font-size:12px">কার্যকর তারিখ: জানুয়ারি ২০২৫ · সৌদি আরবের আইন অনুযায়ী পরিচালিত</p>
+      <div class="info-card">📜 EX GLOBAL ব্যবহার করে আপনি এই শর্তগুলো মেনে নিচ্ছেন। অর্ডার দেওয়ার আগে মনোযোগ দিয়ে পড়ুন।</div>
+
+      <h2>১. 🧑‍💼 অ্যাকাউন্ট ও যোগ্যতা</h2>
+      <ul>
+        <li>অ্যাকাউন্ট তৈরি ও অর্ডার দিতে আপনার বয়স কমপক্ষে <strong>১৮ বছর</strong> হতে হবে</li>
+        <li>আপনার অ্যাকাউন্টের নিরাপত্তা নিশ্চিত করার দায়িত্ব আপনার</li>
+        <li>নিবন্ধনে সঠিক ও সম্পূর্ণ তথ্য প্রদান করতে হবে</li>
+      </ul>
+
+      <h2>২. 🛍️ পণ্য ও মূল্য</h2>
+      <ul>
+        <li>সকল মূল্য <strong>সৌদি রিয়াল (SAR)</strong>-এ এবং <strong>১৫% VAT</strong> অন্তর্ভুক্ত</li>
+        <li>পণ্যের বিবরণ যথাসাধ্য সঠিক — রঙে সামান্য পার্থক্য হতে পারে</li>
+        <li>মূল্য পরিবর্তনের অধিকার EX GLOBAL-এর আছে</li>
+      </ul>
+
+      <h2>৩. 📦 অর্ডার ও পেমেন্ট</h2>
+      <ul>
+        <li>অর্ডারের <strong>২ ঘণ্টার মধ্যে</strong> বাতিল করা যাবে (প্রক্রিয়া না হলে)</li>
+        <li>mada, Visa, Mastercard, Apple Pay, STC Pay, Tamara, Tabby, Binance Pay ও ক্যাশ অন ডেলিভারি গ্রহণযোগ্য</li>
+      </ul>
+
+      <h2>৪. ⚖️ প্রযোজ্য আইন</h2>
+      <ul>
+        <li>এই শর্তগুলো <strong>সৌদি আরবের আইন</strong> অনুযায়ী পরিচালিত</li>
+        <li>অভিযোগের জন্য: ভোক্তা সুরক্ষা সংস্থা — হটলাইন <strong>1900</strong></li>
+      </ul>
+    `},
+  },
   about: {
     en: { title: 'About Us', body: `
       <h2>🛍️ Welcome to EX GLOBAL</h2>
       <p>EX GLOBAL is a premium online fashion destination proudly serving customers across Saudi Arabia. We bring the latest trends in women's, men's, and children's fashion — along with beauty products and home essentials — all at competitive prices with fast, reliable delivery.</p>
-      <div class="info-card">🇸🇦 Based in Saudi Arabia · Serving the Kingdom since 2021</div>
+      <div class="info-card">🇸🇦 Based in Saudi Arabia · Serving the Kingdom since 2021<br/>VAT Registration: <strong>310342701100003</strong></div>
       <h2>🎯 Our Mission</h2>
       <p>We believe everyone deserves access to quality fashion. Our team carefully curates every product in our collection to ensure the highest standards of style, comfort, and value.</p>
       <h2>💎 Why Shop With Us?</h2>
       <ul>
-        <li>Thousands of products across all categories</li>
-        <li>Free shipping on orders over SAR 100</li>
-        <li>7-day hassle-free returns</li>
-        <li>Secure payment — Cash on Delivery available</li>
-        <li>Fast delivery across Saudi Arabia</li>
+        <li>✅ Thousands of products across all categories</li>
+        <li>🚚 Free shipping on orders over SAR 100</li>
+        <li>🔄 14-day hassle-free returns & free exchanges</li>
+        <li>🔒 Secure payment — 9 payment methods including Mada & COD</li>
+        <li>⚡ Fast delivery across all Saudi Arabia via Aramex & SMSA Express</li>
+        <li>💬 Arabic & English customer support via WhatsApp</li>
+        <li>📦 Real-time order tracking</li>
       </ul>
+      <h2>🏆 Our Promise</h2>
+      <p>Every order is packed with care. If you're not happy with your purchase for any reason, our team will make it right — that's the EX GLOBAL guarantee.</p>
       <h2>📱 Follow Us</h2>
-      <p>Stay updated with the latest arrivals and exclusive offers on our social media channels.</p>
+      <p>Stay updated with the latest arrivals and exclusive offers on TikTok, Instagram, and Snapchat <strong>@exglobal.sa</strong></p>
     `},
     ar: { title: 'من نحن', body: `
       <h2>🛍️ مرحباً بك في EX GLOBAL</h2>
-      <p>EX GLOBAL هو متجر أزياء إلكتروني متميز يخدم عملاءنا في جميع أنحاء المملكة العربية السعودية. نقدم لك أحدث صيحات الموضة للنساء والرجال والأطفال، فضلاً عن منتجات التجميل ومستلزمات المنزل، بأسعار تنافسية وتوصيل سريع وموثوق.</p>
-      <div class="info-card">🇸🇦 مقرنا في المملكة العربية السعودية · نخدم المملكة منذ عام 2021</div>
-      <h2>🎯 مهمتنا</h2>
-      <p>نؤمن بأن الجميع يستحق الوصول إلى أزياء عالية الجودة. يختار فريقنا كل منتج في مجموعتنا بعناية لضمان أعلى معايير الأناقة والراحة والقيمة.</p>
+      <p>EX GLOBAL هو متجر أزياء إلكتروني متميز يخدم عملاءنا في جميع أنحاء المملكة العربية السعودية. نقدم أحدث صيحات الموضة للنساء والرجال والأطفال، فضلاً عن منتجات التجميل ومستلزمات المنزل بأسعار تنافسية وتوصيل سريع.</p>
+      <div class="info-card">🇸🇦 مقرنا في المملكة العربية السعودية · نخدم المملكة منذ 2021<br/>رقم تسجيل ضريبة القيمة المضافة: <strong>310342701100003</strong></div>
       <h2>💎 لماذا تتسوق معنا؟</h2>
       <ul>
-        <li>آلاف المنتجات في جميع الفئات</li>
-        <li>شحن مجاني للطلبات التي تزيد عن 100 ريال</li>
-        <li>إرجاع مجاني خلال 7 أيام</li>
-        <li>دفع آمن — الدفع عند الاستلام متاح</li>
-        <li>توصيل سريع في جميع أنحاء المملكة</li>
+        <li>✅ آلاف المنتجات في جميع الفئات</li>
+        <li>🚚 شحن مجاني للطلبات فوق 100 ريال</li>
+        <li>🔄 إرجاع مجاني خلال 14 يوماً وتبديل سهل</li>
+        <li>🔒 9 طرق دفع آمنة تشمل مدى والدفع عند الاستلام</li>
+        <li>⚡ توصيل سريع عبر Aramex و SMSA Express</li>
+        <li>💬 دعم عملاء بالعربية والإنجليزية عبر واتساب</li>
       </ul>
+      <h2>🏆 وعدنا لك</h2>
+      <p>كل طلب يُعبَّأ بعناية. إذا لم تكن راضياً عن مشترياتك لأي سبب، سيعمل فريقنا على حل المشكلة — هذا هو ضمان EX GLOBAL.</p>
     `},
     bn: { title: 'আমাদের সম্পর্কে', body: `
       <h2>🛍️ EX GLOBAL-এ স্বাগতম</h2>
-      <p>EX GLOBAL সৌদি আরব জুড়ে গ্রাহকদের সেবা দেওয়া একটি প্রিমিয়াম অনলাইন ফ্যাশন স্টোর। আমরা নারী, পুরুষ ও শিশুদের জন্য সর্বশেষ ফ্যাশন, বিউটি পণ্য এবং হোম প্রোডাক্ট সরবরাহ করি — সব প্রতিযোগিতামূলক মূল্যে এবং দ্রুত ডেলিভারিতে।</p>
-      <div class="info-card">🇸🇦 সৌদি আরবে প্রতিষ্ঠিত · ২০২১ সাল থেকে সেবায় আছি</div>
-      <h2>🎯 আমাদের লক্ষ্য</h2>
-      <p>আমরা বিশ্বাস করি সবাই মানসম্মত ফ্যাশন পাওয়ার যোগ্য। আমাদের টিম প্রতিটি পণ্য যত্ন সহকারে বাছাই করে সর্বোচ্চ মান নিশ্চিত করে।</p>
+      <p>EX GLOBAL সৌদি আরব জুড়ে গ্রাহকদের সেবা দেওয়া একটি প্রিমিয়াম অনলাইন ফ্যাশন স্টোর। আমরা নারী, পুরুষ ও শিশুদের জন্য সর্বশেষ ফ্যাশন, বিউটি পণ্য এবং হোম প্রোডাক্ট সরবরাহ করি।</p>
+      <div class="info-card">🇸🇦 সৌদি আরবে প্রতিষ্ঠিত · ২০২১ সাল থেকে সেবায় আছি<br/>VAT নিবন্ধন: <strong>310342701100003</strong></div>
       <h2>💎 আমাদের বেছে নিন কেন?</h2>
       <ul>
-        <li>সব ক্যাটাগরিতে হাজার হাজার পণ্য</li>
-        <li>SAR ১০০-এর উপরে অর্ডারে ফ্রি শিপিং</li>
-        <li>৭ দিনের সহজ রিটার্ন</li>
-        <li>নিরাপদ পেমেন্ট — ক্যাশ অন ডেলিভারি সুবিধা</li>
-        <li>সৌদি আরব জুড়ে দ্রুত ডেলিভারি</li>
+        <li>✅ সব ক্যাটাগরিতে হাজার হাজার পণ্য</li>
+        <li>🚚 SAR ১০০-এর উপরে অর্ডারে ফ্রি শিপিং</li>
+        <li>🔄 ১৪ দিনের সহজ রিটার্ন ও ফ্রি এক্সচেঞ্জ</li>
+        <li>🔒 mada সহ ৯ ধরনের নিরাপদ পেমেন্ট, ক্যাশ অন ডেলিভারি সুবিধা</li>
+        <li>⚡ Aramex ও SMSA Express-এর মাধ্যমে দ্রুত ডেলিভারি</li>
+        <li>💬 বাংলা, আরবি ও ইংরেজিতে WhatsApp সাপোর্ট</li>
       </ul>
+      <h2>🏆 আমাদের প্রতিশ্রুতি</h2>
+      <p>প্রতিটি অর্ডার যত্ন সহকারে প্যাক করা হয়। কোনো কারণে সন্তুষ্ট না হলে আমাদের টিম সমাধান করবে — এটাই EX GLOBAL গ্যারান্টি।</p>
     `},
   },
   contact: {
-    en: { title: 'Contact Us', body: `
-      <h2>💬 Get In Touch</h2>
-      <p>We're here to help! Reach out to us through any of the channels below and we'll get back to you as soon as possible.</p>
-      <a class="contact-btn" href="https://wa.me/966546224029?text=Hello, I need help with my order" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
-      <div class="info-card">⏰ Available: Saturday – Thursday · 9 AM – 9 PM (AST)<br/>We reply within <strong>2–4 hours</strong> during working hours.</div>
-      <h2>📧 Email</h2>
-      <p>exglobalbusiness@gmail.com</p>
-      <h2>📱 Social Media</h2>
-      <p>You can also DM us on Instagram or TikTok for quick questions about products, sizes, or availability.</p>
-      <h2>📦 Order Issues?</h2>
-      <p>If you have a problem with your order (wrong item, damaged product, delayed delivery), please WhatsApp us with your order number and a photo — we'll resolve it quickly.</p>
+    en: { title: 'Customer Service', body: `
+      <div class="info-card">💬 <strong>WhatsApp is the fastest way to reach us.</strong> We reply within 2 hours during business hours.</div>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=Hello%20EX%20GLOBAL%20👋" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
+      <a class="contact-btn" href="mailto:exglobalbusiness@gmail.com" style="background:rgba(233,30,140,.1);color:#e91e8c;border:1.5px solid rgba(233,30,140,.3)"><i class="fas fa-envelope"></i> exglobalbusiness@gmail.com</a>
+
+      <div class="info-card">⏰ <strong>Working Hours:</strong> Saturday – Thursday · 9 AM – 9 PM (AST)<br/>Friday: Closed · Average response: <strong>under 2 hours</strong></div>
+
+      <h2>❓ Frequently Asked Questions</h2>
+
+      <h2 style="font-size:14px;margin-top:12px">📦 How do I track my order?</h2>
+      <p>Once your order is shipped, you'll receive a WhatsApp message with your tracking number and a link to track via Aramex or SMSA Express. You can also go to <em>My Account → Orders</em> in the app.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🔄 Can I exchange for a different size?</h2>
+      <p>Yes! We offer free size and color exchanges within 14 days of delivery. WhatsApp us with your order number and the size you need — we'll arrange a pickup and reship at no extra cost.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">⏱️ When will my order arrive?</h2>
+      <p>Riyadh, Jeddah, Dammam: 1–2 business days. Other cities: 2–3 days. Remote areas: 3–5 days. Orders placed before 2 PM ship the same day.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">❌ I received the wrong item. What do I do?</h2>
+      <p>We sincerely apologize! WhatsApp us a photo of the item you received with your order number. We'll send the correct item immediately and arrange free pickup of the wrong one — at zero cost to you.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">💳 What payment methods do you accept?</h2>
+      <p>Mada, Visa, Mastercard, Apple Pay, STC Pay, Tamara (split in 4), Tabby (pay later), Binance Pay, and Cash on Delivery. All payments are 100% secure.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🎟️ How do I use a coupon code?</h2>
+      <p>Add items to your cart, proceed to checkout, and enter your code in the <em>Coupon Code</em> field. Try <strong>WELCOME10</strong> for 10% off your first order!</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🏛️ Still not satisfied?</h2>
+      <p>You can escalate to the <strong>Consumer Protection Association</strong> at hotline <strong>1900</strong>, or the <strong>Ministry of Commerce</strong> at <strong>1900</strong>. We are fully compliant with Saudi consumer protection laws.</p>
     `},
-    ar: { title: 'اتصل بنا', body: `
-      <h2>💬 تواصل معنا</h2>
-      <p>نحن هنا لمساعدتك! تواصل معنا عبر أي من القنوات أدناه وسنرد عليك في أقرب وقت ممكن.</p>
-      <a class="contact-btn" href="https://wa.me/966546224029?text=مرحباً، أحتاج مساعدة بخصوص طلبي" target="_blank"><i class="fab fa-whatsapp"></i> واتساب: 966546224029+</a>
-      <div class="info-card">⏰ متاحون: السبت – الخميس · 9 صباحاً – 9 مساءً<br/>نرد خلال <strong>2–4 ساعات</strong> في ساعات العمل.</div>
-      <h2>📧 البريد الإلكتروني</h2>
-      <p>exglobalbusiness@gmail.com</p>
-      <h2>📦 مشكلة في طلبك؟</h2>
-      <p>إذا كانت لديك مشكلة في طلبك (منتج خاطئ، تالف، تأخر في التوصيل)، يرجى التواصل معنا عبر واتساب مع رقم الطلب وصورة — وسنحلها بسرعة.</p>
+    ar: { title: 'خدمة العملاء', body: `
+      <div class="info-card">💬 <strong>واتساب هو أسرع طريقة للتواصل معنا.</strong> نرد خلال ساعتين في ساعات العمل.</div>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=مرحباً%20EX%20GLOBAL%20👋" target="_blank"><i class="fab fa-whatsapp"></i> واتساب: 966546224029+</a>
+      <a class="contact-btn" href="mailto:exglobalbusiness@gmail.com" style="background:rgba(233,30,140,.1);color:#e91e8c;border:1.5px solid rgba(233,30,140,.3)"><i class="fas fa-envelope"></i> exglobalbusiness@gmail.com</a>
+
+      <div class="info-card">⏰ <strong>ساعات العمل:</strong> السبت – الخميس · 9 صباحاً – 9 مساءً<br/>الجمعة: مغلق · متوسط وقت الرد: <strong>أقل من ساعتين</strong></div>
+
+      <h2>❓ الأسئلة الشائعة</h2>
+
+      <h2 style="font-size:14px;margin-top:12px">📦 كيف أتتبع طلبي؟</h2>
+      <p>بعد شحن طلبك ستصلك رسالة واتساب برقم التتبع عبر Aramex أو SMSA Express. يمكنك أيضاً متابعة الطلب من <em>حسابي ← الطلبات</em>.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🔄 هل يمكنني تبديل المقاس؟</h2>
+      <p>نعم! نقدم تبديلاً مجانياً للمقاس أو اللون خلال 14 يوماً من التسليم. أرسل لنا رقم طلبك والمقاس المطلوب عبر واتساب.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">❌ استلمت منتجاً خاطئاً. ماذا أفعل؟</h2>
+      <p>نعتذر جداً! أرسل لنا صورة المنتج مع رقم طلبك عبر واتساب، وسنرسل المنتج الصحيح فوراً مع استلام الخاطئ مجاناً.</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🏛️ للتصعيد:</h2>
+      <p>يمكنك التواصل مع <strong>جمعية حماية المستهلك</strong> على الخط الساخن <strong>1900</strong> أو <strong>وزارة التجارة</strong> على <strong>1900</strong>.</p>
     `},
-    bn: { title: 'যোগাযোগ করুন', body: `
-      <h2>💬 আমাদের সাথে যোগাযোগ</h2>
-      <p>আমরা সবসময় আপনার সাহায্যে আছি। যেকোনো প্রশ্ন বা সমস্যায় নিচের যেকোনো মাধ্যমে যোগাযোগ করুন।</p>
-      <a class="contact-btn" href="https://wa.me/966546224029?text=হ্যালো, আমার অর্ডার নিয়ে সাহায্য দরকার" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
-      <div class="info-card">⏰ সময়: শনিবার – বৃহস্পতিবার · সকাল ৯টা – রাত ৯টা<br/>কর্মঘণ্টায় <strong>২–৪ ঘণ্টার</strong> মধ্যে সাড়া দিই।</div>
-      <h2>📧 ইমেইল</h2>
-      <p>exglobalbusiness@gmail.com</p>
-      <h2>📦 অর্ডারে সমস্যা?</h2>
-      <p>ভুল পণ্য, ক্ষতিগ্রস্ত পণ্য বা ডেলিভারি দেরি হলে — অর্ডার নম্বর ও ছবি সহ WhatsApp করুন, আমরা দ্রুত সমাধান করব।</p>
+    bn: { title: 'কাস্টমার সার্ভিস', body: `
+      <div class="info-card">💬 <strong>WhatsApp-ই সবচেয়ে দ্রুত উপায়।</strong> কর্মঘণ্টায় ২ ঘণ্টার মধ্যে সাড়া দিই।</div>
+      <a class="contact-btn" href="https://wa.me/966546224029?text=হ্যালো%20EX%20GLOBAL%20👋" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp: +966 546 224 029</a>
+      <a class="contact-btn" href="mailto:exglobalbusiness@gmail.com" style="background:rgba(233,30,140,.1);color:#e91e8c;border:1.5px solid rgba(233,30,140,.3)"><i class="fas fa-envelope"></i> exglobalbusiness@gmail.com</a>
+
+      <div class="info-card">⏰ <strong>কার্যসময়:</strong> শনিবার – বৃহস্পতিবার · সকাল ৯টা – রাত ৯টা<br/>শুক্রবার: বন্ধ · গড় সাড়া সময়: <strong>২ ঘণ্টার মধ্যে</strong></div>
+
+      <h2>❓ সাধারণ প্রশ্নোত্তর</h2>
+
+      <h2 style="font-size:14px;margin-top:12px">📦 অর্ডার ট্র্যাক করবো কীভাবে?</h2>
+      <p>শিপমেন্টের পর WhatsApp-এ ট্র্যাকিং নম্বর পাঠানো হবে (Aramex বা SMSA Express)। এছাড়া অ্যাপে <em>আমার অ্যাকাউন্ট → অর্ডার</em>-এ দেখুন।</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🔄 সাইজ বদলাতে পারবো?</h2>
+      <p>হ্যাঁ! ডেলিভারির ১৪ দিনের মধ্যে ফ্রি সাইজ/কালার এক্সচেঞ্জ করা যাবে। অর্ডার নম্বর ও দরকারি সাইজ সহ WhatsApp করুন।</p>
+
+      <h2 style="font-size:14px;margin-top:12px">❌ ভুল পণ্য পেয়েছি?</h2>
+      <p>আন্তরিকভাবে ক্ষমাপ্রার্থী! পণ্যের ছবি ও অর্ডার নম্বর সহ WhatsApp করুন। সঠিক পণ্য পাঠানো হবে এবং ভুলটি ফ্রিতে পিকআপ করা হবে।</p>
+
+      <h2 style="font-size:14px;margin-top:12px">💳 কোন পেমেন্ট গ্রহণযোগ্য?</h2>
+      <p>mada, Visa, Mastercard, Apple Pay, STC Pay, Tamara, Tabby, Binance Pay ও Cash on Delivery। সব পেমেন্ট ১০০% নিরাপদ।</p>
+
+      <h2 style="font-size:14px;margin-top:12px">🏛️ অভিযোগের জন্য:</h2>
+      <p>ভোক্তা সুরক্ষা সংস্থায় হটলাইন <strong>1900</strong>-তে অথবা বাণিজ্য মন্ত্রণালয়ে <strong>1900</strong>-তে যোগাযোগ করুন।</p>
     `},
   },
   privacy: {
     en: { title: 'Privacy Policy', body: `
-      <p style="color:#888;font-size:12px">Last updated: January 2025</p>
-      <h2>📋 Information We Collect</h2>
+      <p style="color:#888;font-size:12px">Last updated: June 2025 · Compliant with Saudi PDPL (Royal Decree M/19)</p>
+      <div class="info-card">🔐 EX GLOBAL is committed to protecting your personal data in accordance with the <strong>Saudi Personal Data Protection Law (PDPL)</strong>.</div>
+
+      <h2>📋 Data We Collect</h2>
       <ul>
-        <li>Name, phone number, and delivery address (for order processing)</li>
-        <li>Email address (for account creation and order updates)</li>
-        <li>Device information and browsing data (via cookies)</li>
-        <li>Payment information — processed securely and never stored on our servers</li>
+        <li><strong>Account data:</strong> Name, email address, phone number</li>
+        <li><strong>Order data:</strong> Delivery address, order history, payment method type (we never store full card numbers)</li>
+        <li><strong>Device data:</strong> IP address, browser type, pages visited (via cookies)</li>
+        <li><strong>Communication data:</strong> WhatsApp/email messages you send us</li>
       </ul>
-      <h2>🔒 How We Use Your Information</h2>
+
+      <h2>🎯 Why We Collect It</h2>
       <ul>
-        <li>To process and deliver your orders</li>
-        <li>To send order confirmations and delivery updates via WhatsApp</li>
-        <li>To improve our website and customer experience</li>
-        <li>To send promotional offers (you can opt out anytime)</li>
+        <li>To process, ship, and deliver your orders</li>
+        <li>To send order confirmations and tracking updates via WhatsApp</li>
+        <li>To manage your account and handle returns</li>
+        <li>To improve our website and personalise your experience</li>
+        <li>To send promotional offers — <strong>only with your explicit consent</strong></li>
+        <li>To prevent fraud and ensure platform security</li>
       </ul>
-      <h2>🚫 We Do NOT</h2>
+
+      <h2>🤝 Who We Share Data With</h2>
       <ul>
-        <li>Sell your personal data to third parties</li>
-        <li>Store your payment card details</li>
-        <li>Share your information without your consent</li>
+        <li><strong>Shipping partners:</strong> Aramex, SMSA Express (delivery address only)</li>
+        <li><strong>Payment processors:</strong> SAMA-licensed gateways (Tap Payments, STC Pay, etc.) — card details go directly to them, never to us</li>
+        <li><strong>We NEVER sell your data</strong> to third-party advertisers</li>
       </ul>
+
+      <h2>📅 Data Retention</h2>
+      <p>We retain your personal data for <strong>3 years</strong> after your last purchase, or as required by Saudi law (ZATCA requires transaction records for 10 years for tax purposes).</p>
+
+      <h2>✅ Your Rights Under PDPL</h2>
+      <ul>
+        <li><strong>Right to access:</strong> Request a copy of your data</li>
+        <li><strong>Right to correct:</strong> Update inaccurate information</li>
+        <li><strong>Right to delete:</strong> Request erasure of your data (subject to legal retention requirements)</li>
+        <li><strong>Right to withdraw consent:</strong> Opt out of marketing at any time</li>
+        <li><strong>Right to data portability:</strong> Receive your data in a readable format</li>
+      </ul>
+
       <h2>🍪 Cookies</h2>
-      <p>We use cookies to remember your cart, language preference, and improve your browsing experience. You can disable cookies in your browser settings at any time.</p>
-      <h2>📬 Contact</h2>
-      <p>For privacy concerns, contact us at: exglobalbusiness@gmail.com</p>
+      <p>We use cookies to remember your cart, language preference, and login status. You can disable cookies in your browser settings — note that some features may not work without them.</p>
+
+      <h2>🌍 International Transfers</h2>
+      <p>Your data may be processed on servers outside Saudi Arabia (e.g., cloud services). We ensure equivalent data protection standards are applied.</p>
+
+      <h2>📬 Contact for Privacy Requests</h2>
+      <p>Email: <strong>exglobalbusiness@gmail.com</strong><br/>Subject line: "Privacy Request — [Your Name]"<br/>We will respond within <strong>15 business days</strong>.</p>
     `},
     ar: { title: 'سياسة الخصوصية', body: `
-      <p style="color:#888;font-size:12px">آخر تحديث: يناير 2025</p>
-      <h2>📋 المعلومات التي نجمعها</h2>
+      <p style="color:#888;font-size:12px">آخر تحديث: يونيو 2025 · متوافقة مع نظام حماية البيانات الشخصية السعودي (PDPL)</p>
+      <div class="info-card">🔐 EX GLOBAL ملتزمة بحماية بياناتك الشخصية وفقاً لـ <strong>نظام حماية البيانات الشخصية السعودي</strong>.</div>
+
+      <h2>📋 البيانات التي نجمعها</h2>
       <ul>
-        <li>الاسم ورقم الهاتف وعنوان التوصيل (لمعالجة الطلبات)</li>
-        <li>البريد الإلكتروني (لإنشاء الحساب وتحديثات الطلبات)</li>
-        <li>معلومات الجهاز وبيانات التصفح (عبر ملفات تعريف الارتباط)</li>
+        <li><strong>بيانات الحساب:</strong> الاسم، البريد الإلكتروني، رقم الهاتف</li>
+        <li><strong>بيانات الطلب:</strong> عنوان التوصيل، تاريخ الطلبات، نوع طريقة الدفع فقط (لا نحتفظ بأرقام البطاقات الكاملة)</li>
+        <li><strong>بيانات الجهاز:</strong> عنوان IP، نوع المتصفح، الصفحات المُزارة (عبر ملفات تعريف الارتباط)</li>
       </ul>
-      <h2>🔒 كيف نستخدم معلوماتك</h2>
+
+      <h2>🎯 لماذا نجمعها</h2>
       <ul>
-        <li>لمعالجة طلباتك وتوصيلها</li>
-        <li>لإرسال تأكيدات الطلبات عبر واتساب</li>
-        <li>لتحسين موقعنا وتجربة العملاء</li>
+        <li>لمعالجة طلباتك وشحنها وتوصيلها</li>
+        <li>لإرسال تأكيدات الطلبات وتحديثات التتبع عبر واتساب</li>
+        <li>لإدارة حسابك والتعامل مع المرتجعات</li>
+        <li>لإرسال عروض ترويجية — <strong>بموافقتك الصريحة فقط</strong></li>
       </ul>
-      <h2>🚫 لا نقوم بـ</h2>
+
+      <h2>✅ حقوقك بموجب PDPL</h2>
       <ul>
-        <li>بيع بياناتك الشخصية لأطراف ثالثة</li>
-        <li>تخزين بيانات بطاقتك الائتمانية</li>
-        <li>مشاركة معلوماتك دون موافقتك</li>
+        <li>حق الوصول: طلب نسخة من بياناتك</li>
+        <li>حق التصحيح: تحديث المعلومات غير الدقيقة</li>
+        <li>حق الحذف: طلب مسح بياناتك</li>
+        <li>حق سحب الموافقة: إلغاء الاشتراك في التسويق في أي وقت</li>
       </ul>
+
+      <h2>📬 للتواصل بشأن الخصوصية</h2>
+      <p>البريد الإلكتروني: <strong>exglobalbusiness@gmail.com</strong><br/>سنرد خلال <strong>15 يوم عمل</strong>.</p>
     `},
     bn: { title: 'প্রাইভেসি পলিসি', body: `
-      <p style="color:#888;font-size:12px">সর্বশেষ আপডেট: জানুয়ারি ২০২৫</p>
+      <p style="color:#888;font-size:12px">সর্বশেষ আপডেট: জুন ২০২৫ · সৌদি PDPL মেনে চলা হয়</p>
+      <div class="info-card">🔐 EX GLOBAL <strong>সৌদি আরবের Personal Data Protection Law (PDPL)</strong> মেনে আপনার তথ্য সুরক্ষিত রাখে।</div>
+
       <h2>📋 আমরা যা তথ্য সংগ্রহ করি</h2>
       <ul>
-        <li>নাম, ফোন নম্বর ও ডেলিভারি ঠিকানা (অর্ডার প্রক্রিয়াকরণের জন্য)</li>
-        <li>ইমেইল ঠিকানা (অ্যাকাউন্ট ও অর্ডার আপডেটের জন্য)</li>
-        <li>ডিভাইসের তথ্য ও ব্রাউজিং ডেটা (কুকি-র মাধ্যমে)</li>
+        <li><strong>অ্যাকাউন্ট তথ্য:</strong> নাম, ইমেইল, ফোন নম্বর</li>
+        <li><strong>অর্ডার তথ্য:</strong> ডেলিভারি ঠিকানা, অর্ডার ইতিহাস, পেমেন্ট পদ্ধতির ধরন (পূর্ণ কার্ড নম্বর কখনো সংরক্ষিত হয় না)</li>
+        <li><strong>ডিভাইস তথ্য:</strong> IP ঠিকানা, ব্রাউজার টাইপ (কুকির মাধ্যমে)</li>
       </ul>
-      <h2>🔒 তথ্য ব্যবহারের উদ্দেশ্য</h2>
+
+      <h2>🎯 কেন সংগ্রহ করি</h2>
       <ul>
-        <li>আপনার অর্ডার প্রক্রিয়া ও ডেলিভারি করতে</li>
-        <li>WhatsApp-এ অর্ডার কনফার্মেশন পাঠাতে</li>
-        <li>ওয়েবসাইট ও সেবা উন্নত করতে</li>
+        <li>অর্ডার প্রক্রিয়া, শিপিং ও ডেলিভারির জন্য</li>
+        <li>WhatsApp-এ অর্ডার কনফার্মেশন ও ট্র্যাকিং আপডেটের জন্য</li>
+        <li>প্রোমো অফার — <strong>শুধুমাত্র আপনার স্পষ্ট সম্মতিতে</strong></li>
       </ul>
-      <h2>🚫 আমরা করি না</h2>
+
+      <h2>✅ PDPL অনুযায়ী আপনার অধিকার</h2>
       <ul>
-        <li>তৃতীয় পক্ষের কাছে আপনার তথ্য বিক্রি</li>
-        <li>পেমেন্ট কার্ডের তথ্য সংরক্ষণ</li>
-        <li>আপনার অনুমতি ছাড়া তথ্য শেয়ার</li>
+        <li>আপনার তথ্যের অ্যাক্সেস পাওয়ার অধিকার</li>
+        <li>ভুল তথ্য সংশোধনের অধিকার</li>
+        <li>তথ্য মুছে ফেলার অধিকার</li>
+        <li>যেকোনো সময় মার্কেটিং সম্মতি প্রত্যাহারের অধিকার</li>
       </ul>
-      <h2>📬 যোগাযোগ</h2>
-      <p>গোপনীয়তা সংক্রান্ত যেকোনো বিষয়ে: exglobalbusiness@gmail.com</p>
+
+      <h2>🤝 কার সাথে শেয়ার করি</h2>
+      <ul>
+        <li><strong>শিপিং পার্টনার:</strong> Aramex, SMSA Express (শুধু ডেলিভারি ঠিকানা)</li>
+        <li><strong>পেমেন্ট প্রসেসর:</strong> SAMA-লাইসেন্সপ্রাপ্ত গেটওয়ে</li>
+        <li><strong>আমরা কখনো আপনার তথ্য বিক্রি করি না</strong></li>
+      </ul>
+
+      <h2>📅 তথ্য সংরক্ষণ</h2>
+      <p>শেষ কেনাকাটার পর <strong>৩ বছর</strong> তথ্য সংরক্ষিত থাকে।</p>
+
+      <h2>📬 প্রাইভেসি অনুরোধের জন্য</h2>
+      <p>ইমেইল: <strong>exglobalbusiness@gmail.com</strong> · <strong>১৫ কর্মদিবসের মধ্যে</strong> সাড়া দেওয়া হবে।</p>
     `},
   },
   refund: {
-    en: { title: 'Refund Policy', body: `
-      <div class="info-card">✅ We offer a <strong>7-day return window</strong> from the date of delivery.</div>
-      <h2>📦 Return Conditions</h2>
+    en: { title: 'Refund & Return Policy', body: `
+      <div class="info-card">✅ <strong>14-Day Returns · Free Exchanges · Free Pickup</strong><br/>We offer one of the most generous return policies in Saudi Arabia.</div>
+
+      <h2>🔄 What You Can Return or Exchange</h2>
       <ul>
-        <li>Item must be unused and in original condition</li>
-        <li>Original packaging and tags must be intact</li>
-        <li>Item must not be washed, altered, or damaged</li>
-        <li>Sale items and undergarments are non-returnable</li>
+        <li>Item must be <strong>unused, unworn, unwashed</strong></li>
+        <li>All <strong>original tags must be attached</strong></li>
+        <li>Must be in the <strong>original packaging</strong></li>
+        <li>Return or exchange request must be made within <strong>14 days of delivery</strong></li>
       </ul>
-      <h2>🔄 How to Return</h2>
+
+      <h2>🔁 Free Size & Color Exchange</h2>
+      <p>Not the right size? We'll exchange it for free — including free pickup from your door and redelivery. WhatsApp us within 14 days with your order number and the size/color you need.</p>
+
+      <h2>⚡ Wrong or Damaged Item Received?</h2>
+      <div class="info-card">If we sent the wrong item or your item arrived damaged, you get a <strong>full refund OR replacement — no questions asked</strong>, within 30 days. This is required by Saudi Consumer Protection Law.</div>
+
+      <h2>❌ How to Cancel an Order</h2>
       <ul>
-        <li>WhatsApp us at +966 546 224 029 within 7 days of delivery</li>
-        <li>Send your order number and photos of the item</li>
-        <li>Our team will arrange pickup or guide you through the process</li>
+        <li>Cancel within <strong>2 hours</strong> of placing your order (before processing begins)</li>
+        <li>WhatsApp us immediately at +966 546 224 029 with your order number</li>
+        <li>After dispatch, cancellation is not possible — use the return process instead</li>
       </ul>
-      <h2>💰 Refund Timeline</h2>
+
+      <h2>📋 Step-by-Step Return Process</h2>
+      <ol style="padding-left:18px;line-height:2">
+        <li>WhatsApp us at <strong>+966 546 224 029</strong> within 14 days</li>
+        <li>Send your <strong>order number</strong> and <strong>photos of the item</strong></li>
+        <li>Tell us if you want a <strong>refund or exchange</strong></li>
+        <li>We schedule <strong>free courier pickup</strong> from your address</li>
+        <li>Item is inspected at our warehouse (within 2 business days)</li>
+        <li>Refund or replacement is issued</li>
+      </ol>
+
+      <h2>💰 Refund Methods & Timeline</h2>
       <ul>
-        <li>Refunds are processed within <strong>3–5 business days</strong> after we receive the item</li>
-        <li>Refund will be credited to your original payment method</li>
-        <li>For Cash on Delivery orders: refund via bank transfer</li>
+        <li><strong>Credit/debit card:</strong> 5–7 business days back to your card</li>
+        <li><strong>Store credit/wallet:</strong> Within 24–48 hours (faster option)</li>
+        <li><strong>Cash on Delivery orders:</strong> Bank transfer to your IBAN within 3–5 business days</li>
+        <li><strong>STC Pay / Tabby / Tamara:</strong> Refund to original payment within 5–7 days</li>
       </ul>
+
       <h2>❌ Non-Returnable Items</h2>
       <ul>
-        <li>Underwear and swimwear (for hygiene reasons)</li>
+        <li>Underwear, lingerie, and swimwear (for hygiene reasons)</li>
+        <li>Socks and tights</li>
+        <li>Items marked <strong>"Final Sale"</strong></li>
         <li>Customised or personalised items</li>
-        <li>Items marked as final sale</li>
+        <li>Items that have been worn, washed, or altered</li>
+      </ul>
+
+      <div class="info-card">📞 Need help with a return? WhatsApp <strong>+966 546 224 029</strong> — we're here Sat–Thu, 9 AM–9 PM.</div>
+    `},
+    ar: { title: 'سياسة الاسترجاع والاستبدال', body: `
+      <div class="info-card">✅ <strong>إرجاع خلال 14 يوماً · استبدال مجاني · استلام مجاني من الباب</strong></div>
+
+      <h2>🔄 ما يمكن إرجاعه أو استبداله</h2>
+      <ul>
+        <li>يجب أن يكون المنتج <strong>غير مستخدم وغير ملبوس وغير مغسول</strong></li>
+        <li>جميع <strong>العلامات الأصلية يجب أن تكون مُرفقة</strong></li>
+        <li>يجب أن يكون في <strong>عبوته الأصلية</strong></li>
+        <li>طلب الإرجاع أو الاستبدال خلال <strong>14 يوماً من التسليم</strong></li>
+      </ul>
+
+      <h2>🔁 استبدال المقاس أو اللون مجاناً</h2>
+      <p>المقاس غير مناسب؟ سنستبدله مجاناً مع استلام مجاني من بابك وإعادة التوصيل. تواصل معنا عبر واتساب خلال 14 يوماً مع رقم طلبك والمقاس المطلوب.</p>
+
+      <h2>⚡ استلمت منتجاً خاطئاً أو تالفاً؟</h2>
+      <div class="info-card">إذا أرسلنا منتجاً خاطئاً أو وصل تالفاً، ستحصل على <strong>استرداد كامل أو استبدال فوري — دون أي أسئلة</strong>، خلال 30 يوماً وفقاً لنظام حماية المستهلك السعودي.</div>
+
+      <h2>📋 خطوات الإرجاع</h2>
+      <ol style="padding-left:18px;line-height:2">
+        <li>تواصل معنا عبر واتساب <strong>966546224029+</strong> خلال 14 يوماً</li>
+        <li>أرسل <strong>رقم طلبك</strong> وصور المنتج</li>
+        <li>أخبرنا إن كنت تريد <strong>استرداداً أو استبدالاً</strong></li>
+        <li>نرتب <strong>استلاماً مجانياً</strong> من عنوانك</li>
+        <li>فحص المنتج خلال يومي عمل</li>
+        <li>صرف المبلغ أو إرسال البديل</li>
+      </ol>
+
+      <h2>💰 طرق الاسترداد والمواعيد</h2>
+      <ul>
+        <li><strong>بطاقة الائتمان/الخصم:</strong> 5–7 أيام عمل</li>
+        <li><strong>رصيد المتجر:</strong> 24–48 ساعة (أسرع خيار)</li>
+        <li><strong>طلبات الدفع عند الاستلام:</strong> تحويل بنكي خلال 3–5 أيام</li>
+      </ul>
+
+      <h2>❌ ما لا يمكن إرجاعه</h2>
+      <ul>
+        <li>الملابس الداخلية والبكيني (لأسباب صحية)</li>
+        <li>الجوارب والشراب</li>
+        <li>المنتجات المُعلَّمة <strong>"تخفيض نهائي"</strong></li>
+        <li>المنتجات المخصصة أو الشخصية</li>
       </ul>
     `},
-    ar: { title: 'سياسة الاسترجاع', body: `
-      <div class="info-card">✅ نقدم <strong>نافذة إرجاع مدتها 7 أيام</strong> من تاريخ التسليم.</div>
-      <h2>📦 شروط الإرجاع</h2>
+    bn: { title: 'রিফান্ড ও রিটার্ন পলিসি', body: `
+      <div class="info-card">✅ <strong>১৪ দিনের রিটার্ন · ফ্রি এক্সচেঞ্জ · ফ্রি পিকআপ</strong><br/>সৌদি আরবের অন্যতম সেরা রিটার্ন পলিসি।</div>
+
+      <h2>🔄 রিটার্নের শর্ত</h2>
       <ul>
-        <li>يجب أن تكون السلعة غير مستخدمة وفي حالتها الأصلية</li>
-        <li>يجب أن تكون العبوة الأصلية والعلامات سليمة</li>
-        <li>لا يجوز أن تكون السلعة مغسولة أو معدلة أو تالفة</li>
-        <li>لا يمكن إرجاع الملابس الداخلية والعناصر المخصومة</li>
+        <li>পণ্য <strong>অব্যবহৃত, অপরিধান করা ও অধোয়া</strong> হতে হবে</li>
+        <li>সব <strong>মূল ট্যাগ লাগানো</strong> থাকতে হবে</li>
+        <li><strong>মূল প্যাকেজিং</strong>-এ থাকতে হবে</li>
+        <li>ডেলিভারির <strong>১৪ দিনের মধ্যে</strong> রিটার্ন/এক্সচেঞ্জ অনুরোধ করতে হবে</li>
       </ul>
-      <h2>🔄 كيفية الإرجاع</h2>
+
+      <h2>🔁 ফ্রি সাইজ ও কালার এক্সচেঞ্জ</h2>
+      <p>সাইজ মিলছে না? ফ্রিতে বদলে দেওয়া হবে — ফ্রি পিকআপ ও রিডেলিভারিসহ। অর্ডার নম্বর ও দরকারি সাইজ সহ ১৪ দিনের মধ্যে WhatsApp করুন।</p>
+
+      <h2>⚡ ভুল বা ক্ষতিগ্রস্ত পণ্য পেলে?</h2>
+      <div class="info-card">ভুল পণ্য বা ক্ষতিগ্রস্ত পণ্য পেলে — <strong>সম্পূর্ণ রিফান্ড অথবা প্রতিস্থাপন, কোনো প্রশ্ন ছাড়াই</strong>, ৩০ দিনের মধ্যে। এটি সৌদি ভোক্তা সুরক্ষা আইন অনুযায়ী বাধ্যতামূলক।</div>
+
+      <h2>❌ অর্ডার বাতিল করবেন কীভাবে?</h2>
       <ul>
-        <li>تواصل معنا عبر واتساب خلال 7 أيام من التسليم</li>
-        <li>أرسل رقم طلبك وصور المنتج</li>
-        <li>سيتولى فريقنا ترتيب الاستلام</li>
+        <li>অর্ডারের <strong>২ ঘণ্টার মধ্যে</strong> বাতিল করা যাবে (প্রক্রিয়া শুরুর আগে)</li>
+        <li>অর্ডার নম্বর সহ +966 546 224 029-এ WhatsApp করুন</li>
+        <li>শিপমেন্টের পর বাতিল সম্ভব নয় — রিটার্ন প্রক্রিয়া ব্যবহার করুন</li>
       </ul>
-      <h2>💰 موعد الاسترداد</h2>
-      <p>تتم معالجة المبالغ المستردة خلال <strong>3–5 أيام عمل</strong> بعد استلام المنتج.</p>
-    `},
-    bn: { title: 'রিফান্ড পলিসি', body: `
-      <div class="info-card">✅ ডেলিভারির তারিখ থেকে <strong>৭ দিনের মধ্যে</strong> রিটার্ন করা যাবে।</div>
-      <h2>📦 রিটার্নের শর্ত</h2>
+
+      <h2>📋 রিটার্নের ধাপসমূহ</h2>
+      <ol style="padding-left:18px;line-height:2">
+        <li>১৪ দিনের মধ্যে <strong>+966 546 224 029</strong>-এ WhatsApp করুন</li>
+        <li><strong>অর্ডার নম্বর</strong> ও পণ্যের <strong>ছবি</strong> পাঠান</li>
+        <li>রিফান্ড না এক্সচেঞ্জ — জানান</li>
+        <li>আপনার দরজা থেকে <strong>ফ্রি পিকআপ</strong> আয়োজন করা হবে</li>
+        <li>পণ্য পরীক্ষা (২ কর্মদিবসের মধ্যে)</li>
+        <li>রিফান্ড বা প্রতিস্থাপন প্রদান</li>
+      </ol>
+
+      <h2>💰 রিফান্ড পদ্ধতি ও সময়</h2>
       <ul>
-        <li>পণ্য অব্যবহৃত ও মূল অবস্থায় থাকতে হবে</li>
-        <li>মূল প্যাকেজিং ও ট্যাগ অক্ষত থাকতে হবে</li>
-        <li>পণ্য ধোয়া, পরিবর্তন বা ক্ষতিগ্রস্ত হলে রিটার্ন হবে না</li>
-        <li>অন্তর্বাস ও সেল পণ্য ফেরতযোগ্য নয়</li>
+        <li><strong>ক্রেডিট/ডেবিট কার্ড:</strong> ৫–৭ কর্মদিবস</li>
+        <li><strong>স্টোর ক্রেডিট:</strong> ২৪–৪৮ ঘণ্টা (দ্রুততম)</li>
+        <li><strong>ক্যাশ অন ডেলিভারি:</strong> IBAN-এ ব্যাংক ট্রান্সফার, ৩–৫ কর্মদিবস</li>
       </ul>
-      <h2>🔄 রিটার্ন প্রক্রিয়া</h2>
-      <ul>
-        <li>ডেলিভারির ৭ দিনের মধ্যে +966 546 224 029-এ WhatsApp করুন</li>
-        <li>অর্ডার নম্বর ও পণ্যের ছবি পাঠান</li>
-        <li>আমাদের টিম পিকআপ বা প্রক্রিয়া গাইড করবে</li>
-      </ul>
-      <h2>💰 রিফান্ড সময়সীমা</h2>
-      <p>পণ্য পাওয়ার <strong>৩–৫ কর্মদিবসের</strong> মধ্যে রিফান্ড প্রক্রিয়া সম্পন্ন হবে।</p>
+
       <h2>❌ রিটার্নযোগ্য নয়</h2>
       <ul>
-        <li>অন্তর্বাস ও সুইমওয়্যার (স্বাস্থ্যবিধির কারণে)</li>
+        <li>অন্তর্বাস, লিঙ্গেরি ও সুইমওয়্যার (স্বাস্থ্যবিধির কারণে)</li>
+        <li>মোজা</li>
+        <li><strong>"Final Sale"</strong> চিহ্নিত পণ্য</li>
         <li>কাস্টমাইজড বা ব্যক্তিগতকৃত পণ্য</li>
-        <li>ফাইনাল সেল হিসেবে চিহ্নিত পণ্য</li>
+        <li>পরিধান, ধোয়া বা পরিবর্তিত পণ্য</li>
       </ul>
+
+      <div class="info-card">📞 রিটার্ন সাহায্যে WhatsApp করুন: <strong>+966 546 224 029</strong> · শনি–বৃহস্পতি, সকাল ৯টা–রাত ৯টা</div>
     `},
   },
   shipping: {
     en: { title: 'Shipping Policy', body: `
-      <div class="info-card">🚚 We deliver across <strong>all regions of Saudi Arabia</strong>.</div>
-      <h2>⏱️ Delivery Times</h2>
+      <div class="info-card">🚚 We deliver across <strong>all regions of Saudi Arabia</strong> via <strong>Aramex</strong> and <strong>SMSA Express</strong> — two of the Kingdom's most trusted couriers.</div>
+
+      <h2>⏱️ Delivery Timeframes</h2>
       <ul>
-        <li><strong>Riyadh, Jeddah, Dammam:</strong> 1–3 business days</li>
-        <li><strong>Other major cities:</strong> 2–4 business days</li>
-        <li><strong>Remote areas:</strong> 4–7 business days</li>
+        <li>🏙️ <strong>Riyadh, Jeddah, Dammam, Makkah, Madinah:</strong> 1–2 business days</li>
+        <li>🌆 <strong>Taif, Abha, Khobar, Tabuk, Hail:</strong> 2–3 business days</li>
+        <li>🌄 <strong>Remote & rural areas:</strong> 3–5 business days</li>
       </ul>
-      <h2>💰 Shipping Rates</h2>
+      <p style="color:#888;font-size:12px">⚠️ Business days exclude Fridays and Saudi public holidays.</p>
+
+      <h2>💰 Shipping Fees</h2>
       <ul>
-        <li>Standard shipping: <strong>SAR 15</strong></li>
-        <li>Free shipping on orders over <strong>SAR 100</strong> 🎉</li>
+        <li>🎉 <strong>Free shipping</strong> on all orders over <strong>SAR 100</strong></li>
+        <li>📦 Standard shipping: <strong>SAR 17</strong> for orders below SAR 100</li>
       </ul>
-      <h2>📦 Order Processing</h2>
+
+      <h2>⚡ Order Processing</h2>
       <ul>
-        <li>Orders placed before 2 PM are processed the same day</li>
-        <li>Orders placed after 2 PM are processed the next business day</li>
-        <li>You'll receive a WhatsApp notification once your order is shipped</li>
+        <li>Orders placed before <strong>2:00 PM (AST)</strong> on business days ship the <strong>same day</strong></li>
+        <li>Orders placed after 2:00 PM ship the <strong>next business day</strong></li>
+        <li>Friday orders are processed on Saturday morning</li>
       </ul>
-      <h2>🔍 Track Your Order</h2>
-      <p>Once shipped, you'll receive a tracking number via WhatsApp. You can also check your order status in the <strong>My Account</strong> section of the app.</p>
-      <h2>❓ Delayed Delivery?</h2>
-      <p>If your order hasn't arrived within the expected timeframe, please contact us on WhatsApp at +966 546 224 029 with your order number.</p>
+
+      <h2>📲 Tracking Your Order</h2>
+      <ul>
+        <li>You'll receive a <strong>WhatsApp notification</strong> once your order is dispatched</li>
+        <li>A <strong>tracking number and link</strong> (Aramex or SMSA) will be sent to your phone</li>
+        <li>You can also track from <em>My Account → Orders</em> in the app</li>
+      </ul>
+
+      <h2>🚪 Failed Delivery Attempts</h2>
+      <ul>
+        <li>The courier will attempt delivery <strong>2 times</strong></li>
+        <li>If unavailable, a notification will be sent and a pickup window offered</li>
+        <li>Uncollected orders are returned to us after 5 days — contact us to rearrange</li>
+      </ul>
+
+      <h2>📮 Address Requirements</h2>
+      <ul>
+        <li>Please ensure your <strong>full Saudi address</strong> is correct (street, city, postal code)</li>
+        <li>Including your <strong>Google Maps location or Wasl address</strong> speeds up delivery significantly</li>
+        <li>We do not currently deliver to P.O. Boxes</li>
+      </ul>
+
+      <h2>❓ Order Delayed?</h2>
+      <p>If your order hasn't arrived within the expected window, WhatsApp us at <strong>+966 546 224 029</strong> with your order number. We'll investigate and update you within 4 hours.</p>
     `},
     ar: { title: 'سياسة الشحن', body: `
-      <div class="info-card">🚚 نوصل إلى <strong>جميع مناطق المملكة العربية السعودية</strong>.</div>
+      <div class="info-card">🚚 نوصل إلى <strong>جميع مناطق المملكة العربية السعودية</strong> عبر <strong>Aramex</strong> و <strong>SMSA Express</strong>.</div>
+
       <h2>⏱️ مواعيد التسليم</h2>
       <ul>
-        <li><strong>الرياض وجدة والدمام:</strong> 1–3 أيام عمل</li>
-        <li><strong>المدن الرئيسية الأخرى:</strong> 2–4 أيام عمل</li>
-        <li><strong>المناطق النائية:</strong> 4–7 أيام عمل</li>
+        <li>🏙️ <strong>الرياض، جدة، الدمام، مكة، المدينة:</strong> 1–2 يوم عمل</li>
+        <li>🌆 <strong>الطائف، أبها، الخبر، تبوك، حائل:</strong> 2–3 أيام عمل</li>
+        <li>🌄 <strong>المناطق النائية والريفية:</strong> 3–5 أيام عمل</li>
       </ul>
+      <p style="color:#888;font-size:12px">⚠️ أيام العمل لا تشمل يوم الجمعة والإجازات الرسمية السعودية.</p>
+
       <h2>💰 رسوم الشحن</h2>
       <ul>
-        <li>الشحن العادي: <strong>15 ريال</strong></li>
-        <li>شحن مجاني للطلبات التي تزيد عن <strong>100 ريال</strong> 🎉</li>
+        <li>🎉 <strong>شحن مجاني</strong> للطلبات فوق <strong>100 ريال</strong></li>
+        <li>📦 الشحن العادي: <strong>17 ريال</strong> للطلبات أقل من 100 ريال</li>
       </ul>
-      <h2>📦 معالجة الطلبات</h2>
+
+      <h2>⚡ معالجة الطلبات</h2>
       <ul>
-        <li>الطلبات قبل 2 مساءً تُعالج في نفس اليوم</li>
-        <li>ستتلقى إشعاراً عبر واتساب عند شحن طلبك</li>
+        <li>الطلبات قبل <strong>2:00 مساءً</strong> تُشحن في <strong>نفس اليوم</strong></li>
+        <li>طلبات الجمعة تُعالج صباح السبت</li>
+      </ul>
+
+      <h2>📲 تتبع طلبك</h2>
+      <ul>
+        <li>ستصلك رسالة <strong>واتساب</strong> فور شحن طلبك مع رقم التتبع</li>
+        <li>يمكنك التتبع من <em>حسابي ← الطلبات</em></li>
+      </ul>
+
+      <h2>📮 متطلبات العنوان</h2>
+      <ul>
+        <li>تأكد من صحة <strong>عنوانك السعودي الكامل</strong> (الشارع، المدينة، الرمز البريدي)</li>
+        <li>إضافة <strong>موقع Google Maps أو عنوان وصل</strong> يسرّع التوصيل</li>
+        <li>لا نوصل حالياً إلى صناديق البريد</li>
       </ul>
     `},
     bn: { title: 'শিপিং পলিসি', body: `
-      <div class="info-card">🚚 আমরা <strong>সৌদি আরবের সব অঞ্চলে</strong> ডেলিভারি দিই।</div>
+      <div class="info-card">🚚 <strong>Aramex</strong> ও <strong>SMSA Express</strong>-এর মাধ্যমে <strong>সৌদি আরবের সব অঞ্চলে</strong> ডেলিভারি দিই।</div>
+
       <h2>⏱️ ডেলিভারির সময়</h2>
       <ul>
-        <li><strong>রিয়াদ, জেদ্দা, দাম্মাম:</strong> ১–৩ কর্মদিবস</li>
-        <li><strong>অন্যান্য প্রধান শহর:</strong> ২–৪ কর্মদিবস</li>
-        <li><strong>দূরবর্তী এলাকা:</strong> ৪–৭ কর্মদিবস</li>
+        <li>🏙️ <strong>রিয়াদ, জেদ্দা, দাম্মাম, মক্কা, মদিনা:</strong> ১–২ কর্মদিবস</li>
+        <li>🌆 <strong>তায়েফ, আভা, খোবর, তাবুক:</strong> ২–৩ কর্মদিবস</li>
+        <li>🌄 <strong>দূরবর্তী এলাকা:</strong> ৩–৫ কর্মদিবস</li>
       </ul>
+      <p style="color:#888;font-size:12px">⚠️ শুক্রবার ও সৌদি সরকারি ছুটির দিন কর্মদিবস নয়।</p>
+
       <h2>💰 শিপিং চার্জ</h2>
       <ul>
-        <li>স্ট্যান্ডার্ড শিপিং: <strong>SAR ১৫</strong></li>
-        <li>SAR ১০০-এর উপরে অর্ডারে ফ্রি শিপিং 🎉</li>
+        <li>🎉 SAR ১০০-এর উপরে অর্ডারে <strong>ফ্রি শিপিং</strong></li>
+        <li>📦 SAR ১০০-এর নিচে: <strong>SAR ১৭</strong></li>
       </ul>
-      <h2>📦 অর্ডার প্রক্রিয়াকরণ</h2>
+
+      <h2>⚡ অর্ডার প্রক্রিয়াকরণ</h2>
       <ul>
-        <li>দুপুর ২টার আগের অর্ডার একই দিনে প্রক্রিয়া করা হয়</li>
-        <li>শিপমেন্টের পর WhatsApp-এ ট্র্যাকিং নম্বর পাঠানো হবে</li>
+        <li>দুপুর <strong>২টার আগে</strong> অর্ডার দিলে <strong>একই দিনে</strong> শিপ হবে</li>
+        <li>শুক্রবারের অর্ডার শনিবার সকালে প্রক্রিয়া করা হয়</li>
       </ul>
-      <h2>❓ দেরি হলে কি করবেন?</h2>
-      <p>নির্ধারিত সময়ের মধ্যে পণ্য না আসলে অর্ডার নম্বর সহ +966 546 224 029-এ WhatsApp করুন।</p>
+
+      <h2>📲 অর্ডার ট্র্যাকিং</h2>
+      <ul>
+        <li>শিপমেন্টের পর <strong>WhatsApp-এ ট্র্যাকিং নম্বর ও লিংক</strong> পাঠানো হবে (Aramex বা SMSA)</li>
+        <li><em>আমার অ্যাকাউন্ট → অর্ডার</em>-এও ট্র্যাক করা যাবে</li>
+      </ul>
+
+      <h2>📮 সঠিক ঠিকানার প্রয়োজনীয়তা</h2>
+      <ul>
+        <li>পূর্ণ সৌদি ঠিকানা (রাস্তা, শহর, পোস্টাল কোড) সঠিক দিন</li>
+        <li><strong>Google Maps লোকেশন বা Wasl ঠিকানা</strong> যোগ করলে ডেলিভারি দ্রুত হয়</li>
+        <li>P.O. Box-এ বর্তমানে ডেলিভারি নেই</li>
+      </ul>
+
+      <h2>❓ ডেলিভারিতে দেরি হলে?</h2>
+      <p>অর্ডার নম্বর সহ <strong>+966 546 224 029</strong>-এ WhatsApp করুন। ৪ ঘণ্টার মধ্যে আপডেট দেওয়া হবে।</p>
     `},
   },
 };
