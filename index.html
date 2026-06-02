@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=326" />
+  <link rel="stylesheet" href="styles.css?v=327" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1584,14 +1584,15 @@
       <div class="st-pay-wrap">
         <div class="st-pay-label"><i class="fas fa-lock"></i> Secure & Accepted Payments</div>
         <div class="st-pay-icons">
-          <span class="fpi fpi-mada">Mada</span>
-          <span class="fpi fpi-stc">STC Pay</span>
-          <span class="fpi fpi-visa">VISA</span>
-          <span class="fpi fpi-mc">MC</span>
-          <span class="fpi fpi-apple"><i class="fab fa-apple"></i> Pay</span>
-          <span class="fpi fpi-tamara">Tamara</span>
-          <span class="fpi fpi-tabby">Tabby</span>
-          <span class="fpi fpi-cod"><i class="fas fa-money-bill-wave"></i> COD</span>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Mada"><rect width="54" height="34" rx="5" fill="#0070CD"/><text x="27" y="23" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="STC Pay"><rect width="54" height="34" rx="5" fill="#6D2C8A"/><text x="27" y="13" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="27" y="27" text-anchor="middle" fill="#DDB8FF" font-size="10" font-family="Arial,sans-serif">Pay</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Visa"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="24" text-anchor="middle" fill="#1A1F71" font-size="20" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Mastercard"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><circle cx="21" cy="17" r="10" fill="#EB001B"/><circle cx="33" cy="17" r="10" fill="#F79E1B"/><path d="M27 9 A10 10 0 0 1 27 25 A10 10 0 0 0 27 9 Z" fill="#FF5F00"/></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Apple Pay"><rect width="54" height="34" rx="5" fill="#1c1c1e"/><text x="27" y="14" text-anchor="middle" fill="#fff" font-size="7.5" letter-spacing="1.5" font-family="Arial,sans-serif" opacity="0.65">APPLE</text><text x="27" y="27" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" letter-spacing="0.5" font-family="Arial,sans-serif">PAY</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Tamara"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="19" text-anchor="middle" fill="#00A84B" font-size="12" font-weight="900" font-family="Arial,sans-serif">tamara</text><text x="27" y="29" text-anchor="middle" fill="#999" font-size="7" font-family="Arial,sans-serif">split in 4</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Tabby"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="22" text-anchor="middle" fill="#3D1A78" font-size="14" font-weight="900" font-family="Arial,sans-serif">tabby</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Binance Pay"><rect width="54" height="34" rx="5" fill="#1a1a1a"/><g transform="translate(27,14)" fill="#F3BA2F"><polygon points="0,-3.2 3.2,0 0,3.2 -3.2,0"/><polygon points="0,-9.6 3.2,-6.4 0,-3.2 -3.2,-6.4"/><polygon points="0,9.6 3.2,6.4 0,3.2 -3.2,6.4"/><polygon points="6.4,-3.2 9.6,0 6.4,3.2 3.2,0"/><polygon points="-6.4,-3.2 -3.2,0 -6.4,3.2 -9.6,0"/></g><text x="27" y="30" text-anchor="middle" fill="#F3BA2F" font-size="6.5" font-weight="700" font-family="Arial,sans-serif">BINANCE</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Cash on Delivery"><rect width="54" height="34" rx="5" fill="#065F46"/><text x="27" y="14" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="7.5" font-family="Arial,sans-serif">Cash on</text><text x="27" y="26" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Arial,sans-serif">Delivery</text></svg>
         </div>
       </div>
 
@@ -2447,14 +2448,15 @@
       <div class="footer-pay-mini">
         <span class="fpm-label"><i class="fas fa-lock"></i> Secure Payments</span>
         <div class="fpm-icons">
-          <span class="fpi fpi-mada">Mada</span>
-          <span class="fpi fpi-stc">STC Pay</span>
-          <span class="fpi fpi-visa">VISA</span>
-          <span class="fpi fpi-mc">MC</span>
-          <span class="fpi fpi-apple"><i class="fab fa-apple"></i> Pay</span>
-          <span class="fpi fpi-tamara">Tamara</span>
-          <span class="fpi fpi-tabby">Tabby</span>
-          <span class="fpi fpi-cod"><i class="fas fa-money-bill-wave"></i> COD</span>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Mada"><rect width="54" height="34" rx="5" fill="#0070CD"/><text x="27" y="23" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="STC Pay"><rect width="54" height="34" rx="5" fill="#6D2C8A"/><text x="27" y="13" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="27" y="27" text-anchor="middle" fill="#DDB8FF" font-size="10" font-family="Arial,sans-serif">Pay</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Visa"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="24" text-anchor="middle" fill="#1A1F71" font-size="20" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Mastercard"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><circle cx="21" cy="17" r="10" fill="#EB001B"/><circle cx="33" cy="17" r="10" fill="#F79E1B"/><path d="M27 9 A10 10 0 0 1 27 25 A10 10 0 0 0 27 9 Z" fill="#FF5F00"/></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Apple Pay"><rect width="54" height="34" rx="5" fill="#1c1c1e"/><text x="27" y="14" text-anchor="middle" fill="#fff" font-size="7.5" letter-spacing="1.5" font-family="Arial,sans-serif" opacity="0.65">APPLE</text><text x="27" y="27" text-anchor="middle" fill="#fff" font-size="12" font-weight="700" letter-spacing="0.5" font-family="Arial,sans-serif">PAY</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Tamara"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="19" text-anchor="middle" fill="#00A84B" font-size="12" font-weight="900" font-family="Arial,sans-serif">tamara</text><text x="27" y="29" text-anchor="middle" fill="#999" font-size="7" font-family="Arial,sans-serif">split in 4</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Tabby"><rect width="54" height="34" rx="5" fill="#fff" stroke="#d0d0d0" stroke-width="1"/><text x="27" y="22" text-anchor="middle" fill="#3D1A78" font-size="14" font-weight="900" font-family="Arial,sans-serif">tabby</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Binance Pay"><rect width="54" height="34" rx="5" fill="#1a1a1a"/><g transform="translate(27,14)" fill="#F3BA2F"><polygon points="0,-3.2 3.2,0 0,3.2 -3.2,0"/><polygon points="0,-9.6 3.2,-6.4 0,-3.2 -3.2,-6.4"/><polygon points="0,9.6 3.2,6.4 0,3.2 -3.2,6.4"/><polygon points="6.4,-3.2 9.6,0 6.4,3.2 3.2,0"/><polygon points="-6.4,-3.2 -3.2,0 -6.4,3.2 -9.6,0"/></g><text x="27" y="30" text-anchor="middle" fill="#F3BA2F" font-size="6.5" font-weight="700" font-family="Arial,sans-serif">BINANCE</text></svg>
+          <svg class="pay-bdg" viewBox="0 0 54 34" xmlns="http://www.w3.org/2000/svg" title="Cash on Delivery"><rect width="54" height="34" rx="5" fill="#065F46"/><text x="27" y="14" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="7.5" font-family="Arial,sans-serif">Cash on</text><text x="27" y="26" text-anchor="middle" fill="#fff" font-size="10" font-weight="700" font-family="Arial,sans-serif">Delivery</text></svg>
         </div>
       </div>
 
@@ -2633,7 +2635,7 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=288"></script>
+  <script src="script.js?v=289"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
