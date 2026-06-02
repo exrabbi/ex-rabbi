@@ -2208,7 +2208,7 @@ function openModal(id) {
     <div class="lux-slides" id="luxSlides">
       ${allImgs.map((u,i)=>`<div class="lux-slide" data-idx="${i}"><img src="${u}" alt="" loading="${i===0?'eager':'lazy'}" onclick="_openImgZoom(this.src)"/></div>`).join('')}
     </div>
-    <div class="lux-dots" id="luxDots">
+    <div class="lux-dots" id="luxDots" ${allImgs.length>1?'style="display:none"':''}>
       ${allImgs.map((_,i)=>`<span class="lux-dot${i===0?' active':''}" onclick="_luxGotoSlide(${i})"></span>`).join('')}
     </div>
     <button class="lux-gal-back" onclick="closeModal()"><i class="fas fa-arrow-left"></i></button>
@@ -2216,6 +2216,10 @@ function openModal(id) {
     <button class="lux-gal-wish ${inWish?'active':''}" id="luxGalWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
     ${allImgs.length>1?`<div class="lux-img-count"><span id="luxImgCurr">1</span>/${allImgs.length}</div>`:''}
   </div>
+  ${allImgs.length>1?`
+  <div class="lux-thumbs" id="luxThumbs">
+    ${allImgs.map((u,i)=>`<div class="lux-thumb-item${i===0?' active':''}" onclick="_luxGotoSlide(${i})"><img src="${u}" loading="lazy"/></div>`).join('')}
+  </div>`:''}
 
   <div class="lux-info-card lux-reveal">
     <div class="lux-brand-row">
@@ -9632,6 +9636,12 @@ function _initLuxGallery(imgs) {
     slides.scrollTo({ left: cur * slides.offsetWidth, behavior: 'smooth' });
     if (dots) dots.querySelectorAll('.lux-dot').forEach((d,j) => d.classList.toggle('active', j===cur));
     if (counter) counter.textContent = cur + 1;
+    const thumbs = document.getElementById('luxThumbs');
+    if (thumbs) {
+      thumbs.querySelectorAll('.lux-thumb-item').forEach((t,j) => t.classList.toggle('active', j===cur));
+      const at = thumbs.querySelectorAll('.lux-thumb-item')[cur];
+      if (at) at.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
   }
 
   let tx = 0;
@@ -9647,7 +9657,17 @@ function _initLuxGallery(imgs) {
     ticking = true;
     requestAnimationFrame(() => {
       const idx = Math.round(slides.scrollLeft / slides.offsetWidth);
-      if (idx !== cur) { cur = idx; if (dots) dots.querySelectorAll('.lux-dot').forEach((d,j)=>d.classList.toggle('active',j===idx)); if (counter) counter.textContent = idx+1; }
+      if (idx !== cur) {
+        cur = idx;
+        if (dots) dots.querySelectorAll('.lux-dot').forEach((d,j)=>d.classList.toggle('active',j===idx));
+        if (counter) counter.textContent = idx+1;
+        const thumbs = document.getElementById('luxThumbs');
+        if (thumbs) {
+          thumbs.querySelectorAll('.lux-thumb-item').forEach((t,j)=>t.classList.toggle('active',j===idx));
+          const at = thumbs.querySelectorAll('.lux-thumb-item')[idx];
+          if (at) at.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      }
       ticking = false;
     });
   }, { passive: true });
