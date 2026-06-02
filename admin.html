@@ -4183,8 +4183,8 @@ async function publishToWebsite() {
     btnText.textContent = 'Uploading images...';
     const cleanData = await upgradeBase64(storeData);
     const jsonStr = JSON.stringify(cleanData, null, 2);
-    if (jsonStr.length > 5000000) {
-      toast('⚠️ ডেটা ৫MB-এর বেশি! Settings → "Slim Data" চাপুন তারপর আবার Publish করুন'); return;
+    if (jsonStr.length > 9000000) {
+      toast('⚠️ ডেটা ৯MB-এর বেশি! Settings → "Slim Data" চাপুন তারপর আবার Publish করুন'); return;
     }
     btnText.textContent = 'Publishing...';
     const content = toBase64UTF8(jsonStr);
