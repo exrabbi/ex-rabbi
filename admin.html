@@ -4099,12 +4099,16 @@ function toast(msg) {
 
 /* ===== PUBLISH TO WEBSITE ===== */
 function collectStoreData() {
+  const rawSettings = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+  // Strip sensitive API keys — these stay on device only, never published to GitHub
+  const { geminiKey, aiWorkerUrl, agentWorkerUrl, vapidKey, ...publicSettings } = rawSettings;
+
   return {
     products_custom:  JSON.parse(localStorage.getItem('exg_products_custom')  || '{}'),
     products_added:   JSON.parse(localStorage.getItem('exg_products_added')   || '[]'),
     products_deleted: JSON.parse(localStorage.getItem('exg_products_deleted') || '[]'),
     hero_slides:      JSON.parse(localStorage.getItem('exg_hero_slides')      || '[]'),
-    settings:         JSON.parse(localStorage.getItem('exg_settings')         || '{}'),
+    settings:         publicSettings,
     social_links:     JSON.parse(localStorage.getItem('exg_social_links')     || '{}'),
     flash_pins:       JSON.parse(localStorage.getItem('exg_flash_pins')       || 'null'),
     super_pins:       JSON.parse(localStorage.getItem('exg_super_pins')       || 'null'),
