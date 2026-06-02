@@ -11475,53 +11475,83 @@ body:has(#authModal.open) .hc-fab {
 /* ════════════════════════════════════════════════════════════════
    Abandoned Cart Popup — Premium redesign (v194)
    ════════════════════════════════════════════════════════════════ */
+/* ── Cart Abandonment Popup — Premium Dark Redesign ── */
 .aband-popup {
   position: fixed;
   bottom: 0; left: 0; right: 0;
   z-index: 9998;
-  background: #fff;
+  background: linear-gradient(180deg, #0e0b26 0%, #130d2e 100%);
   border-radius: 28px 28px 0 0;
-  box-shadow: 0 -12px 60px rgba(0,0,0,.18);
+  border: 1px solid rgba(233,30,140,.28);
+  box-shadow: 0 -8px 60px rgba(233,30,140,.14), 0 -30px 90px rgba(0,0,0,.55);
   transform: translateY(110%);
   transition: transform .4s cubic-bezier(.32,0,.24,1);
   max-width: 480px;
   margin: 0 auto;
   overflow: hidden;
 }
-[data-theme="dark"] .aband-popup { background: #13112a; }
 .aband-popup.show { transform: translateY(0); }
 
-/* Header gradient */
+/* Header */
 .aband-hdr {
-  background: linear-gradient(135deg, #e91e8c 0%, #8b2be2 100%);
-  padding: 22px 20px 28px;
+  background: linear-gradient(160deg, #1a0a3a 0%, #25083d 50%, #1a0a3a 100%);
+  border-bottom: 1px solid rgba(233,30,140,.18);
+  padding: 18px 20px 26px;
   text-align: center;
   position: relative;
+  overflow: hidden;
+}
+.aband-hdr::before {
+  content: '';
+  position: absolute; top: -50px; left: 50%;
+  transform: translateX(-50%);
+  width: 280px; height: 180px;
+  background: radial-gradient(ellipse, rgba(233,30,140,.22) 0%, transparent 70%);
+  pointer-events: none;
 }
 .aband-close {
   position: absolute; top: 14px; right: 16px;
   width: 30px; height: 30px; border-radius: 50%;
-  background: rgba(255,255,255,.2); border: none;
-  color: #fff; font-size: 14px;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.7); font-size: 13px;
   display: flex; align-items: center; justify-content: center;
   cursor: pointer;
 }
+.aband-close:hover { background: rgba(255,255,255,.2); color: #fff; }
+.aband-lto-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: linear-gradient(135deg, rgba(255,215,0,.12), rgba(255,160,0,.1));
+  border: 1px solid rgba(255,215,0,.38);
+  color: #FFD700; font-size: 11px; font-weight: 800;
+  padding: 4px 11px; border-radius: 20px;
+  margin-bottom: 12px; letter-spacing: .6px;
+  text-transform: uppercase; position: relative; z-index: 1;
+}
 .aband-hdr-icon {
   width: 56px; height: 56px; border-radius: 18px;
-  background: rgba(255,255,255,.2);
+  background: linear-gradient(135deg, rgba(233,30,140,.22), rgba(139,43,226,.22));
+  border: 1px solid rgba(233,30,140,.38);
+  box-shadow: 0 0 22px rgba(233,30,140,.28);
   display: flex; align-items: center; justify-content: center;
   font-size: 26px; color: #fff;
   margin: 0 auto 12px;
-  backdrop-filter: blur(10px);
+  position: relative; z-index: 1;
 }
 .aband-hdr-title {
-  font-size: 20px; font-weight: 900; color: #fff;
-  margin-bottom: 4px; letter-spacing: -.3px;
+  font-size: 21px; font-weight: 900;
+  margin-bottom: 5px; letter-spacing: -.3px;
+  background: linear-gradient(135deg, #FFD700 0%, #e91e8c 55%, #a78bfa 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  position: relative; z-index: 1;
 }
-.aband-hdr-sub { font-size: 13px; color: rgba(255,255,255,.85); font-weight: 500; }
+.aband-hdr-sub {
+  font-size: 13px; color: rgba(255,255,255,.55);
+  font-weight: 500; position: relative; z-index: 1;
+}
 
 /* Body */
-.aband-body { padding: 20px 18px 24px; }
+.aband-body { padding: 20px 18px 26px; }
 
 /* Product thumbnails */
 .aband-items {
@@ -11531,10 +11561,10 @@ body:has(#authModal.open) .hc-fab {
 .aband-thumb {
   position: relative; width: 72px; height: 72px;
   border-radius: 14px; overflow: hidden;
-  border: 2px solid #f0f0f0;
-  background: #f8f8f8; flex-shrink: 0;
+  border: 2px solid rgba(233,30,140,.3);
+  background: #1a1035; flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0,0,0,.5);
 }
-[data-theme="dark"] .aband-thumb { border-color: rgba(255,255,255,.1); background: #1e1c38; }
 .aband-thumb img { width: 100%; height: 100%; object-fit: cover; }
 .aband-qty-badge {
   position: absolute; bottom: 4px; right: 4px;
@@ -11544,57 +11574,69 @@ body:has(#authModal.open) .hc-fab {
 }
 .aband-more-thumb {
   width: 72px; height: 72px; border-radius: 14px;
-  background: linear-gradient(135deg, rgba(233,30,140,.08), rgba(139,43,226,.1));
-  border: 2px dashed rgba(233,30,140,.3);
+  background: linear-gradient(135deg, rgba(233,30,140,.1), rgba(139,43,226,.12));
+  border: 2px dashed rgba(233,30,140,.35);
   display: flex; align-items: center; justify-content: center;
   font-size: 15px; font-weight: 800; color: #e91e8c;
 }
 
-/* Total row */
+/* Total row — glassmorphism */
 .aband-total-row {
   display: flex; align-items: center; justify-content: space-between;
-  background: rgba(0,0,0,.03); border-radius: 14px;
-  padding: 12px 14px; margin-bottom: 12px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  backdrop-filter: blur(16px);
+  border-radius: 16px; padding: 13px 15px; margin-bottom: 12px;
 }
-[data-theme="dark"] .aband-total-row { background: rgba(255,255,255,.05); }
 .aband-total-info { display: flex; flex-direction: column; gap: 2px; }
-.aband-items-lbl { font-size: 12px; color: #888; font-weight: 600; }
-.aband-total-price { font-size: 22px; font-weight: 900; color: #111; }
-[data-theme="dark"] .aband-total-price { color: #eee; }
+.aband-items-lbl { font-size: 12px; color: rgba(255,255,255,.45); font-weight: 600; }
+.aband-total-price {
+  font-size: 22px; font-weight: 900;
+  background: linear-gradient(135deg, #FFD700, #fff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
 .aband-urgency {
-  font-size: 12px; font-weight: 700;
-  color: #e91e8c; display: flex; align-items: center; gap: 5px;
-  background: rgba(233,30,140,.08);
-  padding: 6px 12px; border-radius: 10px;
+  font-size: 12px; font-weight: 700; color: #ff6eb4;
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(233,30,140,.12);
+  border: 1px solid rgba(233,30,140,.25);
+  padding: 7px 12px; border-radius: 10px;
 }
 .aband-urgency i { font-size: 13px; }
 
 /* Delivery row */
 .aband-del-row {
-  font-size: 12.5px; color: #555; font-weight: 600;
+  font-size: 12.5px; color: rgba(255,255,255,.45); font-weight: 600;
   display: flex; align-items: center; gap: 7px;
   margin-bottom: 16px; padding: 0 2px;
 }
-[data-theme="dark"] .aband-del-row { color: #aaa; }
-.aband-del-row i { color: #16a34a; font-size: 14px; }
+.aband-del-row i { color: #34d399; font-size: 14px; }
 
-/* CTA button */
+/* CTA — shimmer animated */
 .aband-cta {
-  width: 100%; height: 54px; border: none; border-radius: 18px;
-  background: linear-gradient(135deg, #e91e8c 0%, #8b2be2 100%);
+  width: 100%; height: 56px; border: none; border-radius: 18px;
+  background: linear-gradient(90deg, #e91e8c 0%, #8b2be2 40%, #e91e8c 80%, #8b2be2 100%);
+  background-size: 250% 100%;
+  animation: abCtaShimmer 3s ease-in-out infinite;
   color: #fff; font-size: 16px; font-weight: 900;
   display: flex; align-items: center; justify-content: center; gap: 8px;
   cursor: pointer; margin-bottom: 10px;
-  box-shadow: 0 6px 24px rgba(233,30,140,.35);
+  box-shadow: 0 8px 32px rgba(233,30,140,.45), 0 2px 8px rgba(0,0,0,.3);
   transition: transform .15s, box-shadow .15s;
   letter-spacing: .2px;
 }
-.aband-cta:active { transform: scale(.97); box-shadow: 0 3px 12px rgba(233,30,140,.2); }
+.aband-cta:active { transform: scale(.97); box-shadow: 0 4px 16px rgba(233,30,140,.3); }
+@keyframes abCtaShimmer {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
 .aband-skip {
   width: 100%; border: none; background: none;
-  color: #aaa; font-size: 13.5px; font-weight: 600;
+  color: rgba(255,255,255,.3); font-size: 13.5px; font-weight: 600;
   cursor: pointer; padding: 6px;
 }
+.aband-skip:hover { color: rgba(255,255,255,.5); }
 
 /* ════════════════════════════════════════════════════════════════
    Google Pay pill icon + Binance 5-diamond fix (v195)
@@ -20157,10 +20199,10 @@ html {
 .auth-email-btn {
   background: rgba(233,30,140,.1) !important;
   border: 1.5px solid rgba(233,30,140,.35) !important;
-  color: #fff !important;
+  color: #e91e8c !important;
 }
 .auth-email-btn:hover { background: rgba(233,30,140,.18) !important; box-shadow: 0 4px 16px rgba(233,30,140,.2) !important; }
-.auth-email-btn span { color: #fff !important; }
+.auth-email-btn span { color: #e91e8c !important; }
 /* ── fc2-card unified detail rows ── */
 .fc2-disc-pill {
   position: absolute; bottom: 8px; left: 8px; z-index: 3;
