@@ -8640,13 +8640,15 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
 .lux-slide {
   scroll-snap-align: start;
   min-width: 100%;
-  aspect-ratio: 4/5;
+  aspect-ratio: 1/1;
   flex-shrink: 0;
   overflow: hidden;
+  background: #f8f8f8;
 }
+[data-theme="dark"] .lux-slide { background: #1a1a2e; }
 .lux-slide img {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   cursor: zoom-in;
   transition: transform .4s ease;
 }
@@ -20731,21 +20733,22 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   border-radius: 12px !important;
 }
 
-/* Image: aspect-ratio box (portrait) */
+/* Image: aspect-ratio box (square) */
 .products-grid .fc2-img {
   flex: none !important;
   width: 100% !important;
-  padding-top: 128% !important;
+  padding-top: 100% !important;
   height: 0 !important;
   position: relative !important;
   overflow: hidden !important;
+  background: #f5f5f5 !important;
 }
 .products-grid .fc2-img img {
   position: absolute !important;
   inset: 0 !important;
   width: 100% !important;
   height: 100% !important;
-  object-fit: cover !important;
+  object-fit: contain !important;
 }
 
 /* Panel: slim info strip */
