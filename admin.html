@@ -977,13 +977,20 @@ service cloud.firestore {
 
         <!-- AI CHATBOT SETTINGS -->
         <div class="setting-row" style="border:1px solid #1e3a5f;border-radius:10px;padding:14px;background:#071428;margin-top:6px">
-          <div class="setting-label" style="color:#60a5fa;font-size:14px"><i class="fas fa-robot"></i> 🤖 AI Chatbot (Claude)</div>
-          <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
-            <div style="color:#60a5fa;font-weight:600;margin-bottom:5px">Cloudflare Worker URL নিচে দিন:</div>
-            Worker deploy করার পর যে URL পাবেন (যেমন: https://xxx.workers.dev) সেটা এখানে দিন।
+          <div class="setting-label" style="color:#60a5fa;font-size:14px"><i class="fas fa-robot"></i> 🤖 AI Chatbot</div>
+          <div style="background:#0a1f3a;border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12px;line-height:1.8;color:#93c5fd">
+            <b style="color:#fbbf24">✨ Gemini API (সহজ — সরাসরি Google Cloud থেকে)</b><br>
+            1. <a href="https://aistudio.google.com/apikey" target="_blank" style="color:#60a5fa">aistudio.google.com/apikey</a> তে যান<br>
+            2. <b>"Create API key"</b> → <b>exglobal21</b> project বেছে নিন<br>
+            3. Key copy করে নিচে paste করুন ✅
           </div>
-          <input type="url" id="setAiWorkerUrl" class="adm-input" placeholder="https://ex-rabbi-chat.your-name.workers.dev" style="font-size:12px"/>
-          <div style="margin-top:8px;font-size:11px;color:#666">⚠️ Worker URL ছাড়া chatbot কাজ করবে না</div>
+          <input type="password" id="setGeminiKey" class="adm-input" placeholder="Gemini API Key (AIza...)" style="font-size:12px;margin-bottom:8px"/>
+          <div style="font-size:11px;color:#4ade80;margin-bottom:12px">✅ Gemini Key দিলেই Chatbot সব প্রশ্নের উত্তর দেবে — কোনো Worker লাগবে না!</div>
+          <div class="setting-desc" style="line-height:1.8;margin-bottom:6px;font-size:11px;color:#555">
+            অথবা Cloudflare Worker URL (পুরনো পদ্ধতি):
+          </div>
+          <input type="url" id="setAiWorkerUrl" class="adm-input" placeholder="https://ex-rabbi-chat.your-name.workers.dev (optional)" style="font-size:12px"/>
+          <div style="margin-top:6px;font-size:11px;color:#555">💡 Gemini Key থাকলে Worker URL দরকার নেই</div>
         </div>
 
         <!-- AI AGENT WORKER SETTINGS -->
@@ -3296,6 +3303,7 @@ function loadSettings() {
     if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
     if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
     if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
+    if (el('setGeminiKey'))      el('setGeminiKey').value      = localStorage.getItem('exg_gemini_key') || '';
     if (el('setAiWorkerUrl'))    el('setAiWorkerUrl').value    = s.aiWorkerUrl    || '';
     if (el('setAgentWorkerUrl')) el('setAgentWorkerUrl').value = s.agentWorkerUrl || '';
     if (el('setAgentSecret'))    el('setAgentSecret').value    = localStorage.getItem('exg_agent_secret') || '';
@@ -3339,6 +3347,8 @@ function saveSettings() {
     agentWorkerUrl: (document.getElementById('setAgentWorkerUrl')?.value || '').trim(),
     vapidKey:       (document.getElementById('setVapidKey')?.value       || '').trim(),
   };
+  const geminiKey = (document.getElementById('setGeminiKey')?.value || '').trim();
+  if (geminiKey) localStorage.setItem('exg_gemini_key', geminiKey); else localStorage.removeItem('exg_gemini_key');
   const agentSecret = (document.getElementById('setAgentSecret')?.value || '').trim();
   if (agentSecret) localStorage.setItem('exg_agent_secret', agentSecret); else localStorage.removeItem('exg_agent_secret');
   localStorage.setItem('exg_settings', JSON.stringify(s));
