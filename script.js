@@ -6193,7 +6193,7 @@ function getAiWorkerUrl() {
   try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiWorkerUrl || ''; } catch(e) { return ''; }
 }
 function getGeminiKey() {
-  return (localStorage.getItem('exg_gemini_key') || '').trim();
+  try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).geminiKey || ''; } catch(e) { return ''; }
 }
 
 const _GEMINI_SYSTEM = `You are EX GLOBAL Assistant — a friendly, knowledgeable AI that can talk about anything.
