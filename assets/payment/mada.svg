@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#0070CD"/>
+  <rect x="0" y="38" width="80" height="5" rx="0" fill="#00A651" opacity="0.9"/>
+  <rect x="0" y="43" width="80" height="4" rx="0" fill="#E31837" opacity="0.9"/>
+  <text x="40" y="28" text-anchor="middle" fill="#fff" font-size="18" font-weight="900" font-style="italic" font-family="Arial,Helvetica,sans-serif" letter-spacing="1">mada</text>
+</svg>
