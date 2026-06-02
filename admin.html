@@ -3386,7 +3386,9 @@ function saveSettings() {
   const ghToken = document.getElementById('setGithubToken').value.trim();
   if (ghToken) localStorage.setItem('exg_github_token', ghToken); else localStorage.removeItem('exg_github_token');
   const cityVideo = document.getElementById('setCityVideo') ? document.getElementById('setCityVideo').value.trim() : '';
-  if (cityVideo) localStorage.setItem('exg_city_video', cityVideo); else localStorage.removeItem('exg_city_video');
+  // Never save base64 video to localStorage — only URLs allowed
+  if (cityVideo && !cityVideo.startsWith('data:')) localStorage.setItem('exg_city_video', cityVideo);
+  else localStorage.removeItem('exg_city_video');
   // ── Automation settings ──
   const workerUrl2     = (document.getElementById('setWorkerUrl2')?.value     || '').trim();
   const paymentGateway = (document.getElementById('setPaymentGateway')?.value || 'whatsapp');
@@ -3578,11 +3580,32 @@ function slimData() {
     }
   } catch(e) {}
 
-  // 5. Clear AI chat history
+  // 5. Clear base64 city_video (biggest offender — 4MB+)
+  try {
+    const cv = localStorage.getItem('exg_city_video') || '';
+    if (cv.startsWith('data:') || cv.length > 50000) {
+      freed += cv.length;
+      localStorage.removeItem('exg_city_video');
+    }
+  } catch(e) {}
+
+  // 6. Clear ALL other large base64 blobs in localStorage
+  try {
+    for (const k of Object.keys(localStorage)) {
+      const v = localStorage.getItem(k) || '';
+      if (v.startsWith('data:') && v.length > 5000) {
+        freed += v.length;
+        localStorage.removeItem(k);
+      }
+    }
+  } catch(e) {}
+
+  // 7. Clear AI usage / temp caches
   localStorage.removeItem('exg_ai_usage');
+  localStorage.removeItem('exg_play_fb_cache');
 
   const freedKB = Math.round(freed / 1024);
-  toast(`✅ ${freedKB > 0 ? freedKB + ' KB ফ্রি হয়েছে!' : 'ডেটা ক্লিন হয়েছে!'} এখন Publish করুন।`);
+  toast(`✅ ${freedKB > 0 ? freedKB + ' KB ফ্রি হয়েছে!' : 'ডেটা ক্লিন হয়েছে!'} এখন Save করুন।`);
   setTimeout(_renderDataSizeBar, 300);
 }
 
