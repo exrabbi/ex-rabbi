@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=336" />
+  <link rel="stylesheet" href="styles.css?v=338" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1702,11 +1702,16 @@
             <div>
               <div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div>
               <div class="ck-card-logos-row">
-                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#0070CD"/><text x="22" y="18" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg>
-                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><text x="22" y="19" text-anchor="middle" fill="#1A1F71" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text></svg>
-                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><circle cx="16" cy="13" r="8" fill="#EB001B"/><circle cx="28" cy="13" r="8" fill="#F79E1B"/><path d="M22 7.71 A8 8 0 0 1 22 18.29 A8 8 0 0 0 22 7.71 Z" fill="#FF5F00"/></svg>
-                <svg class="ck-cl-svg" viewBox="0 0 44 26" xmlns="http://www.w3.org/2000/svg"><rect width="44" height="26" rx="3" fill="#016FD0"/><text x="22" y="18" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="900" font-family="Arial,sans-serif">AMEX</text></svg>
-                <svg class="ck-cl-svg" viewBox="0 0 60 26" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="26" rx="3" fill="#fff" stroke="#ccc" stroke-width="1"/><text x="25" y="18" text-anchor="middle" fill="#231F20" font-size="8.5" font-weight="700" font-family="Arial,sans-serif">discover</text><circle cx="51" cy="13" r="10" fill="#E65C00"/></svg>
+                <!-- mada: official blue #005A9C + green bottom stripe #00A14B -->
+                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#005A9C"/><path d="M0 22 H50 V26 Q50 30 46 30 H4 Q0 30 0 26 Z" fill="#00A14B"/><text x="25" y="17" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".3">mada</text></svg>
+                <!-- VISA: official #1A1F71 bold italic on white -->
+                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="25" y="22" text-anchor="middle" fill="#1A1F71" font-size="19" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.5">VISA</text></svg>
+                <!-- Mastercard: official EB001B + F79E1B circles, FF5F00 overlap -->
+                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><circle cx="18" cy="15" r="9.5" fill="#EB001B"/><circle cx="32" cy="15" r="9.5" fill="#F79E1B"/><path d="M25 7.72A9.5 9.5 0 0 1 25 22.28A9.5 9.5 0 0 1 25 7.72Z" fill="#FF5F00"/></svg>
+                <!-- American Express: official #016FD0 blue with AMERICAN / EXPRESS -->
+                <svg class="ck-cl-svg" viewBox="0 0 50 30" xmlns="http://www.w3.org/2000/svg"><rect width="50" height="30" rx="4" fill="#016FD0"/><text x="25" y="13" text-anchor="middle" fill="#fff" font-size="5.8" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">AMERICAN</text><text x="25" y="22" text-anchor="middle" fill="#fff" font-size="5.8" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">EXPRESS</text></svg>
+                <!-- Discover: official white + F76F20 orange disc -->
+                <svg class="ck-cl-svg" viewBox="0 0 62 30" xmlns="http://www.w3.org/2000/svg"><rect width="62" height="30" rx="4" fill="#fff" stroke="#E0E0E0" stroke-width="1"/><text x="21" y="19" text-anchor="middle" fill="#231F20" font-size="8.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text><circle cx="51" cy="15" r="11" fill="#F76F20"/></svg>
               </div>
             </div>
           </div>
@@ -1780,40 +1785,40 @@
           <input type="hidden" id="cardName" />
         </div>
 
-        <!-- Tamara -->
+        <!-- Tamara: official orange→pink gradient, white italic "tamara" -->
         <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
           <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><defs><linearGradient id="tamGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f97316"/><stop offset="100%" stop-color="#ec4899"/></linearGradient></defs><rect width="64" height="40" rx="7" fill="url(#tamGrad)"/><text x="32" y="23" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-style="italic" font-family="Arial,sans-serif">tamara</text></svg></div><div><div class="ck-pm-name">Tamara: split in 4 <i class="fas fa-circle-question" style="font-size:13px;color:#bbb;margin-left:3px"></i></div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><defs><linearGradient id="tamG3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#F97316"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><rect width="64" height="40" rx="7" fill="url(#tamG3)"/><text x="32" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.3">tamara</text></svg></div><div><div class="ck-pm-name">Tamara: split in 4 <i class="fas fa-circle-question" style="font-size:13px;color:#bbb;margin-left:3px"></i></div></div></div>
         </div>
 
-        <!-- Cash on Delivery -->
+        <!-- Cash on Delivery: green bill icon -->
         <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
           <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><rect x="8" y="7" width="48" height="30" rx="4" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/><circle cx="32" cy="22" r="7" fill="none" stroke="#16a34a" stroke-width="1.8"/><text x="32" y="26" text-anchor="middle" fill="#16a34a" font-size="11" font-weight="900" font-family="Arial,sans-serif">$</text><line x1="13" y1="13" x2="21" y2="13" stroke="#16a34a" stroke-width="1.2" opacity="0.5"/><line x1="43" y1="13" x2="51" y2="13" stroke="#16a34a" stroke-width="1.2" opacity="0.5"/></svg></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#F0FDF4"/><rect x="7" y="8" width="50" height="26" rx="5" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/><circle cx="32" cy="21" r="8" fill="#16A34A"/><text x="32" y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">$</text><rect x="10" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="10" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/></svg></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
         </div>
 
-        <!-- STC Pay -->
+        <!-- STC Pay: official purple #6D2C8A, white stc + pay -->
         <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
           <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#6D2C8A"/><text x="32" y="16" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="32" y="30" text-anchor="middle" fill="#DDB8FF" font-size="11" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#6D2C8A"/><text x="32" y="17" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1.5">stc</text><text x="32" y="31" text-anchor="middle" fill="#E0B8F5" font-size="11" font-weight="600" font-family="Arial,sans-serif" letter-spacing="2">pay</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
         </div>
 
-        <!-- Binance Pay -->
+        <!-- Binance Pay: official #0B0E11 bg + #F3BA2F BNB diamond -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><polygon fill="#F3BA2F" points="50,4 62,16 72,50 50,30 28,50 38,16"/><polygon fill="#F3BA2F" points="4,50 16,38 28,50 16,62"/><polygon fill="#F3BA2F" points="50,30 72,50 50,70 28,50"/><polygon fill="#F3BA2F" points="96,50 84,38 72,50 84,62"/><polygon fill="#F3BA2F" points="50,96 62,84 72,50 50,70 28,50 38,84"/><polygon fill="#0B0E11" points="50,42 58,50 50,58 42,50"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
         </div>
 
-        <!-- Google Pay -->
+        <!-- Google Pay: official G (#4285F4) + Pay (#5F6368) on white -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay"><span class="gpay-g">G</span><span class="gpay-pay">Pay</span></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><text x="18" y="28" text-anchor="middle" fill="#4285F4" font-size="22" font-weight="700" font-family="Arial,sans-serif">G</text><text x="44" y="27" text-anchor="middle" fill="#5F6368" font-size="16" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
         </div>
 
-        <!-- PayPal -->
+        <!-- PayPal: official #003087 "Pay" + #009CDE "Pal" italic on white -->
         <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
           <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-paypal"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg"><rect width="64" height="40" fill="#fff"/><text x="10" y="26" font-family="Arial,sans-serif" font-size="16" font-weight="900" font-style="italic" fill="#003087">Pay</text><text x="36" y="26" font-family="Arial,sans-serif" font-size="16" font-weight="900" font-style="italic" fill="#009cde">Pal</text></svg></div><div><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-paypal" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><text x="9" y="27" font-family="Arial,sans-serif" font-size="18" font-weight="900" font-style="italic" fill="#003087">Pay</text><text x="37" y="27" font-family="Arial,sans-serif" font-size="18" font-weight="900" font-style="italic" fill="#009CDE">Pal</text></svg></div><div><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div></div>
         </div>
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
