@@ -960,13 +960,14 @@ service cloud.firestore {
         <div class="setting-row" style="border:1px solid #0a3a1a;border-radius:10px;padding:14px;background:#071a0d;margin-top:6px">
           <div class="setting-label" style="color:#4ade80;font-size:14px"><i class="fab fa-github"></i> 🚀 ওয়েবসাইটে Publish করুন</div>
           <div class="setting-desc" style="line-height:1.8;margin-bottom:10px;font-size:12px;color:#aaa">
-            <div style="color:#4ade80;font-weight:600;margin-bottom:5px">আপনার চেঞ্জ সবার কাছে দেখাতে GitHub Token লাগবে (একবারই সেটাপ):</div>
-            1️⃣ <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:#60a5fa">github.com/settings/tokens</a> → "Generate new token"<br/>
-            2️⃣ Token name: <strong>ex-rabbi-publish</strong><br/>
-            3️⃣ Repository access → Only select: <strong>exrabbi/ex-rabbi</strong><br/>
-            4️⃣ Permissions → Contents: <strong>Read and write</strong> → Generate token<br/>
-            5️⃣ Token কপি করে নিচে পেস্ট করুন → Save করুন ✅<br/>
-            <div style="color:#555;margin-top:5px">💡 Token সেভ হলে উপরের সবুজ <strong>Publish</strong> বাটন দিয়ে যেকোনো সময় পাবলিশ করুন</div>
+            <div style="color:#4ade80;font-weight:600;margin-bottom:5px">✅ Classic Token (সবচেয়ে সহজ ও নির্ভরযোগ্য):</div>
+            1️⃣ <a href="https://github.com/settings/tokens" target="_blank" style="color:#60a5fa;font-weight:700">github.com/settings/tokens</a> এ যান<br/>
+            2️⃣ <strong>"Generate new token (classic)"</strong> → ক্লিক করুন<br/>
+            3️⃣ Note: <strong>ex-rabbi-publish</strong> | Expiration: <strong>No expiration</strong><br/>
+            4️⃣ Scopes: ✅ <strong>public_repo</strong> এ টিক দিন (শুধু এটাই দরকার)<br/>
+            5️⃣ নিচে <strong>"Generate token"</strong> → <code>ghp_XXXX...</code> কপি করুন<br/>
+            6️⃣ নিচে পেস্ট করুন → Save Settings → Publish ✅<br/>
+            <div style="color:#f59e0b;margin-top:6px;font-size:11px">⚠️ Fine-grained token কাজ না করলে classic token ব্যবহার করুন</div>
           </div>
           <input type="password" id="setGithubToken" class="adm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" style="font-family:monospace;font-size:12px"/>
           <button class="adm-btn" id="testTokenBtn" onclick="testGithubToken()" style="margin-top:7px;background:#1d4ed8;width:100%;justify-content:center">
@@ -4219,7 +4220,14 @@ async function publishToWebsite() {
 
     // Step 3: create blob with new content
     const blobRes = await ghPost(`${repoApi}/git/blobs`, { content, encoding: 'base64' });
-    if (!blobRes.ok) { toast('❌ Blob তৈরি ব্যর্থ'); return; }
+    if (!blobRes.ok) {
+      const be = await blobRes.json().catch(()=>({}));
+      if (blobRes.status === 403) toast('❌ Token-এ write permission নেই। GitHub → Token → Contents: Read and write দিন');
+      else if (blobRes.status === 401) toast('❌ Token ভুল বা expired। নতুন token দিন।');
+      else if (blobRes.status === 404) toast('❌ Repository খুঁজে পাচ্ছে না। Token-এ exrabbi/ex-rabbi সিলেক্ট আছে?');
+      else toast('❌ Blob ব্যর্থ (' + blobRes.status + '): ' + (be.message || JSON.stringify(be).slice(0,80)));
+      return;
+    }
     const blobSha = (await blobRes.json()).sha;
 
     // Step 4: create new tree
