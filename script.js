@@ -283,6 +283,7 @@ function _applyConfigMap(d) {
     'exg_trend_content':   d.trend_content,
     'exg_cat_images':      d.cat_images,
     'exg_custom_cats':     d.custom_cats,
+    'exg_promo_banners':   d.promo_banners,
   };
   Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
   // Refresh trend circle if content changed
