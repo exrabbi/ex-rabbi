@@ -20611,3 +20611,18 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   box-shadow: 0 0 12px rgba(233,30,140,.45);
 }
 .lux-thumb-item:active { transform: scale(.93); }
+
+/* ── Real Brand Payment Badges ─────────────────────────────── */
+.pay-bdg {
+  height: 28px;
+  width: auto;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px rgba(0,0,0,.22);
+  flex-shrink: 0;
+  display: block;
+  cursor: default;
+}
+.st-pay-icons .pay-bdg,
+.fpm-icons .pay-bdg {
+  height: 28px;
+}
