@@ -6329,24 +6329,7 @@ function _localAiReply(text) {
   const rate = T.rate || 1;
   const WA = 'https://wa.me/966546224029';
 
-  // ══════════════════════════════════════════════════════
-  //  SAFETY & SECURITY — MUST BE FIRST — NO EXCEPTIONS
-  // ══════════════════════════════════════════════════════
-
-  // ── THREAT / VIOLENCE DETECTION ──
-  const _isThreat = (
-    /\b(kill|murder|shoot|stab|bomb|attack|threat|hurt|harm|rape|terror|weapon|gun|knife|drug|illegal|hack|scam|fraud|death|die|dead)\b/i.test(q) ||
-    /খুন|হত্যা|মেরে|মার(?:ব|বো|বে|মু|মুক|ব্যাটা)|ধ্বংস|আঘাত|ক্ষতি|সন্ত্রাস|বোমা|ছুরি|মদ|জুয়া|চুরি|ধর্ষণ|ধ*র্ষ|অপহরণ|ভয়|হুমকি/.test(text) ||
-    /قتل|تهديد|أذى|ضرب|إرهاب|قنبلة|سلاح|مخدر|احتيال|خداع|إيذاء/.test(text)
-  );
-  if (_isThreat) {
-    const safeMsg = {
-      bn: '🚫 এই ধরনের বার্তায় আমি সাড়া দিতে পারি না।\n\nআমি শুধুমাত্র শপিং বিষয়ে সাহায্য করি:\n\n🛍️ পণ্য খুঁজুন\n📦 অর্ডার ট্র্যাক করুন\n💳 পেমেন্ট সম্পর্কে জানুন\n🚚 ডেলিভারি তথ্য\n\nকীভাবে সাহায্য করতে পারি? 😊',
-      en: '🚫 I can\'t assist with that type of request.\n\nI\'m here to help with shopping only:\n\n🛍️ Find products · 📦 Track orders\n💳 Payment help · 🚚 Delivery info\n\nHow can I help you shop today? 😊',
-      ar: '🚫 لا أستطيع المساعدة في هذا الطلب.\n\nأنا هنا للمساعدة في التسوق فقط:\n\n🛍️ البحث عن منتجات · 📦 تتبع الطلبات\n💳 طرق الدفع · 🚚 معلومات التوصيل',
-    };
-    return safeMsg[currentLang] || safeMsg.en;
-  }
+  // ── OWNER PERSONAL NUMBER BLOCK (only very direct requests) ──
 
   // ── PERSONAL / OWNER INFO REQUEST ──
   const _isPersonalReq = (
@@ -7192,49 +7175,8 @@ function _localAiReply(text) {
     return `বিদায়${greetSuffix}! 👋 ভালো থাকুন! আবার আসবেন — নতুন ডিল নিয়ে সবসময় অপেক্ষায় আছি! 😊\n\n🛍️ exglobal.online`;
   }
 
-  // ── GENERAL CATCH-ALL — smart & conversational ──
-  const isBn = /[ঀ-৿]/.test(text);
-  const isAr = /[؀-ۿ]/.test(text);
-
-  // Try to give a relevant answer based on key words before giving up
-  // General knowledge / casual questions in Bengali
-  if (isBn) {
-    if (/কেমন আছ|কেমন আছেন|কি খবর|কি হাল|ভালো আছ/.test(q))
-      return `আলহামদুলিল্লাহ${greetSuffix}, ভালো আছি! 😊 আপনি কেমন আছেন? কোনো বিষয়ে সাহায্য করতে পারি?`;
-    if (/তোমার নাম|আপনার নাম|তুমি কি|what.*your name|তোমার নাম কি/.test(q))
-      return `আমার নাম **EX GLOBAL Assistant**! 🤖 আমি একটি AI — সাহায্য করার জন্য সবসময় এখানে। যা মনে চায় জিজ্ঞেস করুন!`;
-    if (/ধন্যবাদ|শুকরিয়া|thanks|thank you/.test(q))
-      return `আপনাকে স্বাগতম${greetSuffix}! 😊 আর কিছু জানার থাকলে বলুন!`;
-    if (/সময়|ঘড়ি|কয়টা|বাজে/.test(q)) {
-      const now = new Date();
-      return `এখন ${now.toLocaleTimeString('bn-BD', {hour:'2-digit',minute:'2-digit'})} 🕐`;
-    }
-    if (/রাজধানী|capital|দেশ|country/.test(q))
-      return `😊 আমি মূলত শপিং সহকারী, কিন্তু সাধারণ প্রশ্নও করতে পারেন! যা জানতে চান সরাসরি বলুন।`;
-    // Friendly fallback — not repetitive shopping list
-    const fallbacks = [
-      `বুঝতে একটু সমস্যা হলো${greetSuffix}! 😅 আরেকটু পরিষ্কার করে বলুন — আমি সাহায্য করার চেষ্টা করবো।`,
-      `হুম${greetSuffix}, একটু বুঝতে পারিনি। আপনি কি পণ্য খুঁজছেন, অর্ডার ট্র্যাক করতে চান, নাকি অন্য কিছু? একটু বলুন! 😊`,
-      `আমি নিশ্চিত না${greetSuffix} কী বলতে চাইলেন — আবার বলুন, ভালো করে বুঝতে পারবো! 🙂`,
-      `ওহ${greetSuffix}! আমি সব ধরনের প্রশ্নের উত্তর দিতে পারি — শপিং, ডিল, অর্ডার বা যেকোনো বিষয়ে জিজ্ঞেস করুন!`,
-    ];
-    return fallbacks[Math.floor(Math.random() * fallbacks.length)];
-  }
-  if (isAr) {
-    const arFallbacks = [
-      `لم أفهم تماماً${greetSuffix}! 😅 هل يمكنك توضيح سؤالك؟ سأساعدك بكل سرور.`,
-      `عذراً${greetSuffix}، لم أتمكن من فهم رسالتك. حاول مرة أخرى أو اسألني عن المنتجات، الطلبات، أو الدفع.`,
-    ];
-    return arFallbacks[Math.floor(Math.random() * arFallbacks.length)];
-  }
-  // English / other — friendly, not robotic
-  const enFallbacks = [
-    `Hmm${greetSuffix}, I'm not sure I got that! 😅 Could you rephrase? I can help with shopping, orders, deals, payments — or just chat!`,
-    `I didn't quite catch that${greetSuffix}! Try asking me about products, your order status, today's deals, or anything else on your mind. 😊`,
-    `Not sure I understood${greetSuffix}! Feel free to ask me anything — I'm here to help, not just answer shopping questions. 🤖`,
-    `Could you say that differently${greetSuffix}? I want to help! Whether it's shopping, general questions, or just a chat — I'm here. 😊`,
-  ];
-  return enFallbacks[Math.floor(Math.random() * enFallbacks.length)];
+  // Unrecognized — return null so sendAiMessage() forwards to the AI worker
+  return null;
 }
 
 function _aiMarkdown(t) {
@@ -7318,7 +7260,13 @@ async function sendAiMessage() {
     _aiAppendMsg('user', text);
     aiChatHistory.push({ role: 'user', content: text });
     if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
-    _aiAppendMsg('assistant', "I'm here to help! You can ask me about products, delivery, returns, payment methods, or coupons. 😊");
+    _aiIncrUsage();
+    const _noWkMsg = {
+      bn: `দুঃখিত, এই প্রশ্নের উত্তর দিতে আমার পূর্ণ AI সংযোগ দরকার।\n\nএখনই জানতে পারবেন:\n🛍️ পণ্য · 📦 অর্ডার · 💳 পেমেন্ট · 🚚 ডেলিভারি · 🏷️ কুপন\n\n📲 অন্য কিছু জানতে: wa.me/966546224029`,
+      en: `I need my full AI connection to answer that.\n\nI can instantly help with:\n🛍️ Products · 📦 Orders · 💳 Payments · 🚚 Delivery · 🏷️ Coupons\n\n📲 For anything else: wa.me/966546224029`,
+      ar: `أحتاج اتصال AI الكامل للإجابة على هذا السؤال.\n\nيمكنني المساعدة في:\n🛍️ المنتجات · 📦 الطلبات · 💳 الدفع · 🚚 التوصيل · 🏷️ الكوبونات\n\n📲 واتساب: wa.me/966546224029`,
+    };
+    _aiAppendMsg('assistant', _noWkMsg[currentLang] || _noWkMsg.en);
     return;
   }
   inp.value = '';
