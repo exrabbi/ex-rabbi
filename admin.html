@@ -1368,15 +1368,35 @@ function getPass() { return localStorage.getItem('exg_adm_pass') || DEFAULT_PASS
 function doLogin() {
   const val = document.getElementById('passInput').value;
   if (val === getPass()) {
-    sessionStorage.setItem('exg_adm_ok', '1');
-    document.getElementById('loginWrap').style.display = 'none';
-    document.getElementById('adminWrap').style.display = 'block';
-    initAdmin();
+    // Password OK — now sign in with Firebase Google Auth for Firestore access
+    _adminFirebaseSignIn();
   } else {
     document.getElementById('loginErr').style.display = 'block';
     document.getElementById('passInput').value = '';
     setTimeout(() => document.getElementById('loginErr').style.display = 'none', 3000);
   }
+}
+
+async function _adminFirebaseSignIn() {
+  const loginBtn = document.querySelector('.login-btn');
+  if (loginBtn) { loginBtn.disabled = true; loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing in…'; }
+  try {
+    if (typeof firebase !== 'undefined' && firebase.apps?.length) {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      await firebase.auth().signInWithPopup(provider);
+    }
+  } catch(e) {
+    // If popup blocked or failed, try redirect
+    if (e.code === 'auth/popup-blocked' || e.code === 'auth/popup-closed-by-user') {
+      if (loginBtn) { loginBtn.disabled = false; loginBtn.innerHTML = '<i class="fas fa-crown"></i> &nbsp;Enter Panel'; }
+      return;
+    }
+  }
+  // Proceed to admin panel regardless (password was correct)
+  sessionStorage.setItem('exg_adm_ok', '1');
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('adminWrap').style.display = 'block';
+  initAdmin();
 }
 function doLogout() {
   sessionStorage.removeItem('exg_adm_ok');
@@ -1395,7 +1415,17 @@ function changePassword() {
 if (sessionStorage.getItem('exg_adm_ok') === '1') {
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('adminWrap').style.display = 'block';
-  document.addEventListener('DOMContentLoaded', initAdmin);
+  document.addEventListener('DOMContentLoaded', () => {
+    // Re-authenticate silently on page refresh
+    if (typeof firebase !== 'undefined' && firebase.apps?.length) {
+      firebase.auth().onAuthStateChanged(user => {
+        if (!user) {
+          firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(() => {});
+        }
+      });
+    }
+    initAdmin();
+  });
 }
 
 /* ===== INIT ===== */
