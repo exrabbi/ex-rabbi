@@ -3424,7 +3424,11 @@ function _initLocMap() {
     zoomControl: false,
     attributionControl: false,
   });
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(locMap);
+  // Google Maps road tiles — same look as Hungerstation / Careem
+  L.tileLayer('https://mt{s}.google.com/vt/lyrs=r&x={x}&y={y}&z={z}', {
+    maxZoom: 21, subdomains: ['0','1','2','3'],
+    attribution: '© Google Maps'
+  }).addTo(locMap);
 
   locMap.on('drag', () => {
     const pin = document.getElementById('locPinWrap');
