@@ -6192,6 +6192,39 @@ let aiChatOpen = false;
 function getAiWorkerUrl() {
   try { return (JSON.parse(localStorage.getItem('exg_settings') || '{}')).aiWorkerUrl || ''; } catch(e) { return ''; }
 }
+function getGeminiKey() {
+  return (localStorage.getItem('exg_gemini_key') || '').trim();
+}
+
+const _GEMINI_SYSTEM = `You are EX GLOBAL Assistant — a friendly, knowledgeable AI that can talk about anything.
+You are part of EX GLOBAL, an online fashion and lifestyle store in Saudi Arabia.
+Answer ANY question the user asks — general knowledge, advice, religion, cooking, science, jokes, fun facts, etc.
+Also help with shopping: products, orders, delivery, returns, payments, coupons.
+Be warm, concise, and conversational. Match the user's language exactly (Bengali→Bengali, Arabic→Arabic, English→English).
+Store info: free delivery SAR 100+, 7-day returns, WhatsApp support +966546224029.`;
+
+async function _callGemini(messages, text) {
+  const key = getGeminiKey();
+  if (!key) return null;
+  const contents = messages.map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }]
+  }));
+  try {
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: _GEMINI_SYSTEM }] },
+        contents,
+        generationConfig: { maxOutputTokens: 500, temperature: 0.8 }
+      })
+    });
+    const data = await resp.json();
+    if (data.error) return null;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || null;
+  } catch(e) { return null; }
+}
 
 /* ── AI Usage tracking ── */
 function _aiGetUsage() {
@@ -7254,44 +7287,55 @@ async function sendAiMessage() {
     return;
   }
 
-  const workerUrl = getAiWorkerUrl();
-  if (!workerUrl) {
-    inp.value = '';
-    _aiAppendMsg('user', text);
-    aiChatHistory.push({ role: 'user', content: text });
-    if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
-    _aiIncrUsage();
-    const _noWkMsg = {
-      bn: `দুঃখিত, এই প্রশ্নের উত্তর দিতে আমার পূর্ণ AI সংযোগ দরকার।\n\nএখনই জানতে পারবেন:\n🛍️ পণ্য · 📦 অর্ডার · 💳 পেমেন্ট · 🚚 ডেলিভারি · 🏷️ কুপন\n\n📲 অন্য কিছু জানতে: wa.me/966546224029`,
-      en: `I need my full AI connection to answer that.\n\nI can instantly help with:\n🛍️ Products · 📦 Orders · 💳 Payments · 🚚 Delivery · 🏷️ Coupons\n\n📲 For anything else: wa.me/966546224029`,
-      ar: `أحتاج اتصال AI الكامل للإجابة على هذا السؤال.\n\nيمكنني المساعدة في:\n🛍️ المنتجات · 📦 الطلبات · 💳 الدفع · 🚚 التوصيل · 🏷️ الكوبونات\n\n📲 واتساب: wa.me/966546224029`,
-    };
-    _aiAppendMsg('assistant', _noWkMsg[currentLang] || _noWkMsg.en);
-    return;
-  }
+  // ── Gemini or Worker: send unrecognised questions to real AI ──
   inp.value = '';
   _aiAppendMsg('user', text);
   aiChatHistory.push({ role: 'user', content: text });
   if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
+
+  const workerUrl = getAiWorkerUrl();
+  const hasGemini = !!getGeminiKey();
+
+  if (!hasGemini && !workerUrl) {
+    _aiIncrUsage();
+    const _noWkMsg = {
+      bn: `এই প্রশ্নের উত্তর দিতে AI key দরকার।\n\nAdmin → Settings → AI Chatbot → Gemini Key দিন।\n\nএখনই সাহায্য করতে পারি:\n🛍️ পণ্য · 📦 অর্ডার · 💳 পেমেন্ট · 🚚 ডেলিভারি`,
+      en: `An AI key is needed to answer that.\n\nAdmin → Settings → AI Chatbot → add Gemini Key.\n\nI can help with:\n🛍️ Products · 📦 Orders · 💳 Payments · 🚚 Delivery`,
+      ar: `مفتاح AI مطلوب للإجابة.\n\nAdmin → Settings → AI Chatbot → أضف Gemini Key.\n\nيمكنني المساعدة في: 🛍️ المنتجات · 📦 الطلبات · 💳 الدفع`,
+    };
+    _aiAppendMsg('assistant', _noWkMsg[currentLang] || _noWkMsg.en);
+    return;
+  }
+
   _aiShowTyping();
   const sendBtn = document.getElementById('aiChatSendBtn');
   if (sendBtn) sendBtn.disabled = true;
   try {
-    const resp = await fetch(workerUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages: aiChatHistory, userLang: _aiDetectLang(text) })
-    });
-    const data = await resp.json();
+    let reply = null;
+
+    if (hasGemini) {
+      reply = await _callGemini(aiChatHistory, text);
+    }
+
+    if (!reply && workerUrl) {
+      const resp = await fetch(workerUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: aiChatHistory, userLang: _aiDetectLang(text) })
+      });
+      const data = await resp.json();
+      reply = data?.content?.[0]?.text || null;
+    }
+
     _aiRemoveTyping();
-    const reply = data?.content?.[0]?.text || 'Sorry, I could not respond. Please try again.';
+    if (!reply) reply = currentLang === 'bn' ? 'দুঃখিত, উত্তর দিতে পারিনি। আবার চেষ্টা করুন।' : 'Sorry, could not respond. Please try again.';
     aiChatHistory.push({ role: 'assistant', content: reply });
     if (aiChatHistory.length > 30) aiChatHistory.splice(0, aiChatHistory.length - 30);
     _aiAppendMsg('assistant', reply);
-    _aiIncrUsage(); // increment AFTER successful response
+    _aiIncrUsage();
   } catch(e) {
     _aiRemoveTyping();
-    _aiAppendMsg('assistant', 'Connection error. Please check your internet and try again.');
+    _aiAppendMsg('assistant', currentLang === 'bn' ? 'সংযোগ সমস্যা। ইন্টারনেট চেক করে আবার চেষ্টা করুন।' : 'Connection error. Please check your internet and try again.');
   } finally {
     const u2 = _aiGetUsage();
     if (sendBtn) sendBtn.disabled = u2.count >= limit;
