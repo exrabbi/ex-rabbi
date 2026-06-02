@@ -20811,3 +20811,194 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   padding: 3px 9px !important;
   bottom: 6px !important; left: 6px !important;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   PREMIUM CHECKOUT PAYMENT SECTION — v337
+   ════════════════════════════════════════════════════════════════ */
+
+/* Reset all previous .ck-pm overrides with a clean card style */
+.ck-pm {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  margin: 0 0 10px !important;
+  background: #fff !important;
+  border: 1.5px solid #eeeeee !important;
+  border-radius: 16px !important;
+  cursor: pointer !important;
+  transition: border-color .2s, box-shadow .2s, transform .15s !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.05) !important;
+  position: relative !important;
+}
+[data-theme="dark"] .ck-pm {
+  background: #1a1830 !important;
+  border-color: rgba(255,255,255,.09) !important;
+}
+.ck-pm:active { transform: scale(.985) !important; }
+
+/* Selected state — pink glow card */
+.ck-pm.ck-pm-active {
+  border-color: #e91e8c !important;
+  border-radius: 16px !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.1), 0 4px 16px rgba(233,30,140,.12) !important;
+  margin: 0 0 10px !important;
+  padding: 13px 14px !important;
+  transform: none !important;
+}
+[data-theme="dark"] .ck-pm.ck-pm-active {
+  background: #1a1830 !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.18), 0 4px 16px rgba(233,30,140,.15) !important;
+}
+
+/* Remove old ::before pseudo-radio */
+.ck-pm::before { display: none !important; }
+
+/* ── Radio button ── */
+.ck-pm-radio {
+  flex-shrink: 0 !important;
+  width: 22px !important; height: 22px !important;
+  border-radius: 50% !important;
+  border: 2px solid #ddd !important;
+  background: #fff !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  transition: border-color .2s, background .2s !important;
+}
+[data-theme="dark"] .ck-pm-radio {
+  background: #26223e !important;
+  border-color: rgba(255,255,255,.22) !important;
+}
+.ck-radio-dot {
+  width: 9px !important; height: 9px !important;
+  border-radius: 50% !important;
+  background: transparent !important;
+  transform: scale(0) !important;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1), background .18s !important;
+}
+.ck-pm-radio.ck-radio-active {
+  border-color: #e91e8c !important;
+  background: #e91e8c !important;
+}
+.ck-pm-radio.ck-radio-active .ck-radio-dot {
+  background: #fff !important;
+  transform: scale(1) !important;
+}
+
+/* ── Logo container ── */
+.ck-pm-logo-wrap {
+  flex-shrink: 0 !important;
+  width: 60px !important; height: 40px !important;
+  border-radius: 10px !important;
+  border: 1px solid #ebebeb !important;
+  background: #fafafa !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  overflow: hidden !important;
+  padding: 4px !important;
+}
+[data-theme="dark"] .ck-pm-logo-wrap {
+  background: #232136 !important;
+  border-color: rgba(255,255,255,.1) !important;
+}
+.ck-pm-logo {
+  width: 100% !important; height: 100% !important;
+  object-fit: contain !important;
+  display: block !important;
+}
+
+/* ── Info text ── */
+.ck-pm-info {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+.ck-pm-name {
+  font-size: 14.5px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+[data-theme="dark"] .ck-pm-name { color: #f0f0f8 !important; }
+.ck-pm-sub {
+  font-size: 12px !important;
+  color: #9ca3af !important;
+  margin-top: 2px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* ── Add/change link (card method only) ── */
+.ck-pm-add-btn {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+  color: #e91e8c !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+[data-theme="dark"] .ck-pm-add-btn { color: #f472b6 !important; }
+
+/* ── Animated check icon ── */
+.ck-pm-check-icon {
+  flex-shrink: 0 !important;
+  color: #e91e8c !important;
+  font-size: 20px !important;
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  transition: opacity .2s, transform .28s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.ck-pm.ck-pm-active .ck-pm-check-icon {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* ── Card logo strip ── */
+.ck-pm-info-card { flex: 1 !important; min-width: 0 !important; }
+.ck-card-logos-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  margin-top: 7px !important;
+  flex-wrap: wrap !important;
+}
+.ck-cl-svg { height: 22px !important; width: auto !important; border-radius: 4px !important; }
+
+/* ── Security badge ── */
+.ck-card-protect {
+  display: none;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+  border-radius: 12px !important;
+  padding: 10px 14px !important;
+  margin: -4px 0 12px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #166534 !important;
+  line-height: 1.4 !important;
+}
+[data-theme="dark"] .ck-card-protect {
+  background: rgba(22,163,74,.1) !important;
+  border-color: rgba(22,163,74,.25) !important;
+  color: #4ade80 !important;
+}
+.ck-card-protect i {
+  font-size: 15px !important;
+  flex-shrink: 0 !important;
+  color: #16a34a !important;
+}
+[data-theme="dark"] .ck-card-protect i { color: #4ade80 !important; }
+
+/* ── Hide obsolete old elements ── */
+.ck-pm-left, .ck-pm-right, .ck-pm-ico, .ck-pm-check, .ck-pm-add,
+.gpay-g, .gpay-pay { display: none !important; }
+
+/* ── Section label ── */
+.ck-sec .ck-sec-lbl {
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  letter-spacing: -.1px !important;
+}
