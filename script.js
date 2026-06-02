@@ -3389,6 +3389,19 @@ let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
 const _LOC_DEFAULT_LAT = 24.7136, _LOC_DEFAULT_LNG = 46.6753; // Riyadh center
 let _locGeocodeTimer = null, _locGeocoding = false;
 let _locGpsWatcher = null, _locGpsBestAccuracy = Infinity;
+let _gmInstance = null; // Google Maps JS API instance
+let _gmUserDot = null;  // Google Maps user location marker
+
+/* ── unified pan helper (works for both Leaflet & Google Maps) ── */
+function _locPanTo(lat, lng, zoom) {
+  _locCurrLat = lat; _locCurrLng = lng;
+  if (_gmInstance) {
+    _gmInstance.panTo({ lat, lng });
+    if (zoom) _gmInstance.setZoom(zoom);
+  } else if (locMap) {
+    locMap.setView([lat, lng], zoom || locMap.getZoom());
+  }
+}
 
 function openLocation() {
   document.getElementById('locOverlay').classList.add('open');
@@ -3397,20 +3410,67 @@ function openLocation() {
   const det = document.getElementById('locDetails');
   if (det) det.style.display = 'none';
   setTimeout(() => { _initLocMap(); }, 350);
-  // When user returns from browser settings after enabling GPS, retry
   const _retry = () => { if (document.getElementById('locOverlay')?.classList.contains('open') && _locGpsWatcher === null) _locAutoGps(); };
   document.removeEventListener('visibilitychange', _retry);
   document.addEventListener('visibilitychange', _retry);
 }
 
-function _initLocMap() {
-  if (!window.L) { showToast('Map loading…'); setTimeout(_initLocMap, 800); return; }
+/* ── Google Maps init ── */
+function _loadGoogleMapsApi(key, cb) {
+  if (window.google?.maps) { cb(); return; }
+  if (document.getElementById('_gmScr')) { window._gmCb = cb; return; }
+  window._gmCb = cb;
+  const s = document.createElement('script');
+  s.id = '_gmScr';
+  s.src = `https://maps.googleapis.com/maps/api/js?key=${key}&libraries=places,geocoding&callback=_gmCb&loading=async`;
+  s.async = true; s.defer = true;
+  document.head.appendChild(s);
+}
+
+function _initGoogleMapInstance() {
+  const mapEl = document.getElementById('locMap');
+  if (!mapEl || !window.google?.maps) return;
+  const defaultLat = savedLocation?.lat || _LOC_DEFAULT_LAT;
+  const defaultLng = savedLocation?.lng || _LOC_DEFAULT_LNG;
+  _locCurrLat = defaultLat; _locCurrLng = defaultLng;
+
+  _gmInstance = new google.maps.Map(mapEl, {
+    center: { lat: defaultLat, lng: defaultLng },
+    zoom: savedLocation?.lat ? 17 : 13,
+    disableDefaultUI: true,
+    gestureHandling: 'greedy',
+    clickableIcons: false,
+    mapTypeControl: false,
+    streetViewControl: false,
+  });
+
+  // Lift pin while dragging
+  _gmInstance.addListener('dragstart', () => {
+    const pin = document.getElementById('locPinWrap');
+    if (pin) pin.style.transform = 'translate(-50%,-110%) scale(1.18)';
+  });
+
+  // Reverse geocode on drag end
+  _gmInstance.addListener('dragend', () => {
+    const pin = document.getElementById('locPinWrap');
+    if (pin) pin.style.transform = 'translate(-50%,-100%)';
+    const c = _gmInstance.getCenter();
+    _locCurrLat = c.lat(); _locCurrLng = c.lng();
+    _locReverseGeocode(_locCurrLat, _locCurrLng);
+  });
+
+  _locReverseGeocode(defaultLat, defaultLng);
+}
+
+/* ── Leaflet fallback init ── */
+function _initLeafletMap() {
+  if (!window.L) { showToast('Map loading…'); setTimeout(_initLeafletMap, 800); return; }
   if (locMap) {
     locMap.invalidateSize();
     if (savedLocation?.lat) {
       const c = locMap.getCenter();
-      const dist = Math.abs(c.lat - savedLocation.lat) + Math.abs(c.lng - savedLocation.lng);
-      if (dist > 0.01) locMap.panTo([savedLocation.lat, savedLocation.lng]);
+      if (Math.abs(c.lat - savedLocation.lat) + Math.abs(c.lng - savedLocation.lng) > 0.01)
+        locMap.panTo([savedLocation.lat, savedLocation.lng]);
     }
     return;
   }
@@ -3421,13 +3481,10 @@ function _initLocMap() {
   locMap = L.map(document.getElementById('locMap'), {
     center: [defaultLat, defaultLng],
     zoom: savedLocation?.lat ? 16 : 13,
-    zoomControl: false,
-    attributionControl: false,
+    zoomControl: false, attributionControl: false,
   });
-  // Google Maps road tiles — same look as Hungerstation / Careem
   L.tileLayer('https://mt{s}.google.com/vt/lyrs=r&x={x}&y={y}&z={z}', {
-    maxZoom: 21, subdomains: ['0','1','2','3'],
-    attribution: '© Google Maps'
+    maxZoom: 21, subdomains: ['0','1','2','3'], attribution: '© Google Maps'
   }).addTo(locMap);
 
   locMap.on('drag', () => {
@@ -3441,12 +3498,40 @@ function _initLocMap() {
     _locCurrLat = c.lat; _locCurrLng = c.lng;
     _locReverseGeocode(c.lat, c.lng);
   });
-
   _locReverseGeocode(defaultLat, defaultLng);
+}
+
+function _initLocMap() {
+  // If Google Maps API is already loaded and working, use it
+  if (_gmInstance) {
+    const c = _gmInstance.getCenter();
+    if (savedLocation?.lat) _gmInstance.panTo({ lat: savedLocation.lat, lng: savedLocation.lng });
+    return;
+  }
+  const apiKey = (localStorage.getItem('exg_gmaps_key') || '').trim();
+  if (apiKey) {
+    _loadGoogleMapsApi(apiKey, _initGoogleMapInstance);
+  } else {
+    _initLeafletMap();
+  }
 }
 
 let _locUserDot = null;
 function _locShowUserDot(lat, lng) {
+  if (_gmInstance && window.google?.maps) {
+    // Google Maps: blue dot marker
+    if (_gmUserDot) _gmUserDot.setMap(null);
+    _gmUserDot = new google.maps.Marker({
+      position: { lat, lng }, map: _gmInstance,
+      icon: {
+        path: google.maps.SymbolPath.CIRCLE,
+        scale: 8, fillColor: '#4285F4', fillOpacity: 1,
+        strokeColor: '#fff', strokeWeight: 2,
+      },
+      zIndex: 1,
+    });
+    return;
+  }
   const addDot = () => {
     if (!locMap || !window.L) return;
     if (_locUserDot) { _locUserDot.remove(); _locUserDot = null; }
@@ -3667,8 +3752,8 @@ function _locSelectResult(lat, lng, displayName) {
   lat = parseFloat(lat); lng = parseFloat(lng);
   _locCurrLat = lat; _locCurrLng = lng;
   if (displayName) { _locCurrentAddr = displayName; const el = document.getElementById('locAddrText'); if (el) el.textContent = displayName; }
-  if (locMap) { locMap.setView([lat, lng], 17); }
-  else { _initLocMap(); setTimeout(() => { locMap?.setView([lat, lng], 17); }, 700); }
+  _locPanTo(lat, lng, 17);
+  if (!_gmInstance && !locMap) { _initLocMap(); setTimeout(() => _locPanTo(lat, lng, 17), 800); }
 }
 function _locSelectPlace(placeId, description) {
   // No-op: Google Places replaced by Nominatim search
@@ -3677,8 +3762,9 @@ function _locSelectPlace(placeId, description) {
 /* GPS helpers */
 function _locSetPos(lat, lng, zoom) {
   _locCurrLat = lat; _locCurrLng = lng;
-  if (!locMap) { _initLocMap(); setTimeout(() => { locMap?.setView([lat, lng], zoom||17); }, 700); }
-  else { locMap.setView([lat, lng], zoom||17); }
+  if (_gmInstance) { _locPanTo(lat, lng, zoom || 17); }
+  else if (!locMap) { _initLocMap(); setTimeout(() => _locPanTo(lat, lng, zoom||17), 800); }
+  else { _locPanTo(lat, lng, zoom||17); }
 }
 function _locSetBtn(html, loading) {
   const btn = document.getElementById('locGpsBtn');
