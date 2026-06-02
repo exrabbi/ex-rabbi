@@ -20626,3 +20626,14 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .fpm-icons .pay-bdg {
   height: 28px;
 }
+
+/* ── Checkout card mini-badge SVGs ─────────────────────────── */
+.ck-card-logos-row { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; margin-top: 4px; }
+.ck-cl-svg {
+  height: 20px;
+  width: auto;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.12);
+  flex-shrink: 0;
+  display: block;
+}
