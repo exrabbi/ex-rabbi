@@ -20693,3 +20693,90 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   flex-shrink: 0;
   display: block;
 }
+
+/* ── Compact Product Grid Cards (Shein / Noon style) ───────── */
+/* Portrait image + tight info strip — more products on screen */
+.products-grid .fc2-card {
+  flex-direction: column !important;
+  height: auto !important;
+  min-height: unset !important;
+  border-radius: 12px !important;
+}
+
+/* Image: aspect-ratio box (portrait) */
+.products-grid .fc2-img {
+  flex: none !important;
+  width: 100% !important;
+  padding-top: 128% !important;
+  height: 0 !important;
+  position: relative !important;
+  overflow: hidden !important;
+}
+.products-grid .fc2-img img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* Panel: slim info strip */
+.products-grid .fc2-panel {
+  flex: none !important;
+  padding: 5px 8px 8px !important;
+  gap: 2px !important;
+}
+
+/* Name: 2 lines, tight */
+.products-grid .fc2-name {
+  font-size: 11px !important;
+  -webkit-line-clamp: 2 !important;
+  line-height: 1.25 !important;
+  white-space: normal !important;
+  margin-bottom: 2px !important;
+}
+
+/* Price strip */
+.products-grid .fc2-prices {
+  align-items: center !important;
+  gap: 4px !important;
+}
+.products-grid .fc2-price { font-size: 13px !important; }
+.products-grid .fc2-orig  { font-size: 10px !important; }
+
+/* Hide non-essential elements in grid view */
+.products-grid .fc2-status,
+.products-grid .fc2-meta-row,
+.products-grid .fc2-coupon,
+.products-grid .fc2-choice,
+.products-grid .fc2-row,
+.products-grid .fc2-bestprice { display: none !important; }
+
+/* Buy button: compact */
+.products-grid .fc2-btn {
+  padding: 7px 6px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
+  margin-top: 4px !important;
+}
+
+/* Wish button: smaller on compact cards */
+.products-grid .fc2-wish {
+  width: 28px !important; height: 28px !important;
+  font-size: 12px !important;
+  top: 6px !important; right: 6px !important;
+}
+
+/* Badge: smaller on compact cards */
+.products-grid .fc2-badge {
+  font-size: 9px !important;
+  padding: 3px 7px !important;
+  top: 6px !important; left: 6px !important;
+}
+
+/* Discount pill: smaller */
+.products-grid .fc2-disc-pill {
+  font-size: 11px !important;
+  padding: 3px 9px !important;
+  bottom: 6px !important; left: 6px !important;
+}
