@@ -4285,22 +4285,27 @@ async function testGithubToken() {
   const inputVal = input ? input.value.trim() : '';
   if (inputVal) { localStorage.setItem('exg_github_token', inputVal); }
   const token = localStorage.getItem('exg_github_token') || '';
-  if (!token) { toast('⚠️ আগে Token ইনপুট করুন'); return; }
+  if (!token) { toast('⚠️ আগে Token box এ পেস্ট করুন'); return; }
   const btn = document.getElementById('testTokenBtn');
   if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> পরীক্ষা হচ্ছে...'; }
   try {
     const headers = { 'Authorization': 'Bearer ' + token, 'Accept': 'application/vnd.github.v3+json' };
-    // Test file read access directly (works for both classic and fine-grained tokens)
-    const cr = await fetch('https://api.github.com/repos/exrabbi/ex-rabbi/contents/data/store-data.json?ref=gh-pages', { headers });
-    if (cr.ok || cr.status === 404) {
-      // 200 = file exists and readable, 404 = repo accessible but file not yet created — both mean token works
-      toast('✅ Token কাজ করছে! Publish করতে পারবেন।');
-    } else if (cr.status === 401) {
-      toast('❌ Token ভুল বা মেয়াদ শেষ — নতুন token বানিয়ে Settings-এ দিন');
-    } else if (cr.status === 403) {
-      toast('❌ Token-এ Contents permission নেই — Fine-grained token-এ Contents: Read and write দিন');
+    // Test /user endpoint — requires real auth (public repo read doesn't prove token validity)
+    const userRes = await fetch('https://api.github.com/user', { headers });
+    if (userRes.ok) {
+      const u = await userRes.json();
+      // Also check repo write permission
+      const repoRes = await fetch('https://api.github.com/repos/exrabbi/ex-rabbi', { headers });
+      const repo = repoRes.ok ? await repoRes.json() : {};
+      if (repo.permissions?.push) {
+        toast('✅ Token সঠিক (@' + u.login + ') — Publish করতে পারবেন!');
+      } else {
+        toast('⚠️ Token valid কিন্তু write নেই — Scopes এ public_repo টিক দিন');
+      }
+    } else if (userRes.status === 401) {
+      toast('❌ Token ভুল বা expired — নতুন classic token বানান (ghp_...)');
     } else {
-      toast('❌ Token error: HTTP ' + cr.status + ' — Settings সেভ করে আবার চেষ্টা করুন');
+      toast('❌ Token error: HTTP ' + userRes.status + ' — আবার চেষ্টা করুন');
     }
   } catch(e) {
     toast('❌ নেটওয়ার্ক সমস্যা — ইন্টারনেট চেক করুন');
