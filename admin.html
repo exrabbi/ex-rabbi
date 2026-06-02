@@ -4100,8 +4100,8 @@ function toast(msg) {
 /* ===== PUBLISH TO WEBSITE ===== */
 function collectStoreData() {
   const rawSettings = JSON.parse(localStorage.getItem('exg_settings') || '{}');
-  // Strip sensitive API keys — these stay on device only, never published to GitHub
-  const { geminiKey, aiWorkerUrl, agentWorkerUrl, vapidKey, ...publicSettings } = rawSettings;
+  // Strip sensitive API keys — stay on device only, never published
+  const { geminiKey, aiWorkerUrl, agentWorkerUrl, vapidKey, stcPayNumber, whatsappApiKey, ...publicSettings } = rawSettings;
 
   return {
     products_custom:  JSON.parse(localStorage.getItem('exg_products_custom')  || '{}'),
@@ -4115,6 +4115,10 @@ function collectStoreData() {
     trend_pins:       JSON.parse(localStorage.getItem('exg_trend_pins')       || 'null'),
     coupons:          JSON.parse(localStorage.getItem('exg_extra_coupons')    || '[]'),
     city_video:       localStorage.getItem('exg_city_video') || '',
+    trend_content:    JSON.parse(localStorage.getItem('exg_trend_content')    || 'null'),
+    cat_images:       JSON.parse(localStorage.getItem('exg_cat_images')       || '{}'),
+    custom_cats:      JSON.parse(localStorage.getItem('exg_custom_cats')      || '{}'),
+    promo_banners:    JSON.parse(localStorage.getItem('exg_promo_banners')    || '[]'),
     published_at: new Date().toISOString()
   };
 }
