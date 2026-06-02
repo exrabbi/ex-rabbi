@@ -3313,7 +3313,7 @@ function loadSettings() {
     if (el('setCityVideo')) el('setCityVideo').value = localStorage.getItem('exg_city_video') || '';
     if (el('setVatId'))   el('setVatId').value   = s.vatId   || '';
     if (el('setVatRate')) el('setVatRate').value = s.vatRate !== undefined ? s.vatRate : 15;
-    if (el('setGeminiKey'))      el('setGeminiKey').value      = localStorage.getItem('exg_gemini_key') || '';
+    if (el('setGeminiKey'))      el('setGeminiKey').value      = s.geminiKey || '';
     if (el('setAiWorkerUrl'))    el('setAiWorkerUrl').value    = s.aiWorkerUrl    || '';
     if (el('setAgentWorkerUrl')) el('setAgentWorkerUrl').value = s.agentWorkerUrl || '';
     if (el('setAgentSecret'))    el('setAgentSecret').value    = localStorage.getItem('exg_agent_secret') || '';
@@ -3353,12 +3353,11 @@ function saveSettings() {
     freeDelivery: parseFloat(document.getElementById('setFreeDelivery').value) || 100,
     vatId:   (document.getElementById('setVatId')?.value || '').trim(),
     vatRate: parseFloat(document.getElementById('setVatRate')?.value) || 0,
+    geminiKey:      (document.getElementById('setGeminiKey')?.value      || '').trim(),
     aiWorkerUrl:    (document.getElementById('setAiWorkerUrl')?.value    || '').trim(),
     agentWorkerUrl: (document.getElementById('setAgentWorkerUrl')?.value || '').trim(),
     vapidKey:       (document.getElementById('setVapidKey')?.value       || '').trim(),
   };
-  const geminiKey = (document.getElementById('setGeminiKey')?.value || '').trim();
-  if (geminiKey) localStorage.setItem('exg_gemini_key', geminiKey); else localStorage.removeItem('exg_gemini_key');
   const agentSecret = (document.getElementById('setAgentSecret')?.value || '').trim();
   if (agentSecret) localStorage.setItem('exg_agent_secret', agentSecret); else localStorage.removeItem('exg_agent_secret');
   localStorage.setItem('exg_settings', JSON.stringify(s));
