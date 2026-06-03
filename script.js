@@ -5286,29 +5286,20 @@ function openPayment() {
     }).join('');
     payItemsWrap.innerHTML = `<div class="pay-items-list">${itemsHtml}</div>`;
   }
-  // Populate new checkout UI fields
+  // Populate checkout page 1 fields
   const addrEl = document.getElementById('ckAddrVal');
-  if (addrEl && savedLocation) {
-    const parts = [savedLocation.name, savedLocation.city, savedLocation.address].filter(Boolean);
-    addrEl.textContent = parts.join(', ') || 'Add delivery address';
+  if (addrEl) {
+    if (savedLocation) {
+      const parts = [savedLocation.address, savedLocation.city].filter(Boolean);
+      addrEl.textContent = parts.join(', ') || savedLocation.name || 'Add delivery address';
+    } else {
+      addrEl.textContent = 'Add delivery address';
+    }
   }
   const recvNameEl = document.getElementById('ckRecvName');
   const recvPhoneEl = document.getElementById('ckRecvPhone');
-  if (recvNameEl && savedLocation) recvNameEl.textContent = savedLocation.name || (currentUser?.displayName || 'Me');
-  if (recvPhoneEl && savedLocation) recvPhoneEl.textContent = savedLocation.phone || '';
-  // Pre-fill page 1 form from savedLocation
-  if (savedLocation) {
-    const _v = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
-    _v('ckFullName', savedLocation.name);
-    _v('ckPhone2', savedLocation.phone);
-    _v('ckStreet', savedLocation.address);
-    _v('ckCity2', savedLocation.city);
-    _v('ckZip', savedLocation.zip);
-  }
-  if (currentUser && currentUser.email) {
-    const emailEl = document.getElementById('ckEmail');
-    if (emailEl && !emailEl.value) emailEl.value = currentUser.email || '';
-  }
+  if (recvNameEl) recvNameEl.textContent = (savedLocation?.name) || (currentUser?.displayName || 'Me');
+  if (recvPhoneEl) recvPhoneEl.textContent = savedLocation?.phone || '';
   const shipCountEl = document.getElementById('ckShipCount');
   if (shipCountEl) { const tc = cart.reduce((s,i) => s+i.qty, 0); shipCountEl.textContent = `(${tc} item${tc !== 1 ? 's' : ''})`; }
   const ckBarCountEl = document.getElementById('ckBarCount');
@@ -5360,27 +5351,11 @@ function closePayment() {
 /* ── CHECKOUT 3-PAGE NAVIGATION ── */
 window._ckPage = 1;
 function ckGoPage(n) {
-  // When advancing from page 1, collect form data → savedLocation
+  // When advancing from page 1, validate address has been set
   if (n === 2 && window._ckPage === 1) {
-    const fullName = (document.getElementById('ckFullName')?.value || '').trim();
-    const phone    = (document.getElementById('ckPhone2')?.value || '').trim();
-    const street   = (document.getElementById('ckStreet')?.value || '').trim();
-    const city     = (document.getElementById('ckCity2')?.value || '').trim();
-    const zip      = (document.getElementById('ckZip')?.value || '').trim();
-    const region   = (document.getElementById('ckRegion')?.value || '').trim();
-    const email    = (document.getElementById('ckEmail')?.value || '').trim();
-    if (fullName || phone || city) {
-      savedLocation = savedLocation || {};
-      if (fullName) savedLocation.name = fullName;
-      if (phone)    savedLocation.phone = phone;
-      if (street)   savedLocation.address = street;
-      if (city)     savedLocation.city = city;
-      if (zip)      savedLocation.zip = zip;
-      if (region)   savedLocation.area = region;
-      try { localStorage.setItem('savedLocation', JSON.stringify(savedLocation)); } catch(e) {}
-    }
-    if (!fullName || !phone || !city) {
-      showToast('📍 Please fill in your name, phone and city to continue');
+    if (!savedLocation || !savedLocation.city) {
+      showToast('📍 Please add a delivery address to continue');
+      ckOpenAddrSheet();
       return;
     }
   }
@@ -5418,6 +5393,129 @@ function ckBack() {
 }
 function ckBarAction() {
   processPayment();
+}
+
+// ── NOON-STYLE CHECKOUT HELPERS ──────────────────────────
+window._ckDI = 'door';
+window._ckRecv = 'me';
+
+function ckSelDI(type, el) {
+  document.querySelectorAll('.nc-di-tile').forEach(t => {
+    t.classList.remove('nc-di-on');
+    const chk = t.querySelector('.nc-di-chk');
+    if (chk) chk.classList.add('nc-di-chk-off');
+  });
+  el.classList.add('nc-di-on');
+  const chk = el.querySelector('.nc-di-chk');
+  if (chk) chk.classList.remove('nc-di-chk-off');
+  window._ckDI = type;
+}
+
+function ckSelRecv(type) {
+  ['me','other'].forEach(t => {
+    const id = t === 'me' ? 'ckRecvMe' : 'ckRecvOther';
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('nc-recv-on', t === type);
+  });
+  window._ckRecv = type;
+}
+
+function ckOpenAddrSheet() {
+  const o = document.getElementById('ncAddrOverlay');
+  const s = document.getElementById('ncAddrSheet');
+  if (!s) return;
+  o.classList.add('nc-ov-on');
+  s.style.display = 'flex';
+  requestAnimationFrame(() => s.classList.add('nc-sheet-open'));
+  const wrap = document.getElementById('ncSavedAddrs');
+  if (wrap && savedLocation) {
+    const addrParts = [savedLocation.address, savedLocation.city, savedLocation.area].filter(Boolean).join(', ');
+    const name = savedLocation.name || '';
+    const phone = savedLocation.phone || '';
+    wrap.innerHTML = `<div class="nc-sheet-addr-card nc-addr-sel" onclick="ckCloseAddrSheet()">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <i class="fas fa-house" style="color:#1a55e3;font-size:14px"></i>
+        <span style="font-size:14px;font-weight:700;color:#111">Home</span>
+      </div>
+      <div style="font-size:13px;color:#444;line-height:1.5;margin-bottom:4px">${addrParts || 'Saved address'}</div>
+      <div style="font-size:12.5px;color:#666">${name}${phone ? ', ' + phone : ''} <i class="fas fa-circle-check" style="color:#16a34a;margin-left:4px"></i></div>
+    </div>`;
+  } else if (wrap) {
+    wrap.innerHTML = '';
+  }
+}
+function ckCloseAddrSheet() {
+  const o = document.getElementById('ncAddrOverlay');
+  const s = document.getElementById('ncAddrSheet');
+  if (!s) return;
+  o.classList.remove('nc-ov-on');
+  s.classList.remove('nc-sheet-open');
+  setTimeout(() => { s.style.display = 'none'; }, 300);
+}
+function ckShowLockerSheet() {
+  ckOpenAddrSheet();
+  setTimeout(() => ckSheetTab('Locker'), 50);
+}
+function ckSheetTab(name) {
+  ['Addr','Locker'].forEach(t => {
+    const el = document.getElementById('ncTab' + t);
+    if (el) el.classList.toggle('nc-tab-on', t === name);
+  });
+}
+
+function ckOpenRecvSheet() {
+  const o = document.getElementById('ncRecvOverlay');
+  const s = document.getElementById('ncRecvSheet');
+  if (!s) return;
+  o.classList.add('nc-ov-on');
+  s.style.display = 'flex';
+  requestAnimationFrame(() => s.classList.add('nc-sheet-open'));
+  const loc = savedLocation || {};
+  const n = loc.name || (window.currentUser?.displayName || 'Customer').toUpperCase();
+  const p = loc.phone || window.currentUser?.phoneNumber || '';
+  const nameEl   = document.getElementById('ncContactName');
+  const avatarEl = document.getElementById('ncContactAvatar');
+  const phoneEl  = document.getElementById('ncContactPhone');
+  if (nameEl)   nameEl.textContent   = n;
+  if (avatarEl) avatarEl.textContent = n.charAt(0) || 'C';
+  if (phoneEl)  phoneEl.textContent  = p;
+}
+function ckCloseRecvSheet() {
+  const o = document.getElementById('ncRecvOverlay');
+  const s = document.getElementById('ncRecvSheet');
+  if (!s) return;
+  o.classList.remove('nc-ov-on');
+  s.classList.remove('nc-sheet-open');
+  setTimeout(() => { s.style.display = 'none'; }, 300);
+}
+function ckToggleSavedContact() {
+  const r  = document.getElementById('ncContactRadio');
+  const sc = document.getElementById('ncSavedContact');
+  if (!r || !sc) return;
+  const on = r.classList.toggle('nc-radio-sel');
+  sc.classList.toggle('nc-contact-sel', on);
+}
+function ckSaveRecv() {
+  const nameInp  = (document.getElementById('ncRecvNameInp')?.value  || '').trim();
+  const phoneInp = (document.getElementById('ncRecvPhoneInp')?.value || '').trim();
+  const useSaved = document.getElementById('ncContactRadio')?.classList.contains('nc-radio-sel');
+  let finalName  = nameInp;
+  let finalPhone = phoneInp;
+  if (useSaved) {
+    finalName  = document.getElementById('ncContactName')?.textContent  || finalName;
+    finalPhone = document.getElementById('ncContactPhone')?.textContent || finalPhone;
+  }
+  if (finalName || finalPhone) {
+    const other = document.getElementById('ckRecvOther');
+    if (other) {
+      const nm = other.querySelector('.nc-recv-name');
+      const ph = other.querySelector('.nc-recv-phone');
+      if (nm) nm.textContent = finalName;
+      if (ph) ph.textContent = finalPhone;
+    }
+    ckSelRecv('other');
+  }
+  ckCloseRecvSheet();
 }
 
 function selectPayMethod(method) {

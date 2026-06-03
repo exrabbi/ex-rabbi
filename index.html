@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=343" />
+  <link rel="stylesheet" href="styles.css?v=344" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1630,7 +1630,7 @@
     </div>
     <!-- STEP INDICATOR -->
     <div class="ck-steps">
-      <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Contact</span></div>
+      <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Address</span></div>
       <div class="ck-stl" id="ckStL1"></div>
       <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Shipping</span></div>
       <div class="ck-stl" id="ckStL2"></div>
@@ -1640,95 +1640,71 @@
     <div class="ck-body">
       <div class="ck-pg" id="ckPg1">
 
-      <!-- CONTACT INFORMATION -->
-      <div class="ck-form-sec">
-        <div class="ck-form-lbl">Contact Information</div>
-        <div class="ck-inp-row">
-          <i class="fas fa-envelope ck-inp-ico"></i>
-          <input type="email" id="ckEmail" class="ck-inp" placeholder="youremail@example.com">
-          <i class="fas fa-check ck-inp-check" id="ckEmailCheck"></i>
-        </div>
-      </div>
-
-      <!-- SHIPPING ADDRESS -->
-      <div class="ck-form-sec">
-        <div class="ck-form-lbl-row">
-          <div class="ck-form-lbl">Shipping Address</div>
-          <button class="ck-loc-pick-btn" onclick="closePayment();setTimeout(openLocation,300)">
-            <i class="fas fa-location-dot"></i> Add / Change
+      <!-- ADDRESS CARD -->
+      <div class="nc-card">
+        <div class="nc-card-hdr">
+          <span class="nc-card-title">Address</span>
+          <button class="nc-switch-btn" onclick="ckShowLockerSheet()">
+            <i class="fas fa-right-left"></i> Switch to Locker / Pickup Point
           </button>
         </div>
-        <div class="ck-fg">
-          <select id="ckCountry" class="ck-inp ck-sel">
-            <option>🇸🇦  Saudi Arabia</option>
-            <option>🇦🇪  UAE</option>
-            <option>🇰🇼  Kuwait</option>
-            <option>🇶🇦  Qatar</option>
-            <option>🇧🇭  Bahrain</option>
-            <option>🇴🇲  Oman</option>
-          </select>
-        </div>
-        <div class="ck-row2">
-          <div class="ck-fg"><input id="ckFullName" class="ck-inp" placeholder="Full Name"></div>
-          <div class="ck-fg"><input id="ckPhone2" class="ck-inp" type="tel" placeholder="Phone Number"></div>
-        </div>
-        <div class="ck-fg">
-          <input id="ckStreet" class="ck-inp" placeholder="Address">
-        </div>
-        <div class="ck-row3">
-          <div class="ck-fg"><input id="ckCity2" class="ck-inp" placeholder="City"></div>
-          <div class="ck-fg">
-            <select id="ckRegion" class="ck-inp ck-sel">
-              <option value="">Region</option>
-              <option>Riyadh</option><option>Jeddah</option><option>Mecca</option>
-              <option>Medina</option><option>Dammam</option><option>Khobar</option>
-              <option>Tabuk</option><option>Abha</option>
-            </select>
+        <div class="nc-addr-row" onclick="ckOpenAddrSheet()">
+          <div class="nc-pin-wrap"><i class="fas fa-location-dot"></i></div>
+          <div class="nc-addr-info">
+            <div class="nc-addr-to">Deliver to</div>
+            <div class="nc-addr-txt" id="ckAddrVal">Add delivery address</div>
           </div>
-          <div class="ck-fg"><input id="ckZip" class="ck-inp" placeholder="ZIP / Postal Code"></div>
-        </div>
-        <label class="ck-cb-row"><input type="checkbox" checked> Save this information for next time</label>
-      </div>
-
-      <!-- 1. ADDRESS (existing — hidden in page 1 new UI, kept for JS compatibility) -->
-      <div class="ck-sec" style="display:none">
-        <div class="ck-sec-lbl">Address</div>
-        <div class="ck-addr-card" onclick="closePayment();setTimeout(openLocation,300)">
-          <div class="ck-addr-pin"><i class="fas fa-location-dot"></i></div>
-          <div class="ck-addr-info">
-            <div class="ck-addr-to">Deliver to</div>
-            <div class="ck-addr-val" id="ckAddrVal">Add delivery address</div>
-          </div>
-          <i class="fas fa-chevron-right ck-addr-chev"></i>
+          <i class="fas fa-chevron-right nc-chev"></i>
         </div>
       </div>
 
-      <!-- 2. WHO RECEIVES -->
-      <div class="ck-sec">
-        <div class="ck-sec-lbl-row">
-          <span class="ck-sec-lbl">Who will receive this order?</span>
+      <!-- DELIVERY INSTRUCTIONS -->
+      <div class="nc-card">
+        <div class="nc-card-hdr">
+          <span class="nc-card-title">Delivery instructions</span>
+          <i class="fas fa-circle-info nc-info-ico"></i>
+        </div>
+        <div class="nc-di-row">
+          <div class="nc-di-tile nc-di-on" id="ncDiDoor" onclick="ckSelDI('door',this)">
+            <i class="fas fa-door-open nc-di-ico"></i>
+            <span>Leave at my door</span>
+            <i class="fas fa-square-check nc-di-chk"></i>
+          </div>
+          <div class="nc-di-tile" id="ncDiHand" onclick="ckSelDI('hand',this)">
+            <i class="fas fa-hand-holding nc-di-ico"></i>
+            <span>Hand it to me</span>
+            <i class="fas fa-square-check nc-di-chk nc-di-chk-off"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHO RECEIVES -->
+      <div class="nc-card nc-recv-wrap">
+        <div class="nc-recv-hdr">
+          <span>Who will receive this order?</span>
           <span class="ck-new-pill">NEW</span>
         </div>
-        <div class="ck-recv-row">
-          <div class="ck-recv-card ck-recv-active" id="ckRecvMe">
-            <i class="fas fa-user ck-recv-icon"></i>
-            <div class="ck-recv-info">
-              <div class="ck-recv-name" id="ckRecvName">Me</div>
-              <div class="ck-recv-phone" id="ckRecvPhone"></div>
+        <div class="nc-recv-row">
+          <div class="nc-recv-card nc-recv-on" id="ckRecvMe" onclick="ckSelRecv('me')">
+            <i class="fas fa-user nc-recv-ico"></i>
+            <div class="nc-recv-info">
+              <div class="nc-recv-name" id="ckRecvName">Me</div>
+              <div class="nc-recv-phone" id="ckRecvPhone"></div>
             </div>
-            <div class="ck-recv-chk"><i class="fas fa-check-circle"></i></div>
+            <div class="nc-recv-chk"><i class="fas fa-circle-check"></i></div>
           </div>
-          <div class="ck-recv-card" id="ckRecvOther">
-            <i class="fas fa-phone ck-recv-icon"></i>
-            <div class="ck-recv-info">
-              <div class="ck-recv-name">Someone else</div>
-              <div class="ck-recv-phone">will be at the...</div>
+          <div class="nc-recv-card" id="ckRecvOther" onclick="ckOpenRecvSheet()">
+            <i class="fas fa-phone nc-recv-ico"></i>
+            <div class="nc-recv-info">
+              <div class="nc-recv-name">Someone else</div>
+              <div class="nc-recv-phone">will be at the...</div>
             </div>
           </div>
         </div>
       </div>
+
       <div class="ck-pg-foot">
-        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Shipping &nbsp;<i class="fas fa-arrow-right"></i></button>
+        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Items &nbsp;<i class="fas fa-arrow-right"></i></button>
       </div>
       </div><!-- /ckPg1 -->
       <div class="ck-pg" id="ckPg2">
@@ -1986,6 +1962,57 @@
         <i class="fas fa-arrow-right"></i>
       </button>
     </div>
+
+    <!-- ── NC BOTTOM SHEETS ─────────────────────── -->
+    <!-- Address/Locker picker sheet -->
+    <div class="nc-overlay" id="ncAddrOverlay" onclick="ckCloseAddrSheet()"></div>
+    <div class="nc-sheet" id="ncAddrSheet" style="display:none">
+      <div class="nc-sheet-drag"></div>
+      <div class="nc-tab-row">
+        <button class="nc-tab nc-tab-on" id="ncTabAddr" onclick="ckSheetTab('Addr')">Address</button>
+        <button class="nc-tab" id="ncTabLocker" onclick="ckSheetTab('Locker')">Locker / Pickup</button>
+      </div>
+      <div class="nc-add-addr-row" onclick="closePayment();setTimeout(openLocation,300)">
+        <i class="fas fa-plus nc-add-ico"></i>
+        <span class="nc-add-txt">Add new address</span>
+        <i class="fas fa-chevron-right nc-add-chev"></i>
+      </div>
+      <div id="ncSavedAddrs"></div>
+    </div>
+
+    <!-- Receiver Details sheet -->
+    <div class="nc-overlay" id="ncRecvOverlay" onclick="ckCloseRecvSheet()"></div>
+    <div class="nc-sheet" id="ncRecvSheet" style="display:none">
+      <div class="nc-sheet-drag"></div>
+      <div class="nc-sheet-title">Receiver Details</div>
+      <div class="nc-recv-info-box">
+        <span class="nc-bulb">💡</span>
+        <p>The delivery agent might contact the receiver if necessary and will only contact you if the receiver is unavailable.</p>
+      </div>
+      <div class="nc-sheet-lbl">Add receiver contact</div>
+      <input type="text" id="ncRecvNameInp" class="nc-sheet-inp" placeholder="Name">
+      <div class="nc-phone-row">
+        <div class="nc-phone-pfx">+966 <i class="fas fa-chevron-down" style="font-size:10px"></i></div>
+        <input type="tel" id="ncRecvPhoneInp" class="nc-sheet-inp nc-phone-inp" placeholder="Phone number">
+      </div>
+      <div class="nc-or-sep"><span>OR</span></div>
+      <div class="nc-sheet-lbl" style="margin-bottom:10px">Use previously saved contact</div>
+      <div class="nc-saved-contact" id="ncSavedContact" onclick="ckToggleSavedContact()">
+        <div class="nc-contact-avatar" id="ncContactAvatar">G</div>
+        <div class="nc-contact-info">
+          <div class="nc-contact-name" id="ncContactName">Customer</div>
+          <div class="nc-contact-phone" id="ncContactPhone"></div>
+        </div>
+        <span class="nc-primary-badge">Primary</span>
+        <div class="nc-contact-radio" id="ncContactRadio"><span></span></div>
+      </div>
+      <label class="nc-save-chk">
+        <input type="checkbox" checked id="ncSaveForFuture">
+        Save this for future orders on this address
+      </label>
+      <button class="nc-save-btn" onclick="ckSaveRecv()">Save</button>
+    </div>
+
   </div>
 
   <!-- AUTH MODAL -->
