@@ -5158,13 +5158,7 @@ function openPayment() {
   if (cart.length === 0) { showToast(t('cartEmpty')); return; }
   const stockErr = _cartStockError();
   if (stockErr) { showToast('🚫 ' + stockErr); return; }
-  // Block if no delivery address (name + phone + city all required)
-  if (!savedLocation || !savedLocation.name || !savedLocation.phone || !savedLocation.city) {
-    closeCart();
-    showToast('📍 ' + (t('locationRequired') || 'Add delivery address to continue'));
-    setTimeout(openLocation, 400);
-    return;
-  }
+  // Address is collected on page 1 of checkout — no redirect needed
   // Close cart first so payment modal appears cleanly without overlap
   const cartSidebarEl = document.getElementById('cartSidebar');
   const cartOverlayEl = document.getElementById('cartOverlay');
@@ -5302,6 +5296,19 @@ function openPayment() {
   const recvPhoneEl = document.getElementById('ckRecvPhone');
   if (recvNameEl && savedLocation) recvNameEl.textContent = savedLocation.name || (currentUser?.displayName || 'Me');
   if (recvPhoneEl && savedLocation) recvPhoneEl.textContent = savedLocation.phone || '';
+  // Pre-fill page 1 form from savedLocation
+  if (savedLocation) {
+    const _v = (id, val) => { const el = document.getElementById(id); if (el && val) el.value = val; };
+    _v('ckFullName', savedLocation.name);
+    _v('ckPhone2', savedLocation.phone);
+    _v('ckStreet', savedLocation.address);
+    _v('ckCity2', savedLocation.city);
+    _v('ckZip', savedLocation.zip);
+  }
+  if (currentUser && currentUser.email) {
+    const emailEl = document.getElementById('ckEmail');
+    if (emailEl && !emailEl.value) emailEl.value = currentUser.email || '';
+  }
   const shipCountEl = document.getElementById('ckShipCount');
   if (shipCountEl) { const tc = cart.reduce((s,i) => s+i.qty, 0); shipCountEl.textContent = `(${tc} item${tc !== 1 ? 's' : ''})`; }
   const ckBarCountEl = document.getElementById('ckBarCount');
@@ -5353,6 +5360,30 @@ function closePayment() {
 /* ── CHECKOUT 3-PAGE NAVIGATION ── */
 window._ckPage = 1;
 function ckGoPage(n) {
+  // When advancing from page 1, collect form data → savedLocation
+  if (n === 2 && window._ckPage === 1) {
+    const fullName = (document.getElementById('ckFullName')?.value || '').trim();
+    const phone    = (document.getElementById('ckPhone2')?.value || '').trim();
+    const street   = (document.getElementById('ckStreet')?.value || '').trim();
+    const city     = (document.getElementById('ckCity2')?.value || '').trim();
+    const zip      = (document.getElementById('ckZip')?.value || '').trim();
+    const region   = (document.getElementById('ckRegion')?.value || '').trim();
+    const email    = (document.getElementById('ckEmail')?.value || '').trim();
+    if (fullName || phone || city) {
+      savedLocation = savedLocation || {};
+      if (fullName) savedLocation.name = fullName;
+      if (phone)    savedLocation.phone = phone;
+      if (street)   savedLocation.address = street;
+      if (city)     savedLocation.city = city;
+      if (zip)      savedLocation.zip = zip;
+      if (region)   savedLocation.area = region;
+      try { localStorage.setItem('savedLocation', JSON.stringify(savedLocation)); } catch(e) {}
+    }
+    if (!fullName || !phone || !city) {
+      showToast('📍 Please fill in your name, phone and city to continue');
+      return;
+    }
+  }
   window._ckPage = n;
   const modal = document.getElementById('payModal');
   // Toggle modal page class
