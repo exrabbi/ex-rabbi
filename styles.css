@@ -21124,12 +21124,8 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   margin-top: 5px !important;
   overflow: hidden !important;
 }
-.ck-cl-svg {
-  height: 22px !important;
-  width: auto !important;
-  border-radius: 4px !important;
-  flex-shrink: 0 !important;
-}
+.ck-cl-svg { height: 24px !important; width: auto !important; border-radius: 5px !important; flex-shrink: 0 !important; }
+.ck-pmi-img { width:100% !important; height:100% !important; object-fit:contain !important; display:block !important; border-radius:7px !important; }
 
 /* ── BRAND BUTTONS (STC / Binance / G Pay / PayPal) ──── */
 .ck-brand-btn {
