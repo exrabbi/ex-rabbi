@@ -5338,8 +5338,24 @@ function openPayment() {
   }
   const recvNameEl = document.getElementById('ckRecvName');
   const recvPhoneEl = document.getElementById('ckRecvPhone');
-  if (recvNameEl) recvNameEl.textContent = (savedLocation?.name) || (currentUser?.displayName || 'Me');
-  if (recvPhoneEl) recvPhoneEl.textContent = savedLocation?.phone || '';
+  if (recvNameEl) recvNameEl.textContent = (currentUser?.name || currentUser?.displayName || 'Me').toUpperCase();
+  if (recvPhoneEl) recvPhoneEl.textContent = currentUser?.phone || savedLocation?.phone || '';
+  // Load per-account saved "Someone else" receiver
+  const _recvUid = currentUser?.uid || currentUser?.email || 'guest';
+  const _savedRecv = JSON.parse(localStorage.getItem('exglobal_recv_' + _recvUid) || 'null');
+  const _otherCard = document.getElementById('ckRecvOther');
+  if (_otherCard) {
+    const _onm = _otherCard.querySelector('.nc-recv-name');
+    const _oph = _otherCard.querySelector('.nc-recv-phone');
+    if (_savedRecv?.name || _savedRecv?.phone) {
+      if (_onm) _onm.textContent = _savedRecv.name || 'Someone else';
+      if (_oph) _oph.textContent = _savedRecv.phone || '';
+    } else {
+      if (_onm) _onm.textContent = 'Someone else';
+      if (_oph) _oph.textContent = 'will be at the...';
+    }
+  }
+  ckSelRecv('me');
   const shipCountEl = document.getElementById('ckShipCount');
   if (shipCountEl) { const tc = cart.reduce((s,i) => s+i.qty, 0); shipCountEl.textContent = `(${tc} item${tc !== 1 ? 's' : ''})`; }
   const ckBarCountEl = document.getElementById('ckBarCount');
@@ -5563,9 +5579,12 @@ function ckSaveRecv() {
     if (other) {
       const nm = other.querySelector('.nc-recv-name');
       const ph = other.querySelector('.nc-recv-phone');
-      if (nm) nm.textContent = finalName;
+      if (nm) nm.textContent = finalName || 'Receiver';
       if (ph) ph.textContent = finalPhone;
     }
+    // Save receiver per-account so it persists for next order
+    const _uid = currentUser?.uid || currentUser?.email || 'guest';
+    localStorage.setItem('exglobal_recv_' + _uid, JSON.stringify({ name: finalName, phone: finalPhone }));
     ckSelRecv('other');
   }
   ckCloseRecvSheet();
