@@ -5324,6 +5324,15 @@ function openPayment() {
 }
 
 function closePayment() {
+  // Close any open nc-sheets first
+  ['ncAddrSheet','ncRecvSheet'].forEach(id => {
+    const s = document.getElementById(id);
+    if (s) { s.classList.remove('nc-sheet-open'); setTimeout(() => { s.style.display='none'; }, 300); }
+  });
+  ['ncAddrOverlay','ncRecvOverlay'].forEach(id => {
+    const o = document.getElementById(id);
+    if (o) o.classList.remove('nc-ov-on');
+  });
   document.getElementById('payOverlay').classList.remove('open');
   document.getElementById('payModal').classList.remove('open');
   document.body.style.overflow = '';

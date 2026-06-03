@@ -1644,9 +1644,6 @@
       <div class="nc-card">
         <div class="nc-card-hdr">
           <span class="nc-card-title">Address</span>
-          <button class="nc-switch-btn" onclick="ckShowLockerSheet()">
-            <i class="fas fa-right-left"></i> Switch to Locker / Pickup Point
-          </button>
         </div>
         <div class="nc-addr-row" onclick="ckOpenAddrSheet()">
           <div class="nc-pin-wrap"><i class="fas fa-location-dot"></i></div>
@@ -1971,11 +1968,7 @@
   <div class="nc-overlay" id="ncAddrOverlay" onclick="ckCloseAddrSheet()"></div>
   <div class="nc-sheet" id="ncAddrSheet" style="display:none">
     <div class="nc-sheet-drag"></div>
-    <div class="nc-tab-row">
-      <button class="nc-tab nc-tab-on" id="ncTabAddr" onclick="ckSheetTab('Addr')">Address</button>
-      <button class="nc-tab" id="ncTabLocker" onclick="ckSheetTab('Locker')">Locker / Pickup</button>
-    </div>
-    <div class="nc-add-addr-row" onclick="closePayment();setTimeout(openLocation,300)">
+    <div class="nc-add-addr-row" onclick="ckCloseAddrSheet();closePayment();setTimeout(openLocation,350)">
       <i class="fas fa-plus nc-add-ico"></i>
       <span class="nc-add-txt">Add new address</span>
       <i class="fas fa-chevron-right nc-add-chev"></i>
