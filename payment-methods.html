@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payment Methods — ExGlobal</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design tokens ── */
+    :root {
+      --bg:        #f4f6fb;
+      --bg2:       #eef0f7;
+      --surface:   #ffffff;
+      --surface2:  #f9fafc;
+      --border:    #e4e7f0;
+      --border2:   #d0d4e8;
+      --text:      #0f1022;
+      --text2:     #5a6380;
+      --text3:     #9ca3b8;
+      --pink:      #e91e8c;
+      --pink-glow: rgba(233,30,140,.15);
+      --radius-sm: 10px;
+      --radius:    16px;
+      --radius-lg: 24px;
+      --shadow-xs: 0 1px 4px rgba(0,0,0,.05);
+      --shadow-sm: 0 2px 12px rgba(0,0,0,.06);
+      --shadow:    0 6px 28px rgba(0,0,0,.08);
+      --shadow-lg: 0 16px 56px rgba(0,0,0,.12);
+      --tr: .25s cubic-bezier(.4,0,.2,1);
+    }
+    [data-theme="dark"] {
+      --bg:        #080b14;
+      --bg2:       #0d1120;
+      --surface:   #111827;
+      --surface2:  #1a2035;
+      --border:    rgba(255,255,255,.07);
+      --border2:   rgba(255,255,255,.12);
+      --text:      #f0f2ff;
+      --text2:     #8b93b0;
+      --text3:     #4a5270;
+      --shadow-xs: 0 1px 4px rgba(0,0,0,.3);
+      --shadow-sm: 0 2px 12px rgba(0,0,0,.4);
+      --shadow:    0 6px 28px rgba(0,0,0,.5);
+      --shadow-lg: 0 16px 56px rgba(0,0,0,.7);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      transition: background .35s, color .35s;
+    }
+
+    /* ══════════════════════════════════════════
+       THEME TOGGLE
+    ══════════════════════════════════════════ */
+    .theme-toggle {
+      position: fixed; top: 20px; right: 20px; z-index: 999;
+      width: 46px; height: 46px; border-radius: 50%;
+      border: 1.5px solid var(--border2);
+      background: var(--surface);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      box-shadow: var(--shadow);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .theme-toggle:hover { transform: scale(1.08) rotate(15deg); box-shadow: var(--shadow-lg); }
+
+    /* ══════════════════════════════════════════
+       SECTION WRAPPER
+    ══════════════════════════════════════════ */
+    .pm-section {
+      padding: 80px 24px 100px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    .pm-header {
+      text-align: center;
+      margin-bottom: 52px;
+    }
+    .pm-eyebrow {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: rgba(233,30,140,.08);
+      border: 1px solid rgba(233,30,140,.2);
+      color: var(--pink);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; margin-bottom: 20px;
+    }
+    .pm-eyebrow svg { flex-shrink: 0; }
+    .pm-title {
+      font-size: clamp(30px, 5vw, 48px);
+      font-weight: 900; line-height: 1.15;
+      letter-spacing: -.5px;
+      background: linear-gradient(135deg, var(--text) 40%, var(--pink));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 14px;
+    }
+    .pm-subtitle {
+      font-size: 16px; color: var(--text2); line-height: 1.65;
+      max-width: 560px; margin: 0 auto 36px;
+    }
+
+    /* ── Trust pills ── */
+    .pm-trust {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; flex-wrap: wrap;
+    }
+    .trust-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 7px 15px;
+      border-radius: 100px;
+      font-size: 11.5px; font-weight: 700; letter-spacing: .3px;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .trust-pill:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
+    .trust-pill.green { background: rgba(22,163,74,.08); border-color: rgba(22,163,74,.2); color: #16a34a; }
+    .trust-pill.blue  { background: rgba(37,99,235,.08); border-color: rgba(37,99,235,.2);  color: #2563eb; }
+    .trust-pill.gold  { background: rgba(234,179,8,.08);  border-color: rgba(234,179,8,.25);  color: #b45309; }
+    .trust-pill.gray  { background: var(--surface); border-color: var(--border2); color: var(--text2); }
+
+    /* ══════════════════════════════════════════
+       PAYMENT GRID
+    ══════════════════════════════════════════ */
+    .pm-divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 48px 0 28px;
+    }
+    .pm-divider-line {
+      flex: 1; height: 1px; background: var(--border);
+    }
+    .pm-divider-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--text3);
+      white-space: nowrap;
+    }
+
+    .pm-group { margin-bottom: 12px; }
+    .pm-group-title {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--text3);
+      margin-bottom: 16px; padding-left: 4px;
+    }
+
+    .pm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 12px;
+    }
+
+    /* ── Individual payment card ── */
+    .pm-card {
+      position: relative;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 16px 16px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      cursor: default;
+      min-height: 108px;
+      overflow: hidden;
+      transition: transform var(--tr), box-shadow var(--tr), border-color var(--tr);
+      box-shadow: var(--shadow-sm);
+    }
+    .pm-card::after {
+      content: '';
+      position: absolute; inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity var(--tr);
+      pointer-events: none;
+    }
+    .pm-card:hover { transform: translateY(-5px); }
+    .pm-card:hover::after { opacity: 1; }
+
+    /* ── Logo container ── */
+    .pm-logo {
+      width: 90px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .pm-logo svg { width: 100%; height: 100%; display: block; }
+
+    /* ── Card label ── */
+    .pm-label {
+      font-size: 10.5px; font-weight: 700;
+      color: var(--text3); letter-spacing: .3px;
+      text-align: center; line-height: 1.3;
+    }
+
+    /* ── Popular badge ── */
+    .pm-popular {
+      position: absolute; top: 8px; right: 8px;
+      background: var(--pink);
+      color: #fff;
+      font-size: 8px; font-weight: 800; letter-spacing: .5px;
+      text-transform: uppercase;
+      border-radius: 100px;
+      padding: 2px 7px;
+    }
+    .pm-popular.bnpl {
+      background: linear-gradient(135deg,#F97316,#EC4899);
+    }
+
+    /* ══════════════════════════════════════════
+       BRAND HOVER EFFECTS
+    ══════════════════════════════════════════ */
+    /* Visa */
+    .card-visa { --brand: #1A1F71; }
+    .card-visa:hover { border-color: #1A1F71; box-shadow: 0 12px 44px rgba(26,31,113,.14); }
+    .card-visa::after { background: radial-gradient(ellipse at 50% 0%, rgba(26,31,113,.06), transparent 70%); }
+
+    /* Mastercard */
+    .card-mc { --brand: #EB001B; }
+    .card-mc:hover { border-color: #EB001B; box-shadow: 0 12px 44px rgba(235,0,27,.12); }
+    .card-mc::after { background: radial-gradient(ellipse at 30% 50%, rgba(235,0,27,.06), rgba(247,158,27,.04), transparent 70%); }
+
+    /* Amex */
+    .card-amex { --brand: #016FD0; }
+    .card-amex:hover { border-color: #016FD0; box-shadow: 0 12px 44px rgba(1,111,208,.15); }
+    .card-amex::after { background: radial-gradient(ellipse at 50% 0%, rgba(1,111,208,.08), transparent 70%); }
+
+    /* Discover */
+    .card-discover { --brand: #F76F20; }
+    .card-discover:hover { border-color: #F76F20; box-shadow: 0 12px 44px rgba(247,111,32,.14); }
+    .card-discover::after { background: radial-gradient(ellipse at 80% 50%, rgba(247,111,32,.08), transparent 70%); }
+
+    /* Mada */
+    .card-mada { --brand: #005A9C; }
+    .card-mada:hover { border-color: #005A9C; box-shadow: 0 12px 44px rgba(0,90,156,.14); }
+    .card-mada::after { background: radial-gradient(ellipse at 50% 0%, rgba(0,90,156,.06), transparent 70%); }
+
+    /* Apple Pay */
+    .card-apple { --brand: #000; }
+    .card-apple:hover { border-color: #333; box-shadow: 0 12px 44px rgba(0,0,0,.18); }
+    .card-apple::after { background: radial-gradient(ellipse at 50% 0%, rgba(0,0,0,.06), transparent 70%); }
+
+    /* Google Pay */
+    .card-gpay { --brand: #4285F4; }
+    .card-gpay:hover { border-color: #4285F4; box-shadow: 0 12px 44px rgba(66,133,244,.15); }
+    .card-gpay::after { background: radial-gradient(ellipse at 50% 0%, rgba(66,133,244,.06), transparent 70%); }
+
+    /* Samsung */
+    .card-samsung { --brand: #1428A0; }
+    .card-samsung:hover { border-color: #1428A0; box-shadow: 0 12px 44px rgba(20,40,160,.14); }
+    .card-samsung::after { background: radial-gradient(ellipse at 50% 0%, rgba(20,40,160,.07), transparent 70%); }
+
+    /* PayPal */
+    .card-paypal { --brand: #003087; }
+    .card-paypal:hover { border-color: #0070BA; box-shadow: 0 12px 44px rgba(0,112,186,.15); }
+    .card-paypal::after { background: radial-gradient(ellipse at 50% 0%, rgba(0,48,135,.06), transparent 70%); }
+
+    /* STC Pay */
+    .card-stc { --brand: #6D2C8A; }
+    .card-stc:hover { border-color: #6D2C8A; box-shadow: 0 12px 44px rgba(109,44,138,.2); }
+    .card-stc::after { background: radial-gradient(ellipse at 50% 0%, rgba(109,44,138,.08), transparent 70%); }
+
+    /* UrPay */
+    .card-urpay { --brand: #E8290B; }
+    .card-urpay:hover { border-color: #E8290B; box-shadow: 0 12px 44px rgba(232,41,11,.14); }
+    .card-urpay::after { background: radial-gradient(ellipse at 50% 0%, rgba(232,41,11,.06), transparent 70%); }
+
+    /* Tabby */
+    .card-tabby { --brand: #3FEEA4; }
+    .card-tabby:hover { border-color: #3FEEA4; box-shadow: 0 12px 44px rgba(63,238,164,.2); }
+    .card-tabby::after { background: radial-gradient(ellipse at 50% 0%, rgba(63,238,164,.08), transparent 70%); }
+
+    /* Tamara */
+    .card-tamara { --brand: #F97316; }
+    .card-tamara:hover { border-color: #F97316; box-shadow: 0 12px 44px rgba(249,115,22,.15); }
+    .card-tamara::after { background: radial-gradient(ellipse at 50% 0%, rgba(249,115,22,.06), transparent 70%); }
+
+    /* ══════════════════════════════════════════
+       SECURITY STRIP
+    ══════════════════════════════════════════ */
+    .pm-security {
+      margin-top: 52px;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      box-shadow: var(--shadow-sm);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+    }
+    .sec-item {
+      display: flex; align-items: center; gap: 14px;
+    }
+    .sec-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; font-size: 20px;
+    }
+    .sec-icon.g { background: rgba(22,163,74,.1); }
+    .sec-icon.b { background: rgba(37,99,235,.1); }
+    .sec-icon.p { background: rgba(147,51,234,.1); }
+    .sec-icon.o { background: rgba(249,115,22,.1); }
+    .sec-text { flex: 1; }
+    .sec-title {
+      font-size: 13.5px; font-weight: 800; color: var(--text);
+      margin-bottom: 2px;
+    }
+    .sec-sub { font-size: 11.5px; color: var(--text2); line-height: 1.4; }
+
+    /* ══════════════════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════════════════ */
+    @media (max-width: 1024px) {
+      .pm-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+    @media (max-width: 768px) {
+      .pm-section { padding: 56px 16px 72px; }
+      .pm-grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+      .pm-card { min-height: 92px; padding: 16px 10px 12px; }
+      .pm-logo { width: 76px; height: 36px; }
+      .pm-security { grid-template-columns: repeat(2, 1fr); padding: 20px; gap: 18px; }
+    }
+    @media (max-width: 480px) {
+      .pm-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .pm-header { margin-bottom: 36px; }
+      .pm-security { grid-template-columns: 1fr; }
+      .trust-pill { font-size: 10.5px; padding: 6px 12px; }
+    }
+
+    /* ── Shimmer entry animation ── */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .pm-card {
+      animation: cardIn .45s ease both;
+    }
+    .pm-card:nth-child(1)  { animation-delay: .04s; }
+    .pm-card:nth-child(2)  { animation-delay: .08s; }
+    .pm-card:nth-child(3)  { animation-delay: .12s; }
+    .pm-card:nth-child(4)  { animation-delay: .16s; }
+    .pm-card:nth-child(5)  { animation-delay: .20s; }
+    .pm-card:nth-child(6)  { animation-delay: .24s; }
+    .pm-card:nth-child(7)  { animation-delay: .28s; }
+    .pm-card:nth-child(8)  { animation-delay: .32s; }
+    .pm-card:nth-child(9)  { animation-delay: .36s; }
+    .pm-card:nth-child(10) { animation-delay: .40s; }
+    .pm-card:nth-child(11) { animation-delay: .44s; }
+    .pm-card:nth-child(12) { animation-delay: .48s; }
+    .pm-card:nth-child(13) { animation-delay: .52s; }
+
+    /* Dark mode adjustments for light-bg logos */
+    [data-theme="dark"] .card-visa .pm-logo,
+    [data-theme="dark"] .card-discover .pm-logo,
+    [data-theme="dark"] .card-gpay .pm-logo,
+    [data-theme="dark"] .card-paypal .pm-logo,
+    [data-theme="dark"] .card-tabby .pm-logo {
+      background: rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Theme toggle -->
+  <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode">🌙</button>
+
+  <section class="pm-section">
+
+    <!-- ── Header ─────────────────────────── -->
+    <header class="pm-header">
+      <div class="pm-eyebrow">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Secure Checkout
+      </div>
+      <h1 class="pm-title">We Accept All Major<br>Payment Methods</h1>
+      <p class="pm-subtitle">Shop confidently with your preferred payment. All transactions are protected by bank-grade security and instant fraud detection.</p>
+      <div class="pm-trust">
+        <span class="trust-pill green">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+          SSL Secured
+        </span>
+        <span class="trust-pill green">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          256-bit Encrypted
+        </span>
+        <span class="trust-pill blue">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Instant Processing
+        </span>
+        <span class="trust-pill gold">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          PCI DSS Level 1
+        </span>
+        <span class="trust-pill gray">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          Easy Refunds
+        </span>
+      </div>
+    </header>
+
+    <!-- ── Cards & Digital Wallets ──────────── -->
+    <div class="pm-divider">
+      <div class="pm-divider-line"></div>
+      <span class="pm-divider-label">Cards &amp; Digital Wallets</span>
+      <div class="pm-divider-line"></div>
+    </div>
+
+    <div class="pm-grid" id="pmGrid">
+
+      <!-- ── VISA ── -->
+      <div class="pm-card card-visa">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <text x="45" y="34" text-anchor="middle" fill="#1A1F71"
+              font-size="36" font-weight="900" font-style="italic"
+              font-family="Arial,Helvetica,sans-serif" letter-spacing="-1.5">VISA</text>
+          </svg>
+        </div>
+        <span class="pm-label">Visa</span>
+      </div>
+
+      <!-- ── MASTERCARD ── -->
+      <div class="pm-card card-mc">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="33" cy="22" r="18" fill="#EB001B"/>
+            <circle cx="57" cy="22" r="18" fill="#F79E1B"/>
+            <path d="M45,8.2a18,18 0 0,1 0,27.6A18,18 0 0,1 45,8.2z" fill="#FF5F00"/>
+          </svg>
+        </div>
+        <span class="pm-label">Mastercard</span>
+      </div>
+
+      <!-- ── AMERICAN EXPRESS ── -->
+      <div class="pm-card card-amex">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="90" height="44" rx="6" fill="#016FD0"/>
+            <text x="45" y="16" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1.2">AMERICAN</text>
+            <text x="45" y="27" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1.2">EXPRESS</text>
+            <text x="45" y="40" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif" letter-spacing="2.5">AMEX</text>
+          </svg>
+        </div>
+        <span class="pm-label">American Express</span>
+      </div>
+
+      <!-- ── DISCOVER ── -->
+      <div class="pm-card card-discover">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <text x="30" y="27" text-anchor="middle" fill="#231F20"
+              font-size="11" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">DISCOVER</text>
+            <circle cx="75" cy="22" r="18" fill="#F76F20"/>
+          </svg>
+        </div>
+        <span class="pm-label">Discover</span>
+      </div>
+
+      <!-- ── MADA ── -->
+      <div class="pm-card card-mada">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="90" height="44" rx="6" fill="#005A9C"/>
+            <path d="M0 34 H90 V38 Q90 44 84 44 H6 Q0 44 0 38 Z" fill="#00A14B"/>
+            <text x="45" y="22" text-anchor="middle" fill="#fff" font-size="11" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".8">مدى</text>
+            <text x="45" y="34" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".8">mada</text>
+          </svg>
+        </div>
+        <span class="pm-label">Mada</span>
+      </div>
+
+      <!-- ── APPLE PAY ── -->
+      <div class="pm-card card-apple">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="90" height="44" rx="6" fill="#000"/>
+            <!-- Simplified Apple glyph -->
+            <g transform="translate(15,5) scale(0.72)">
+              <path d="M23.5,7.5c-0.1-2.2,1.5-4.3,3.1-5.6c-1.7-2.1-4.2-2.6-5.2-2.7C19.2-1,17.2,0.3,16.1,0.3
+                c-1.1,0-2.9-1.3-4.8-1.2C8.5-0.8,5.8,1.1,4.3,4c-3,5.8-0.8,14.4,2.1,19.1c1.4,2.1,3.1,4.4,5.3,4.3
+                c2.1-0.1,2.9-1.4,5.5-1.4c2.5,0,3.3,1.4,5.5,1.3c2.3-0.1,3.7-2.1,5.1-4.2c1-1.5,1.8-3.1,2.3-4.8
+                C26,17.1,23.5,14.7,23.5,7.5z M19.9,3.7c1.2-1.5,1.9-3.5,1.7-5.5c-1.9,0.2-3.8,1.2-5,2.7C15.4,2.3,14.6,4.2,14.8,6
+                C16.8,6.1,18.7,5.1,19.9,3.7z" fill="white" transform="translate(14,10) scale(0.75)"/>
+            </g>
+            <text x="63" y="28" text-anchor="middle" fill="#fff"
+              font-size="17" font-weight="400"
+              font-family="-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',sans-serif"
+              letter-spacing=".5">Pay</text>
+          </svg>
+        </div>
+        <span class="pm-label">Apple Pay</span>
+      </div>
+
+      <!-- ── GOOGLE PAY ── -->
+      <div class="pm-card card-gpay">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <!-- Google G — 4-color arc segments -->
+            <clipPath id="gc"><circle cx="21" cy="22" r="14"/></clipPath>
+            <!-- Blue right -->
+            <path d="M21,22 L35,22 A14,14 0 0,0 29,10 Z" fill="#4285F4"/>
+            <!-- Red top -->
+            <path d="M21,22 L29,10 A14,14 0 0,0 13,10 Z" fill="#EA4335"/>
+            <!-- Yellow left -->
+            <path d="M21,22 L13,10 A14,14 0 0,0 7,22 Z" fill="#FBBC05"/>
+            <!-- Green bottom -->
+            <path d="M21,22 L7,22 A14,14 0 0,0 35,22 Z" fill="#34A853"/>
+            <!-- White inner cutout -->
+            <circle cx="21" cy="22" r="8" fill="white"/>
+            <!-- Blue right bar inside G -->
+            <rect x="21" y="19" width="14" height="6" rx="3" fill="#4285F4"/>
+            <!-- Pay text -->
+            <text x="60" y="29" text-anchor="middle" fill="#5F6368"
+              font-size="18" font-weight="500" font-family="Arial,sans-serif">Pay</text>
+          </svg>
+        </div>
+        <span class="pm-label">Google Pay</span>
+      </div>
+
+      <!-- ── SAMSUNG WALLET ── -->
+      <div class="pm-card card-samsung">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#1428A0"/>
+                <stop offset="100%" stop-color="#0d1f8f"/>
+              </linearGradient>
+            </defs>
+            <rect width="90" height="44" rx="6" fill="url(#sg)"/>
+            <!-- Samsung wordmark style -->
+            <text x="45" y="20" text-anchor="middle" fill="#fff" font-size="10.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1">SAMSUNG</text>
+            <text x="45" y="35" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="9" font-weight="600" font-family="Arial,sans-serif" letter-spacing=".5">Wallet</text>
+          </svg>
+        </div>
+        <span class="pm-label">Samsung Wallet</span>
+      </div>
+
+      <!-- ── PAYPAL ── -->
+      <div class="pm-card card-paypal">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <text x="45" y="31" text-anchor="middle"
+              font-size="22" font-weight="900" font-style="italic"
+              font-family="Arial,Helvetica,sans-serif">
+              <tspan fill="#003087">Pay</tspan><tspan fill="#009CDE">Pal</tspan>
+            </text>
+          </svg>
+        </div>
+        <span class="pm-label">PayPal</span>
+      </div>
+
+      <!-- ── STC PAY ── -->
+      <div class="pm-card card-stc">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="90" height="44" rx="6" fill="#6D2C8A"/>
+            <!-- STC wave accent -->
+            <path d="M0 30 Q45 22 90 30 L90 44 Q45 36 0 44 Z" fill="rgba(255,255,255,.07)"/>
+            <text x="45" y="22" text-anchor="middle" fill="#fff"
+              font-size="16" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1">STC</text>
+            <text x="45" y="37" text-anchor="middle" fill="rgba(255,255,255,.85)"
+              font-size="10" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".5">Pay</text>
+          </svg>
+        </div>
+        <span class="pm-label">STC Pay</span>
+      </div>
+
+      <!-- ── URPAY ── -->
+      <div class="pm-card card-urpay">
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="urg" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#E8290B"/>
+                <stop offset="100%" stop-color="#FF6B35"/>
+              </linearGradient>
+            </defs>
+            <rect width="90" height="44" rx="6" fill="url(#urg)"/>
+            <text x="45" y="28" text-anchor="middle" fill="#fff"
+              font-size="19" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">urpay</text>
+          </svg>
+        </div>
+        <span class="pm-label">UrPay</span>
+      </div>
+
+      <!-- ── TABBY ── -->
+      <div class="pm-card card-tabby">
+        <span class="pm-popular bnpl">BNPL</span>
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <rect width="90" height="44" rx="6" fill="#3FEEA4"/>
+            <!-- Tabby paw mark -->
+            <circle cx="18" cy="25" r="5.5" fill="rgba(0,0,0,.18)"/>
+            <circle cx="11" cy="19" r="3.2" fill="rgba(0,0,0,.15)"/>
+            <circle cx="18" cy="15" r="3.2" fill="rgba(0,0,0,.15)"/>
+            <circle cx="25" cy="19" r="3.2" fill="rgba(0,0,0,.15)"/>
+            <text x="58" y="29" text-anchor="middle" fill="#0d2b1e"
+              font-size="18" font-weight="900" font-family="Arial,sans-serif">tabby</text>
+          </svg>
+        </div>
+        <span class="pm-label">Tabby</span>
+      </div>
+
+      <!-- ── TAMARA ── -->
+      <div class="pm-card card-tamara">
+        <span class="pm-popular bnpl">BNPL</span>
+        <div class="pm-logo">
+          <svg viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tg" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#F97316"/>
+                <stop offset="100%" stop-color="#EC4899"/>
+              </linearGradient>
+            </defs>
+            <rect width="90" height="44" rx="6" fill="url(#tg)"/>
+            <text x="45" y="30" text-anchor="middle" fill="#fff"
+              font-size="21" font-weight="900" font-style="italic"
+              font-family="Arial,Helvetica,sans-serif" letter-spacing="-.4">tamara</text>
+          </svg>
+        </div>
+        <span class="pm-label">Tamara</span>
+      </div>
+
+    </div><!-- /pm-grid -->
+
+    <!-- ── BNPL callout ── -->
+    <div class="pm-divider" style="margin-top:40px">
+      <div class="pm-divider-line"></div>
+      <span class="pm-divider-label">Buy Now, Pay Later</span>
+      <div class="pm-divider-line"></div>
+    </div>
+
+    <div style="
+      background: linear-gradient(135deg, rgba(249,115,22,.06), rgba(236,72,153,.06));
+      border: 1.5px solid rgba(249,115,22,.18);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 0;
+    ">
+      <div style="font-size:28px; line-height:1">🛍️</div>
+      <div style="flex:1; min-width:200px">
+        <div style="font-size:14px; font-weight:800; color:var(--text); margin-bottom:3px">
+          Split Your Payment — 0% Interest
+        </div>
+        <div style="font-size:12.5px; color:var(--text2)">
+          Use Tabby or Tamara to pay in 4 easy installments at checkout. No hidden fees, instant approval.
+        </div>
+      </div>
+      <div style="display:flex; gap:8px; flex-shrink:0">
+        <div style="background:rgba(63,238,164,.15); border:1.5px solid rgba(63,238,164,.3); border-radius:8px; padding:6px 12px; font-size:11px; font-weight:800; color:#0d9150;">
+          tabby
+        </div>
+        <div style="background:linear-gradient(135deg,rgba(249,115,22,.12),rgba(236,72,153,.1)); border:1.5px solid rgba(249,115,22,.3); border-radius:8px; padding:6px 12px; font-size:11px; font-weight:800; color:#c2400e;">
+          tamara
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Security strip ── -->
+    <div class="pm-security">
+      <div class="sec-item">
+        <div class="sec-icon g">🔒</div>
+        <div class="sec-text">
+          <div class="sec-title">SSL / TLS Encrypted</div>
+          <div class="sec-sub">All data in transit is fully encrypted end-to-end</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon b">🛡️</div>
+        <div class="sec-text">
+          <div class="sec-title">PCI DSS Compliant</div>
+          <div class="sec-sub">Highest level of payment security standard</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon p">⚡</div>
+        <div class="sec-text">
+          <div class="sec-title">Instant Fraud Detection</div>
+          <div class="sec-sub">AI-powered 24/7 transaction monitoring</div>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon o">↩️</div>
+        <div class="sec-text">
+          <div class="sec-title">7-Day Easy Returns</div>
+          <div class="sec-sub">Full refund guaranteed, no questions asked</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <script>
+    /* ── Theme toggle ── */
+    const btn = document.getElementById('themeBtn');
+    function applyTheme(dark) {
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+      btn.textContent = dark ? '☀️' : '🌙';
+      localStorage.setItem('pm-theme', dark ? 'dark' : 'light');
+    }
+    btn.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') !== 'dark');
+    });
+    // Restore saved or system preference
+    const saved = localStorage.getItem('pm-theme');
+    if (saved) {
+      applyTheme(saved === 'dark');
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      applyTheme(true);
+    }
+
+    /* ── Scroll-triggered reveal ── */
+    if ('IntersectionObserver' in window) {
+      const cards = document.querySelectorAll('.pm-card');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.style.animationPlayState = 'running';
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      cards.forEach(c => {
+        c.style.animationPlayState = 'paused';
+        obs.observe(c);
+      });
+    }
+  </script>
+</body>
+</html>
