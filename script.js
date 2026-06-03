@@ -5363,6 +5363,10 @@ function openPayment() {
   }, 320);
 }
 
+function togglePayInfo() {
+  document.getElementById('ckPayInfoWrap')?.classList.toggle('open');
+}
+
 function closePayment() {
   // Close any open nc-sheets first
   ['ncAddrSheet','ncRecvSheet'].forEach(id => {

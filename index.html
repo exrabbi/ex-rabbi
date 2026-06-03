@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=348" />
+  <link rel="stylesheet" href="styles.css?v=349" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1917,14 +1917,29 @@
       </div>
 
       <!-- 6. PAYMENT SUMMARY -->
-      <div class="ck-sec">
-        <div class="ck-sec-lbl">Payment summary</div>
+      <div class="ck-sec ck-summ-card">
+        <div class="ck-sec-lbl ck-summ-ttl"><i class="fas fa-receipt ck-summ-ttl-ico"></i> Payment summary</div>
         <div class="ck-summ">
-          <div class="ck-summ-row"><span>Subtotal</span><div class="ck-summ-right"><span class="ck-summ-orig" id="payOriginalTotal"></span><span id="paySubtotal"></span></div></div>
-          <div class="ck-summ-row" id="payItemDiscountRow"><span><i class="fas fa-tag" style="color:#e91e8c"></i> Discounts</span><span id="payItemDiscount" style="color:#0a8f4a">-0</span></div>
-          <div class="ck-summ-row" id="payDiscountRow" style="display:none"><span id="payDiscountLabel">Coupon</span><span id="payDiscount" style="color:#0a8f4a">-0</span></div>
-          <div class="ck-summ-row"><span>Shipping Fee</span><span class="pay-delivery-fee" id="payDelivery">SAR 17</span></div>
-          <div class="ck-summ-row" id="payVatRow" style="display:none"><span id="payVatLabel">VAT (15%)</span><span id="payVat" style="color:#888"></span></div>
+          <div class="ck-summ-row">
+            <span class="ck-sr-label"><span class="ck-sr-ico" style="--ico-bg:#eff6ff;--ico-c:#3b82f6"><i class="fas fa-bag-shopping"></i></span>Subtotal</span>
+            <div class="ck-summ-right"><span class="ck-summ-orig" id="payOriginalTotal"></span><span id="paySubtotal"></span></div>
+          </div>
+          <div class="ck-summ-row" id="payItemDiscountRow">
+            <span class="ck-sr-label"><span class="ck-sr-ico" style="--ico-bg:#f0fdf4;--ico-c:#16a34a"><i class="fas fa-tag"></i></span>Discounts</span>
+            <span id="payItemDiscount" class="ck-val-disc">-0</span>
+          </div>
+          <div class="ck-summ-row" id="payDiscountRow" style="display:none">
+            <span class="ck-sr-label"><span class="ck-sr-ico" style="--ico-bg:#f0fdf4;--ico-c:#16a34a"><i class="fas fa-ticket"></i></span><span id="payDiscountLabel">Coupon</span></span>
+            <span id="payDiscount" class="ck-val-disc">-0</span>
+          </div>
+          <div class="ck-summ-row">
+            <span class="ck-sr-label"><span class="ck-sr-ico" style="--ico-bg:#fff7ed;--ico-c:#f97316"><i class="fas fa-truck"></i></span>Shipping Fee</span>
+            <span class="pay-delivery-fee" id="payDelivery">SAR 17</span>
+          </div>
+          <div class="ck-summ-row" id="payVatRow" style="display:none">
+            <span class="ck-sr-label"><span class="ck-sr-ico" style="--ico-bg:#f5f3ff;--ico-c:#7c3aed"><i class="fas fa-percent"></i></span><span id="payVatLabel">VAT (15%)</span></span>
+            <span id="payVat" class="ck-val-vat"></span>
+          </div>
           <div class="ck-summ-divider"></div>
           <div class="ck-summ-row ck-summ-total"><span>Total <small class="ck-incl-vat">Incl. VAT</small></span><strong id="payTotal">0</strong></div>
         </div>
@@ -1937,20 +1952,67 @@
         <i class="fas fa-chevron-right" style="color:#ccc;font-size:13px;margin-left:auto"></i>
       </div>
 
-      <!-- Safe payment bar -->
-      <div class="ck-safe-bar">
-        <i class="fas fa-shield-halved" style="color:#e91e8c"></i>
-        <span>Pay safe &amp; secure</span>
-        <span class="psb psb-visa">VISA</span>
-        <span class="psb psb-mc"><svg width="24" height="15" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/></svg></span>
-        <span class="psb psb-amex">AMEX</span>
-      </div>
-      <!-- Trust strip -->
-      <div class="ck-trust-strip">
-        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SSL SECURED</div>
-        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SAFE CHECKOUT</div>
-        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> PRIVACY PROTECTED</div>
-        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> EASY RETURNS</div>
+      <!-- Payment info accordion -->
+      <div class="ck-payinfo-wrap" id="ckPayInfoWrap">
+
+        <!-- Collapsed bar — always visible, tap to expand -->
+        <div class="ck-payinfo-bar" onclick="togglePayInfo()">
+          <i class="fas fa-shield-halved" style="color:#e91e8c;font-size:16px;flex-shrink:0"></i>
+          <span class="ck-payinfo-label">Pay safe &amp; secure</span>
+          <!-- mini logo strip -->
+          <div class="ck-payinfo-logos">
+            <span class="psb psb-visa">VISA</span>
+            <span class="psb psb-mc"><svg width="22" height="14" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/></svg></span>
+            <span class="psb psb-amex">AMEX</span>
+            <span class="psb psb-more">+10</span>
+          </div>
+          <i class="fas fa-chevron-down ck-payinfo-chev" id="payInfoChev"></i>
+        </div>
+
+        <!-- Expandable panel -->
+        <div class="ck-payinfo-panel" id="payInfoPanel">
+          <div class="ck-payinfo-divider"></div>
+
+          <!-- All payment method logos grid -->
+          <div class="ck-pmi-grid">
+
+            <div class="ck-pmi"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="28" text-anchor="middle" fill="#1A1F71" font-size="24" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text></svg></div>
+
+            <div class="ck-pmi"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="20" r="14" fill="#EB001B"/><circle cx="52" cy="20" r="14" fill="#F79E1B"/><path d="M40,8.6a14,14 0 0,1 0,22.8A14,14 0 0,1 40,8.6z" fill="#FF5F00"/></svg></div>
+
+            <div class="ck-pmi" style="background:#016FD0"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="15" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">AMERICAN</text><text x="40" y="23" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">EXPRESS</text><text x="40" y="34" text-anchor="middle" fill="#fff" font-size="10" font-weight="900" font-family="Arial,sans-serif" letter-spacing="2">AMEX</text></svg></div>
+
+            <div class="ck-pmi"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="26" y="23" text-anchor="middle" fill="#231F20" font-size="9" font-weight="900" font-family="Arial,sans-serif">DISCOVER</text><circle cx="68" cy="20" r="15" fill="#F76F20"/></svg></div>
+
+            <div class="ck-pmi" style="background:#005A9C"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><path d="M0 31H80V35Q80 40 74 40H6Q0 40 0 35Z" fill="#00A14B"/><text x="40" y="20" text-anchor="middle" fill="#fff" font-size="9" font-family="Arial,sans-serif" font-weight="600">مدى</text><text x="40" y="31" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-style="italic" font-family="Arial,sans-serif">mada</text></svg></div>
+
+            <div class="ck-pmi" style="background:#000"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="42" y="25" text-anchor="middle" fill="#fff" font-size="14" font-weight="400" font-family="-apple-system,BlinkMacSystemFont,sans-serif" letter-spacing=".3"> Pay</text><text x="16" y="26" text-anchor="middle" fill="#fff" font-size="17" font-family="Arial,sans-serif"></text></svg></div>
+
+            <div class="ck-pmi"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><clipPath id="gcx"><circle cx="19" cy="20" r="12"/></clipPath><path d="M19,20 L31,20 A12,12 0 0,0 25.4,9.6Z" fill="#4285F4"/><path d="M19,20 L25.4,9.6 A12,12 0 0,0 12.6,9.6Z" fill="#EA4335"/><path d="M19,20 L12.6,9.6 A12,12 0 0,0 7,20Z" fill="#FBBC05"/><path d="M19,20 L7,20 A12,12 0 0,0 31,20Z" fill="#34A853"/><circle cx="19" cy="20" r="7" fill="white"/><rect x="19" y="17" width="12" height="6" rx="3" fill="#4285F4"/><text x="54" y="24" text-anchor="middle" fill="#5F6368" font-size="14" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg></div>
+
+            <div class="ck-pmi" style="background:#1428A0"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="18" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">SAMSUNG</text><text x="40" y="31" text-anchor="middle" fill="rgba(255,255,255,.75)" font-size="8" font-weight="600" font-family="Arial,sans-serif">Wallet</text></svg></div>
+
+            <div class="ck-pmi"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="27" text-anchor="middle" font-size="18" font-weight="900" font-style="italic" font-family="Arial,sans-serif"><tspan fill="#003087">Pay</tspan><tspan fill="#009CDE">Pal</tspan></text></svg></div>
+
+            <div class="ck-pmi" style="background:#6D2C8A"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="19" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif">STC</text><text x="40" y="32" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="9" font-weight="700" font-family="Arial,sans-serif">Pay</text></svg></div>
+
+            <div class="ck-pmi" style="background:linear-gradient(135deg,#E8290B,#FF6B35)"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-family="Arial,sans-serif">urpay</text></svg></div>
+
+            <div class="ck-pmi" style="background:#3FEEA4"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><circle cx="15" cy="22" r="5" fill="rgba(0,0,0,.15)"/><circle cx="10" cy="17" r="3" fill="rgba(0,0,0,.12)"/><circle cx="15" cy="13" r="3" fill="rgba(0,0,0,.12)"/><circle cx="20" cy="17" r="3" fill="rgba(0,0,0,.12)"/><text x="52" y="25" text-anchor="middle" fill="#0d2b1e" font-size="14" font-weight="900" font-family="Arial,sans-serif">tabby</text></svg></div>
+
+            <div class="ck-pmi" style="background:linear-gradient(135deg,#F97316,#EC4899)"><svg viewBox="0 0 80 40" xmlns="http://www.w3.org/2000/svg"><text x="40" y="26" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.3">tamara</text></svg></div>
+
+          </div>
+
+          <!-- Trust badges -->
+          <div class="ck-trust-strip">
+            <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SSL SECURED</div>
+            <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SAFE CHECKOUT</div>
+            <div class="ck-trust-item"><i class="fas fa-circle-check"></i> PRIVACY PROTECTED</div>
+            <div class="ck-trust-item"><i class="fas fa-circle-check"></i> EASY RETURNS</div>
+          </div>
+        </div>
+
       </div>
       <div style="height:90px"></div>
       </div><!-- /ckPg3 -->
@@ -2818,7 +2880,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=297"></script>
+  <script src="script.js?v=298"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

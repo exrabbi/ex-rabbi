@@ -11350,6 +11350,199 @@ body:has(#authModal.open) .hc-fab {
 .ck-pm[style*="display:none"] { display: none !important; }
 
 /* ════════════════════════════════════════════════════════════════
+   PAYMENT SUMMARY — Premium redesign (v349)
+   ════════════════════════════════════════════════════════════════ */
+.ck-summ-card {
+  background: linear-gradient(145deg, #fff5fc 0%, #ffffff 55%) !important;
+  border: 1.5px solid rgba(233,30,140,.09) !important;
+  box-shadow: 0 4px 18px rgba(233,30,140,.06) !important;
+}
+[data-theme="dark"] .ck-summ-card {
+  background: linear-gradient(145deg, #1f112a 0%, #13112a 100%) !important;
+  border-color: rgba(233,30,140,.14) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,.2) !important;
+}
+
+/* Section title with receipt icon */
+.ck-summ-ttl {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+.ck-summ-ttl-ico {
+  font-size: 14px !important;
+  color: #e91e8c !important;
+}
+
+/* Row label with colored icon badge */
+.ck-sr-label {
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+.ck-sr-ico {
+  width: 28px !important;
+  height: 28px !important;
+  border-radius: 8px !important;
+  background: var(--ico-bg, #f5f5f5) !important;
+  color: var(--ico-c, #888) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 11px !important;
+  flex-shrink: 0 !important;
+}
+[data-theme="dark"] .ck-sr-ico {
+  filter: brightness(0.85) !important;
+}
+
+/* Row separators — solid thin */
+.ck-summ-row {
+  border-bottom: 1px solid rgba(0,0,0,.045) !important;
+  padding: 10px 0 !important;
+}
+[data-theme="dark"] .ck-summ-row { border-bottom-color: rgba(255,255,255,.06) !important; }
+
+/* Colored values */
+.ck-val-disc { color: #16a34a !important; font-weight: 700 !important; font-size: 14px !important; }
+.ck-val-vat  { color: #888 !important; font-size: 13px !important; }
+.pay-delivery-fee { color: #e91e8c !important; font-weight: 700 !important; }
+
+/* Total row — highlighted pill */
+.ck-summ-total {
+  background: linear-gradient(135deg, rgba(233,30,140,.07), rgba(233,30,140,.02)) !important;
+  border-radius: 12px !important;
+  padding: 12px 12px !important;
+  margin: 6px -4px 0 !important;
+  border-bottom: none !important;
+}
+.ck-summ-total span { font-size: 15px !important; font-weight: 700 !important; color: #111 !important; }
+[data-theme="dark"] .ck-summ-total span { color: #eee !important; }
+.ck-summ-total strong { font-size: 19px !important; color: #e91e8c !important; font-weight: 900 !important; }
+.ck-incl-vat { font-size: 10.5px !important; color: #e91e8c !important; opacity: .6 !important; font-weight: 600 !important; }
+
+/* ════════════════════════════════════════════════════════════════
+   PAYMENT INFO ACCORDION (v349)
+   ════════════════════════════════════════════════════════════════ */
+.ck-payinfo-wrap {
+  margin: 0 0 10px !important;
+  background: #fff !important;
+  border-radius: 14px !important;
+  border: 1.5px solid #efefef !important;
+  overflow: hidden !important;
+}
+[data-theme="dark"] .ck-payinfo-wrap {
+  background: #13112a !important;
+  border-color: rgba(255,255,255,.07) !important;
+}
+.ck-payinfo-bar {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  padding: 13px 15px !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+.ck-payinfo-label {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #111 !important;
+  flex-shrink: 0 !important;
+}
+[data-theme="dark"] .ck-payinfo-label { color: #eee !important; }
+.ck-payinfo-logos {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  flex: 1 !important;
+  overflow: hidden !important;
+}
+.psb {
+  font-size: 8.5px !important;
+  font-weight: 900 !important;
+  font-style: italic !important;
+  letter-spacing: .3px !important;
+  padding: 3px 5px !important;
+  border-radius: 4px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+}
+.psb-visa  { background: #1A1F71 !important; color: #fff !important; }
+.psb-mc    { background: #fff !important; border: 1px solid #eee !important; padding: 2px 3px !important; }
+.psb-amex  { background: #016FD0 !important; color: #fff !important; }
+.psb-more  { background: #f5f5f5 !important; color: #555 !important; border-radius: 20px !important; padding: 3px 8px !important; font-style: normal !important; font-size: 10px !important; }
+[data-theme="dark"] .psb-mc   { background: #1e1c38 !important; border-color: rgba(255,255,255,.1) !important; }
+[data-theme="dark"] .psb-more { background: rgba(255,255,255,.08) !important; color: #bbb !important; }
+.ck-payinfo-chev {
+  color: #ccc !important;
+  font-size: 12px !important;
+  flex-shrink: 0 !important;
+  transition: transform .3s cubic-bezier(.34,1.56,.64,1) !important;
+}
+.ck-payinfo-wrap.open .ck-payinfo-chev { transform: rotate(180deg) !important; }
+
+/* Expandable panel (max-height slide) */
+.ck-payinfo-panel {
+  max-height: 0 !important;
+  overflow: hidden !important;
+  transition: max-height .38s ease !important;
+}
+.ck-payinfo-wrap.open .ck-payinfo-panel { max-height: 440px !important; }
+.ck-payinfo-divider { height: 1px !important; background: #f0f0f0 !important; margin: 0 14px !important; }
+[data-theme="dark"] .ck-payinfo-divider { background: rgba(255,255,255,.06) !important; }
+
+/* 4-col payment logo mini grid */
+.ck-pmi-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 7px !important;
+  padding: 12px 12px 8px !important;
+}
+.ck-pmi {
+  border-radius: 10px !important;
+  border: 1px solid #f0f0f0 !important;
+  background: #fafafa !important;
+  height: 34px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  overflow: hidden !important;
+  padding: 3px !important;
+}
+.ck-pmi svg { width: 100% !important; height: 100% !important; display: block !important; }
+[data-theme="dark"] .ck-pmi {
+  border-color: rgba(255,255,255,.07) !important;
+  background: rgba(255,255,255,.04) !important;
+}
+
+/* Trust badge strip */
+.ck-trust-strip {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  padding: 6px 12px 12px !important;
+}
+.ck-trust-item {
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  color: #16a34a !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  background: #f0fdf4 !important;
+  border-radius: 20px !important;
+  padding: 4px 9px !important;
+  letter-spacing: .3px !important;
+}
+[data-theme="dark"] .ck-trust-item {
+  background: rgba(22,163,74,.12) !important;
+  color: #4ade80 !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
    Abandoned Cart Popup — Premium redesign (v194)
    ════════════════════════════════════════════════════════════════ */
 /* ── Cart Abandonment Popup — Premium Dark Redesign ── */
