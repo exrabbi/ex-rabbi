@@ -21733,3 +21733,22 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   font-size: 13px !important;
   border-radius: 14px !important;
 }
+
+/* Nationality dropdown (v350) */
+.prof-nat-sel {
+  width: 100% !important;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  font-family: inherit !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  line-height: 1.4 !important;
+}
+[data-theme="dark"] .prof-nat-sel { color: #eee !important; }
+.prof-nat-sel option { background: #fff; color: #111; font-size: 14px; }
+[data-theme="dark"] .prof-nat-sel option { background: #1e1c38; color: #eee; }
