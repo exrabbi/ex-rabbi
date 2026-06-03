@@ -1801,31 +1801,18 @@
         <!-- ── 💳 Cards ─────────────────────────────────── -->
         <div class="ck-pm-group-hdr"><i class="fas fa-credit-card"></i>Cards</div>
 
-        <div class="ck-pm" id="pmMada" onclick="selectPayMethod('mada')">
-          <div class="ck-pm-radio" id="checkMada"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/mada.svg" alt="mada" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info"><div class="ck-pm-name">mada</div><div class="ck-pm-sub">Saudi debit network</div></div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <div class="ck-pm" id="pmVisa" onclick="selectPayMethod('visa')">
-          <div class="ck-pm-radio" id="checkVisa"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/visa.svg" alt="Visa" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info"><div class="ck-pm-name">Visa</div><div class="ck-pm-sub">Credit / Debit card</div></div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <div class="ck-pm" id="pmMastercard" onclick="selectPayMethod('mastercard')">
-          <div class="ck-pm-radio" id="checkMastercard"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/mastercard.svg" alt="Mastercard" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info"><div class="ck-pm-name">Mastercard</div><div class="ck-pm-sub">Credit / Debit card</div></div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <div class="ck-pm" id="pmAmex" onclick="selectPayMethod('amex')">
-          <div class="ck-pm-radio" id="checkAmex"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/amex.svg" alt="American Express" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info"><div class="ck-pm-name">American Express</div><div class="ck-pm-sub">Credit card</div></div>
+        <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
+          <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-info ck-pm-info-card">
+            <div class="ck-pm-name">Credit / Debit Card</div>
+            <div class="ck-card-logos-row">
+              <img src="assets/payment/mada.svg"       alt="mada"       class="ck-cl-svg" loading="lazy">
+              <img src="assets/payment/visa.svg"        alt="Visa"        class="ck-cl-svg" loading="lazy">
+              <img src="assets/payment/mastercard.svg"  alt="Mastercard"  class="ck-cl-svg" loading="lazy">
+              <img src="assets/payment/amex.svg"        alt="Amex"        class="ck-cl-svg" loading="lazy">
+              <img src="assets/payment/discover.svg"    alt="Discover"    class="ck-cl-svg" loading="lazy">
+            </div>
+          </div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
@@ -2966,7 +2953,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=301"></script>
+  <script src="script.js?v=302"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

@@ -5581,8 +5581,8 @@ function ckSaveRecv() {
 
 function selectPayMethod(method) {
   selectedPayMethod = method;
-  const _cardMethods = ['mada','visa','mastercard','amex','card'];
-  ['whatsapp','paypal','card','mada','visa','mastercard','amex','apple','gpay','binance','stc','tabby','tamara'].forEach(m => {
+  const _cardMethods = ['card'];
+  ['whatsapp','paypal','card','apple','gpay','binance','stc','tabby','tamara'].forEach(m => {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
     if (pm) { pm.classList.remove('active'); pm.classList.remove('ck-pm-active'); }
@@ -5640,9 +5640,7 @@ function selectPayMethod(method) {
   const grandDisp2 = subtotalDisp2 + delDisp2;
   const methodLabel = {
     whatsapp: t('placeOrder'), paypal: 'PayPal',
-    card: t('cardName'), mada: 'Pay with mada',
-    visa: 'Pay with Visa', mastercard: 'Pay with Mastercard',
-    amex: 'Pay with Amex', apple: 'Apple Pay',
+    card: t('cardName'), apple: 'Apple Pay',
     gpay: 'Google Pay', tamara: 'Pay with Tamara',
     tabby: 'Pay with Tabby',
     binance: '⚡ Verify & Confirm Order',
@@ -5772,7 +5770,7 @@ function processPayment() {
       showToast('⚠️ PayPal is not connected. Please choose another payment method.');
     }
     return;
-  } else if (['card','mada','visa','mastercard','amex'].includes(selectedPayMethod)) {
+  } else if (selectedPayMethod === 'card') {
     const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
     const moyasarKey = s.moyasarPubKey || '';
     if (!moyasarKey) {
