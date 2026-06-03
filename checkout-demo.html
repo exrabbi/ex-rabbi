@@ -3,675 +3,543 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Secure Checkout</title>
+<title>Secure Checkout — SaudiaShop</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --brand:#1a1a2e;--accent:#e91e8c;--green:#16a34a;
-  --text:#1a1a2e;--sub:#6b7280;--border:#e5e7eb;
-  --bg:#f4f5f7;--white:#fff;--r:12px;
-  --sh:0 2px 10px rgba(0,0,0,.07);
+  --accent:#e91e8c;--brand:#1a1a2e;--green:#16a34a;
+  --sub:#6b7280;--border:#e5e7eb;--bg:#f4f5f7;--white:#fff;
+  --r:14px;--sh:0 2px 12px rgba(0,0,0,.07);
 }
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--brand);min-height:100vh}
+
+/* PAGE TRANSITION */
+.page{display:none;animation:fadeIn .3s ease}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* ── ACCEPT BANNER ── */
-.accept-banner{background:var(--white);padding:22px 20px 18px;text-align:center;border-bottom:1px solid var(--border)}
-.accept-banner .ab-label{font-size:11px;font-weight:700;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:12px}
-.accept-banner h1{font-size:20px;font-weight:800;color:var(--brand);margin-bottom:14px;letter-spacing:-.3px}
-.ab-logos{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.ab-logos svg{height:44px;width:auto;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.ab-secure{display:inline-flex;align-items:center;gap:7px;font-size:12.5px;color:var(--green);font-weight:600;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;padding:6px 14px}
-.ab-secure i{font-size:13px}
+.ab{background:var(--white);text-align:center;padding:20px 16px 16px;border-bottom:1px solid var(--border)}
+.ab-tag{font-size:10.5px;font-weight:700;color:var(--sub);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.ab h1{font-size:19px;font-weight:800;margin-bottom:12px;letter-spacing:-.3px}
+.ab-logos{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.ab-logos svg{height:42px;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.ab-enc{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:600;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:20px;padding:5px 14px}
 
-/* ── STORE HEADER ── */
-.co-header{background:var(--white);border-bottom:1px solid var(--border);padding:0 20px;height:58px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 1px 6px rgba(0,0,0,.05)}
-.co-logo{font-size:18px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
-.co-secure{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:600}
+/* ── HEADER ── */
+.hdr{background:var(--white);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-shadow:0 1px 5px rgba(0,0,0,.05)}
+.logo{font-size:18px;font-weight:800;background:linear-gradient(135deg,#e91e8c,#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.hdr-right{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--green);font-weight:600}
 
 /* ── STEPPER ── */
-.stepper{display:flex;align-items:center;justify-content:center;gap:0;padding:16px 20px;background:var(--white);border-bottom:1px solid var(--border)}
-.step{display:flex;align-items:center;gap:7px;font-size:13px;color:#aaa;font-weight:600;cursor:pointer;transition:color .2s}
-.step.done{color:var(--green)}
-.step.active{color:var(--accent)}
-.step-num{width:26px;height:26px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;transition:all .2s;background:#fff}
-.step.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
-.step.active .step-num{background:var(--accent);border-color:var(--accent);color:#fff}
-.step-line{width:40px;height:2px;background:#e5e7eb;flex-shrink:0;margin:0 4px}
-.step.done + .step-line{background:var(--green)}
-@media(max-width:480px){.step-label{display:none}.step-line{width:20px}}
+.stepper{background:var(--white);border-bottom:1px solid var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:center;gap:0}
+.stp{display:flex;align-items:center;gap:7px;font-size:13px;color:#bbb;font-weight:600;cursor:default}
+.stp.done{color:var(--green)}
+.stp.active{color:var(--accent)}
+.stp-n{width:26px;height:26px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;background:#fff;transition:all .25s}
+.stp.done .stp-n{background:var(--green);border-color:var(--green);color:#fff}
+.stp.active .stp-n{background:var(--accent);border-color:var(--accent);color:#fff}
+.stp-line{width:36px;height:2px;background:#e5e7eb;margin:0 4px;transition:background .3s}
+.stp.done+.stp-line{background:var(--green)}
+@media(max-width:480px){.stp-label{display:none}.stp-line{width:18px}}
 
-/* ── MAIN LAYOUT ── */
-.co-main{max-width:980px;margin:0 auto;padding:24px 16px 60px;display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
-@media(max-width:800px){.co-main{grid-template-columns:1fr}}
+/* ── MAIN GRID ── */
+.main{max-width:980px;margin:0 auto;padding:24px 16px 60px;display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media(max-width:800px){.main{grid-template-columns:1fr}.sum-card{display:none}}
 
-/* ── SECTION CARD ── */
-.sec-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden}
-.sec-card-head{padding:16px 20px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.sec-card-head-left{display:flex;align-items:center;gap:10px}
-.sec-card-head h3{font-size:14px;font-weight:700}
-.sch-num{width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sec-edit{font-size:12px;color:var(--accent);font-weight:600;cursor:pointer;text-decoration:none}
-.sec-card-body{padding:18px 20px}
+/* ── FORM CARD ── */
+.fc{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.fc-head{padding:18px 22px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.fc-head-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fc-head h2{font-size:15px;font-weight:700}
+.fc-body{padding:22px 22px 8px}
 
-/* ── FORM FIELDS ── */
-.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
-.fg:last-child{margin-bottom:0}
+/* ── FIELDS ── */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .fg label{font-size:11.5px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px}
-.fg input,.fg select{padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:14px;color:var(--text);background:#fafafa;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none}
+.fg input,.fg select{padding:11px 13px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--brand);background:#fafafa;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none}
 .fg input:focus,.fg select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(233,30,140,.1);background:#fff}
-.fg .ico-wrap{position:relative}
-.fg .ico-wrap input,.fg .ico-wrap select{padding-left:36px}
-.fg .ico-wrap .ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:#bbb;font-size:13px;pointer-events:none}
+.iw{position:relative}
+.iw input,.iw select{padding-left:38px}
+.iw .ic{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:#bbb;font-size:13px;pointer-events:none}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
 .phone-row{display:flex;gap:8px}
-.phone-row select{width:90px;flex-shrink:0;padding:10px 8px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;background:#fafafa;-webkit-appearance:none;outline:none}
-.phone-row .ico-wrap{flex:1}
-.save-row{display:flex;align-items:center;gap:9px;margin-top:4px;font-size:13px;color:var(--sub);cursor:pointer}
-.save-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer}
+.phone-row .dial{width:95px;flex-shrink:0;padding:11px 8px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;background:#fafafa;-webkit-appearance:none;outline:none;transition:border-color .2s}
+.phone-row .dial:focus{border-color:var(--accent)}
+.phone-row .iw{flex:1}
+.cb-row{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--sub);cursor:pointer;margin-bottom:14px}
+.cb-row input{width:16px;height:16px;accent-color:var(--accent)}
 
-/* ── PAYMENT METHODS ── */
-.pm-list{display:flex;flex-direction:column;gap:10px}
-.pm-item{border:1.5px solid var(--border);border-radius:11px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s;background:#fafafa}
-.pm-item:hover{border-color:rgba(233,30,140,.3)}
-.pm-item.active{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(233,30,140,.1)}
-.pm-row{display:flex;align-items:center;gap:12px;padding:12px 14px}
-.pm-radio{width:19px;height:19px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
-.pm-item.active .pm-radio{border-color:var(--accent);background:var(--accent)}
+/* ── SUBMIT SECTION ── */
+.fc-foot{padding:18px 22px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:10px}
+.sub-btn{width:100%;padding:14px;background:linear-gradient(135deg,#e91e8c,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 5px 18px rgba(233,30,140,.3);transition:transform .15s,box-shadow .15s}
+.sub-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(233,30,140,.38)}
+.sub-btn:active{transform:scale(.98)}
+.sub-btn.green{background:linear-gradient(135deg,#16a34a,#15803d);box-shadow:0 5px 18px rgba(22,163,74,.3)}
+.sub-btn.green:hover{box-shadow:0 9px 24px rgba(22,163,74,.38)}
+.back-link{text-align:center;font-size:13px;color:var(--sub);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px}
+.back-link:hover{color:var(--accent)}
+.sub-note{text-align:center;font-size:11.5px;color:var(--sub);display:flex;align-items:center;justify-content:center;gap:5px}
+.sub-note i{color:var(--green)}
+
+/* ── PAYMENT ITEMS ── */
+.pm-list{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
+.pm-item{border:1.5px solid var(--border);border-radius:12px;overflow:hidden;cursor:pointer;transition:border-color .2s,box-shadow .2s;background:#fafafa}
+.pm-item:hover{border-color:rgba(233,30,140,.35);background:#fff}
+.pm-item.sel{border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(233,30,140,.1)}
+.pm-row{display:flex;align-items:center;gap:12px;padding:13px 15px}
+.pm-rb{width:20px;height:20px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.pm-item.sel .pm-rb{border-color:var(--accent);background:var(--accent)}
 .pm-dot{width:7px;height:7px;border-radius:50%;background:#fff;transform:scale(0);transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
-.pm-item.active .pm-dot{transform:scale(1)}
-.pm-logo{width:52px;height:33px;border-radius:7px;border:1px solid #eee;overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#fff}
+.pm-item.sel .pm-dot{transform:scale(1)}
+.pm-logo{width:52px;height:33px;border-radius:7px;border:1px solid #eee;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:#fff}
 .pm-logo svg{width:100%;height:100%}
-.pm-txt{flex:1}
+.pm-info{flex:1}
 .pm-name{font-size:13.5px;font-weight:700}
 .pm-sub{font-size:11.5px;color:var(--sub);margin-top:1px}
-.pm-check{color:var(--accent);font-size:17px;opacity:0;transform:scale(.5);transition:all .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0}
-.pm-item.active .pm-check{opacity:1;transform:scale(1)}
-
-/* card logos strip */
-.card-logos{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
-.card-logos svg{height:20px;width:auto;border-radius:4px}
-
-/* card form inside pm-item */
-.card-form{display:none;padding:4px 14px 14px;border-top:1px solid #f0f0f0}
-.pm-item.active .card-form{display:block}
-.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.cf-row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-top:10px}
-.cf-fg{display:flex;flex-direction:column;gap:4px}
-.cf-fg label{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px}
-.cf-fg input{padding:9px 11px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;background:#f8f8f8;outline:none;transition:border-color .2s}
-.cf-fg input:focus{border-color:var(--accent);background:#fff}
-.cf-ssl{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--green);font-weight:600;margin-top:10px}
-.cf-ssl i{font-size:12px}
-
-/* alt pay buttons */
-.alt-pay-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
-.alt-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:11px;border:1.5px solid var(--border);border-radius:10px;cursor:pointer;font-size:13px;font-weight:700;background:#fff;transition:border-color .2s,box-shadow .2s}
-.alt-btn:hover{border-color:rgba(233,30,140,.35);box-shadow:0 3px 12px rgba(0,0,0,.07)}
-.alt-btn svg{height:20px;width:auto}
-
-/* ── PLACE ORDER ── */
-.place-wrap{margin-top:4px}
-.place-btn{width:100%;padding:14px;background:linear-gradient(135deg,#e91e8c,#7c3aed);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 5px 18px rgba(233,30,140,.35);transition:transform .15s,box-shadow .15s}
-.place-btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(233,30,140,.4)}
-.place-btn:active{transform:scale(.98)}
-.place-note{text-align:center;font-size:11.5px;color:var(--sub);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px}
-.place-note i{color:var(--green)}
+.pm-chk{color:var(--accent);font-size:17px;opacity:0;transform:scale(.5);transition:all .2s cubic-bezier(.34,1.56,.64,1);flex-shrink:0}
+.pm-item.sel .pm-chk{opacity:1;transform:scale(1)}
+.card-logos{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.card-logos svg{height:19px;border-radius:3px}
+.card-form{display:none;padding:0 15px 15px;border-top:1px solid #f0f0f0}
+.pm-item.sel .card-form{display:block}
+.cf-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.cf-grid3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin-top:10px}
+.cfg{display:flex;flex-direction:column;gap:4px}
+.cfg label{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.3px}
+.cfg input{padding:10px 12px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;background:#f8f8f8;outline:none;transition:border-color .2s;width:100%}
+.cfg input:focus{border-color:var(--accent);background:#fff}
+.ssl-note{display:flex;align-items:center;gap:6px;font-size:11.5px;color:var(--green);font-weight:600;margin-top:10px}
 
 /* ── ORDER SUMMARY ── */
 .sum-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh);position:sticky;top:16px;overflow:hidden}
-.sum-head{padding:16px 18px 13px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
-.sum-head i{color:var(--sub);font-size:13px}
-.sum-body{padding:16px 18px}
-.sum-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f7}
-.sum-item:last-child{border-bottom:none}
-.sum-thumb{width:48px;height:48px;border-radius:9px;background:linear-gradient(135deg,#f0f0f5,#e0e0ea);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid #eee}
-.sum-iinfo{flex:1;min-width:0}
-.sum-iname{font-size:12.5px;font-weight:700;line-height:1.3}
-.sum-iqty{font-size:11.5px;color:var(--sub);margin-top:2px}
-.sum-iprice{font-size:13px;font-weight:800;flex-shrink:0}
-.sum-line{border:none;border-top:1px solid var(--border);margin:4px 0}
-.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0}
-.sum-row .lbl{color:var(--sub)}
-.sum-row .free{color:var(--green);font-weight:700}
-.sum-total{display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding:10px 0 4px;border-top:2px solid var(--border);margin-top:4px}
-.sum-total .tp{color:var(--accent)}
-.promo-row{display:flex;gap:8px;margin-top:12px}
-.promo-row input{flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;background:#fafafa;outline:none;transition:border-color .2s}
-.promo-row input:focus{border-color:var(--accent)}
-.promo-row button{padding:9px 14px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
-
-/* summary trust */
+.sum-hd{padding:16px 18px 13px;border-bottom:1px solid var(--border);font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--brand)}
+.sum-hd i{color:var(--sub);font-size:13px}
+.sum-bd{padding:16px 18px}
+.si{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #f5f5f7}
+.si:last-child{border-bottom:none}
+.si-img{width:48px;height:48px;border-radius:9px;background:linear-gradient(135deg,#f0f0f5,#dfe0ea);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;border:1px solid #eee}
+.si-info{flex:1}
+.si-name{font-size:12.5px;font-weight:700;line-height:1.3}
+.si-qty{font-size:11.5px;color:var(--sub);margin-top:2px}
+.si-price{font-size:13px;font-weight:800;flex-shrink:0}
+.sum-ln{border:none;border-top:1px solid var(--border);margin:4px 0}
+.sr{display:flex;justify-content:space-between;font-size:13px;padding:5px 0}
+.sr .lb{color:var(--sub)}
+.sr .free{color:var(--green);font-weight:700}
+.sum-tot{display:flex;justify-content:space-between;font-size:16px;font-weight:800;padding:10px 0 4px;border-top:2px solid var(--border);margin-top:4px}
+.sum-tot .amt{color:var(--accent)}
+.promo{display:flex;gap:8px;margin-top:12px}
+.promo input{flex:1;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;background:#fafafa;outline:none;transition:border-color .2s}
+.promo input:focus{border-color:var(--accent)}
+.promo button{padding:9px 14px;background:var(--brand);color:#fff;border:none;border-radius:9px;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap}
 .sum-trust{padding:12px 18px;border-top:1px solid var(--border)}
-.st-item{display:flex;align-items:flex-start;gap:9px;padding:7px 0;border-bottom:1px solid #f5f5f7}
-.st-item:last-child{border-bottom:none}
-.st-ico{width:28px;height:28px;border-radius:7px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.st-ico i{font-size:13px;color:var(--green)}
-.st-txt{font-size:12px}
-.st-txt b{display:block;font-weight:700;margin-bottom:1px}
-.st-txt span{color:var(--sub)}
-.sum-help{padding:10px 18px 14px;border-top:1px solid var(--border);font-size:12px;color:var(--sub);display:flex;align-items:center;gap:7px}
-.sum-help i{color:var(--accent)}
-.sum-help a{color:var(--accent);text-decoration:none;font-weight:600}
+.sti{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid #f5f5f7;font-size:12px}
+.sti:last-child{border-bottom:none}
+.sti i{color:var(--green);width:16px;text-align:center}
+.sti b{margin-right:3px}
+
+/* ── CONFIRMATION ── */
+.conf-wrap{text-align:center;padding:40px 22px}
+.conf-ico{width:72px;height:72px;border-radius:50%;background:#f0fdf4;border:3px solid #bbf7d0;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.conf-ico i{font-size:32px;color:var(--green)}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.conf-wrap h2{font-size:22px;font-weight:800;margin-bottom:8px}
+.conf-wrap p{color:var(--sub);font-size:14px;line-height:1.6;margin-bottom:20px}
+.conf-num{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 20px;display:inline-block;font-size:14px;font-weight:700;color:var(--green);margin-bottom:24px;letter-spacing:.5px}
+.conf-details{background:#fafafa;border-radius:12px;padding:16px;text-align:left;margin-bottom:24px}
+.conf-details h4{font-size:13px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.cd-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.cd-row:last-child{border-bottom:none;font-weight:800;font-size:14px}
+.shop-btn{padding:12px 28px;background:linear-gradient(135deg,var(--accent),#7c3aed);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 5px 16px rgba(233,30,140,.3)}
 
 /* ── BOTTOM TRUST STRIP ── */
-.trust-strip{display:flex;justify-content:center;gap:0;background:var(--white);border-top:1px solid var(--border);flex-wrap:wrap}
-.ts-item{display:flex;align-items:center;gap:8px;padding:16px 24px;border-right:1px solid var(--border);flex:1;min-width:160px;justify-content:center}
+.ts{display:flex;justify-content:center;background:var(--white);border-top:1px solid var(--border);flex-wrap:wrap}
+.ts-item{display:flex;align-items:center;gap:9px;padding:14px 22px;border-right:1px solid var(--border);flex:1;min-width:150px;justify-content:center}
 .ts-item:last-child{border-right:none}
-.ts-ico{width:34px;height:34px;border-radius:9px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.ts-ico i{font-size:16px;color:var(--green)}
-.ts-txt b{display:block;font-size:13px;font-weight:700}
-.ts-txt span{font-size:11.5px;color:var(--sub)}
+.ts-ico{width:32px;height:32px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ts-ico i{font-size:14px;color:var(--green)}
+.ts-txt b{display:block;font-size:12.5px;font-weight:700}
+.ts-txt span{font-size:11px;color:var(--sub)}
 </style>
 </head>
 <body>
 
-<!-- WE ACCEPT BANNER -->
-<div class="accept-banner">
-  <div class="ab-label">WE ACCEPT</div>
+<!-- ████ WE ACCEPT BANNER ████ -->
+<div class="ab">
+  <div class="ab-tag">WE ACCEPT</div>
   <h1>Secure &amp; Trusted Payment Methods</h1>
   <div class="ab-logos">
-
-    <!-- VISA -->
-    <svg viewBox="0 0 86 54" xmlns="http://www.w3.org/2000/svg">
-      <rect width="86" height="54" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-      <text x="43" y="36" text-anchor="middle" fill="#1434CB" font-size="30" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
-    </svg>
-
-    <!-- MASTERCARD -->
-    <svg viewBox="0 0 120 54" xmlns="http://www.w3.org/2000/svg">
-      <rect width="120" height="54" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-      <circle cx="44" cy="27" r="16" fill="#EB001B"/>
-      <circle cx="63" cy="27" r="16" fill="#F79E1B"/>
-      <path d="M53.5,13.5 A16,16 0 0,1 53.5,40.5 A16,16 0 0,1 53.5,13.5 Z" fill="#FF5F00"/>
-      <text x="90" y="31" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing="-.1">mastercard</text>
-    </svg>
-
-    <!-- AMEX -->
-    <svg viewBox="0 0 110 54" xmlns="http://www.w3.org/2000/svg">
-      <rect width="110" height="54" rx="8" fill="#016FD0"/>
-      <text x="55" y="22" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">AMERICAN</text>
-      <text x="55" y="34" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">EXPRESS</text>
-    </svg>
-
-    <!-- DISCOVER -->
-    <svg viewBox="0 0 120 54" xmlns="http://www.w3.org/2000/svg">
-      <rect width="120" height="54" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-      <text x="41" y="32" text-anchor="middle" fill="#231F20" font-size="12.5" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text>
-      <circle cx="98" cy="27" r="19" fill="#F76F20"/>
-    </svg>
-
-    <!-- MADA -->
-    <svg viewBox="0 0 96 54" xmlns="http://www.w3.org/2000/svg">
-      <rect width="96" height="54" rx="8" fill="#005A9C"/>
-      <path d="M0 40 H96 V47 Q96 54 89 54 H7 Q0 54 0 47 Z" fill="#00A14B"/>
-      <text x="48" y="25" text-anchor="middle" fill="#fff" font-size="12" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text>
-      <text x="48" y="39" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text>
-    </svg>
-
+    <svg viewBox="0 0 86 52" xmlns="http://www.w3.org/2000/svg"><rect width="86" height="52" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="43" y="35" text-anchor="middle" fill="#1434CB" font-size="30" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text></svg>
+    <svg viewBox="0 0 120 52" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="52" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><circle cx="44" cy="26" r="16" fill="#EB001B"/><circle cx="63" cy="26" r="16" fill="#F79E1B"/><path d="M53.5,12 A16,16 0 0,1 53.5,40 A16,16 0 0,1 53.5,12 Z" fill="#FF5F00"/><text x="90" y="31" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="700" font-family="Arial,sans-serif">mastercard</text></svg>
+    <svg viewBox="0 0 110 52" xmlns="http://www.w3.org/2000/svg"><rect width="110" height="52" rx="8" fill="#016FD0"/><text x="55" y="22" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">AMERICAN</text><text x="55" y="34" text-anchor="middle" fill="#fff" font-size="9" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".8">EXPRESS</text></svg>
+    <svg viewBox="0 0 120 52" xmlns="http://www.w3.org/2000/svg"><rect width="120" height="52" rx="8" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="42" y="32" text-anchor="middle" fill="#231F20" font-size="12.5" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text><circle cx="98" cy="26" r="19" fill="#F76F20"/></svg>
+    <svg viewBox="0 0 96 52" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="52" rx="8" fill="#005A9C"/><path d="M0 39 H96 V46 Q96 52 89 52 H7 Q0 52 0 46 Z" fill="#00A14B"/><text x="48" y="24" text-anchor="middle" fill="#fff" font-size="12" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text><text x="48" y="37" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text></svg>
   </div>
-  <div class="ab-secure">
-    <i class="fas fa-lock"></i>
-    Your payment information is 100% secure and encrypted.
-  </div>
+  <div class="ab-enc"><i class="fas fa-lock"></i> Your payment information is 100% secure and encrypted.</div>
 </div>
 
-<!-- STORE HEADER -->
-<header class="co-header">
-  <a class="co-logo" href="#">SaudiaShop</a>
-  <div style="display:flex;align-items:center;gap:16px">
-    <div class="co-secure"><i class="fas fa-lock"></i> Secure Checkout</div>
-    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--sub)">
-      <i class="fas fa-headset"></i> Support
-    </div>
-  </div>
+<!-- ████ STORE HEADER ████ -->
+<header class="hdr">
+  <a class="logo" href="#">SaudiaShop</a>
+  <div class="hdr-right"><i class="fas fa-lock"></i> Secure Checkout</div>
 </header>
 
-<!-- STEPPER -->
-<div class="stepper">
-  <div class="step done" onclick="goStep(1)">
-    <div class="step-num"><i class="fas fa-check" style="font-size:11px"></i></div>
-    <span class="step-label">Cart</span>
-  </div>
-  <div class="step-line"></div>
-  <div class="step active" onclick="goStep(2)">
-    <div class="step-num">2</div>
-    <span class="step-label">Information</span>
-  </div>
-  <div class="step-line"></div>
-  <div class="step" id="stepPayNav" onclick="goStep(3)">
-    <div class="step-num">3</div>
-    <span class="step-label">Payment</span>
-  </div>
-  <div class="step-line"></div>
-  <div class="step" id="stepConfNav">
-    <div class="step-num">4</div>
-    <span class="step-label">Confirmation</span>
-  </div>
+<!-- ████ STEPPER ████ -->
+<div class="stepper" id="stepperBar">
+  <div class="stp done" id="sCart"><div class="stp-n"><i class="fas fa-check" style="font-size:10px"></i></div><span class="stp-label">Cart</span></div>
+  <div class="stp-line" id="line1"></div>
+  <div class="stp active" id="sInfo"><div class="stp-n">2</div><span class="stp-label">Information</span></div>
+  <div class="stp-line" id="line2"></div>
+  <div class="stp" id="sShip"><div class="stp-n">3</div><span class="stp-label">Shipping</span></div>
+  <div class="stp-line" id="line3"></div>
+  <div class="stp" id="sPay"><div class="stp-n">4</div><span class="stp-label">Payment</span></div>
+  <div class="stp-line" id="line4"></div>
+  <div class="stp" id="sConf"><div class="stp-n">5</div><span class="stp-label">Confirmation</span></div>
 </div>
 
-<!-- MAIN -->
-<main class="co-main">
-
-  <div id="formCol">
-
-    <!-- STEP 2: CONTACT -->
-    <div class="sec-card" id="secContact">
-      <div class="sec-card-head">
-        <div class="sec-card-head-left">
-          <div class="sch-num">1</div>
-          <h3>Contact Information</h3>
-        </div>
-        <a class="sec-edit" id="editContact" style="display:none" onclick="expandContact()">Edit</a>
-      </div>
-      <div class="sec-card-body" id="bodyContact">
-        <div class="fg">
-          <label>Email Address</label>
-          <div class="ico-wrap">
-            <i class="fas fa-envelope ico"></i>
-            <input type="email" placeholder="you@example.com" id="emailField">
-          </div>
-        </div>
-        <div class="fg">
-          <label>Phone Number</label>
-          <div class="phone-row">
-            <select>
-              <option>🇸🇦 +966</option>
-              <option>🇦🇪 +971</option>
-              <option>🇰🇼 +965</option>
-              <option>🇶🇦 +974</option>
-            </select>
-            <div class="ico-wrap">
-              <i class="fas fa-phone ico"></i>
-              <input type="tel" placeholder="5X XXX XXXX" id="phoneField">
-            </div>
-          </div>
-        </div>
-        <div style="margin-top:12px">
-          <button onclick="nextStep('contact')" style="padding:10px 22px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer">
-            Continue to Shipping <i class="fas fa-arrow-right" style="font-size:11px;margin-left:4px"></i>
-          </button>
-        </div>
-      </div>
-      <div class="sec-card-body" id="summContact" style="display:none;color:var(--sub);font-size:13px"></div>
-    </div>
-
-    <!-- STEP 2: SHIPPING -->
-    <div class="sec-card" id="secShipping" style="opacity:.5;pointer-events:none">
-      <div class="sec-card-head">
-        <div class="sec-card-head-left">
-          <div class="sch-num">2</div>
-          <h3>Shipping Address</h3>
-        </div>
-        <a class="sec-edit" id="editShipping" style="display:none" onclick="expandShipping()">Edit</a>
-      </div>
-      <div class="sec-card-body" id="bodyShipping">
-        <div class="fg">
-          <label>Country / Region</label>
-          <div class="ico-wrap">
-            <i class="fas fa-globe ico"></i>
-            <select id="countryField">
-              <option>Saudi Arabia</option>
-              <option>UAE</option>
-              <option>Kuwait</option>
-              <option>Qatar</option>
-              <option>Bahrain</option>
-              <option>Oman</option>
-            </select>
-          </div>
-        </div>
-        <div class="row2">
+<!-- ══════════════════════════════════════ -->
+<!--   PAGE 1: CONTACT INFORMATION         -->
+<!-- ══════════════════════════════════════ -->
+<div class="page active" id="p1">
+  <div class="main">
+    <div>
+      <div class="fc">
+        <div class="fc-head"><div class="fc-head-num">1</div><h2>Contact Information</h2></div>
+        <div class="fc-body">
           <div class="fg">
-            <label>Full Name</label>
-            <input type="text" placeholder="Mohammed Al-Ahmadi" id="nameField">
+            <label>Email Address</label>
+            <div class="iw"><i class="fas fa-envelope ic"></i><input type="email" id="i_email" placeholder="you@example.com"></div>
           </div>
           <div class="fg">
             <label>Phone Number</label>
-            <input type="tel" placeholder="+966 5X XXX XXXX">
+            <div class="phone-row">
+              <select class="dial"><option>🇸🇦 +966</option><option>🇦🇪 +971</option><option>🇰🇼 +965</option><option>🇶🇦 +974</option></select>
+              <div class="iw"><i class="fas fa-phone ic"></i><input type="tel" id="i_phone" placeholder="5X XXX XXXX"></div>
+            </div>
           </div>
+          <label class="cb-row"><input type="checkbox" checked> Email me with news and offers</label>
         </div>
-        <div class="fg">
-          <label>Address</label>
-          <div class="ico-wrap">
-            <i class="fas fa-map-marker-alt ico"></i>
-            <input type="text" placeholder="Street, Building, District" id="addrField">
-          </div>
-        </div>
-        <div class="row2">
-          <div class="fg">
-            <label>Region / City</label>
-            <select id="regionField">
-              <option>Riyadh</option>
-              <option>Jeddah</option>
-              <option>Mecca</option>
-              <option>Medina</option>
-              <option>Dammam</option>
-              <option>Khobar</option>
-              <option>Tabuk</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>ZIP / Postal Code</label>
-            <input type="text" placeholder="12271" id="zipField">
-          </div>
-        </div>
-        <label class="save-row">
-          <input type="checkbox" checked>
-          Save this information for next time
-        </label>
-        <div style="margin-top:14px">
-          <button onclick="nextStep('shipping')" style="padding:10px 22px;background:var(--accent);color:#fff;border:none;border-radius:9px;font-size:13.5px;font-weight:700;cursor:pointer">
-            Continue to Payment <i class="fas fa-arrow-right" style="font-size:11px;margin-left:4px"></i>
+        <div class="fc-foot">
+          <button class="sub-btn" onclick="goPage(2)">
+            <i class="fas fa-arrow-right"></i> Continue to Shipping
           </button>
+          <div class="back-link" onclick="goPage(0)"><i class="fas fa-chevron-left"></i> Return to cart</div>
+          <div class="sub-note"><i class="fas fa-lock"></i> All transactions are secure and encrypted</div>
         </div>
-      </div>
-      <div class="sec-card-body" id="summShipping" style="display:none;color:var(--sub);font-size:13px"></div>
-    </div>
-
-    <!-- STEP 3: PAYMENT -->
-    <div class="sec-card" id="secPayment" style="opacity:.5;pointer-events:none">
-      <div class="sec-card-head">
-        <div class="sec-card-head-left">
-          <div class="sch-num">3</div>
-          <h3>Payment Method</h3>
-        </div>
-      </div>
-      <div class="sec-card-body">
-        <div class="pm-list">
-
-          <!-- Credit/Debit Card -->
-          <div class="pm-item active" onclick="selPM(this,'card')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-txt">
-                <div class="pm-name">Credit / Debit Card</div>
-                <div class="card-logos">
-                  <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="44" rx="5" fill="#005A9C"/><path d="M0 33 H80 V38 Q80 44 75 44 H5 Q0 44 0 38 Z" fill="#00A14B"/><text x="40" y="21" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text><text x="40" y="32" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text></svg>
-                  <svg viewBox="0 0 72 44" xmlns="http://www.w3.org/2000/svg"><rect width="72" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="36" y="30" text-anchor="middle" fill="#1434CB" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text></svg>
-                  <svg viewBox="0 0 100 44" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><circle cx="34" cy="22" r="13" fill="#EB001B"/><circle cx="50" cy="22" r="13" fill="#F79E1B"/><path d="M42,9.5 A13,13 0 0,1 42,34.5 A13,13 0 0,1 42,9.5 Z" fill="#FF5F00"/><text x="76" y="27" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="700" font-family="Arial,sans-serif">mastercard</text></svg>
-                  <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="44" rx="5" fill="#016FD0"/><text x="40" y="19" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">AMERICAN</text><text x="40" y="29" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">EXPRESS</text></svg>
-                  <svg viewBox="0 0 96 44" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="34" y="27" text-anchor="middle" fill="#231F20" font-size="10.5" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text><circle cx="80" cy="22" r="16" fill="#F76F20"/></svg>
-                </div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-            <div class="card-form">
-              <div class="cf-fg">
-                <label>Card Number</label>
-                <input type="text" placeholder="1234  5678  9012  3456" maxlength="19" id="cardNum" oninput="fmtCard(this)">
-              </div>
-              <div class="cf-row3">
-                <div class="cf-fg">
-                  <label>Cardholder Name</label>
-                  <input type="text" placeholder="FULL NAME ON CARD">
-                </div>
-                <div class="cf-fg">
-                  <label>Expiry</label>
-                  <input type="text" placeholder="MM / YY" maxlength="7">
-                </div>
-                <div class="cf-fg">
-                  <label>CVV</label>
-                  <input type="text" placeholder="•••" maxlength="4">
-                </div>
-              </div>
-              <div class="cf-ssl"><i class="fas fa-lock"></i> 256-bit SSL — your card details are never stored.</div>
-            </div>
-          </div>
-
-          <!-- Apple Pay -->
-          <div class="pm-item" onclick="selPM(this,'applepay')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-logo" style="background:#000">
-                <svg viewBox="0 0 52 33" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="33" fill="#000"/><text x="10" y="22" fill="#fff" font-size="16" font-family="Arial,sans-serif"></text><text x="22" y="22" fill="#fff" font-size="13" font-weight="700" font-family="Arial,sans-serif"> Pay</text></svg>
-              </div>
-              <div class="pm-txt">
-                <div class="pm-name">Apple Pay</div>
-                <div class="pm-sub">Face ID / Touch ID — one tap</div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-          </div>
-
-          <!-- Google Pay -->
-          <div class="pm-item" onclick="selPM(this,'gpay')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-logo">
-                <svg viewBox="0 0 52 33" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="33" fill="#fff" stroke="#eee" stroke-width="1.5"/><text x="6" y="23" fill="#4285F4" font-size="18" font-weight="900" font-family="Arial,sans-serif">G</text><text x="22" y="22" fill="#5F6368" font-size="13" font-weight="600" font-family="Arial,sans-serif">Pay</text></svg>
-              </div>
-              <div class="pm-txt">
-                <div class="pm-name">Google Pay</div>
-                <div class="pm-sub">Pay with your Google account</div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-          </div>
-
-          <!-- STC Pay -->
-          <div class="pm-item" onclick="selPM(this,'stcpay')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-logo" style="background:#6D2C8A">
-                <svg viewBox="0 0 52 33" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="33" fill="#6D2C8A"/><text x="26" y="15" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1">STC</text><text x="26" y="27" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" font-family="Arial,sans-serif">Pay</text></svg>
-              </div>
-              <div class="pm-txt">
-                <div class="pm-name">STC Pay</div>
-                <div class="pm-sub">Saudi mobile wallet</div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-          </div>
-
-          <!-- Tamara -->
-          <div class="pm-item" onclick="selPM(this,'tamara')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-logo" style="background:#000">
-                <svg viewBox="0 0 52 33" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="33" fill="#000"/><text x="26" y="21" text-anchor="middle" fill="#fff" font-size="10" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">tamara</text></svg>
-              </div>
-              <div class="pm-txt">
-                <div class="pm-name">Tamara — Buy Now, Pay Later</div>
-                <div class="pm-sub">3 installments · 0% interest</div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-          </div>
-
-          <!-- Cash on Delivery -->
-          <div class="pm-item" onclick="selPM(this,'cod')">
-            <div class="pm-row">
-              <div class="pm-radio"><div class="pm-dot"></div></div>
-              <div class="pm-logo" style="background:#f0fdf4;border:1px solid #bbf7d0">
-                <svg viewBox="0 0 52 33" xmlns="http://www.w3.org/2000/svg"><rect width="52" height="33" fill="#f0fdf4"/><text x="26" y="22" text-anchor="middle" font-size="18">💵</text></svg>
-              </div>
-              <div class="pm-txt">
-                <div class="pm-name">Cash on Delivery</div>
-                <div class="pm-sub">Pay when you receive</div>
-              </div>
-              <div class="pm-check"><i class="fas fa-circle-check"></i></div>
-            </div>
-          </div>
-
-        </div><!-- /pm-list -->
-
-        <!-- PLACE ORDER -->
-        <div class="place-wrap" style="margin-top:16px">
-          <button class="place-btn" id="placeBtn" onclick="placeOrder()">
-            <i class="fas fa-lock"></i>
-            Place Order — SAR 744.05
-          </button>
-          <div class="place-note">
-            <i class="fas fa-shield-halved"></i>
-            256-bit SSL Encrypted · PCI DSS Compliant · Secure Checkout
-          </div>
-        </div>
-
       </div>
     </div>
-
-  </div><!-- /formCol -->
-
-  <!-- ORDER SUMMARY -->
-  <div>
-    <div class="sum-card">
-      <div class="sum-head"><i class="fas fa-bag-shopping"></i> Order Summary</div>
-      <div class="sum-body">
-
-        <div class="sum-item">
-          <div class="sum-thumb">⌚</div>
-          <div class="sum-iinfo">
-            <div class="sum-iname">Premium Watch</div>
-            <div class="sum-iqty">Black · Qty 1</div>
-          </div>
-          <div class="sum-iprice">SAR 299.00</div>
-        </div>
-
-        <div class="sum-item">
-          <div class="sum-thumb">🕶️</div>
-          <div class="sum-iinfo">
-            <div class="sum-iname">Luxury Sunglasses</div>
-            <div class="sum-iqty">Classic · Qty 1</div>
-          </div>
-          <div class="sum-iprice">SAR 129.00</div>
-        </div>
-
-        <div class="sum-item">
-          <div class="sum-thumb">🌸</div>
-          <div class="sum-iinfo">
-            <div class="sum-iname">Oud Intense Perfume</div>
-            <div class="sum-iqty">50ml · Qty 1</div>
-          </div>
-          <div class="sum-iprice">SAR 199.00</div>
-        </div>
-
-        <hr class="sum-line" style="margin:8px 0">
-        <div class="sum-row"><span class="lbl">Subtotal</span><span>SAR 627.00</span></div>
-        <div class="sum-row"><span class="lbl">Shipping</span><span class="free"><i class="fas fa-truck"></i> FREE</span></div>
-        <div class="sum-row"><span class="lbl">VAT (15%)</span><span>SAR 94.05</span></div>
-        <div class="sum-row"><span class="lbl">Discount</span><span style="color:var(--green)">— SAR 0.00</span></div>
-        <div class="sum-total"><span>Total</span><span class="tp">SAR 744.05</span></div>
-
-        <div class="promo-row">
-          <input type="text" placeholder="Discount code">
-          <button>Apply</button>
-        </div>
-      </div>
-
-      <!-- TRUST ITEMS -->
-      <div class="sum-trust">
-        <div class="st-item">
-          <div class="st-ico"><i class="fas fa-shield-halved"></i></div>
-          <div class="st-txt"><b>Secure Payment</b><span>SSL encrypted checkout</span></div>
-        </div>
-        <div class="st-item">
-          <div class="st-ico"><i class="fas fa-star"></i></div>
-          <div class="st-txt"><b>100% Authentic</b><span>We guarantee genuine products</span></div>
-        </div>
-      </div>
-
-      <div class="sum-help">
-        <i class="fas fa-headset"></i>
-        Need help? <a href="#">Contact us</a> &nbsp;·&nbsp; +966 12 345 6789
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- BOTTOM TRUST STRIP -->
-<div class="trust-strip">
-  <div class="ts-item">
-    <div class="ts-ico"><i class="fas fa-lock"></i></div>
-    <div class="ts-txt"><b>SSL SECURED</b><span>256-bit encryption</span></div>
-  </div>
-  <div class="ts-item">
-    <div class="ts-ico"><i class="fas fa-shield-halved"></i></div>
-    <div class="ts-txt"><b>SAFE CHECKOUT</b><span>Trusted by thousands</span></div>
-  </div>
-  <div class="ts-item">
-    <div class="ts-ico"><i class="fas fa-user-shield"></i></div>
-    <div class="ts-txt"><b>PRIVACY PROTECTED</b><span>Your data is safe with us</span></div>
-  </div>
-  <div class="ts-item">
-    <div class="ts-ico"><i class="fas fa-rotate-left"></i></div>
-    <div class="ts-txt"><b>EASY RETURNS</b><span>30-day return policy</span></div>
+    <div><!-- Order Summary --><div class="sum-card" id="sumCard1"></div></div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════ -->
+<!--   PAGE 2: SHIPPING ADDRESS            -->
+<!-- ══════════════════════════════════════ -->
+<div class="page" id="p2">
+  <div class="main">
+    <div>
+      <!-- Contact summary breadcrumb -->
+      <div style="background:var(--white);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden">
+        <div style="padding:12px 18px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border-bottom:1px solid var(--border)">
+          <span style="color:var(--sub)">Contact</span>
+          <span id="disp_contact" style="font-weight:600"></span>
+          <span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="goPage(1)">Change</span>
+        </div>
+      </div>
+      <div class="fc">
+        <div class="fc-head"><div class="fc-head-num">2</div><h2>Shipping Address</h2></div>
+        <div class="fc-body">
+          <div class="fg">
+            <label>Country / Region</label>
+            <div class="iw"><i class="fas fa-globe ic"></i>
+              <select id="i_country"><option>Saudi Arabia</option><option>UAE</option><option>Kuwait</option><option>Qatar</option><option>Bahrain</option><option>Oman</option></select>
+            </div>
+          </div>
+          <div class="row2">
+            <div class="fg"><label>First Name</label><input type="text" id="i_fname" placeholder="Mohammed"></div>
+            <div class="fg"><label>Last Name</label><input type="text" id="i_lname" placeholder="Al-Ahmadi"></div>
+          </div>
+          <div class="fg">
+            <label>Address</label>
+            <div class="iw"><i class="fas fa-map-marker-alt ic"></i><input type="text" id="i_addr" placeholder="Street, Building, District"></div>
+          </div>
+          <div class="fg"><label>Apartment / Suite (optional)</label><input type="text" placeholder="Apt 4B, Floor 2"></div>
+          <div class="row2">
+            <div class="fg">
+              <label>City / Region</label>
+              <select id="i_city"><option>Riyadh</option><option>Jeddah</option><option>Mecca</option><option>Medina</option><option>Dammam</option><option>Khobar</option><option>Tabuk</option><option>Abha</option></select>
+            </div>
+            <div class="fg"><label>ZIP / Postal Code</label><input type="text" id="i_zip" placeholder="12271"></div>
+          </div>
+          <label class="cb-row"><input type="checkbox" checked> Save this information for next time</label>
+        </div>
+        <div class="fc-foot">
+          <button class="sub-btn" onclick="goPage(3)">
+            <i class="fas fa-arrow-right"></i> Continue to Payment
+          </button>
+          <div class="back-link" onclick="goPage(1)"><i class="fas fa-chevron-left"></i> Return to information</div>
+          <div class="sub-note"><i class="fas fa-lock"></i> All transactions are secure and encrypted</div>
+        </div>
+      </div>
+    </div>
+    <div><div class="sum-card" id="sumCard2"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!--   PAGE 3: PAYMENT                     -->
+<!-- ══════════════════════════════════════ -->
+<div class="page" id="p3">
+  <div class="main">
+    <div>
+      <!-- breadcrumb -->
+      <div style="background:var(--white);border-radius:var(--r);box-shadow:var(--sh);margin-bottom:16px;overflow:hidden">
+        <div style="padding:11px 18px;display:flex;justify-content:space-between;align-items:center;font-size:13px;border-bottom:1px solid var(--border)">
+          <span style="color:var(--sub)">Contact</span>
+          <span id="disp_contact2" style="font-weight:600"></span>
+          <span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="goPage(1)">Change</span>
+        </div>
+        <div style="padding:11px 18px;display:flex;justify-content:space-between;align-items:center;font-size:13px">
+          <span style="color:var(--sub)">Ship to</span>
+          <span id="disp_ship" style="font-weight:600"></span>
+          <span style="color:var(--accent);font-weight:600;cursor:pointer" onclick="goPage(2)">Change</span>
+        </div>
+      </div>
+
+      <div class="fc">
+        <div class="fc-head"><div class="fc-head-num">3</div><h2>Payment Method</h2></div>
+        <div class="fc-body">
+          <div class="pm-list">
+
+            <!-- Credit / Debit Card -->
+            <div class="pm-item sel" onclick="selPM(this,'card')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-info">
+                  <div class="pm-name">Credit / Debit Card</div>
+                  <div class="card-logos">
+                    <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="44" rx="5" fill="#005A9C"/><path d="M0 33 H80 V38 Q80 44 75 44 H5 Q0 44 0 38 Z" fill="#00A14B"/><text x="40" y="21" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text><text x="40" y="32" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text></svg>
+                    <svg viewBox="0 0 72 44" xmlns="http://www.w3.org/2000/svg"><rect width="72" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="36" y="30" text-anchor="middle" fill="#1434CB" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text></svg>
+                    <svg viewBox="0 0 100 44" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><circle cx="34" cy="22" r="13" fill="#EB001B"/><circle cx="50" cy="22" r="13" fill="#F79E1B"/><path d="M42,9.5 A13,13 0 0,1 42,34.5 A13,13 0 0,1 42,9.5 Z" fill="#FF5F00"/><text x="76" y="27" text-anchor="middle" fill="#231F20" font-size="9.5" font-weight="700" font-family="Arial,sans-serif">mastercard</text></svg>
+                    <svg viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="44" rx="5" fill="#016FD0"/><text x="40" y="19" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">AMERICAN</text><text x="40" y="30" text-anchor="middle" fill="#fff" font-size="7" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">EXPRESS</text></svg>
+                    <svg viewBox="0 0 96 44" xmlns="http://www.w3.org/2000/svg"><rect width="96" height="44" rx="5" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/><text x="34" y="27" text-anchor="middle" fill="#231F20" font-size="10.5" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".3">DISCOVER</text><circle cx="80" cy="22" r="16" fill="#F76F20"/></svg>
+                  </div>
+                </div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+              <div class="card-form">
+                <div class="cfg"><label>Card Number</label><input type="text" placeholder="1234  5678  9012  3456" maxlength="19" oninput="fmtCard(this)"></div>
+                <div class="cf-grid3">
+                  <div class="cfg"><label>Name on Card</label><input type="text" placeholder="FULL NAME"></div>
+                  <div class="cfg"><label>Expiry</label><input type="text" placeholder="MM / YY" maxlength="7"></div>
+                  <div class="cfg"><label>CVV</label><input type="text" placeholder="•••" maxlength="4"></div>
+                </div>
+                <div class="ssl-note"><i class="fas fa-lock"></i> 256-bit SSL — card details are never stored.</div>
+              </div>
+            </div>
+
+            <!-- Apple Pay -->
+            <div class="pm-item" onclick="selPM(this,'applepay')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-logo" style="background:#000"><svg viewBox="0 0 52 33"><rect width="52" height="33" fill="#000"/><text x="13" y="22" fill="#fff" font-size="16" font-family="Arial"> </text><text x="21" y="22" fill="#fff" font-size="13" font-weight="700" font-family="Arial"> Pay</text></svg></div>
+                <div class="pm-info"><div class="pm-name">Apple Pay</div><div class="pm-sub">Touch ID / Face ID — one tap</div></div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+            </div>
+
+            <!-- Google Pay -->
+            <div class="pm-item" onclick="selPM(this,'gpay')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-logo"><svg viewBox="0 0 52 33"><rect width="52" height="33" fill="#fff" stroke="#eee" stroke-width="1.5"/><text x="6" y="23" fill="#4285F4" font-size="18" font-weight="900" font-family="Arial">G</text><text x="22" y="22" fill="#5F6368" font-size="13" font-weight="600" font-family="Arial">Pay</text></svg></div>
+                <div class="pm-info"><div class="pm-name">Google Pay</div><div class="pm-sub">Pay with your Google account</div></div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+            </div>
+
+            <!-- STC Pay -->
+            <div class="pm-item" onclick="selPM(this,'stcpay')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-logo" style="background:#6D2C8A"><svg viewBox="0 0 52 33"><rect width="52" height="33" fill="#6D2C8A"/><text x="26" y="15" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial" letter-spacing="1">STC</text><text x="26" y="27" text-anchor="middle" fill="#fff" font-size="9" font-weight="600" font-family="Arial">Pay</text></svg></div>
+                <div class="pm-info"><div class="pm-name">STC Pay</div><div class="pm-sub">Saudi mobile wallet</div></div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+            </div>
+
+            <!-- Tamara -->
+            <div class="pm-item" onclick="selPM(this,'tamara')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-logo" style="background:#000"><svg viewBox="0 0 52 33"><rect width="52" height="33" fill="#000"/><text x="26" y="21" text-anchor="middle" fill="#fff" font-size="10" font-weight="800" font-family="Arial" letter-spacing=".3">tamara</text></svg></div>
+                <div class="pm-info"><div class="pm-name">Tamara — Buy Now, Pay Later</div><div class="pm-sub">3 installments · 0% interest</div></div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+            </div>
+
+            <!-- Cash on Delivery -->
+            <div class="pm-item" onclick="selPM(this,'cod')">
+              <div class="pm-row">
+                <div class="pm-rb"><div class="pm-dot"></div></div>
+                <div class="pm-logo" style="background:#f0fdf4;border:1px solid #bbf7d0"><svg viewBox="0 0 52 33"><rect width="52" height="33" fill="#f0fdf4"/><text x="26" y="22" text-anchor="middle" font-size="18">💵</text></svg></div>
+                <div class="pm-info"><div class="pm-name">Cash on Delivery</div><div class="pm-sub">Pay when you receive your order</div></div>
+                <div class="pm-chk"><i class="fas fa-circle-check"></i></div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="fc-foot">
+          <button class="sub-btn green" id="placeBtn" onclick="placeOrder()">
+            <i class="fas fa-lock"></i> Place Order — SAR 744.05
+          </button>
+          <div class="back-link" onclick="goPage(2)"><i class="fas fa-chevron-left"></i> Return to shipping</div>
+          <div class="sub-note"><i class="fas fa-shield-halved"></i> 256-bit SSL · PCI DSS Compliant · Secure Checkout</div>
+        </div>
+      </div>
+    </div>
+    <div><div class="sum-card" id="sumCard3"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!--   PAGE 4: CONFIRMATION                -->
+<!-- ══════════════════════════════════════ -->
+<div class="page" id="p4">
+  <div class="main" style="grid-template-columns:1fr 340px">
+    <div>
+      <div class="fc">
+        <div class="conf-wrap">
+          <div class="conf-ico"><i class="fas fa-check"></i></div>
+          <h2>Order Confirmed! 🎉</h2>
+          <p>Thank you for your purchase. Your order has been placed<br>and is being processed. You'll receive a confirmation email shortly.</p>
+          <div class="conf-num"><i class="fas fa-hashtag"></i> Order #EXG-<span id="orderNum"></span></div>
+          <div class="conf-details">
+            <h4>Order Details</h4>
+            <div class="cd-row"><span>Premium Watch — Black</span><span>SAR 299.00</span></div>
+            <div class="cd-row"><span>Luxury Sunglasses</span><span>SAR 129.00</span></div>
+            <div class="cd-row"><span>Oud Intense Perfume</span><span>SAR 199.00</span></div>
+            <div class="cd-row"><span style="color:var(--sub)">VAT (15%)</span><span>SAR 94.05</span></div>
+            <div class="cd-row"><span style="color:var(--sub)">Shipping</span><span style="color:var(--green)">FREE</span></div>
+            <div class="cd-row"><span>Total Paid</span><span style="color:var(--accent)">SAR 744.05</span></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="shop-btn" onclick="goPage(1)">Continue Shopping</button>
+            <button style="padding:12px 24px;background:var(--white);border:1.5px solid var(--border);border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;color:var(--brand)"><i class="fas fa-envelope" style="margin-right:6px"></i>Track Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div><div class="sum-card" id="sumCard4"></div></div>
+  </div>
+</div>
+
+<!-- ████ BOTTOM TRUST STRIP ████ -->
+<div class="ts" id="trustStrip">
+  <div class="ts-item"><div class="ts-ico"><i class="fas fa-lock"></i></div><div class="ts-txt"><b>SSL SECURED</b><span>256-bit encryption</span></div></div>
+  <div class="ts-item"><div class="ts-ico"><i class="fas fa-shield-halved"></i></div><div class="ts-txt"><b>SAFE CHECKOUT</b><span>Trusted by thousands</span></div></div>
+  <div class="ts-item"><div class="ts-ico"><i class="fas fa-user-shield"></i></div><div class="ts-txt"><b>PRIVACY PROTECTED</b><span>Your data is safe</span></div></div>
+  <div class="ts-item"><div class="ts-ico"><i class="fas fa-rotate-left"></i></div><div class="ts-txt"><b>EASY RETURNS</b><span>30-day return policy</span></div></div>
+</div>
+
 <script>
-let currentStep = 'contact';
+// ── ORDER SUMMARY HTML (shared) ──────────────────────
+const sumHTML = `
+<div class="sum-hd"><i class="fas fa-bag-shopping"></i> Order Summary</div>
+<div class="sum-bd">
+  <div class="si"><div class="si-img">⌚</div><div class="si-info"><div class="si-name">Premium Watch</div><div class="si-qty">Black · Qty 1</div></div><div class="si-price">SAR 299.00</div></div>
+  <div class="si"><div class="si-img">🕶️</div><div class="si-info"><div class="si-name">Luxury Sunglasses</div><div class="si-qty">Classic · Qty 1</div></div><div class="si-price">SAR 129.00</div></div>
+  <div class="si"><div class="si-img">🌸</div><div class="si-info"><div class="si-name">Oud Intense Perfume</div><div class="si-qty">50ml · Qty 1</div></div><div class="si-price">SAR 199.00</div></div>
+  <hr class="sum-ln" style="margin:8px 0">
+  <div class="sr"><span class="lb">Subtotal</span><span>SAR 627.00</span></div>
+  <div class="sr"><span class="lb">Shipping</span><span class="free"><i class="fas fa-truck"></i> FREE</span></div>
+  <div class="sr"><span class="lb">VAT (15%)</span><span>SAR 94.05</span></div>
+  <div class="sum-tot"><span>Total</span><span class="amt">SAR 744.05</span></div>
+  <div class="promo"><input type="text" placeholder="Discount code"><button>Apply</button></div>
+</div>
+<div class="sum-trust">
+  <div class="sti"><i class="fas fa-shield-halved"></i><span><b>Secure Payment</b> — SSL encrypted</span></div>
+  <div class="sti"><i class="fas fa-truck-fast"></i><span><b>Fast Delivery</b> — across Saudi Arabia</span></div>
+  <div class="sti"><i class="fas fa-star"></i><span><b>100% Authentic</b> — genuine products</span></div>
+  <div class="sti"><i class="fas fa-headset"></i><span><b>Need Help?</b> — <a href="#" style="color:var(--accent)">Contact us</a></span></div>
+</div>`;
 
-function nextStep(step) {
-  if (step === 'contact') {
-    const email = document.getElementById('emailField').value.trim();
-    const phone = document.getElementById('phoneField').value.trim();
-    const sumEl = document.getElementById('summContact');
-    sumEl.innerHTML = '<i class="fas fa-check" style="color:var(--green);margin-right:6px"></i>' + (email || 'No email') + ' &nbsp;·&nbsp; ' + (phone || 'No phone');
-    document.getElementById('bodyContact').style.display = 'none';
-    document.getElementById('summContact').style.display = 'block';
-    document.getElementById('editContact').style.display = 'inline';
-    const shipCard = document.getElementById('secShipping');
-    shipCard.style.opacity = '1';
-    shipCard.style.pointerEvents = 'auto';
-    document.getElementById('stepPayNav').classList.remove('active');
-    currentStep = 'shipping';
-    shipCard.scrollIntoView({behavior:'smooth', block:'start'});
-  } else if (step === 'shipping') {
-    const name = document.getElementById('nameField').value.trim();
-    const addr = document.getElementById('addrField').value.trim();
-    const region = document.getElementById('regionField').value;
-    const zip = document.getElementById('zipField').value.trim();
-    const sumEl = document.getElementById('summShipping');
-    sumEl.innerHTML = '<i class="fas fa-check" style="color:var(--green);margin-right:6px"></i>'
-      + (name||'No name') + ', ' + (addr||'No address') + ', ' + region + ' ' + zip;
-    document.getElementById('bodyShipping').style.display = 'none';
-    document.getElementById('summShipping').style.display = 'block';
-    document.getElementById('editShipping').style.display = 'inline';
-    const payCard = document.getElementById('secPayment');
-    payCard.style.opacity = '1';
-    payCard.style.pointerEvents = 'auto';
-    document.getElementById('stepPayNav').classList.add('active');
-    currentStep = 'payment';
-    payCard.scrollIntoView({behavior:'smooth', block:'start'});
+['sumCard1','sumCard2','sumCard3','sumCard4'].forEach(id => {
+  const el = document.getElementById(id);
+  if(el) el.innerHTML = sumHTML;
+});
+
+// ── PAGE NAVIGATION ──────────────────────────────────
+let curPage = 1;
+const stepMap = {1:'sInfo', 2:'sShip', 3:'sPay', 4:'sConf'};
+const lineMap  = {1:'line1', 2:'line2', 3:'line3', 4:'line4'};
+
+function goPage(n) {
+  if(n < 1) return;
+  window.scrollTo({top:0, behavior:'smooth'});
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('p'+n)?.classList.add('active');
+
+  // update stepper
+  ['sInfo','sShip','sPay','sConf'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+  });
+  ['line1','line2','line3','line4'].forEach(id => {
+    document.getElementById(id).style.background = '#e5e7eb';
+  });
+
+  const order = ['sInfo','sShip','sPay','sConf'];
+  for(let i=0; i<order.length; i++){
+    const idx = i+1;
+    const el = document.getElementById(order[i]);
+    if(idx < n){ el.classList.add('done'); document.getElementById('line'+idx).style.background='var(--green)'; }
+    else if(idx === n){ el.classList.add('active'); }
   }
+
+  // fill breadcrumb displays
+  if(n >= 2){
+    const e = document.getElementById('i_email')?.value || '';
+    const p = document.getElementById('i_phone')?.value || '';
+    const txt = [e, p].filter(Boolean).join(' · ') || 'Not provided';
+    ['disp_contact','disp_contact2'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=txt; });
+  }
+  if(n >= 3){
+    const fn = document.getElementById('i_fname')?.value || '';
+    const ln = document.getElementById('i_lname')?.value || '';
+    const city = document.getElementById('i_city')?.value || '';
+    const zip  = document.getElementById('i_zip')?.value  || '';
+    const sd = document.getElementById('disp_ship');
+    if(sd) sd.textContent = [fn+' '+ln, city, zip].filter(s=>s.trim()).join(', ') || 'Not provided';
+  }
+  curPage = n;
 }
 
-function expandContact() {
-  document.getElementById('bodyContact').style.display = 'block';
-  document.getElementById('summContact').style.display = 'none';
-}
-function expandShipping() {
-  document.getElementById('bodyShipping').style.display = 'block';
-  document.getElementById('summShipping').style.display = 'none';
-}
-function goStep(n) {
-  if (n === 1) return;
-  if (n === 2) expandContact();
-}
-
+// ── PAYMENT SELECTION ────────────────────────────────
 function selPM(el, method) {
-  document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+  document.querySelectorAll('.pm-item').forEach(i => i.classList.remove('sel'));
+  el.classList.add('sel');
 }
 
+// ── CARD NUMBER FORMAT ───────────────────────────────
 function fmtCard(el) {
   let v = el.value.replace(/\D/g,'').slice(0,16);
   el.value = v.replace(/(.{4})/g,'$1  ').trim();
 }
 
+// ── PLACE ORDER ──────────────────────────────────────
 function placeOrder() {
   const btn = document.getElementById('placeBtn');
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing…';
-  btn.style.opacity = '.75';
   btn.disabled = true;
+  btn.style.opacity = '.75';
   setTimeout(() => {
-    btn.innerHTML = '<i class="fas fa-circle-check"></i> Order Confirmed!';
-    btn.style.background = 'linear-gradient(135deg,#16a34a,#15803d)';
-    btn.style.boxShadow = '0 5px 18px rgba(22,163,74,.4)';
-    btn.style.opacity = '1';
-    document.getElementById('stepConfNav').classList.add('active');
+    document.getElementById('orderNum').textContent = Math.floor(10000+Math.random()*90000);
+    goPage(4);
   }, 2000);
 }
 </script>
