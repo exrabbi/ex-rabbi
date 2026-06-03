@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=344" />
+  <link rel="stylesheet" href="styles.css?v=345" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2289,13 +2289,16 @@
 
       <!-- Avatar -->
       <div class="prof-avatar-wrap" onclick="_changeProfilePic()">
+        <div class="prof-avatar-ring"></div>
         <img id="profileAvatarImg" src="" alt="" class="prof-avatar-img"/>
         <div id="profileAvatarFallback" class="prof-avatar-fallback"></div>
-        <div class="prof-avatar-camera"><i class="fas fa-camera"></i></div>
+        <div class="prof-avatar-camera">
+          <i class="fas fa-camera"></i>
+        </div>
       </div>
       <div id="profileDisplayName" class="prof-name"></div>
       <div id="profileDisplayEmail" class="prof-email"></div>
-      <div class="prof-edit-hint">Tap photo to change</div>
+      <div class="prof-vip-badge"><i class="fas fa-crown"></i> VIP Member</div>
     </div>
 
     <!-- Fields -->
