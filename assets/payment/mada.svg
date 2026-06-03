@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <defs><clipPath id="cm"><rect width="80" height="50" rx="8"/></clipPath></defs>
-  <rect width="80" height="50" rx="8" fill="#004A97"/>
-  <rect y="35" width="80" height="15" fill="#00914A" clip-path="url(#cm)"/>
-  <text x="40" y="21" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1">مدى</text>
-  <text x="40" y="33" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.2">mada</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+  <rect width="90" height="48" rx="9" fill="#fff"/>
+  <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+  <!-- Blue bar -->
+  <rect x="5" y="9" width="34" height="13" rx="2" fill="#1E9ED7"/>
+  <!-- Green bar -->
+  <rect x="5" y="26" width="34" height="13" rx="2" fill="#7CBB3F"/>
+  <!-- Arabic text -->
+  <text x="65" y="22" text-anchor="middle" fill="#2D2D2D" font-size="13" font-weight="900" font-family="Arial,sans-serif">مدى</text>
+  <!-- mada text -->
+  <text x="65" y="39" text-anchor="middle" fill="#2D2D2D" font-size="13" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.3">mada</text>
 </svg>
