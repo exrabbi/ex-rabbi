@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=345" />
+  <link rel="stylesheet" href="styles.css?v=346" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1742,49 +1742,18 @@
         <!-- Card -->
         <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
           <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left">
+          <div class="ck-pm-info ck-pm-info-card">
             <div class="ck-pm-name" id="pmCardLabel">Credit / Debit Card</div>
-              <div class="ck-card-logos-row">
-
-                <!-- VISA — official #1434CB bold italic, white bg -->
-                <svg class="ck-cl-svg" viewBox="0 0 72 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="72" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-                  <text x="36" y="30" text-anchor="middle" fill="#1434CB" font-size="28" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
-                </svg>
-
-                <!-- Mastercard — red+orange circles + lowercase "mastercard" -->
-                <svg class="ck-cl-svg" viewBox="0 0 110 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="110" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-                  <circle cx="22" cy="22" r="13" fill="#EB001B"/>
-                  <circle cx="38" cy="22" r="13" fill="#F79E1B"/>
-                  <path d="M30,11 A13,13 0 0,1 30,33 A13,13 0 0,1 30,11 Z" fill="#FF5F00"/>
-                  <text x="74" y="27" text-anchor="middle" fill="#231F20" font-size="11.5" font-weight="600" font-family="Arial,sans-serif" letter-spacing="-.2">mastercard</text>
-                </svg>
-
-                <!-- American Express — official blue #016FD0 with "American Express" -->
-                <svg class="ck-cl-svg" viewBox="0 0 90 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="90" height="44" rx="6" fill="#016FD0"/>
-                  <text x="45" y="19" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">AMERICAN</text>
-                  <text x="45" y="30" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".6">EXPRESS</text>
-                </svg>
-
-                <!-- Discover — white bg, black text, #F76F20 orange disc -->
-                <svg class="ck-cl-svg" viewBox="0 0 100 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="100" height="44" rx="6" fill="#fff" stroke="#E0E0E0" stroke-width="1.5"/>
-                  <text x="33" y="27" text-anchor="middle" fill="#231F20" font-size="11" font-weight="800" font-family="Arial,sans-serif" letter-spacing=".4">DISCOVER</text>
-                  <circle cx="81" cy="22" r="16" fill="#F76F20"/>
-                </svg>
-
-                <!-- mada — official #005A9C blue + #00A14B green bottom stripe -->
-                <svg class="ck-cl-svg" viewBox="0 0 80 44" xmlns="http://www.w3.org/2000/svg">
-                  <rect width="80" height="44" rx="6" fill="#005A9C"/>
-                  <path d="M0 32 H80 V38 Q80 44 74 44 H6 Q0 44 0 38 Z" fill="#00A14B"/>
-                  <text x="40" y="21" text-anchor="middle" fill="#fff" font-size="10" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text>
-                  <text x="40" y="31" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text>
-                </svg>
-
-              </div>
+            <div class="ck-card-logos-row">
+              <img src="assets/payment/mada.svg" class="ck-cl-svg" alt="mada" loading="lazy">
+              <img src="assets/payment/visa.svg" class="ck-cl-svg" alt="Visa" loading="lazy">
+              <img src="assets/payment/mastercard.svg" class="ck-cl-svg" alt="Mastercard" loading="lazy">
+              <img src="assets/payment/amex.svg" class="ck-cl-svg" alt="Amex" loading="lazy">
+              <img src="assets/payment/discover.svg" class="ck-cl-svg" alt="Discover" loading="lazy">
+            </div>
           </div>
+          <div class="ck-pm-add-btn">Add/change</div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
         <!-- Green protection badge -->
         <div class="ck-card-protect" id="ckCardProtect" style="display:flex">
@@ -1859,44 +1828,70 @@
           <input type="hidden" id="cardName" />
         </div>
 
-        <!-- Tamara: official orange→pink gradient, white italic "tamara" -->
+        <!-- Tamara -->
         <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
           <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-tamara" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><defs><linearGradient id="tamG3" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#F97316"/><stop offset="100%" stop-color="#EC4899"/></linearGradient></defs><rect width="64" height="40" rx="7" fill="url(#tamG3)"/><text x="32" y="25" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.3">tamara</text></svg></div><div><div class="ck-pm-name">Tamara: split in 4 <i class="fas fa-circle-question" style="font-size:13px;color:#bbb;margin-left:3px"></i></div></div></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/tamara.svg" alt="Tamara" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">Tamara: split in 4</div>
+            <div class="ck-pm-sub">Buy now, pay later</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <!-- Cash on Delivery: green bill icon -->
+        <!-- Cash on Delivery -->
         <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
           <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#F0FDF4"/><rect x="7" y="8" width="50" height="26" rx="5" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/><circle cx="32" cy="21" r="8" fill="#16A34A"/><text x="32" y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">$</text><rect x="10" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="10" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/></svg></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/cod.svg" alt="Cash on Delivery" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">Cash On Delivery</div>
+            <div class="ck-pm-sub">Pay when you receive</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
         <!-- STC Pay -->
         <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
           <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div>
-          <div class="ck-brand-btn ck-brand-stc"><span>stc</span><span class="ck-brand-stc-pay">pay</span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/stcpay.svg" alt="STC Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">STC Pay</div>
+            <div class="ck-pm-sub">Instant SAR transfer</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
         <!-- Binance Pay -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div>
-          <div class="ck-brand-btn ck-brand-bnb" style="background:#0B0E11;color:#F3BA2F;font-size:11px;font-weight:800;letter-spacing:.3px">BNB</div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/binancepay.svg" alt="Binance Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">Binance Pay</div>
+            <div class="ck-pm-sub">USDT · BNB · Crypto</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
         <!-- Google Pay -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div>
-          <div class="ck-brand-btn ck-brand-gpay"><svg width="14" height="14" viewBox="0 0 18 18"><text y="14" font-size="14" font-weight="700" font-family="Arial" fill="#4285F4">G</text></svg>Pay</div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/googlepay.svg" alt="Google Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">Google Pay</div>
+            <div class="ck-pm-sub">Fast &amp; secure checkout</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
         <!-- PayPal -->
         <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
           <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div>
-          <div class="ck-brand-btn ck-brand-pp"><span style="color:#003087;font-weight:900;font-style:italic">Pay</span><span style="color:#009CDE;font-weight:900;font-style:italic">Pal</span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/paypal.svg" alt="PayPal" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info">
+            <div class="ck-pm-name">PayPal</div>
+            <div class="ck-pm-sub">Pay via PayPal account</div>
+          </div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
@@ -1939,10 +1934,10 @@
       </div>
       <!-- Trust strip -->
       <div class="ck-trust-strip">
-        <div class="ck-trust-item"><i class="fas fa-lock"></i> SSL SECURED</div>
-        <div class="ck-trust-item"><i class="fas fa-shield-halved"></i> SAFE CHECKOUT</div>
-        <div class="ck-trust-item"><i class="fas fa-user-shield"></i> PRIVACY PROTECTED</div>
-        <div class="ck-trust-item"><i class="fas fa-rotate-left"></i> EASY RETURNS</div>
+        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SSL SECURED</div>
+        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> SAFE CHECKOUT</div>
+        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> PRIVACY PROTECTED</div>
+        <div class="ck-trust-item"><i class="fas fa-circle-check"></i> EASY RETURNS</div>
       </div>
       <div style="height:90px"></div>
       </div><!-- /ckPg3 -->

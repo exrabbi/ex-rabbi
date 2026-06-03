@@ -11179,226 +11179,136 @@ body:has(#authModal.open) .hc-fab {
 .add-cart-btn i { font-size: 12px !important; }
 
 /* ════════════════════════════════════════════════════════════════
-   CHECKOUT — Premium payment method polish (v189)
+   CHECKOUT — Premium payment cards (v346)
    ════════════════════════════════════════════════════════════════ */
 
-/* Section label */
+/* Section header */
 .ck-sec-lbl { font-size: 16px !important; font-weight: 800 !important; }
+.ck-pm-sec-title { font-size: 16px !important; font-weight: 800 !important; color: #111 !important; }
+[data-theme="dark"] .ck-pm-sec-title { color: #f0f0f0 !important; }
+.ck-pm-sec-sub { font-size: 12px !important; color: #888 !important; margin-top: 2px !important; }
 
-/* Each payment method row */
-.ck-pm {
-  padding: 14px 0 !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  border-radius: 0 !important;
-  position: relative !important;
-}
-[data-theme="dark"] .ck-pm { border-bottom-color: rgba(255,255,255,.07) !important; }
-
-/* Selected method — light blue card */
-.ck-pm.ck-pm-active {
-  background: #f0f4ff !important;
-  border: none !important;
-  border-radius: 14px !important;
-  margin: 4px -16px !important;
-  padding: 14px 16px !important;
-  border-left: 4px solid #003087 !important;
-}
-[data-theme="dark"] .ck-pm.ck-pm-active {
-  background: rgba(37,99,235,.1) !important;
-  border-left-color: #60a5fa !important;
-}
-
-/* Radio circle — LEFT of icon */
-.ck-pm::before {
-  content: '';
-  position: absolute; left: 0; top: 50%;
-  transform: translateY(-50%);
-  width: 18px; height: 18px; border-radius: 50%;
-  border: 2px solid #ccc; background: #fff;
-  transition: border-color .2s, background .2s;
-  display: none; /* hidden — using right-side checkmark instead */
-}
-
-/* Icon box — consistent size */
-.ck-pm-ico {
-  width: 46px !important; height: 32px !important;
-  border-radius: 8px !important; font-size: 12px !important;
-  border: 1.5px solid #e8e8e8 !important;
-  flex-shrink: 0 !important;
-}
-[data-theme="dark"] .ck-pm-ico { border-color: rgba(255,255,255,.12) !important; }
-
-/* Payment name + subtitle */
-.ck-pm-name { font-size: 14.5px !important; font-weight: 700 !important; color: #111 !important; }
-[data-theme="dark"] .ck-pm-name { color: #eee !important; }
-.ck-pm-sub {
-  font-size: 12px !important; color: #888 !important;
-  white-space: nowrap !important; overflow: hidden !important;
-  text-overflow: ellipsis !important; max-width: 200px !important;
-}
-
-/* Right side — checkmark circle */
-.ck-pm-check {
-  width: 24px !important; height: 24px !important; flex-shrink: 0 !important;
-  border-radius: 50% !important; border: 2px solid #ddd !important;
-  display: flex !important; align-items: center !important; justify-content: center !important;
-  background: #fff !important;
-  transition: border-color .2s, background .2s !important;
-}
-[data-theme="dark"] .ck-pm-check { background: #1e1c38 !important; border-color: rgba(255,255,255,.15) !important; }
-.ck-pm-check i { font-size: 13px !important; color: #ddd !important; }
-
-/* Active check — filled pink */
-.ck-pm.ck-pm-active .ck-pm-check {
-  background: #e91e8c !important; border-color: #e91e8c !important;
-}
-.ck-pm.ck-pm-active .ck-pm-check i { color: #fff !important; }
-
-/* Add/change link */
-.ck-pm-add { font-size: 12px !important; font-weight: 700 !important; color: #2563eb !important; }
-[data-theme="dark"] .ck-pm-add { color: #60a5fa !important; }
-
-/* Bottom bar — Place Order button text trim */
-.ck-bar-btn {
-  font-size: 14px !important; font-weight: 900 !important;
-  border-radius: 14px !important; height: 52px !important;
-}
-
-/* Payment summary — cleaner rows */
-.ck-summ-row { font-size: 13.5px !important; }
-.ck-summ-total { font-size: 14px !important; }
-.ck-summ-total strong { font-size: 17px !important; color: #e91e8c !important; }
-[data-theme="dark"] .ck-summ-total strong { color: #e91e8c !important; }
-
-/* ════════════════════════════════════════════════════════════════
-   CHECKOUT — Temu-style payment methods (v191)
-   ════════════════════════════════════════════════════════════════ */
-
-/* Reset previous active style — new radio-based layout */
-.ck-pm.ck-pm-active {
-  background: #fff !important;
-  border: none !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  padding: 14px 0 !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  border-left: none !important;
-}
-[data-theme="dark"] .ck-pm.ck-pm-active {
-  background: transparent !important;
-  border-bottom-color: rgba(255,255,255,.07) !important;
-}
-
-/* Row layout: radio | icon | text | right */
+/* Each payment card — elevated white card */
 .ck-pm {
   display: flex !important;
   align-items: center !important;
-  gap: 10px !important;
-  padding: 14px 0 !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  border-radius: 0 !important;
-  position: relative !important;
+  gap: 12px !important;
+  padding: 13px 14px !important;
+  margin-bottom: 8px !important;
+  background: #fff !important;
+  border: 1.5px solid #efefef !important;
+  border-radius: 14px !important;
   cursor: pointer !important;
+  transition: border-color .2s, box-shadow .2s, transform .15s !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04) !important;
+  position: relative !important;
 }
-[data-theme="dark"] .ck-pm { border-bottom-color: rgba(255,255,255,.07) !important; }
+[data-theme="dark"] .ck-pm {
+  background: #1a1a2e !important;
+  border-color: rgba(255,255,255,.08) !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2) !important;
+}
+.ck-pm:hover {
+  border-color: rgba(233,30,140,.25) !important;
+  box-shadow: 0 5px 16px rgba(0,0,0,.07) !important;
+  transform: translateY(-1px) !important;
+}
 
-/* Radio circle */
+/* Selected card — pink border + glow */
+.ck-pm.ck-pm-active {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.1), 0 5px 16px rgba(233,30,140,.08) !important;
+  transform: none !important;
+  background: #fff !important;
+  border-radius: 14px !important;
+  margin: 0 0 8px 0 !important;
+  padding: 13px 14px !important;
+}
+[data-theme="dark"] .ck-pm.ck-pm-active {
+  background: #1a1a2e !important;
+  border-color: #e91e8c !important;
+}
+
+/* Radio button */
 .ck-pm-radio {
   flex-shrink: 0 !important;
   width: 20px !important; height: 20px !important;
   border-radius: 50% !important;
-  border: 2px solid #ccc !important;
+  border: 2px solid #ddd !important;
   background: #fff !important;
   display: flex !important; align-items: center !important; justify-content: center !important;
-  transition: border-color .18s, background .18s !important;
+  transition: border-color .2s, background .2s !important;
 }
 [data-theme="dark"] .ck-pm-radio { background: #1e1c38 !important; border-color: rgba(255,255,255,.25) !important; }
-
+.ck-pm-radio.ck-radio-active {
+  border-color: #e91e8c !important;
+  background: #e91e8c !important;
+}
 .ck-radio-dot {
-  width: 10px !important; height: 10px !important;
+  width: 8px !important; height: 8px !important;
   border-radius: 50% !important;
   background: transparent !important;
-  transition: background .18s !important;
+  transition: background .2s !important;
 }
+.ck-pm-radio.ck-radio-active .ck-radio-dot { background: #fff !important; }
 
-/* Selected radio — navy fill */
-.ck-pm-radio.ck-radio-active {
-  border-color: #1a2e4a !important;
-  background: #1a2e4a !important;
-}
-.ck-pm-radio.ck-radio-active .ck-radio-dot {
-  background: #fff !important;
-}
-
-/* Left content flex */
-.ck-pm-left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 10px !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-/* Icon box */
-.ck-pm-ico {
-  width: 44px !important; height: 30px !important;
-  border-radius: 6px !important;
-  border: 1.5px solid #e8e8e8 !important;
+/* Logo wrap — consistent branded icon box */
+.ck-pm-logo-wrap {
+  flex-shrink: 0 !important;
+  width: 54px !important; height: 36px !important;
+  border-radius: 9px !important;
+  border: 1px solid #efefef !important;
+  background: #fafafa !important;
   display: flex !important; align-items: center !important; justify-content: center !important;
-  flex-shrink: 0 !important;
-  font-size: 11px !important;
-  background: #fff !important;
   overflow: hidden !important;
+  padding: 3px !important;
 }
-[data-theme="dark"] .ck-pm-ico { border-color: rgba(255,255,255,.12) !important; background: #2a2845 !important; }
+[data-theme="dark"] .ck-pm-logo-wrap { background: #252540 !important; border-color: rgba(255,255,255,.1) !important; }
+.ck-pm-logo { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; }
 
-/* Remove old right-side check circle */
-.ck-pm-check { display: none !important; }
+/* Info text */
+.ck-pm-info { flex: 1 !important; min-width: 0 !important; }
+.ck-pm-info-card { flex: 1 !important; min-width: 0 !important; }
+.ck-pm-name { font-size: 14.5px !important; font-weight: 700 !important; color: #1a1a2a !important; line-height: 1.2 !important; }
+[data-theme="dark"] .ck-pm-name { color: #f0f0f0 !important; }
+.ck-pm-sub { font-size: 12px !important; color: #888 !important; margin-top: 2px !important; }
 
-/* Right side */
-.ck-pm-right {
-  display: flex !important;
-  align-items: center !important;
+/* Checkmark icon — hidden until active */
+.ck-pm-check-icon {
   flex-shrink: 0 !important;
+  color: #e91e8c !important;
+  font-size: 19px !important;
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  transition: opacity .2s, transform .25s cubic-bezier(.34,1.56,.64,1) !important;
 }
-.ck-pm-add {
-  font-size: 12px !important; font-weight: 700 !important;
-  color: #1a2e4a !important; white-space: nowrap !important;
+.ck-pm.ck-pm-active .ck-pm-check-icon {
+  opacity: 1 !important;
+  transform: scale(1) !important;
 }
-[data-theme="dark"] .ck-pm-add { color: #7eb3f5 !important; }
 
-/* Card logos row */
+/* Add/change button */
+.ck-pm-add-btn {
+  font-size: 12.5px !important; font-weight: 700 !important;
+  color: #e91e8c !important; flex-shrink: 0 !important;
+  white-space: nowrap !important;
+}
+[data-theme="dark"] .ck-pm-add-btn { color: #f472b6 !important; }
+
+/* Card logo strip */
 .ck-card-logos-row {
-  display: flex !important;
-  align-items: center !important;
-  gap: 5px !important;
-  margin-top: 5px !important;
-  flex-wrap: wrap !important;
+  display: flex !important; align-items: center !important;
+  gap: 5px !important; flex-wrap: wrap !important;
+  margin-top: 6px !important;
 }
-.ck-cl {
-  height: 20px !important;
+.ck-cl-svg {
+  height: 20px !important; width: auto !important;
   border-radius: 4px !important;
-  border: 1px solid #e0e0e0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 0 5px !important;
-  font-size: 8.5px !important;
-  font-weight: 900 !important;
-  letter-spacing: .3px !important;
+  border: 1px solid #e8e8e8 !important;
+  display: block !important;
   flex-shrink: 0 !important;
 }
-.ck-cl-mada  { background: #0c5c9b !important; color: #fff !important; border-color: #0c5c9b !important; font-size: 9px !important; }
-.ck-cl-visa  { background: #fff !important; color: #1a1f71 !important; font-style: italic !important; font-family: Georgia,serif !important; font-size: 11px !important; letter-spacing: .5px !important; }
-/* Mastercard — two overlapping circles */
-.ck-cl-mc    { background: #fff !important; padding: 0 4px !important; gap: 0 !important; position: relative !important; width: 30px !important; }
-.ck-mc-r, .ck-mc-o {
-  width: 14px !important; height: 14px !important; border-radius: 50% !important; flex-shrink: 0 !important;
-}
-.ck-mc-r { background: #eb001b !important; }
-.ck-mc-o { background: #f79e1b !important; margin-left: -5px !important; }
-.ck-cl-amex  { background: #2E77BC !important; color: #fff !important; border-color: #2E77BC !important; font-size: 8px !important; }
-.ck-cl-disc  { background: #F76F20 !important; color: #fff !important; border-color: #F76F20 !important; font-size: 8px !important; }
+[data-theme="dark"] .ck-cl-svg { border-color: rgba(255,255,255,.1) !important; }
 
 /* Green protection badge */
 .ck-card-protect {
@@ -11407,72 +11317,36 @@ body:has(#authModal.open) .hc-fab {
   gap: 8px !important;
   background: #f0faf4 !important;
   border: 1px solid #b7e4ca !important;
-  border-radius: 10px !important;
+  border-radius: 12px !important;
   padding: 9px 13px !important;
-  margin: 4px 0 8px !important;
+  margin: -4px 0 8px !important;
   font-size: 12px !important;
   font-weight: 600 !important;
   color: #1a6b3a !important;
   line-height: 1.4 !important;
 }
 [data-theme="dark"] .ck-card-protect {
-  background: rgba(16,185,89,.08) !important;
-  border-color: rgba(16,185,89,.2) !important;
+  background: rgba(22,163,74,.1) !important;
+  border-color: rgba(22,163,74,.25) !important;
   color: #4ade80 !important;
 }
 .ck-card-protect i { font-size: 15px !important; flex-shrink: 0 !important; color: #22a55a !important; }
 [data-theme="dark"] .ck-card-protect i { color: #4ade80 !important; }
 
-/* ════════════════════════════════════════════════════════════════
-   Binance Pay — exact brand colors (v192)
-   ════════════════════════════════════════════════════════════════ */
-.ck-pm-ico-binance {
-  background: #0B0E11 !important;
-  border-color: #0B0E11 !important;
-}
-.ck-pm-ico-binance svg { filter: none !important; }
+/* Trust strip — green checkmarks */
+.ck-trust-item i { color: #16a34a !important; }
 
-/* ════════════════════════════════════════════════════════════════
-   Binance Pay icon — correct BNB diamond logo (v193)
-   ════════════════════════════════════════════════════════════════ */
-.ck-pm-ico-binance {
-  background: #0B0E11 !important;
-  border-color: #0B0E11 !important;
-  width: 38px !important;
-  height: 38px !important;
-  border-radius: 9px !important;
-  padding: 5px !important;
-  flex-shrink: 0 !important;
-}
-.ck-pm-ico-binance svg {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-}
+/* Bottom bar */
+.ck-bar-btn { font-size: 14px !important; font-weight: 900 !important; border-radius: 14px !important; height: 52px !important; }
 
-/* Fix: don't override display:none with !important on .ck-pm */
+/* Payment summary */
+.ck-summ-row { font-size: 13.5px !important; }
+.ck-summ-total { font-size: 14px !important; }
+.ck-summ-total strong { font-size: 17px !important; color: #e91e8c !important; }
+[data-theme="dark"] .ck-summ-total strong { color: #e91e8c !important; }
+
+/* Fix: preserve display:none JS overrides */
 .ck-pm[style*="display:none"] { display: none !important; }
-
-/* ════════════════════════════════════════════════════════════════
-   Checkout — Google Pay & PayPal icons (v194)
-   ════════════════════════════════════════════════════════════════ */
-.ck-pm-ico-gpay {
-  background: #fff !important;
-  border-color: #e0e0e0 !important;
-  padding: 2px !important;
-}
-.ck-pm-ico-gpay svg { width: 100% !important; height: 100% !important; }
-
-.ck-pm-ico-paypal {
-  background: #003087 !important;
-  border-color: #003087 !important;
-  padding: 0 !important;
-  overflow: hidden !important;
-}
-.ck-pm-ico-paypal svg { width: 100% !important; height: 100% !important; }
-
-/* Binance — fix ck-pm-left wrapper missing */
-#pmBinance .ck-pm-left { display: flex !important; align-items: center !important; gap: 10px !important; flex: 1 !important; min-width: 0 !important; }
 
 /* ════════════════════════════════════════════════════════════════
    Abandoned Cart Popup — Premium redesign (v194)
