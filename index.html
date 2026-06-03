@@ -1963,56 +1963,57 @@
       </button>
     </div>
 
-    <!-- ── NC BOTTOM SHEETS ─────────────────────── -->
-    <!-- Address/Locker picker sheet -->
-    <div class="nc-overlay" id="ncAddrOverlay" onclick="ckCloseAddrSheet()"></div>
-    <div class="nc-sheet" id="ncAddrSheet" style="display:none">
-      <div class="nc-sheet-drag"></div>
-      <div class="nc-tab-row">
-        <button class="nc-tab nc-tab-on" id="ncTabAddr" onclick="ckSheetTab('Addr')">Address</button>
-        <button class="nc-tab" id="ncTabLocker" onclick="ckSheetTab('Locker')">Locker / Pickup</button>
-      </div>
-      <div class="nc-add-addr-row" onclick="closePayment();setTimeout(openLocation,300)">
-        <i class="fas fa-plus nc-add-ico"></i>
-        <span class="nc-add-txt">Add new address</span>
-        <i class="fas fa-chevron-right nc-add-chev"></i>
-      </div>
-      <div id="ncSavedAddrs"></div>
     </div>
+  </div>
 
-    <!-- Receiver Details sheet -->
-    <div class="nc-overlay" id="ncRecvOverlay" onclick="ckCloseRecvSheet()"></div>
-    <div class="nc-sheet" id="ncRecvSheet" style="display:none">
-      <div class="nc-sheet-drag"></div>
-      <div class="nc-sheet-title">Receiver Details</div>
-      <div class="nc-recv-info-box">
-        <span class="nc-bulb">💡</span>
-        <p>The delivery agent might contact the receiver if necessary and will only contact you if the receiver is unavailable.</p>
-      </div>
-      <div class="nc-sheet-lbl">Add receiver contact</div>
-      <input type="text" id="ncRecvNameInp" class="nc-sheet-inp" placeholder="Name">
-      <div class="nc-phone-row">
-        <div class="nc-phone-pfx">+966 <i class="fas fa-chevron-down" style="font-size:10px"></i></div>
-        <input type="tel" id="ncRecvPhoneInp" class="nc-sheet-inp nc-phone-inp" placeholder="Phone number">
-      </div>
-      <div class="nc-or-sep"><span>OR</span></div>
-      <div class="nc-sheet-lbl" style="margin-bottom:10px">Use previously saved contact</div>
-      <div class="nc-saved-contact" id="ncSavedContact" onclick="ckToggleSavedContact()">
-        <div class="nc-contact-avatar" id="ncContactAvatar">G</div>
-        <div class="nc-contact-info">
-          <div class="nc-contact-name" id="ncContactName">Customer</div>
-          <div class="nc-contact-phone" id="ncContactPhone"></div>
-        </div>
-        <span class="nc-primary-badge">Primary</span>
-        <div class="nc-contact-radio" id="ncContactRadio"><span></span></div>
-      </div>
-      <label class="nc-save-chk">
-        <input type="checkbox" checked id="ncSaveForFuture">
-        Save this for future orders on this address
-      </label>
-      <button class="nc-save-btn" onclick="ckSaveRecv()">Save</button>
+  <!-- ── NC BOTTOM SHEETS (outside pay-modal so overflow:hidden doesn't clip) ── -->
+  <!-- Address/Locker picker sheet -->
+  <div class="nc-overlay" id="ncAddrOverlay" onclick="ckCloseAddrSheet()"></div>
+  <div class="nc-sheet" id="ncAddrSheet" style="display:none">
+    <div class="nc-sheet-drag"></div>
+    <div class="nc-tab-row">
+      <button class="nc-tab nc-tab-on" id="ncTabAddr" onclick="ckSheetTab('Addr')">Address</button>
+      <button class="nc-tab" id="ncTabLocker" onclick="ckSheetTab('Locker')">Locker / Pickup</button>
     </div>
+    <div class="nc-add-addr-row" onclick="closePayment();setTimeout(openLocation,300)">
+      <i class="fas fa-plus nc-add-ico"></i>
+      <span class="nc-add-txt">Add new address</span>
+      <i class="fas fa-chevron-right nc-add-chev"></i>
+    </div>
+    <div id="ncSavedAddrs"></div>
+  </div>
 
+  <!-- Receiver Details sheet -->
+  <div class="nc-overlay" id="ncRecvOverlay" onclick="ckCloseRecvSheet()"></div>
+  <div class="nc-sheet" id="ncRecvSheet" style="display:none">
+    <div class="nc-sheet-drag"></div>
+    <div class="nc-sheet-title">Receiver Details</div>
+    <div class="nc-recv-info-box">
+      <span class="nc-bulb">💡</span>
+      <p>The delivery agent might contact the receiver if necessary and will only contact you if the receiver is unavailable.</p>
+    </div>
+    <div class="nc-sheet-lbl">Add receiver contact</div>
+    <input type="text" id="ncRecvNameInp" class="nc-sheet-inp" placeholder="Name">
+    <div class="nc-phone-row">
+      <div class="nc-phone-pfx">+966 <i class="fas fa-chevron-down" style="font-size:10px"></i></div>
+      <input type="tel" id="ncRecvPhoneInp" class="nc-sheet-inp nc-phone-inp" placeholder="Phone number">
+    </div>
+    <div class="nc-or-sep"><span>OR</span></div>
+    <div class="nc-sheet-lbl" style="margin-bottom:10px">Use previously saved contact</div>
+    <div class="nc-saved-contact" id="ncSavedContact" onclick="ckToggleSavedContact()">
+      <div class="nc-contact-avatar" id="ncContactAvatar">G</div>
+      <div class="nc-contact-info">
+        <div class="nc-contact-name" id="ncContactName">Customer</div>
+        <div class="nc-contact-phone" id="ncContactPhone"></div>
+      </div>
+      <span class="nc-primary-badge">Primary</span>
+      <div class="nc-contact-radio" id="ncContactRadio"><span></span></div>
+    </div>
+    <label class="nc-save-chk">
+      <input type="checkbox" checked id="ncSaveForFuture">
+      Save this for future orders on this address
+    </label>
+    <button class="nc-save-btn" onclick="ckSaveRecv()">Save</button>
   </div>
 
   <!-- AUTH MODAL -->
@@ -2792,7 +2793,7 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=294"></script>
+  <script src="script.js?v=295"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

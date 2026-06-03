@@ -5426,7 +5426,7 @@ function ckOpenAddrSheet() {
   if (!s) return;
   o.classList.add('nc-ov-on');
   s.style.display = 'flex';
-  requestAnimationFrame(() => s.classList.add('nc-sheet-open'));
+  requestAnimationFrame(() => requestAnimationFrame(() => s.classList.add('nc-sheet-open')));
   const wrap = document.getElementById('ncSavedAddrs');
   if (wrap && savedLocation) {
     const addrParts = [savedLocation.address, savedLocation.city, savedLocation.area].filter(Boolean).join(', ');
@@ -5469,7 +5469,7 @@ function ckOpenRecvSheet() {
   if (!s) return;
   o.classList.add('nc-ov-on');
   s.style.display = 'flex';
-  requestAnimationFrame(() => s.classList.add('nc-sheet-open'));
+  requestAnimationFrame(() => requestAnimationFrame(() => s.classList.add('nc-sheet-open')));
   const loc = savedLocation || {};
   const n = loc.name || (window.currentUser?.displayName || 'Customer').toUpperCase();
   const p = loc.phone || window.currentUser?.phoneNumber || '';
