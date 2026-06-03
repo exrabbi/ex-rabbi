@@ -1239,28 +1239,17 @@ function setupEvents() {
   }
 
   document.getElementById('searchToggleBtn').addEventListener('click', () => {
-    openVspPanel();
-  });
-  document.getElementById('searchInput').addEventListener('input', _debounce(e => {
-    const q = e.target.value.trim();
-    visibleCount = 8;
-    renderProducts(q);
-    showSearchDropdown(q);
-  }, 180));
-  document.getElementById('searchInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') { closeSearchDropdown(); doAiSearch(document.getElementById('searchInput').value.trim()); }
-    if (e.key === 'Escape') closeSearchDropdown();
+    openSrchOverlay();
   });
   document.getElementById('searchSubmit').addEventListener('click', () => {
     const q = document.getElementById('searchInput').value.trim();
-    closeSearchDropdown();
-    visibleCount = 8;
-    renderProducts(q);
-    doAiSearch(q);
-    document.getElementById('productsSection').scrollIntoView({ behavior: 'smooth' });
+    _srchDoSearch(q);
   });
   document.addEventListener('click', e => {
-    if (!e.target.closest('#searchBar')) closeSearchDropdown();
+    const overlay = document.getElementById('srchOverlay');
+    if (overlay && overlay.classList.contains('open') && !e.target.closest('#srchOverlay')) {
+      closeSrchOverlay();
+    }
   });
 
   document.getElementById('menuBtn').addEventListener('click', openDrawer);
@@ -6759,7 +6748,18 @@ let _aiSearchTimer = null;
 function showSearchDropdown(q) {
   const box = document.getElementById('searchDropdown');
   if (!box) return;
-  if (!q || q.length < 2) { box.innerHTML = ''; box.classList.remove('open'); return; }
+  if (!q || q.length < 2) {
+    box.innerHTML = ''; box.classList.remove('open');
+    const home = document.getElementById('srchOvHome');
+    const res  = document.getElementById('srchOvResults');
+    if (home) home.style.display = '';
+    if (res)  res.style.display  = 'none';
+    return;
+  }
+  const home2 = document.getElementById('srchOvHome');
+  const res2  = document.getElementById('srchOvResults');
+  if (home2) home2.style.display = 'none';
+  if (res2)  res2.style.display  = '';
 
   // Instant local results
   const s = q.toLowerCase();
@@ -6856,6 +6856,182 @@ async function doAiSearch(q) {
 function closeSearchDropdown() {
   const box = document.getElementById('searchDropdown');
   if (box) { box.classList.remove('open'); box.innerHTML = ''; }
+  const home = document.getElementById('srchOvHome');
+  const res  = document.getElementById('srchOvResults');
+  if (home) home.style.display = '';
+  if (res)  res.style.display  = 'none';
+}
+
+/* ===== PREMIUM SEARCH OVERLAY ===== */
+const SRCH_RECENT_KEY = 'exg_srch_recent';
+const SRCH_TRENDING = [
+  'Abaya', 'Kaftan', 'Jalabiya', 'Hijab', 'Evening Dress',
+  'Kids Fashion', 'Perfume', 'Saudi Style', 'Luxury Brands',
+  'Summer Collection', 'iPhone', 'Samsung', 'Nike', 'Handbag', 'Sunglasses'
+];
+
+function openSrchOverlay(startVoice = false) {
+  const ov = document.getElementById('srchOverlay');
+  if (!ov) return;
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _srchRenderHome();
+  const inp = document.getElementById('searchInput');
+  if (inp) {
+    inp.value = '';
+    setTimeout(() => inp.focus(), 120);
+  }
+  const clearBtn = document.getElementById('srchClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  if (startVoice) setTimeout(_srchVoice, 250);
+}
+
+function closeSrchOverlay() {
+  const ov = document.getElementById('srchOverlay');
+  if (!ov) return;
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+  closeSearchDropdown();
+  const inp = document.getElementById('searchInput');
+  if (inp && inp.value.trim()) {
+    const ph = document.getElementById('srchFacadePh');
+    if (ph) ph.textContent = inp.value.trim();
+  }
+}
+
+function _srchHandleInput(val) {
+  const clearBtn = document.getElementById('srchClearBtn');
+  if (clearBtn) clearBtn.style.display = val.length ? 'flex' : 'none';
+  const q = val.trim();
+  if (q.length >= 2) {
+    visibleCount = 8;
+    renderProducts(q);
+    showSearchDropdown(q);
+  } else {
+    closeSearchDropdown();
+  }
+}
+
+function _srchHandleKey(e) {
+  if (e.key === 'Enter') {
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) _srchDoSearch(q);
+  }
+  if (e.key === 'Escape') closeSrchOverlay();
+}
+
+function _srchClear() {
+  const inp = document.getElementById('searchInput');
+  if (inp) { inp.value = ''; inp.focus(); }
+  const clearBtn = document.getElementById('srchClearBtn');
+  if (clearBtn) clearBtn.style.display = 'none';
+  closeSearchDropdown();
+}
+
+function _srchGetRecent() {
+  try { return JSON.parse(localStorage.getItem(SRCH_RECENT_KEY) || '[]').slice(0, 8); } catch(e) { return []; }
+}
+
+function _srchSaveRecent(term, image = '') {
+  if (!term || term.length < 2) return;
+  let list = _srchGetRecent().filter(r => r.term.toLowerCase() !== term.toLowerCase());
+  const img = image || (() => {
+    const s = term.toLowerCase();
+    const match = PRODUCTS.find(p =>
+      getName(p).toLowerCase().includes(s) || p.category.includes(s)
+    );
+    return match ? match.image : '';
+  })();
+  list.unshift({ term, image: img, ts: Date.now() });
+  list = list.slice(0, 8);
+  try { localStorage.setItem(SRCH_RECENT_KEY, JSON.stringify(list)); } catch(e) {}
+}
+
+function _srchDelRecent(term) {
+  let list = _srchGetRecent().filter(r => r.term.toLowerCase() !== term.toLowerCase());
+  try { localStorage.setItem(SRCH_RECENT_KEY, JSON.stringify(list)); } catch(e) {}
+  _srchRenderRecent();
+}
+
+function _srchClearRecent() {
+  try { localStorage.removeItem(SRCH_RECENT_KEY); } catch(e) {}
+  _srchRenderRecent();
+}
+
+function _srchRenderRecent() {
+  const sec  = document.getElementById('srchOvRecentSec');
+  const list = document.getElementById('srchOvRecentList');
+  if (!sec || !list) return;
+  const recents = _srchGetRecent();
+  if (!recents.length) { sec.style.display = 'none'; return; }
+  sec.style.display = '';
+  list.innerHTML = recents.map(r => `
+    <div class="srch-recent-item" onclick="_srchDoSearch('${r.term.replace(/'/g, "\\'")}')">
+      ${r.image
+        ? `<img src="${r.image}" class="srch-recent-img" loading="lazy" />`
+        : `<div class="srch-recent-ico"><i class="fas fa-clock-rotate-left"></i></div>`}
+      <span class="srch-recent-term">${r.term}</span>
+      <button class="srch-recent-del" type="button" onclick="event.stopPropagation();_srchDelRecent('${r.term.replace(/'/g, "\\'")}')">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+function _srchRenderTrending() {
+  const wrap = document.getElementById('srchOvTrends');
+  if (!wrap) return;
+  wrap.innerHTML = SRCH_TRENDING.map(t => `
+    <button class="srch-trend-chip" type="button" onclick="_srchDoSearch('${t.replace(/'/g, "\\'")}')">
+      <i class="fas fa-arrow-trend-up"></i> ${t}
+    </button>
+  `).join('');
+}
+
+function _srchRenderHome() {
+  _srchRenderRecent();
+  _srchRenderTrending();
+}
+
+function _srchDoSearch(term) {
+  if (!term || !term.trim()) return;
+  term = term.trim();
+  _srchSaveRecent(term);
+  const inp = document.getElementById('searchInput');
+  if (inp) inp.value = term;
+  visibleCount = 8;
+  renderProducts(term);
+  doAiSearch(term);
+  closeSrchOverlay();
+  const ph = document.getElementById('srchFacadePh');
+  if (ph) ph.textContent = term;
+  setTimeout(() => {
+    const sec = document.getElementById('productsSection');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+  }, 120);
+}
+
+let _srchRecognition = null;
+function _srchVoice() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('Voice search not supported on this browser'); return; }
+  const ico = document.getElementById('srchVoiceIco');
+  if (_srchRecognition) { _srchRecognition.abort(); _srchRecognition = null; if (ico) { ico.className = 'fas fa-microphone'; } return; }
+  _srchRecognition = new SR();
+  _srchRecognition.lang = 'en-US';
+  _srchRecognition.interimResults = false;
+  _srchRecognition.maxAlternatives = 1;
+  if (ico) ico.className = 'fas fa-microphone srch-voice-pulse';
+  _srchRecognition.onresult = e => {
+    const transcript = e.results[0][0].transcript.trim();
+    if (transcript) {
+      const inp = document.getElementById('searchInput');
+      if (inp) { inp.value = transcript; _srchHandleInput(transcript); }
+    }
+  };
+  _srchRecognition.onerror = () => { if (ico) ico.className = 'fas fa-microphone'; _srchRecognition = null; };
+  _srchRecognition.onend   = () => { if (ico) ico.className = 'fas fa-microphone'; _srchRecognition = null; };
+  _srchRecognition.start();
 }
 
 /* ===== AI CHATBOT ===== */
