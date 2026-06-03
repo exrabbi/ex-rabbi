@@ -5592,7 +5592,8 @@ function ckSaveRecv() {
 
 function selectPayMethod(method) {
   selectedPayMethod = method;
-  ['whatsapp','paypal','card','gpay','binance','stc','tabby','tamara'].forEach(m => {
+  const _cardMethods = ['mada','visa','mastercard','amex','card'];
+  ['whatsapp','paypal','card','mada','visa','mastercard','amex','apple','gpay','binance','stc','tabby','tamara'].forEach(m => {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
     if (pm) { pm.classList.remove('active'); pm.classList.remove('ck-pm-active'); }
@@ -5603,11 +5604,12 @@ function selectPayMethod(method) {
   const check = document.getElementById('check' + method.charAt(0).toUpperCase() + method.slice(1));
   if (check) check.classList.add('ck-radio-active');
   // Show/hide card protection badge
+  const isCardMethod = _cardMethods.includes(method);
   const prot = document.getElementById('ckCardProtect');
-  if (prot) prot.style.display = (method === 'card') ? 'flex' : 'none';
+  if (prot) prot.style.display = isCardMethod ? 'flex' : 'none';
   // Show/hide sub-forms
   document.getElementById('paypalBtnContainer').style.display = (method === 'paypal') ? 'block' : 'none';
-  document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
+  document.getElementById('cardForm').style.display = isCardMethod ? 'block' : 'none';
   document.getElementById('binanceForm').style.display = (method === 'binance') ? 'block' : 'none';
   document.getElementById('stcForm').style.display = (method === 'stc') ? 'block' : 'none';
   const gpayFormEl = document.getElementById('gpayForm');
@@ -5649,7 +5651,11 @@ function selectPayMethod(method) {
   const grandDisp2 = subtotalDisp2 + delDisp2;
   const methodLabel = {
     whatsapp: t('placeOrder'), paypal: 'PayPal',
-    card: t('cardName'), gpay: 'Google Pay',
+    card: t('cardName'), mada: 'Pay with mada',
+    visa: 'Pay with Visa', mastercard: 'Pay with Mastercard',
+    amex: 'Pay with Amex', apple: 'Apple Pay',
+    gpay: 'Google Pay', tamara: 'Pay with Tamara',
+    tabby: 'Pay with Tabby',
     binance: '⚡ Verify & Confirm Order',
     stc: '✅ Confirm STC Pay Order',
   };
@@ -5764,6 +5770,12 @@ function processPayment() {
   } else if (selectedPayMethod === 'tamara') {
     showToast('⚠️ Tamara payment gateway not connected. Please choose another method.');
     return;
+  } else if (selectedPayMethod === 'tabby') {
+    showToast('⚠️ Tabby payment gateway not connected. Please choose another method.');
+    return;
+  } else if (selectedPayMethod === 'apple') {
+    showToast('⚠️ Apple Pay is not available on this device or browser. Please choose another method.');
+    return;
   } else if (selectedPayMethod === 'paypal') {
     if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY) {
       showToast(t('paypalOpening'));
@@ -5771,7 +5783,7 @@ function processPayment() {
       showToast('⚠️ PayPal is not connected. Please choose another payment method.');
     }
     return;
-  } else if (selectedPayMethod === 'card') {
+  } else if (['card','mada','visa','mastercard','amex'].includes(selectedPayMethod)) {
     const s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
     const moyasarKey = s.moyasarPubKey || '';
     if (!moyasarKey) {

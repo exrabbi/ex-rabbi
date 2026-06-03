@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=353" />
+  <link rel="stylesheet" href="styles.css?v=354" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1737,26 +1737,39 @@
           <div class="ck-pm-sec-sub">All transactions are secure and encrypted.</div>
         </div>
 
-        <!-- Card -->
-        <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
-          <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-info ck-pm-info-card">
-            <div class="ck-pm-name" id="pmCardLabel">Credit / Debit Card</div>
-            <div class="ck-card-logos-row">
-              <img src="assets/payment/mada.svg" class="ck-cl-svg" alt="mada" loading="lazy">
-              <img src="assets/payment/visa.svg" class="ck-cl-svg" alt="Visa" loading="lazy">
-              <img src="assets/payment/mastercard.svg" class="ck-cl-svg" alt="Mastercard" loading="lazy">
-              <img src="assets/payment/amex.svg" class="ck-cl-svg" alt="Amex" loading="lazy">
-              <img src="assets/payment/applepay.svg" class="ck-cl-svg" alt="Apple Pay" loading="lazy">
-              <img src="assets/payment/googlepay.svg" class="ck-cl-svg" alt="Google Pay" loading="lazy">
-              <img src="assets/payment/samsungpay.svg" class="ck-cl-svg" alt="Samsung Pay" loading="lazy">
-            </div>
-          </div>
-          <div class="ck-pm-add-btn">Add/change</div>
+        <!-- ── 💳 Cards ─────────────────────────────────── -->
+        <div class="ck-pm-group-hdr"><i class="fas fa-credit-card"></i>Cards</div>
+
+        <div class="ck-pm" id="pmMada" onclick="selectPayMethod('mada')">
+          <div class="ck-pm-radio" id="checkMada"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/mada.svg" alt="mada" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">mada</div><div class="ck-pm-sub">Saudi debit network</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
-        <!-- Green protection badge -->
-        <div class="ck-card-protect" id="ckCardProtect" style="display:flex">
+
+        <div class="ck-pm" id="pmVisa" onclick="selectPayMethod('visa')">
+          <div class="ck-pm-radio" id="checkVisa"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/visa.svg" alt="Visa" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Visa</div><div class="ck-pm-sub">Credit / Debit card</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmMastercard" onclick="selectPayMethod('mastercard')">
+          <div class="ck-pm-radio" id="checkMastercard"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/mastercard.svg" alt="Mastercard" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Mastercard</div><div class="ck-pm-sub">Credit / Debit card</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmAmex" onclick="selectPayMethod('amex')">
+          <div class="ck-pm-radio" id="checkAmex"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/amex.svg" alt="American Express" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">American Express</div><div class="ck-pm-sub">Credit card</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <!-- Card protect + form — visible when a card brand is selected -->
+        <div class="ck-card-protect" id="ckCardProtect" style="display:none">
           <i class="fas fa-shield-halved"></i>
           <span>Your card information is protected with 256-bit encryption</span>
         </div>
@@ -1828,69 +1841,64 @@
           <input type="hidden" id="cardName" />
         </div>
 
-        <!-- Tamara -->
-        <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
-          <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/tamara.svg" alt="Tamara" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">Tamara: split in 4</div>
-            <div class="ck-pm-sub">Buy now, pay later</div>
-          </div>
+        <!-- ── 📱 Digital Wallets ──────────────────────── -->
+        <div class="ck-pm-group-hdr"><i class="fas fa-mobile-screen-button"></i>Digital Wallets</div>
+
+        <div class="ck-pm" id="pmApple" onclick="selectPayMethod('apple')">
+          <div class="ck-pm-radio" id="checkApple"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/applepay.svg" alt="Apple Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Apple Pay</div><div class="ck-pm-sub">Touch / Face ID</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <!-- Cash on Delivery -->
-        <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
-          <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/cod.svg" alt="Cash on Delivery" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">Cash On Delivery</div>
-            <div class="ck-pm-sub">Pay when you receive</div>
-          </div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <!-- STC Pay -->
-        <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
-          <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/stcpay.svg" alt="STC Pay" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">STC Pay</div>
-            <div class="ck-pm-sub">Instant SAR transfer</div>
-          </div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <!-- Binance Pay -->
-        <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
-          <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/binancepay.svg" alt="Binance Pay" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">Binance Pay</div>
-            <div class="ck-pm-sub">USDT · BNB · Crypto</div>
-          </div>
-          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
-        </div>
-
-        <!-- Google Pay -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/googlepay.svg" alt="Google Pay" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">Google Pay</div>
-            <div class="ck-pm-sub">Fast &amp; secure checkout</div>
-          </div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <!-- PayPal -->
-        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
-          <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-logo-wrap"><img src="assets/payment/paypal.svg" alt="PayPal" class="ck-pm-logo" loading="lazy"></div>
-          <div class="ck-pm-info">
-            <div class="ck-pm-name">PayPal</div>
-            <div class="ck-pm-sub">Pay via PayPal account</div>
-          </div>
+        <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
+          <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/stcpay.svg" alt="STC Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <!-- ── 🛍️ Buy Now, Pay Later ──────────────────── -->
+        <div class="ck-pm-group-hdr"><i class="fas fa-calendar-check"></i>Buy Now, Pay Later</div>
+
+        <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
+          <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/tamara.svg" alt="Tamara" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Tamara</div><div class="ck-pm-sub">Split in 4 · Buy now, pay later</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmTabby" onclick="selectPayMethod('tabby')">
+          <div class="ck-pm-radio" id="checkTabby"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/tabby.svg" alt="Tabby" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Tabby</div><div class="ck-pm-sub">Split in 4 · 0% interest</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <!-- ── ₿ Crypto ──────────────────────────────── -->
+        <div class="ck-pm-group-hdr"><i class="fab fa-bitcoin"></i>Crypto Payments</div>
+
+        <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
+          <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/binancepay.svg" alt="Binance Pay" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <!-- ── 💵 Cash Payment ──────────────────────── -->
+        <div class="ck-pm-group-hdr"><i class="fas fa-money-bill-wave"></i>Cash Payment</div>
+
+        <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+          <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/cod.svg" alt="Cash on Delivery" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
@@ -1914,6 +1922,15 @@
 
         <!-- STC form -->
         <div id="stcForm" style="display:none"><div class="stc-box"><div class="stc-box-header"><div class="stc-logo-wrap"><svg width="36" height="26" viewBox="0 0 56 40"><rect width="56" height="40" rx="6" fill="#6D2C8A"/><text x="28" y="27" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-family="Arial,sans-serif">STC</text></svg></div><div class="stc-title-wrap"><div class="stc-box-title">STC Pay</div><div class="stc-box-sub">Instant SAR · المدفوعات الفورية</div></div><div class="stc-amount-pill"><span id="stcAmtSAR" class="stc-amt-val"></span></div></div><div class="stc-num-wrap"><div class="stc-num-lbl">Send to this number</div><div class="stc-num-row"><span class="stc-num" id="stcPhoneTxt">0546224029</span><button class="stc-copy-btn" onclick="copyStcNumber()"><i class="fas fa-copy"></i></button></div><div class="stc-num-hint"><i class="fas fa-mobile-screen-button"></i> STC Pay App → Send Money → Enter number above</div></div><div class="stc-amount-row"><span class="stc-amount-lbl">Send exactly:</span><span class="stc-amount-val" id="stcAmtDisplay"></span></div><div class="stc-steps"><div class="stc-step"><span class="stc-step-num">1</span><span>Open STC Pay app</span></div><div class="stc-step"><span class="stc-step-num">2</span><span>Tap <b>Send Money</b> → enter number</span></div><div class="stc-step"><span class="stc-step-num">3</span><span>Send the exact amount shown</span></div><div class="stc-step"><span class="stc-step-num">4</span><span>Enter the transaction ID below</span></div></div><div class="stc-ref-wrap"><label class="stc-ref-lbl"><i class="fas fa-receipt"></i> STC Pay Transaction ID</label><input class="stc-ref-input" type="text" id="stcRefInput" placeholder="e.g. 12345678" maxlength="20" oninput="this.value=this.value.replace(/[^0-9a-zA-Z]/g,'')" /><div class="stc-ref-hint">Copy the transaction ID from your STC Pay receipt</div></div></div></div>
+
+        <!-- ── 🔒 Trust Section ──────────────────────── -->
+        <div class="ck-pm-trust-grid">
+          <div class="ck-trust-badge"><i class="fas fa-shield-halved"></i><span>Secure Payment</span></div>
+          <div class="ck-trust-badge"><i class="fas fa-lock"></i><span>256-bit SSL Encryption</span></div>
+          <div class="ck-trust-badge"><i class="fas fa-award"></i><span>PCI DSS Compliant</span></div>
+          <div class="ck-trust-badge"><i class="fas fa-user-shield"></i><span>100% Buyer Protection</span></div>
+          <div class="ck-trust-badge ck-trust-full"><i class="fas fa-rotate-left"></i><span>Fast Refund Support</span></div>
+        </div>
       </div>
 
       <!-- 6. PAYMENT SUMMARY -->
@@ -2888,7 +2905,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=299"></script>
+  <script src="script.js?v=300"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

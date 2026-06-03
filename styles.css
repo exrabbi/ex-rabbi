@@ -11183,159 +11183,213 @@ body:has(#authModal.open) .hc-fab {
    CHECKOUT — Premium payment cards (v346)
    ════════════════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════
+   PAYMENT METHODS — Premium Dark Glass + Group Headers (v354)
+   Blue/purple glow on selection · glassmorphism cards
+   ═══════════════════════════════════════════════════════ */
+
 /* Section header */
 .ck-sec-lbl { font-size: 16px !important; font-weight: 800 !important; }
-.ck-pm-sec-title { font-size: 16px !important; font-weight: 800 !important; color: #111 !important; }
-[data-theme="dark"] .ck-pm-sec-title { color: #f0f0f0 !important; }
-.ck-pm-sec-sub { font-size: 12px !important; color: #888 !important; margin-top: 2px !important; }
+.ck-pm-sec-hd { margin-bottom: 4px !important; }
+.ck-pm-sec-title { font-size: 17px !important; font-weight: 800 !important; color: #111 !important; }
+[data-theme="dark"] .ck-pm-sec-title { color: #f5f5ff !important; }
+.ck-pm-sec-sub { font-size: 12px !important; color: #888 !important; margin-top: 3px !important; }
+[data-theme="dark"] .ck-pm-sec-sub { color: rgba(255,255,255,.42) !important; }
 
-/* Each payment card — elevated white card */
+/* Category group header */
+.ck-pm-group-hdr {
+  display: flex !important;
+  align-items: center !important;
+  gap: 7px !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.4px !important;
+  color: #aaa !important;
+  padding: 14px 2px 7px !important;
+}
+[data-theme="dark"] .ck-pm-group-hdr { color: rgba(255,255,255,.38) !important; }
+.ck-pm-group-hdr i { font-size: 11px !important; flex-shrink: 0 !important; }
+.ck-pm-group-hdr::after {
+  content: '' !important;
+  flex: 1 !important;
+  height: 1px !important;
+  background: #ebebeb !important;
+  margin-left: 4px !important;
+}
+[data-theme="dark"] .ck-pm-group-hdr::after { background: rgba(255,255,255,.07) !important; }
+
+/* Payment card — elevated light / dark glass */
 .ck-pm {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 13px !important;
   padding: 13px 14px !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 7px !important;
   background: #fff !important;
   border: 1.5px solid #efefef !important;
-  border-radius: 14px !important;
+  border-radius: 15px !important;
   cursor: pointer !important;
-  transition: border-color .2s, box-shadow .2s, transform .15s !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,.04) !important;
+  transition: border-color .22s, box-shadow .22s, transform .18s, background .22s !important;
+  box-shadow: 0 2px 7px rgba(0,0,0,.04) !important;
   position: relative !important;
 }
 [data-theme="dark"] .ck-pm {
-  background: #1a1a2e !important;
-  border-color: rgba(255,255,255,.08) !important;
-  box-shadow: 0 2px 8px rgba(0,0,0,.2) !important;
+  background: rgba(255,255,255,.046) !important;
+  border-color: rgba(255,255,255,.09) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,.22) !important;
 }
 .ck-pm:hover {
-  border-color: rgba(233,30,140,.25) !important;
-  box-shadow: 0 5px 16px rgba(0,0,0,.07) !important;
+  border-color: rgba(79,109,255,.3) !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.08) !important;
+  transform: translateY(-1px) !important;
+}
+[data-theme="dark"] .ck-pm:hover {
+  background: rgba(255,255,255,.072) !important;
+  border-color: rgba(255,255,255,.17) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.28) !important;
   transform: translateY(-1px) !important;
 }
 
-/* Selected card — pink border + glow */
+/* Selected — electric blue/purple glow */
 .ck-pm.ck-pm-active {
-  border-color: #e91e8c !important;
-  box-shadow: 0 0 0 3px rgba(233,30,140,.1), 0 5px 16px rgba(233,30,140,.08) !important;
+  background: rgba(79,109,255,.06) !important;
+  border-color: #4f6dff !important;
+  box-shadow: 0 0 0 2px rgba(79,109,255,.18), 0 6px 20px rgba(79,109,255,.14) !important;
   transform: none !important;
-  background: #fff !important;
-  border-radius: 14px !important;
-  margin: 0 0 8px 0 !important;
+  border-radius: 15px !important;
   padding: 13px 14px !important;
+  margin-bottom: 7px !important;
 }
 [data-theme="dark"] .ck-pm.ck-pm-active {
-  background: #1a1a2e !important;
-  border-color: #e91e8c !important;
+  background: rgba(79,109,255,.12) !important;
+  border-color: #6b8cff !important;
+  box-shadow: 0 0 0 2px rgba(107,140,255,.24), 0 0 28px rgba(79,109,255,.22), 0 6px 20px rgba(0,0,0,.2) !important;
 }
 
 /* Radio button */
 .ck-pm-radio {
   flex-shrink: 0 !important;
-  width: 20px !important; height: 20px !important;
+  width: 21px !important; height: 21px !important;
   border-radius: 50% !important;
-  border: 2px solid #ddd !important;
+  border: 2px solid #d0d0d0 !important;
   background: #fff !important;
   display: flex !important; align-items: center !important; justify-content: center !important;
   transition: border-color .2s, background .2s !important;
+  position: relative !important;
 }
-[data-theme="dark"] .ck-pm-radio { background: #1e1c38 !important; border-color: rgba(255,255,255,.25) !important; }
+[data-theme="dark"] .ck-pm-radio {
+  background: rgba(255,255,255,.05) !important;
+  border-color: rgba(255,255,255,.28) !important;
+}
 .ck-pm-radio.ck-radio-active {
-  border-color: #e91e8c !important;
-  background: #e91e8c !important;
+  border-color: #4f6dff !important;
+  background: #4f6dff !important;
 }
 .ck-radio-dot {
-  width: 8px !important; height: 8px !important;
+  width: 7px !important; height: 7px !important;
   border-radius: 50% !important;
-  background: transparent !important;
-  transition: background .2s !important;
+  background: #fff !important;
+  transform: scale(0) !important;
+  transition: transform .22s cubic-bezier(.34,1.56,.64,1) !important;
 }
-.ck-pm-radio.ck-radio-active .ck-radio-dot { background: #fff !important; }
+.ck-pm-radio.ck-radio-active .ck-radio-dot { transform: scale(1) !important; }
 
-/* Logo wrap — consistent branded icon box */
+/* Logo wrap */
 .ck-pm-logo-wrap {
   flex-shrink: 0 !important;
-  width: 54px !important; height: 36px !important;
+  width: 56px !important; height: 36px !important;
   border-radius: 9px !important;
   border: 1px solid #efefef !important;
   background: #fafafa !important;
   display: flex !important; align-items: center !important; justify-content: center !important;
   overflow: hidden !important;
-  padding: 3px !important;
+  padding: 4px !important;
 }
-[data-theme="dark"] .ck-pm-logo-wrap { background: #252540 !important; border-color: rgba(255,255,255,.1) !important; }
+[data-theme="dark"] .ck-pm-logo-wrap {
+  background: rgba(255,255,255,.08) !important;
+  border-color: rgba(255,255,255,.1) !important;
+}
 .ck-pm-logo { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; }
 
 /* Info text */
 .ck-pm-info { flex: 1 !important; min-width: 0 !important; }
 .ck-pm-info-card { flex: 1 !important; min-width: 0 !important; }
 .ck-pm-name { font-size: 14.5px !important; font-weight: 700 !important; color: #1a1a2a !important; line-height: 1.2 !important; }
-[data-theme="dark"] .ck-pm-name { color: #f0f0f0 !important; }
-.ck-pm-sub { font-size: 12px !important; color: #888 !important; margin-top: 2px !important; }
+[data-theme="dark"] .ck-pm-name { color: #f0f0f5 !important; }
+.ck-pm-sub { font-size: 11.5px !important; color: #888 !important; margin-top: 2px !important; }
+[data-theme="dark"] .ck-pm-sub { color: rgba(255,255,255,.42) !important; }
 
-/* Checkmark icon — hidden until active */
+/* Check icon — blue, hidden until active */
 .ck-pm-check-icon {
   flex-shrink: 0 !important;
-  color: #e91e8c !important;
+  color: #4f6dff !important;
   font-size: 19px !important;
   opacity: 0 !important;
-  transform: scale(0.5) !important;
+  transform: scale(.5) !important;
   transition: opacity .2s, transform .25s cubic-bezier(.34,1.56,.64,1) !important;
 }
-.ck-pm.ck-pm-active .ck-pm-check-icon {
-  opacity: 1 !important;
-  transform: scale(1) !important;
-}
+.ck-pm.ck-pm-active .ck-pm-check-icon { opacity: 1 !important; transform: scale(1) !important; }
 
-/* Add/change button */
-.ck-pm-add-btn {
-  font-size: 12.5px !important; font-weight: 700 !important;
-  color: #e91e8c !important; flex-shrink: 0 !important;
-  white-space: nowrap !important;
-}
-[data-theme="dark"] .ck-pm-add-btn { color: #f472b6 !important; }
-
-/* Card logo strip */
+/* Card logo strip (legacy — kept for any references) */
 .ck-card-logos-row {
   display: flex !important; align-items: center !important;
-  gap: 5px !important; flex-wrap: wrap !important;
-  margin-top: 6px !important;
+  gap: 5px !important; flex-wrap: wrap !important; margin-top: 6px !important;
 }
 .ck-cl-svg {
   height: 20px !important; width: auto !important;
-  border-radius: 4px !important;
-  border: 1px solid #e8e8e8 !important;
-  display: block !important;
+  border-radius: 4px !important; border: 1px solid #e8e8e8 !important;
   flex-shrink: 0 !important;
 }
 [data-theme="dark"] .ck-cl-svg { border-color: rgba(255,255,255,.1) !important; }
 
-/* Green protection badge */
+/* Add/change (legacy) */
+.ck-pm-add-btn {
+  font-size: 12px !important; font-weight: 700 !important;
+  color: #4f6dff !important; flex-shrink: 0 !important; white-space: nowrap !important;
+}
+
+/* Protection badge */
 .ck-card-protect {
   display: none;
-  align-items: center !important;
-  gap: 8px !important;
-  background: #f0faf4 !important;
-  border: 1px solid #b7e4ca !important;
-  border-radius: 12px !important;
-  padding: 9px 13px !important;
-  margin: -4px 0 8px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  color: #1a6b3a !important;
-  line-height: 1.4 !important;
+  align-items: center !important; gap: 8px !important;
+  background: #f0faf4 !important; border: 1px solid #b7e4ca !important;
+  border-radius: 12px !important; padding: 9px 13px !important;
+  margin: -4px 0 8px !important; font-size: 12px !important;
+  font-weight: 600 !important; color: #1a6b3a !important; line-height: 1.4 !important;
 }
 [data-theme="dark"] .ck-card-protect {
   background: rgba(22,163,74,.1) !important;
-  border-color: rgba(22,163,74,.25) !important;
-  color: #4ade80 !important;
+  border-color: rgba(22,163,74,.25) !important; color: #4ade80 !important;
 }
 .ck-card-protect i { font-size: 15px !important; flex-shrink: 0 !important; color: #22a55a !important; }
 [data-theme="dark"] .ck-card-protect i { color: #4ade80 !important; }
 
-/* Trust strip — green checkmarks */
-.ck-trust-item i { color: #16a34a !important; }
+/* Trust badges grid */
+.ck-pm-trust-grid {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  margin-top: 20px !important;
+  padding-top: 16px !important;
+  border-top: 1px solid #ebebeb !important;
+}
+[data-theme="dark"] .ck-pm-trust-grid { border-top-color: rgba(255,255,255,.07) !important; }
+.ck-trust-badge {
+  display: flex !important; align-items: center !important; gap: 7px !important;
+  padding: 9px 11px !important;
+  background: rgba(34,197,94,.05) !important;
+  border: 1px solid rgba(34,197,94,.16) !important;
+  border-radius: 11px !important;
+  font-size: 11px !important; font-weight: 600 !important;
+  color: #1a6b3a !important; line-height: 1.3 !important;
+}
+[data-theme="dark"] .ck-trust-badge {
+  background: rgba(34,197,94,.07) !important;
+  border-color: rgba(34,197,94,.18) !important; color: rgba(255,255,255,.70) !important;
+}
+.ck-trust-badge i { color: #22c55e !important; font-size: 12px !important; flex-shrink: 0 !important; }
+.ck-trust-full { grid-column: 1 / -1 !important; }
 
 /* Bottom bar */
 .ck-bar-btn { font-size: 14px !important; font-weight: 900 !important; border-radius: 14px !important; height: 52px !important; }
@@ -11754,224 +11808,7 @@ body:has(#authModal.open) .hc-fab {
   flex-shrink: 0 !important;
 }
 
-/* ══════════════════════════════════════════════════════════════
-   Payment Methods — Premium Noon-style redesign (v198)
-   ══════════════════════════════════════════════════════════════ */
-
-/* Row base — clean flat style */
-.ck-pm {
-  display: flex !important;
-  align-items: center !important;
-  gap: 14px !important;
-  padding: 14px 0 !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  margin: 0 !important;
-  cursor: pointer;
-  position: relative;
-}
-[data-theme="dark"] .ck-pm { border-bottom-color: rgba(255,255,255,.07) !important; }
-.ck-pm:last-of-type { border-bottom: none !important; }
-
-/* Selected row — NO background, just radio changes */
-.ck-pm.ck-pm-active {
-  background: transparent !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-top: none !important;
-  border-bottom: 1px solid #f0f0f0 !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  padding: 14px 0 !important;
-  box-shadow: none !important;
-}
-[data-theme="dark"] .ck-pm.ck-pm-active { border-bottom-color: rgba(255,255,255,.07) !important; }
-.ck-pm.ck-pm-active:last-of-type { border-bottom: none !important; }
-.ck-pm::before { display: none !important; }
-
-/* Radio — gray outline circle */
-.ck-pm-radio {
-  width: 22px !important;
-  height: 22px !important;
-  min-width: 22px !important;
-  border-radius: 50% !important;
-  border: 2px solid #bbb !important;
-  background: #fff !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-shrink: 0 !important;
-  transition: background .15s, border-color .15s !important;
-  position: relative !important;
-}
-[data-theme="dark"] .ck-pm-radio { background: #13112a !important; border-color: rgba(255,255,255,.3) !important; }
-.ck-radio-dot { display: none !important; }
-
-/* Active radio — red fill + white checkmark via pseudo */
-.ck-pm-radio.ck-radio-active {
-  background: #dd0000 !important;
-  border-color: #dd0000 !important;
-}
-.ck-pm-radio.ck-radio-active::after {
-  content: '';
-  display: block !important;
-  width: 5px !important;
-  height: 9px !important;
-  border: 2px solid #fff !important;
-  border-top: none !important;
-  border-left: none !important;
-  transform: rotate(45deg) translateY(-1px) !important;
-  margin-top: 1px !important;
-}
-
-/* Left group */
-.ck-pm-left {
-  display: flex !important;
-  align-items: center !important;
-  gap: 12px !important;
-  flex: 1 !important;
-  min-width: 0 !important;
-}
-
-/* Icon box — white, bordered rectangle */
-.ck-pm-ico {
-  width: 64px !important;
-  height: 40px !important;
-  min-width: 64px !important;
-  border-radius: 7px !important;
-  border: 1.5px solid #e5e5e5 !important;
-  background: #fff !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  overflow: hidden !important;
-  flex-shrink: 0 !important;
-  padding: 5px !important;
-  box-shadow: none !important;
-}
-[data-theme="dark"] .ck-pm-ico { background: #1e1c38 !important; border-color: rgba(255,255,255,.13) !important; }
-
-/* Payment name */
-.ck-pm-name {
-  font-size: 15px !important;
-  font-weight: 600 !important;
-  color: #111 !important;
-  line-height: 1.3 !important;
-}
-[data-theme="dark"] .ck-pm-name { color: #eee !important; }
-.ck-pm-sub {
-  font-size: 11.5px !important;
-  color: #999 !important;
-  margin-top: 2px !important;
-  font-weight: 400 !important;
-}
-[data-theme="dark"] .ck-pm-sub { color: #777 !important; }
-
-/* Right "Add/change" link */
-.ck-pm-right { margin-left: auto; }
-.ck-pm-add {
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  color: #0066cc !important;
-}
-[data-theme="dark"] .ck-pm-add { color: #7eb3f5 !important; }
-
-/* Hide old check icon column */
-.ck-pm-check { display: none !important; }
-
-/* ── CARD icon: blue card ── */
-.ck-pm-ico-card { font-size: 22px !important; color: #1a1a72 !important; padding: 0 !important; }
-
-/* ── GOOGLE PAY icon ── */
-.ck-pm-ico-gpay {
-  border: 1.5px solid #e5e5e5 !important;
-  background: #fff !important;
-  padding: 0 6px !important;
-  gap: 1px !important;
-}
-.gpay-g {
-  font-size: 17px !important;
-  font-weight: 800 !important;
-  font-family: Arial, sans-serif !important;
-  background: linear-gradient(to bottom, #4285F4 0%, #4285F4 40%, #34A853 40%, #34A853 55%, #FBBC05 55%, #FBBC05 70%, #EA4335 70%) !important;
-  -webkit-background-clip: text !important;
-  background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  line-height: 1 !important;
-}
-.gpay-pay {
-  font-size: 14px !important;
-  font-weight: 500 !important;
-  font-family: Arial, sans-serif !important;
-  color: #3c4043 !important;
-  -webkit-text-fill-color: #3c4043 !important;
-  line-height: 1 !important;
-}
-
-/* ── TAMARA icon — orange/pink gradient ── */
-.ck-pm-ico-tamara {
-  background: linear-gradient(135deg, #f97316 0%, #ec4899 100%) !important;
-  color: #fff !important;
-  font-size: 13px !important;
-  font-weight: 900 !important;
-  font-style: italic !important;
-  font-family: Arial, sans-serif !important;
-  letter-spacing: -.3px !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-/* ── COD icon ── */
-.ck-pm-ico-cod { font-size: 20px !important; color: #16a34a !important; padding: 0 !important; }
-
-/* ── BINANCE icon — dark bg ── */
-.ck-pm-ico-binance {
-  background: #0B0E11 !important;
-  border-color: #0B0E11 !important;
-  border-radius: 7px !important;
-  width: 64px !important;
-  height: 40px !important;
-  padding: 7px !important;
-}
-.ck-pm-ico-binance svg { width: 100% !important; height: 100% !important; display: block !important; }
-
-/* ── PAYPAL icon — white with PayPal wordmark ── */
-.ck-pm-ico-paypal {
-  background: #fff !important;
-  border-color: #e5e5e5 !important;
-  padding: 0 !important;
-}
-.ck-pm-ico-paypal svg { width: 100% !important; height: 100% !important; display: block !important; }
-
-/* Card logos row */
-.ck-card-logos-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; }
-.ck-cl {
-  display: inline-flex; align-items: center; justify-content: center;
-  height: 18px; padding: 0 5px; border-radius: 3px;
-  font-size: 9px; font-weight: 900; border: 1px solid #ddd;
-}
-.ck-cl-mada { background: #003087; color: #fff; border-color: #003087; }
-.ck-cl-visa { background: #1a1f71; color: #fff; font-style: italic; border-color: #1a1f71; }
-.ck-cl-mc { background: transparent; border-color: #ddd; padding: 0 3px; position: relative; }
-.ck-mc-r, .ck-mc-o { display: inline-block; width: 12px; height: 12px; border-radius: 50%; }
-.ck-mc-r { background: #eb001b; margin-right: -5px; }
-.ck-mc-o { background: #f79e1b; }
-.ck-cl-amex { background: #2671b8; color: #fff; font-size: 8px; border-color: #2671b8; }
-.ck-cl-disc { background: #e65c00; color: #fff; font-size: 8px; border-color: #e65c00; }
-
-/* Green protection badge */
-.ck-card-protect {
-  display: flex; align-items: center; gap: 7px;
-  background: rgba(22,163,74,.07); border: 1px solid rgba(22,163,74,.2);
-  border-radius: 10px; padding: 8px 12px; margin: 4px 0 8px;
-  font-size: 12px; font-weight: 600; color: #15803d;
-}
-.ck-card-protect i { color: #16a34a; font-size: 14px; flex-shrink: 0; }
-[data-theme="dark"] .ck-card-protect { background: rgba(22,163,74,.1); color: #4ade80; }
+/* (old Noon-style payment block removed — replaced by premium dark glass v354 above) */
 
 /* ══════════════════════════════════════════════════════════════
    Bottom Nav — Premium clear redesign (v198)
