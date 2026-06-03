@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="8" fill="#fff"/><text x="20" y="33" text-anchor="middle" fill="#4285F4" font-size="22" font-weight="700" font-family="Arial,sans-serif">G</text><text x="52" y="33" text-anchor="middle" fill="#5f6368" font-size="18" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#fff"/>
+  <g transform="translate(10,11)">
+    <path d="M14,0 A14,14 0 0,1 28,14 L20,14 A6,6 0 0,0 14,8 Z" fill="#4285F4"/>
+    <path d="M14,0 A14,14 0 0,0 1.5,7 L8,11 A6,6 0 0,1 14,8 Z" fill="#EA4335"/>
+    <path d="M1.5,7 A14,14 0 0,0 1.5,21 L8,17 A6,6 0 0,1 8,11 Z" fill="#FBBC05"/>
+    <path d="M1.5,21 A14,14 0 0,0 14,28 L14,20 A6,6 0 0,1 8,17 Z" fill="#34A853"/>
+    <path d="M14,28 A14,14 0 0,0 28,14 L20,14 A6,6 0 0,1 14,20 Z" fill="#4285F4"/>
+    <rect x="12" y="11" width="16" height="6" rx="3" fill="#4285F4"/>
+    <circle cx="14" cy="14" r="6" fill="#fff"/>
+  </g>
+  <text x="57" y="28" text-anchor="middle" fill="#5F6368" font-size="16" font-weight="600" font-family="Arial,sans-serif" letter-spacing="-.5">Pay</text>
+</svg>

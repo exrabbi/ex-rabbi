@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="8" fill="#005A9C"/><path d="M0 38 H80 V44 Q80 50 74 50 H6 Q0 50 0 44 Z" fill="#00A14B"/><text x="40" y="22" text-anchor="middle" fill="#fff" font-size="9" font-family="Arial,sans-serif" font-weight="600" letter-spacing=".5">مدى</text><text x="40" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing=".5">mada</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <defs><clipPath id="cm"><rect width="80" height="50" rx="8"/></clipPath></defs>
+  <rect width="80" height="50" rx="8" fill="#004A97"/>
+  <rect y="35" width="80" height="15" fill="#00914A" clip-path="url(#cm)"/>
+  <text x="40" y="21" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1">مدى</text>
+  <text x="40" y="33" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.2">mada</text>
+</svg>

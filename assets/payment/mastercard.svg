@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="8" fill="#fff"/><circle cx="30" cy="25" r="14" fill="#EB001B"/><circle cx="50" cy="25" r="14" fill="#F79E1B"/><path d="M40,13.6a14,14 0 0,1 0,22.8A14,14 0 0,1 40,13.6z" fill="#FF5F00"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#fff"/>
+  <circle cx="30" cy="22" r="14" fill="#EB001B"/>
+  <circle cx="50" cy="22" r="14" fill="#F79E1B"/>
+  <path d="M40,10.2a14,14 0 0,1 0,23.6A14,14 0 0,1 40,10.2z" fill="#FF5F00"/>
+  <text x="40" y="44" text-anchor="middle" fill="#231F20" font-size="6" font-weight="400" font-family="Arial,sans-serif" letter-spacing=".3">mastercard</text>
+</svg>

@@ -1,1 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="8" fill="#fff"/><text x="40" y="34" text-anchor="middle" fill="#1A1F71" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <defs><clipPath id="c"><rect width="80" height="50" rx="8"/></clipPath></defs>
+  <rect width="80" height="50" rx="8" fill="#fff"/>
+  <rect y="40" width="80" height="10" fill="#F7B600" clip-path="url(#c)"/>
+  <rect y="0" width="80" height="10" fill="#1A1F71" clip-path="url(#c)"/>
+  <text x="40" y="32" text-anchor="middle" fill="#1A1F71" font-size="26" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
+</svg>

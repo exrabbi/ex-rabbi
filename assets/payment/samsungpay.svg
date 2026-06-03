@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#1428A0"/>
+  <text x="40" y="20" text-anchor="middle" fill="#fff" font-size="9.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing="1">SAMSUNG</text>
+  <text x="40" y="34" text-anchor="middle" fill="rgba(255,255,255,.85)" font-size="9.5" font-weight="400" font-family="Arial,sans-serif" letter-spacing="3">Pay</text>
+</svg>
