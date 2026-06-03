@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <rect width="80" height="50" rx="8" fill="#6D2C8A"/>
-  <text x="40" y="22" text-anchor="middle" fill="#fff" font-size="15" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1">STC</text>
-  <text x="40" y="35" text-anchor="middle" fill="rgba(255,255,255,.8)" font-size="10" font-weight="700" font-family="Arial,sans-serif" letter-spacing="2">Pay</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+  <rect width="90" height="48" rx="9" fill="#fff"/>
+  <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+  <!-- "stc" in official deep purple -->
+  <text x="26" y="31" text-anchor="middle" fill="#4A007E" font-size="22" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">stc</text>
+  <!-- small square separator dot -->
+  <rect x="50" y="17" width="5" height="5" rx="1.2" fill="#4A007E"/>
+  <!-- "pay" in official teal-green -->
+  <text x="70" y="31" text-anchor="middle" fill="#00C87A" font-size="22" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">pay</text>
 </svg>
