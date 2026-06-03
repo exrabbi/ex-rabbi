@@ -13858,9 +13858,15 @@ body { padding-bottom: 100px !important; }
   margin-bottom: 8px;
 }
 .fpm-icons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+}
+.fpm-icons .pay-bdg {
+  width: 100% !important;
+  height: 42px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,.18) !important;
 }
 .fpm-icons .fpi {
   font-size: 10px;
@@ -13919,9 +13925,15 @@ body { padding-bottom: 100px !important; }
   margin-bottom: 10px;
 }
 .st-pay-icons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.st-pay-icons .pay-bdg {
+  width: 100% !important;
+  height: 44px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 1px 6px rgba(0,0,0,.1) !important;
 }
 
 /* =========================================
