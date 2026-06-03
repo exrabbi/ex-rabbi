@@ -20871,3 +20871,307 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .ck-cont-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(233,30,140,.38); }
 .ck-cont-btn:active { transform: scale(.98); }
 [data-theme="dark"] .ck-cont-btn { box-shadow: 0 5px 18px rgba(233,30,140,.2); }
+
+/* ── CHECKOUT FORM SECTIONS (v342) ───────────────────── */
+.ck-form-sec {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #f3f3f3;
+}
+[data-theme="dark"] .ck-form-sec { border-bottom-color: rgba(255,255,255,.06); }
+
+.ck-form-lbl {
+  font-size: 13px; font-weight: 800; color: #555;
+  text-transform: uppercase; letter-spacing: .6px;
+  margin-bottom: 10px;
+}
+[data-theme="dark"] .ck-form-lbl { color: #aaa; }
+
+/* Input row with icon */
+.ck-inp-row {
+  display: flex; align-items: center;
+  background: #fff; border: 1.5px solid #e5e7eb;
+  border-radius: 12px; padding: 0 12px;
+  transition: border-color .2s;
+}
+.ck-inp-row:focus-within { border-color: #e91e8c; }
+[data-theme="dark"] .ck-inp-row { background: #1e1c38; border-color: rgba(255,255,255,.12); }
+[data-theme="dark"] .ck-inp-row:focus-within { border-color: #e91e8c; }
+
+.ck-inp-ico { color: #aaa; font-size: 14px; flex-shrink: 0; margin-right: 8px; }
+.ck-inp-check { color: #16a34a; font-size: 14px; flex-shrink: 0; margin-left: 6px; opacity: 0; transition: opacity .2s; }
+.ck-inp-check.visible { opacity: 1; }
+
+/* Base input */
+.ck-inp {
+  width: 100%; padding: 12px 0;
+  border: none; outline: none; background: transparent;
+  font-size: 14px; color: #111;
+  font-family: inherit;
+}
+[data-theme="dark"] .ck-inp { color: #eee; }
+.ck-inp::placeholder { color: #bbb; }
+[data-theme="dark"] .ck-inp::placeholder { color: #555; }
+
+/* Standalone input (not in .ck-inp-row) */
+.ck-fg .ck-inp, .ck-row2 .ck-inp, .ck-row3 .ck-inp {
+  padding: 12px 12px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  transition: border-color .2s;
+}
+.ck-fg .ck-inp:focus, .ck-row2 .ck-inp:focus, .ck-row3 .ck-inp:focus {
+  border-color: #e91e8c; outline: none;
+}
+[data-theme="dark"] .ck-fg .ck-inp,
+[data-theme="dark"] .ck-row2 .ck-inp,
+[data-theme="dark"] .ck-row3 .ck-inp {
+  background: #1e1c38; border-color: rgba(255,255,255,.12); color: #eee;
+}
+
+/* Select */
+.ck-sel {
+  -webkit-appearance: none; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23999' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px !important;
+  cursor: pointer;
+}
+
+/* Field group */
+.ck-fg { margin-bottom: 8px; }
+.ck-fg:last-child { margin-bottom: 0; }
+
+/* 2-col row */
+.ck-row2 {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 8px; margin-bottom: 8px;
+}
+
+/* 3-col row */
+.ck-row3 {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; margin-bottom: 8px;
+}
+
+/* Checkbox row */
+.ck-cb-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px; color: #666; cursor: pointer;
+  margin-top: 10px;
+}
+[data-theme="dark"] .ck-cb-row { color: #888; }
+.ck-cb-row input[type="checkbox"] {
+  width: 16px; height: 16px; accent-color: #e91e8c; cursor: pointer;
+}
+
+/* ── PAYMENT METHOD SECTION HEADER ─ */
+.ck-pm-sec-hd {
+  padding: 14px 16px 8px;
+}
+.ck-pm-sec-title {
+  font-size: 15px; font-weight: 800; color: #111;
+}
+[data-theme="dark"] .ck-pm-sec-title { color: #f0f0f0; }
+.ck-pm-sec-sub {
+  font-size: 12px; color: #888; margin-top: 3px;
+}
+
+/* ── PAYMENT METHOD CARDS (v342 redesign) ─────────────── */
+/* Override all previous .ck-pm rules */
+#ckPg3 .ck-pm {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 13px 16px !important;
+  margin: 0 12px 8px !important;
+  background: #fff !important;
+  border: 1.5px solid #eee !important;
+  border-radius: 14px !important;
+  cursor: pointer !important;
+  transition: border-color .2s, box-shadow .2s !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.04) !important;
+  position: relative !important;
+}
+[data-theme="dark"] #ckPg3 .ck-pm {
+  background: #1a1833 !important;
+  border-color: rgba(255,255,255,.09) !important;
+}
+#ckPg3 .ck-pm:hover {
+  border-color: #e91e8c60 !important;
+  box-shadow: 0 4px 14px rgba(0,0,0,.08) !important;
+}
+#ckPg3 .ck-pm.ck-pm-active {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.10), 0 4px 14px rgba(233,30,140,.1) !important;
+  background: #fff !important;
+}
+[data-theme="dark"] #ckPg3 .ck-pm.ck-pm-active {
+  background: #1e1c38 !important;
+  border-color: #e91e8c !important;
+}
+#ckPg3 .ck-pm::before { display: none !important; }
+
+/* Radio button */
+#ckPg3 .ck-pm-radio {
+  flex-shrink: 0 !important;
+  width: 20px !important; height: 20px !important;
+  border-radius: 50% !important;
+  border: 2px solid #ddd !important;
+  background: #fff !important;
+  display: flex !important; align-items: center !important; justify-content: center !important;
+  transition: border-color .2s, background .2s !important;
+}
+[data-theme="dark"] #ckPg3 .ck-pm-radio {
+  background: #1e1c38 !important;
+  border-color: rgba(255,255,255,.25) !important;
+}
+#ckPg3 .ck-pm-radio.ck-radio-active {
+  border-color: #e91e8c !important;
+  background: #e91e8c !important;
+}
+#ckPg3 .ck-radio-dot {
+  width: 7px !important; height: 7px !important;
+  border-radius: 50% !important;
+  background: #fff !important;
+  transform: scale(0) !important;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1) !important;
+}
+#ckPg3 .ck-pm-radio.ck-radio-active .ck-radio-dot {
+  transform: scale(1) !important;
+}
+
+/* Left info block */
+#ckPg3 .ck-pm-left {
+  flex: 1 !important; min-width: 0 !important;
+  display: flex !important; flex-direction: column !important;
+  gap: 0 !important;
+}
+
+/* Card logos row */
+.ck-card-logos-row {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  margin-top: 5px !important;
+  overflow: hidden !important;
+}
+.ck-cl-svg {
+  height: 22px !important;
+  width: auto !important;
+  border-radius: 4px !important;
+  flex-shrink: 0 !important;
+}
+
+/* ── BRAND BUTTONS (STC / Binance / G Pay / PayPal) ──── */
+.ck-brand-btn {
+  flex-shrink: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 4px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  letter-spacing: .2px !important;
+  border: 1.5px solid transparent !important;
+  white-space: nowrap !important;
+}
+
+/* STC Pay — purple */
+.ck-brand-stc {
+  background: #6D2C8A !important;
+  color: #fff !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  letter-spacing: .5px !important;
+}
+.ck-brand-stc-pay {
+  font-weight: 400 !important;
+  font-size: 11px !important;
+  opacity: .85 !important;
+}
+
+/* Binance Pay — dark/gold */
+.ck-brand-bnb {
+  background: #0B0E11 !important;
+  color: #F3BA2F !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  letter-spacing: .3px !important;
+}
+
+/* Google Pay — white with border */
+.ck-brand-gpay {
+  background: #fff !important;
+  color: #3c4043 !important;
+  border-color: #dadce0 !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  gap: 3px !important;
+}
+[data-theme="dark"] .ck-brand-gpay {
+  background: #2a2845 !important;
+  border-color: rgba(255,255,255,.2) !important;
+  color: #eee !important;
+}
+
+/* PayPal — white */
+.ck-brand-pp {
+  background: #fff !important;
+  border-color: #dedede !important;
+  gap: 0 !important;
+  font-size: 14px !important;
+  font-style: italic !important;
+}
+[data-theme="dark"] .ck-brand-pp {
+  background: #2a2845 !important;
+  border-color: rgba(255,255,255,.2) !important;
+}
+
+/* 3-col card form row */
+.card-row3r {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr 1.4fr !important;
+  gap: 10px !important;
+}
+@media (max-width: 400px) {
+  .card-row3r { grid-template-columns: 1fr 1fr !important; }
+  .card-row3r .card-field:last-child { grid-column: 1 / -1 !important; }
+}
+
+/* Green protection badge */
+.ck-card-protect {
+  display: flex !important; align-items: center !important; gap: 8px !important;
+  background: #f0fdf4 !important; border: 1px solid #bbf7d0 !important;
+  border-radius: 10px !important; padding: 9px 14px !important;
+  margin: 0 12px 8px !important; font-size: 12px !important; color: #15803d !important;
+}
+[data-theme="dark"] .ck-card-protect {
+  background: rgba(22,163,74,.1) !important;
+  border-color: rgba(22,163,74,.25) !important;
+  color: #4ade80 !important;
+}
+
+/* Trust strip at bottom of payment page */
+.ck-trust-strip {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; flex-wrap: wrap;
+  padding: 12px 16px 10px;
+  margin-top: 4px;
+}
+.ck-trust-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; color: #666;
+  letter-spacing: .3px;
+  padding: 0 10px;
+}
+.ck-trust-item:not(:last-child) {
+  border-right: 1px solid #e0e0e0;
+}
+[data-theme="dark"] .ck-trust-item { color: #888; }
+[data-theme="dark"] .ck-trust-item:not(:last-child) { border-right-color: rgba(255,255,255,.1); }
+.ck-trust-item i { color: #16a34a; font-size: 12px; }

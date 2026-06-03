@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=341" />
+  <link rel="stylesheet" href="styles.css?v=342" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1630,9 +1630,9 @@
     </div>
     <!-- STEP INDICATOR -->
     <div class="ck-steps">
-      <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Address</span></div>
+      <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Contact</span></div>
       <div class="ck-stl" id="ckStL1"></div>
-      <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Items</span></div>
+      <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Shipping</span></div>
       <div class="ck-stl" id="ckStL2"></div>
       <div class="ck-stp" id="ckSt3"><div class="ck-stn">3</div><span>Payment</span></div>
     </div>
@@ -1640,8 +1640,53 @@
     <div class="ck-body">
       <div class="ck-pg" id="ckPg1">
 
-      <!-- 1. ADDRESS -->
-      <div class="ck-sec">
+      <!-- CONTACT INFORMATION -->
+      <div class="ck-form-sec">
+        <div class="ck-form-lbl">Contact Information</div>
+        <div class="ck-inp-row">
+          <i class="fas fa-envelope ck-inp-ico"></i>
+          <input type="email" id="ckEmail" class="ck-inp" placeholder="youremail@example.com">
+          <i class="fas fa-check ck-inp-check" id="ckEmailCheck"></i>
+        </div>
+      </div>
+
+      <!-- SHIPPING ADDRESS -->
+      <div class="ck-form-sec">
+        <div class="ck-form-lbl">Shipping Address</div>
+        <div class="ck-fg">
+          <select id="ckCountry" class="ck-inp ck-sel">
+            <option>🇸🇦  Saudi Arabia</option>
+            <option>🇦🇪  UAE</option>
+            <option>🇰🇼  Kuwait</option>
+            <option>🇶🇦  Qatar</option>
+            <option>🇧🇭  Bahrain</option>
+            <option>🇴🇲  Oman</option>
+          </select>
+        </div>
+        <div class="ck-row2">
+          <div class="ck-fg"><input id="ckFullName" class="ck-inp" placeholder="Full Name"></div>
+          <div class="ck-fg"><input id="ckPhone2" class="ck-inp" type="tel" placeholder="Phone Number"></div>
+        </div>
+        <div class="ck-fg">
+          <input id="ckStreet" class="ck-inp" placeholder="Address">
+        </div>
+        <div class="ck-row3">
+          <div class="ck-fg"><input id="ckCity2" class="ck-inp" placeholder="City"></div>
+          <div class="ck-fg">
+            <select id="ckRegion" class="ck-inp ck-sel">
+              <option value="">Region</option>
+              <option>Riyadh</option><option>Jeddah</option><option>Mecca</option>
+              <option>Medina</option><option>Dammam</option><option>Khobar</option>
+              <option>Tabuk</option><option>Abha</option>
+            </select>
+          </div>
+          <div class="ck-fg"><input id="ckZip" class="ck-inp" placeholder="ZIP / Postal Code"></div>
+        </div>
+        <label class="ck-cb-row"><input type="checkbox" checked> Save this information for next time</label>
+      </div>
+
+      <!-- 1. ADDRESS (existing — hidden in page 1 new UI, kept for JS compatibility) -->
+      <div class="ck-sec" style="display:none">
         <div class="ck-sec-lbl">Address</div>
         <div class="ck-addr-card" onclick="closePayment();setTimeout(openLocation,300)">
           <div class="ck-addr-pin"><i class="fas fa-location-dot"></i></div>
@@ -1678,7 +1723,7 @@
         </div>
       </div>
       <div class="ck-pg-foot">
-        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Items &nbsp;<i class="fas fa-arrow-right"></i></button>
+        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Shipping &nbsp;<i class="fas fa-arrow-right"></i></button>
       </div>
       </div><!-- /ckPg1 -->
       <div class="ck-pg" id="ckPg2">
@@ -1711,15 +1756,16 @@
 
       <!-- 5. PAY WITH -->
       <div class="ck-sec">
-        <div class="ck-sec-lbl">Pay with</div>
+        <div class="ck-pm-sec-hd">
+          <div class="ck-pm-sec-title">Payment Method</div>
+          <div class="ck-pm-sec-sub">All transactions are secure and encrypted.</div>
+        </div>
 
         <!-- Card -->
         <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
           <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-left">
-            <div class="ck-pm-ico ck-pm-ico-card"><i class="fas fa-credit-card"></i></div>
-            <div>
-              <div class="ck-pm-name" id="pmCardLabel">Debit/Credit Card</div>
+            <div class="ck-pm-name" id="pmCardLabel">Credit / Debit Card</div>
               <div class="ck-card-logos-row">
 
                 <!-- VISA — official #1434CB bold italic, white bg -->
@@ -1760,9 +1806,7 @@
                 </svg>
 
               </div>
-            </div>
           </div>
-          <div class="ck-pm-right"><span class="ck-pm-add">Add/change</span></div>
         </div>
         <!-- Green protection badge -->
         <div class="ck-card-protect" id="ckCardProtect" style="display:flex">
@@ -1826,8 +1870,13 @@
 
           <div class="card-form-wrap">
             <div class="card-field"><label>* Card number</label><div class="card-input-wrap"><input type="tel" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this);_updateCCPreview()" onfocus="_updateCCPreview()" /><div class="card-type-icon" id="cardTypeIcon"></div></div><div class="card-field-req" id="cardNumReq">Required</div></div>
-            <div class="card-row2"><div class="card-field"><label>* Expiry</label><input type="tel" id="cardExpiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this);_updateCCPreview()" /></div><div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="123" maxlength="4" oninput="_updateCCPreview()" onfocus="_ccFlip(true)" onblur="_ccFlip(false)" /></div></div>
-            <div class="card-row2"><div class="card-field"><label>* First name</label><input type="text" id="cardFirstName" placeholder="First name" autocomplete="given-name" oninput="_syncCardName();_updateCCPreview()" /></div><div class="card-field"><label>* Last name</label><input type="text" id="cardLastName" placeholder="Last name" autocomplete="family-name" oninput="_syncCardName();_updateCCPreview()" /></div></div>
+            <div class="card-row3r">
+              <div class="card-field"><label>* MM / YY</label><input type="tel" id="cardExpiry" placeholder="MM / YY" maxlength="5" oninput="formatExpiry(this);_updateCCPreview()" /></div>
+              <div class="card-field"><label>* CVV</label><input type="tel" id="cardCvv" placeholder="•••" maxlength="4" oninput="_updateCCPreview()" onfocus="_ccFlip(true)" onblur="_ccFlip(false)" /></div>
+              <div class="card-field"><label>* Cardholder Name</label><input type="text" id="cardHolderDisplay" placeholder="Name on card" autocomplete="cc-name" oninput="var p=this.value.trim().split(' ');document.getElementById('cardFirstName').value=p[0]||'';document.getElementById('cardLastName').value=p.slice(1).join(' ')||p[0]||'';_syncCardName();_updateCCPreview()" /></div>
+            </div>
+            <input type="hidden" id="cardFirstName">
+            <input type="hidden" id="cardLastName">
           </div>
           <input type="hidden" id="cardName" />
         </div>
@@ -1844,28 +1893,32 @@
           <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-cod" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#F0FDF4"/><rect x="7" y="8" width="50" height="26" rx="5" fill="#DCFCE7" stroke="#16A34A" stroke-width="1.5"/><circle cx="32" cy="21" r="8" fill="#16A34A"/><text x="32" y="25" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">$</text><rect x="10" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="12" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="10" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/><rect x="46" y="28" width="8" height="2" rx="1" fill="#16A34A" opacity=".4"/></svg></div><div><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div></div>
         </div>
 
-        <!-- STC Pay: official purple #6D2C8A, white stc + pay -->
+        <!-- STC Pay -->
         <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
           <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#6D2C8A"/><text x="32" y="17" text-anchor="middle" fill="#fff" font-size="14" font-weight="900" font-family="Arial,sans-serif" letter-spacing="1.5">stc</text><text x="32" y="31" text-anchor="middle" fill="#E0B8F5" font-size="11" font-weight="600" font-family="Arial,sans-serif" letter-spacing="2">pay</text></svg></div><div><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div>
+          <div class="ck-brand-btn ck-brand-stc"><span>stc</span><span class="ck-brand-stc-pay">pay</span></div>
         </div>
 
-        <!-- Binance Pay: official BNB diamond — 5 diamonds in cross, #F3BA2F on #0B0E11 -->
+        <!-- Binance Pay -->
         <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-binance"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="100" height="100" fill="#0B0E11"/><!-- top small diamond --><polygon fill="#F3BA2F" points="50,6 61,17 50,28 39,17"/><!-- center large diamond --><polygon fill="#F3BA2F" points="50,28 72,50 50,72 28,50"/><!-- right small diamond --><polygon fill="#F3BA2F" points="72,50 83,39 94,50 83,61"/><!-- bottom small diamond --><polygon fill="#F3BA2F" points="50,72 61,83 50,94 39,83"/><!-- left small diamond --><polygon fill="#F3BA2F" points="28,50 17,39 6,50 17,61"/><!-- center hole --><polygon fill="#0B0E11" points="50,42 58,50 50,58 42,50"/></svg></div><div><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div>
+          <div class="ck-brand-btn ck-brand-bnb" style="background:#0B0E11;color:#F3BA2F;font-size:11px;font-weight:800;letter-spacing:.3px">BNB</div>
         </div>
 
-        <!-- Google Pay: multicolor Google G + Pay -->
+        <!-- Google Pay -->
         <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-gpay" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><defs><clipPath id="gClip"><text x="5" y="31" font-size="26" font-weight="700" font-family="Arial,sans-serif">G</text></clipPath></defs><!-- 4-color Google G --><rect x="5" y="8" width="11" height="12" clip-path="url(#gClip)" fill="#4285F4"/><!-- blue top --><rect x="16" y="8" width="10" height="12" clip-path="url(#gClip)" fill="#EA4335"/><!-- red top-right --><rect x="5" y="20" width="11" height="12" clip-path="url(#gClip)" fill="#34A853"/><!-- green bottom --><rect x="16" y="20" width="10" height="12" clip-path="url(#gClip)" fill="#FBBC05"/><!-- yellow bottom-right --><!-- crossbar (blue) --><rect x="18" y="18" width="10" height="5" clip-path="url(#gClip)" fill="#4285F4"/><text x="44" y="27" text-anchor="middle" fill="#5F6368" font-size="15" font-weight="500" font-family="Arial,sans-serif">Pay</text></svg></div><div><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div>
+          <div class="ck-brand-btn ck-brand-gpay"><svg width="14" height="14" viewBox="0 0 18 18"><text y="14" font-size="14" font-weight="700" font-family="Arial" fill="#4285F4">G</text></svg>Pay</div>
         </div>
 
-        <!-- PayPal: official #003087 "Pay" + #009CDE "Pal" italic on white -->
+        <!-- PayPal -->
         <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
           <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
-          <div class="ck-pm-left"><div class="ck-pm-ico ck-pm-ico-paypal" style="padding:0;overflow:hidden"><svg viewBox="0 0 64 40" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;display:block"><rect width="64" height="40" rx="7" fill="#fff"/><text x="9" y="27" font-family="Arial,sans-serif" font-size="18" font-weight="900" font-style="italic" fill="#003087">Pay</text><text x="37" y="27" font-family="Arial,sans-serif" font-size="18" font-weight="900" font-style="italic" fill="#009CDE">Pal</text></svg></div><div><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div></div>
+          <div class="ck-pm-left"><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay via PayPal account</div></div>
+          <div class="ck-brand-btn ck-brand-pp"><span style="color:#003087;font-weight:900;font-style:italic">Pay</span><span style="color:#009CDE;font-weight:900;font-style:italic">Pal</span></div>
         </div>
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
@@ -1905,6 +1958,13 @@
         <span class="psb psb-visa">VISA</span>
         <span class="psb psb-mc"><svg width="24" height="15" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/></svg></span>
         <span class="psb psb-amex">AMEX</span>
+      </div>
+      <!-- Trust strip -->
+      <div class="ck-trust-strip">
+        <div class="ck-trust-item"><i class="fas fa-lock"></i> SSL SECURED</div>
+        <div class="ck-trust-item"><i class="fas fa-shield-halved"></i> SAFE CHECKOUT</div>
+        <div class="ck-trust-item"><i class="fas fa-user-shield"></i> PRIVACY PROTECTED</div>
+        <div class="ck-trust-item"><i class="fas fa-rotate-left"></i> EASY RETURNS</div>
       </div>
       <div style="height:90px"></div>
       </div><!-- /ckPg3 -->
