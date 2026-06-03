@@ -1,3 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <text x="40" y="35" text-anchor="middle" fill="#1A1F71" font-size="32" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+  <rect width="90" height="48" rx="9" fill="#fff"/>
+  <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+  <text x="45" y="32" text-anchor="middle" fill="#1A1F71" font-size="30" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-1">VISA</text>
 </svg>

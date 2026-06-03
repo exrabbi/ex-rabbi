@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <circle cx="29" cy="22" r="16" fill="#EB001B"/>
-  <circle cx="51" cy="22" r="16" fill="#F79E1B"/>
-  <path d="M40,8.4a16,16 0 0,1 0,27.2A16,16 0 0,1 40,8.4z" fill="#FF5F00"/>
-  <text x="40" y="46" text-anchor="middle" fill="#231F20" font-size="6.5" font-weight="500" font-family="Arial,sans-serif" letter-spacing=".4">mastercard</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+  <rect width="90" height="48" rx="9" fill="#fff"/>
+  <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+  <circle cx="34" cy="22" r="15" fill="#EB001B"/>
+  <circle cx="56" cy="22" r="15" fill="#F79E1B"/>
+  <path d="M45,9.3a15,15 0 0,1 0,25.4A15,15 0 0,1 45,9.3z" fill="#FF5F00"/>
+  <text x="45" y="43" text-anchor="middle" fill="#231F20" font-size="7" font-weight="500" font-family="Arial,sans-serif" letter-spacing=".5">mastercard</text>
 </svg>

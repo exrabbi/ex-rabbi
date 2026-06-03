@@ -1,1 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="8" fill="#F0FDF4"/><rect x="10" y="10" width="60" height="32" rx="6" fill="#DCFCE7" stroke="#16a34a" stroke-width="1.5"/><circle cx="40" cy="26" r="9" fill="#16a34a"/><text x="40" y="30" text-anchor="middle" fill="#fff" font-size="12" font-weight="900" font-family="Arial,sans-serif">$</text><rect x="13" y="14" width="9" height="2.5" rx="1.2" fill="#16a34a" opacity=".4"/><rect x="58" y="14" width="9" height="2.5" rx="1.2" fill="#16a34a" opacity=".4"/><rect x="13" y="36" width="9" height="2.5" rx="1.2" fill="#16a34a" opacity=".4"/><rect x="58" y="36" width="9" height="2.5" rx="1.2" fill="#16a34a" opacity=".4"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+  <rect width="90" height="48" rx="9" fill="#fff"/>
+  <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
+  <!-- Banknote shape -->
+  <rect x="6" y="13" width="37" height="22" rx="4" fill="#16a34a"/>
+  <!-- Inner oval -->
+  <ellipse cx="24.5" cy="24" rx="8" ry="8" fill="#15803d"/>
+  <!-- Dollar sign -->
+  <text x="24.5" y="28" text-anchor="middle" fill="#fff" font-size="13" font-weight="900" font-family="Arial,sans-serif">$</text>
+  <!-- Corner circles -->
+  <circle cx="10" cy="17" r="2.5" fill="#15803d"/>
+  <circle cx="39" cy="17" r="2.5" fill="#15803d"/>
+  <circle cx="10" cy="31" r="2.5" fill="#15803d"/>
+  <circle cx="39" cy="31" r="2.5" fill="#15803d"/>
+  <!-- COD label -->
+  <text x="66" y="22" text-anchor="middle" fill="#16a34a" font-size="9" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">CASH</text>
+  <text x="66" y="33" text-anchor="middle" fill="#16a34a" font-size="7.5" font-weight="700" font-family="Arial,sans-serif" letter-spacing=".3">ON DELIVERY</text>
+</svg>
