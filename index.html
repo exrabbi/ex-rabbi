@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=340" />
+  <link rel="stylesheet" href="styles.css?v=341" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1624,12 +1624,21 @@
   <div class="pay-modal" id="payModal">
     <!-- HEADER -->
     <div class="ck-hdr">
-      <button class="ck-hdr-back" onclick="closePayment()"><i class="fas fa-arrow-left"></i></button>
-      <span class="ck-hdr-title">Checkout</span>
+      <button class="ck-hdr-back" id="ckBackBtn" onclick="ckBack()"><i class="fas fa-arrow-left"></i></button>
+      <span class="ck-hdr-title" id="ckHdrTitle">Checkout</span>
       <div style="width:44px"></div>
+    </div>
+    <!-- STEP INDICATOR -->
+    <div class="ck-steps">
+      <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Address</span></div>
+      <div class="ck-stl" id="ckStL1"></div>
+      <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Items</span></div>
+      <div class="ck-stl" id="ckStL2"></div>
+      <div class="ck-stp" id="ckSt3"><div class="ck-stn">3</div><span>Payment</span></div>
     </div>
     <!-- SCROLLABLE BODY -->
     <div class="ck-body">
+      <div class="ck-pg" id="ckPg1">
 
       <!-- 1. ADDRESS -->
       <div class="ck-sec">
@@ -1668,6 +1677,11 @@
           </div>
         </div>
       </div>
+      <div class="ck-pg-foot">
+        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Items &nbsp;<i class="fas fa-arrow-right"></i></button>
+      </div>
+      </div><!-- /ckPg1 -->
+      <div class="ck-pg" id="ckPg2">
 
       <!-- 3. SHIPMENT + ITEMS -->
       <div class="ck-sec">
@@ -1689,6 +1703,11 @@
         <div class="pay-coupon-msg" id="couponMsg"></div>
         <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
       </div>
+      <div class="ck-pg-foot">
+        <button class="ck-cont-btn" onclick="ckGoPage(3)">Continue to Payment &nbsp;<i class="fas fa-arrow-right"></i></button>
+      </div>
+      </div><!-- /ckPg2 -->
+      <div class="ck-pg" id="ckPg3">
 
       <!-- 5. PAY WITH -->
       <div class="ck-sec">
@@ -1888,15 +1907,16 @@
         <span class="psb psb-amex">AMEX</span>
       </div>
       <div style="height:90px"></div>
+      </div><!-- /ckPg3 -->
     </div>
 
     <!-- STICKY BOTTOM BAR -->
-    <div class="ck-bar">
+    <div class="ck-bar" id="ckBar">
       <div class="ck-bar-info">
         <span class="ck-bar-count" id="ckBarCount">1 item</span>
         <span class="ck-bar-total" id="ckBarTotal">SAR 0</span>
       </div>
-      <button class="ck-bar-btn" id="btnPayNow" onclick="processPayment()">
+      <button class="ck-bar-btn" id="btnPayNow" onclick="ckBarAction()">
         <span id="payBtnText">Place Order</span>
         <i class="fas fa-arrow-right"></i>
       </button>

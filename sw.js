@@ -1,4 +1,4 @@
-const CACHE = 'exglobal-v32';
+const CACHE = 'exglobal-v33';
 
 self.addEventListener('install', e => {
   // Use dynamic scope so it works on both exglobal.online and exrabbi.github.io/ex-rabbi/

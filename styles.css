@@ -20811,3 +20811,63 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   padding: 3px 9px !important;
   bottom: 6px !important; left: 6px !important;
 }
+
+/* ── CHECKOUT 3-PAGE FLOW ────────────────────────────── */
+/* Step indicator */
+.ck-steps {
+  display: flex; align-items: center; justify-content: center;
+  gap: 0; padding: 10px 20px 9px;
+  background: #fff; border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+[data-theme="dark"] .ck-steps { background: #13112a; border-bottom-color: rgba(255,255,255,.07); }
+.ck-stp {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; font-weight: 600; color: #bbb;
+  transition: color .25s;
+}
+.ck-stp.ck-stp-on  { color: #e91e8c; }
+.ck-stp.ck-stp-done { color: #16a34a; }
+.ck-stn {
+  width: 24px; height: 24px; border-radius: 50%;
+  border: 2px solid #ddd; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+  transition: all .25s;
+}
+.ck-stp.ck-stp-on  .ck-stn { border-color: #e91e8c; background: #e91e8c; color: #fff; }
+.ck-stp.ck-stp-done .ck-stn { border-color: #16a34a; background: #16a34a; color: #fff; }
+.ck-stl {
+  flex: 1; max-width: 44px; height: 2px;
+  background: #e5e7eb; margin: 0 6px;
+  transition: background .25s;
+}
+.ck-stl.ck-stl-done { background: #16a34a; }
+[data-theme="dark"] .ck-stn { background: #1e1d38; }
+[data-theme="dark"] .ck-stl { background: rgba(255,255,255,.12); }
+
+/* Page wrappers */
+.ck-pg { display: none; }
+.ck-pg.ck-pg-on { display: block; }
+
+/* ck-bar hidden on pages 1 & 2 */
+#payModal.ck-p1 #ckBar,
+#payModal.ck-p2 #ckBar { display: none !important; }
+#payModal.ck-p3 #ckBar { display: flex !important; }
+
+/* Continue button */
+.ck-pg-foot {
+  padding: 14px 16px 10px;
+}
+.ck-cont-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, #e91e8c, #7c3aed);
+  color: #fff; border: none; border-radius: 14px;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 5px 18px rgba(233,30,140,.3);
+  transition: transform .15s, box-shadow .15s;
+}
+.ck-cont-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(233,30,140,.38); }
+.ck-cont-btn:active { transform: scale(.98); }
+[data-theme="dark"] .ck-cont-btn { box-shadow: 0 5px 18px rgba(233,30,140,.2); }

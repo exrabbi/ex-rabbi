@@ -5320,6 +5320,8 @@ function openPayment() {
     if (typeof PAYPAL_READY !== 'undefined' && PAYPAL_READY && !paypalLoaded) {
       loadPayPalSDK();
     }
+    // Always start on page 1
+    ckGoPage(1);
   }, 320);
 }
 
@@ -5344,6 +5346,47 @@ function closePayment() {
   if (ri) ri.value = '';
   const btn = document.getElementById('btnPayNow');
   if (btn) { btn.disabled = false; btn.style.background = ''; }
+  // Reset to page 1 when closing
+  ckGoPage(1);
+}
+
+/* ── CHECKOUT 3-PAGE NAVIGATION ── */
+window._ckPage = 1;
+function ckGoPage(n) {
+  window._ckPage = n;
+  const modal = document.getElementById('payModal');
+  // Toggle modal page class
+  modal.classList.remove('ck-p1','ck-p2','ck-p3');
+  modal.classList.add('ck-p' + n);
+  // Show/hide pages
+  [1,2,3].forEach(i => {
+    const pg = document.getElementById('ckPg'+i);
+    if (pg) { pg.classList.toggle('ck-pg-on', i === n); }
+  });
+  // Update step indicator
+  const titles = ['','Address','Items','Payment'];
+  const titleEl = document.getElementById('ckHdrTitle');
+  if (titleEl) titleEl.textContent = 'Checkout';
+  const steps = [1,2,3];
+  steps.forEach(i => {
+    const st = document.getElementById('ckSt'+i);
+    const line = document.getElementById('ckStL'+i);
+    if (!st) return;
+    st.classList.remove('ck-stp-on','ck-stp-done');
+    if (i < n) st.classList.add('ck-stp-done');
+    else if (i === n) st.classList.add('ck-stp-on');
+    if (line) line.classList.toggle('ck-stl-done', i < n);
+  });
+  // Scroll body to top
+  const body = document.querySelector('.ck-body');
+  if (body) body.scrollTop = 0;
+}
+function ckBack() {
+  if (window._ckPage > 1) ckGoPage(window._ckPage - 1);
+  else closePayment();
+}
+function ckBarAction() {
+  processPayment();
 }
 
 function selectPayMethod(method) {
