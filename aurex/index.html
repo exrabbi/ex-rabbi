@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta name="description" content="AUREX — The future of luxury global commerce. Exclusive collections, flash deals, and an unmatched shopping experience.">
+  <meta name="theme-color" content="#05040A">
+  <title>AUREX — Infinite. Elevated. Unmatched.</title>
+
+  <!-- Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── LOADING SCREEN ──────────────────────────────────── -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-logo gold-text">AUREX</div>
+    <div class="loading-bar">
+      <div class="loading-bar-fill"></div>
+    </div>
+    <div class="loading-sub">Initializing the Vault</div>
+  </div>
+
+  <!-- ── CUSTOM CURSOR ───────────────────────────────────── -->
+  <div class="cursor-outer"></div>
+  <div class="cursor-inner"></div>
+
+  <!-- ── NAVIGATION ──────────────────────────────────────── -->
+  <nav class="nav" role="navigation" aria-label="Main navigation">
+    <div class="nav-inner">
+      <a href="#" class="nav-logo" aria-label="AUREX Home">
+        <div class="nav-logo-mark">⚜</div>
+        <span class="nav-logo-text gold-text">AUREX</span>
+      </a>
+
+      <div class="nav-links" role="list">
+        <a href="#discovery" role="listitem">Discover</a>
+        <a href="#flash-arena" role="listitem">Flash Arena</a>
+        <a href="#world-map" role="listitem">Global</a>
+        <a href="#collections" role="listitem">Collections</a>
+        <a href="#membership" role="listitem">Ascend</a>
+      </div>
+
+      <div class="nav-actions">
+        <div class="nav-tier">Gold Member</div>
+        <button class="nav-search-btn" aria-label="Search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </button>
+        <button class="nav-cart-btn" aria-label="Shopping vault">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Vault
+          <span class="cart-count">0</span>
+        </button>
+        <div class="nav-hamburger" role="button" aria-label="Menu" tabindex="0">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────── -->
+  <section class="hero" aria-label="Hero">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-bg-gradient"></div>
+    <div class="hero-grid" aria-hidden="true"></div>
+
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-pill">
+            <span class="hero-eyebrow-dot"></span>
+            Now Live — 2,847 orders in the last hour
+          </div>
+        </div>
+
+        <h1 class="hero-title" aria-label="The future of luxury commerce, starts here">
+          <span class="line"><span>The Future of</span></span>
+          <span class="line"><span class="gold-text">Luxury Commerce</span></span>
+          <span class="line"><span>Starts Here.</span></span>
+        </h1>
+
+        <p class="hero-subtitle">
+          AUREX is a private marketplace for the world's rarest objects. Handpicked from 94 countries. Authenticated. Delivered anywhere on Earth in 24 hours.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn-primary" onclick="document.getElementById('discovery').scrollIntoView({behavior:'smooth'})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            Enter the Vault
+          </button>
+          <button class="btn-ghost">
+            Watch Film
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+
+        <div class="hero-stats" aria-label="Platform statistics">
+          <div class="hero-stat">
+            <div class="hero-stat-num" data-count="2300000" data-suffix="">2.3M</div>
+            <div class="hero-stat-label">Collectors</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">94</div>
+            <div class="hero-stat-label">Countries</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num">∞</div>
+            <div class="hero-stat-label">Pieces</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-showcase" aria-hidden="true">
+        <div class="showcase-orbit">
+          <div class="orbit-ring">
+            <div class="orbit-dot"></div>
+          </div>
+          <div class="orbit-ring">
+            <div class="orbit-dot"></div>
+          </div>
+          <div class="orbit-ring">
+            <div class="orbit-dot"></div>
+          </div>
+          <div class="product-3d-container">
+            <div class="product-3d">
+              <div class="product-face">
+                <div class="product-face-shimmer"></div>
+                <div class="product-face-emoji">⌚</div>
+                <div class="product-face-name">Void Apex Chronograph</div>
+                <div class="product-face-price">$12,800</div>
+              </div>
+            </div>
+          </div>
+          <div class="showcase-info-card top-right">
+            <div class="info-label">Rating</div>
+            <div class="info-value">★ 4.97 · 1,247 reviews</div>
+          </div>
+          <div class="showcase-info-card bottom-left">
+            <div class="info-label">Availability</div>
+            <div class="info-value" style="color:#EF4444">Only 7 Left</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LIVE TICKER ──────────────────────────────────────── -->
+  <div class="ticker-bar" aria-label="Live orders feed" role="marquee">
+    <div class="ticker-label-fixed">
+      <span class="ticker-pulse"></span>
+      Live
+    </div>
+    <div class="ticker-track">
+      <div class="ticker-items" id="ticker-items"></div>
+    </div>
+  </div>
+
+  <!-- ── DISCOVERY FEED ───────────────────────────────────── -->
+  <section class="discovery" id="discovery" aria-label="Product discovery">
+    <div class="discovery-header">
+      <div>
+        <div class="section-label">The Dimension</div>
+        <h2 class="section-title">Discover Your<br><span class="gold-text">Next Obsession</span></h2>
+      </div>
+      <div class="discovery-controls" aria-label="Feed navigation">
+        <button class="discovery-nav-btn prev" aria-label="Previous">←</button>
+        <button class="discovery-nav-btn next" aria-label="Next">→</button>
+      </div>
+    </div>
+    <div class="feed-track" id="feed-track" role="list" aria-label="Product feed"></div>
+  </section>
+
+  <!-- ── WORLD MAP ────────────────────────────────────────── -->
+  <section class="world-map-section" id="world-map" aria-label="Global orders map">
+    <div class="world-map-inner">
+      <div class="world-map-header">
+        <div class="section-label" style="justify-content:center">Terra View</div>
+        <h2 class="section-title reveal" style="text-align:center">
+          Luxury Has<br><span class="gold-text">No Borders</span>
+        </h2>
+      </div>
+
+      <div class="world-stats-row" aria-label="Global statistics">
+        <div class="world-stat reveal">
+          <div class="world-stat-num" data-count="2847" data-suffix="">0</div>
+          <div class="world-stat-label">Orders in transit</div>
+        </div>
+        <div class="world-stat reveal reveal-delay-1">
+          <div class="world-stat-num" data-count="94" data-suffix="">0</div>
+          <div class="world-stat-label">Countries served</div>
+        </div>
+        <div class="world-stat reveal reveal-delay-2">
+          <div class="world-stat-num" data-count="24" data-suffix="h">0</div>
+          <div class="world-stat-label">Max delivery</div>
+        </div>
+        <div class="world-stat reveal reveal-delay-3">
+          <div class="world-stat-num" data-count="99" data-suffix="%">0</div>
+          <div class="world-stat-label">On-time rate</div>
+        </div>
+      </div>
+
+      <div class="world-map-container reveal">
+        <canvas id="world-canvas" width="900" height="450"></canvas>
+        <div class="map-tooltip">
+          <div class="map-tooltip-city"></div>
+          <div class="map-tooltip-orders"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FLASH ARENA ──────────────────────────────────────── -->
+  <section class="flash-arena" id="flash-arena" aria-label="Flash deals arena">
+    <div class="flash-arena-inner">
+      <div class="flash-header">
+        <div class="flash-title-block">
+          <div class="section-label">The Crucible</div>
+          <h2 class="section-title reveal">
+            Flash Arena —<br><span class="gold-text">Deals That Vanish</span>
+          </h2>
+          <p style="color:var(--text-3);font-size:0.88rem;max-width:380px;line-height:1.7">
+            Exclusive drops, impossible prices. Once gone, gone forever.
+          </p>
+        </div>
+        <div class="flash-mega-timer reveal">
+          <div>
+            <div class="flash-mega-timer-label">Arena resets in</div>
+            <div class="flash-global-countdown">
+              <div class="fgc-unit">
+                <div class="fgc-num" id="gfc-h">11</div>
+                <div class="fgc-label">Hrs</div>
+              </div>
+              <div class="fgc-sep">:</div>
+              <div class="fgc-unit">
+                <div class="fgc-num" id="gfc-m">47</div>
+                <div class="fgc-label">Min</div>
+              </div>
+              <div class="fgc-sep">:</div>
+              <div class="fgc-unit">
+                <div class="fgc-num" id="gfc-s">33</div>
+                <div class="fgc-label">Sec</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flash-grid" id="flash-grid" role="list" aria-label="Flash deals"></div>
+    </div>
+  </section>
+
+  <!-- ── GAMIFICATION ─────────────────────────────────────── -->
+  <section class="gamification" id="gamification" aria-label="Legend System gamification">
+    <div class="gamification-inner">
+      <div class="section-label" style="margin-bottom:0.5rem">The Legend System</div>
+      <h2 class="section-title reveal" style="margin-bottom:3rem">
+        Shop. Level Up.<br><span class="gold-text">Become Legendary.</span>
+      </h2>
+
+      <div class="game-layout">
+        <!-- Player Profile Card -->
+        <div class="player-profile reveal">
+          <div class="player-profile-header">
+            <div class="player-avatar">⚔️</div>
+            <div class="player-name">You</div>
+            <div class="player-tier-badge">⭐ Gold Member</div>
+          </div>
+
+          <div class="player-xp-section">
+            <div class="xp-header">
+              <span class="xp-label">Experience Points</span>
+              <span class="xp-value">34,280 / 50,000 XP</span>
+            </div>
+            <div class="xp-track">
+              <div class="xp-fill"></div>
+            </div>
+            <div class="xp-next">+15,720 XP to Gold Elite</div>
+          </div>
+
+          <div class="player-stats">
+            <div class="player-stat">
+              <div class="ps-num">24</div>
+              <div class="ps-label">Acquisitions</div>
+            </div>
+            <div class="player-stat">
+              <div class="ps-num">3</div>
+              <div class="ps-label">Badges</div>
+            </div>
+          </div>
+
+          <div class="mystery-box-section">
+            <div class="mystery-box" role="button" tabindex="0" aria-label="Open mystery vault">
+              <div class="mystery-box-icon">🎁</div>
+              <div class="mystery-box-title">Daily Mystery Vault</div>
+              <div class="mystery-box-sub">Tap to reveal your reward</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="game-right-panel">
+          <h3 style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--text-1);margin-bottom:1.5rem;">
+            Achievements
+          </h3>
+          <div class="achievements-grid" id="achievements-grid" role="list"></div>
+
+          <div class="leaderboard-section">
+            <div class="leaderboard-title">
+              <span>👑</span>
+              Global Legends
+            </div>
+            <div class="leaderboard-list" id="leaderboard-list" role="list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COLLECTIONS ──────────────────────────────────────── -->
+  <section class="collections-section" id="collections" aria-label="Collections">
+    <div class="collections-inner">
+      <div class="collections-header">
+        <div class="section-label">The Constellation</div>
+        <h2 class="section-title reveal">
+          Curated by the<br><span class="gold-text">World's Best Taste</span>
+        </h2>
+      </div>
+      <div class="collections-grid" id="collections-grid" role="list" aria-label="Product collections"></div>
+    </div>
+  </section>
+
+  <!-- ── MEMBERSHIP ───────────────────────────────────────── -->
+  <section class="membership" id="membership" aria-label="Membership tiers">
+    <div class="membership-inner">
+      <div class="membership-header">
+        <div class="section-label" style="justify-content:center">Ascend</div>
+        <h2 class="section-title reveal" style="text-align:center">
+          Choose Your<br><span class="gold-text">Level of Infinite</span>
+        </h2>
+        <p class="reveal" style="text-align:center;color:var(--text-3);max-width:440px;margin:0 auto;line-height:1.7;font-size:0.9rem">
+          Every tier unlocks a new dimension of luxury access. Cancel anytime.
+        </p>
+      </div>
+      <div class="tiers-grid" id="tiers-grid" role="list" aria-label="Membership tiers"></div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer class="footer" role="contentinfo">
+    <canvas id="aurora-canvas" aria-hidden="true"></canvas>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-col">
+          <div class="footer-logo">
+            <div class="footer-logo-mark">⚜</div>
+            <span class="footer-logo-text gold-text">AUREX</span>
+          </div>
+          <p class="footer-tagline">
+            The private marketplace for those who refuse to settle. Rare objects. Unmatched access. Delivered to your world.
+          </p>
+          <div class="footer-socials" aria-label="Social media">
+            <a href="#" class="footer-social" aria-label="Instagram">◈</a>
+            <a href="#" class="footer-social" aria-label="Twitter">𝕏</a>
+            <a href="#" class="footer-social" aria-label="TikTok">⊛</a>
+            <a href="#" class="footer-social" aria-label="LinkedIn">▣</a>
+          </div>
+        </div>
+
+        <nav class="footer-link-col" aria-label="Marketplace links">
+          <h4>Marketplace</h4>
+          <ul>
+            <li><a href="#">All Collections</a></li>
+            <li><a href="#">New Arrivals</a></li>
+            <li><a href="#">Flash Arena</a></li>
+            <li><a href="#">Trending Now</a></li>
+            <li><a href="#">Sold Out Archive</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer-link-col" aria-label="Account links">
+          <h4>Account</h4>
+          <ul>
+            <li><a href="#">Your Vault</a></li>
+            <li><a href="#">Order History</a></li>
+            <li><a href="#">Legend Profile</a></li>
+            <li><a href="#">Achievements</a></li>
+            <li><a href="#">Tier Ascension</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer-link-col" aria-label="Company links">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About AUREX</a></li>
+            <li><a href="#">Authentication Lab</a></li>
+            <li><a href="#">Sustainability</a></li>
+            <li><a href="#">Press Room</a></li>
+            <li><a href="#">Careers</a></li>
+          </ul>
+        </nav>
+
+        <div class="footer-newsletter-col">
+          <h4>The Inner Circle</h4>
+          <p class="footer-newsletter-desc">
+            Pre-launch access, private drops, and intel from inside the vault.
+          </p>
+          <form class="newsletter-form" onsubmit="event.preventDefault(); window.aurexApp?.showToast('✨ Welcome to the Inner Circle')">
+            <input
+              type="email"
+              class="newsletter-input"
+              placeholder="your@email.com"
+              required
+              aria-label="Email for newsletter"
+            >
+            <button type="submit" class="newsletter-btn">Join the Circle</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2026 AUREX International Ltd. All rights reserved.</div>
+        <nav class="footer-legal" aria-label="Legal links">
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+          <a href="#">Authentication Policy</a>
+          <a href="#">Cookies</a>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ── CART OVERLAY ─────────────────────────────────────── -->
+  <div class="cart-overlay" id="cart-overlay" role="presentation"></div>
+
+  <!-- ── CART DRAWER ──────────────────────────────────────── -->
+  <aside class="cart-drawer" id="cart-drawer" aria-label="Shopping vault" role="dialog" aria-modal="true">
+    <div class="cart-header">
+      <div class="cart-header-title">Your Vault</div>
+      <button class="cart-close" id="cart-close" aria-label="Close cart">✕</button>
+    </div>
+    <div class="cart-items">
+      <div class="cart-empty">
+        <div class="cart-empty-icon">🏛️</div>
+        <div>Your vault awaits its first treasure</div>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total-row">
+        <div class="cart-total-label">Total</div>
+        <div class="cart-total-num">$0</div>
+      </div>
+      <button class="cart-checkout-btn" onclick="window.aurexApp?.showToast('✨ Premium checkout coming soon')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Proceed to Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ── TOAST CONTAINER ──────────────────────────────────── -->
+  <div class="toast-container" role="status" aria-live="polite"></div>
+
+  <!-- ── SCRIPTS ──────────────────────────────────────────── -->
+  <script src="js/data.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
