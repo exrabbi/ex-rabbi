@@ -11491,7 +11491,7 @@ body:has(#authModal.open) .hc-fab {
   overflow: hidden !important;
   transition: max-height .38s ease !important;
 }
-.ck-payinfo-wrap.open .ck-payinfo-panel { max-height: 480px !important; }
+.ck-payinfo-wrap.open .ck-payinfo-panel { max-height: 560px !important; }
 .ck-payinfo-divider { height: 1px !important; background: #f0f0f0 !important; margin: 0 14px !important; }
 [data-theme="dark"] .ck-payinfo-divider { background: rgba(255,255,255,.06) !important; }
 
@@ -11499,23 +11499,23 @@ body:has(#authModal.open) .hc-fab {
 .ck-pmi-grid {
   display: grid !important;
   grid-template-columns: repeat(4, 1fr) !important;
-  gap: 7px !important;
-  padding: 12px 12px 8px !important;
+  gap: 10px !important;
+  padding: 14px 14px 10px !important;
 }
 .ck-pmi {
-  border-radius: 10px !important;
-  border: 1px solid #f0f0f0 !important;
-  background: #fafafa;
-  height: 38px !important;
+  border-radius: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  height: 46px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  overflow: hidden !important;
-  padding: 4px !important;
+  overflow: visible !important;
+  padding: 2px !important;
 }
 .ck-pmi svg { width: 100% !important; height: 100% !important; display: block !important; }
-[data-theme="dark"] .ck-pmi { border-color: rgba(255,255,255,.07) !important; }
-[data-theme="dark"] .ck-pmi:not([style*="background"]) { background: rgba(255,255,255,.04) !important; }
+.ck-pmi-img { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; }
+[data-theme="dark"] .ck-pmi { background: transparent !important; }
 
 /* Trust badge strip */
 .ck-trust-strip {

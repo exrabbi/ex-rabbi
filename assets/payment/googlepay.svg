@@ -1,13 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <rect width="80" height="50" rx="8" fill="#fff"/>
-  <g transform="translate(10,11)">
-    <path d="M14,0 A14,14 0 0,1 28,14 L20,14 A6,6 0 0,0 14,8 Z" fill="#4285F4"/>
-    <path d="M14,0 A14,14 0 0,0 1.5,7 L8,11 A6,6 0 0,1 14,8 Z" fill="#EA4335"/>
-    <path d="M1.5,7 A14,14 0 0,0 1.5,21 L8,17 A6,6 0 0,1 8,11 Z" fill="#FBBC05"/>
-    <path d="M1.5,21 A14,14 0 0,0 14,28 L14,20 A6,6 0 0,1 8,17 Z" fill="#34A853"/>
-    <path d="M14,28 A14,14 0 0,0 28,14 L20,14 A6,6 0 0,1 14,20 Z" fill="#4285F4"/>
-    <rect x="12" y="11" width="16" height="6" rx="3" fill="#4285F4"/>
-    <circle cx="14" cy="14" r="6" fill="#fff"/>
+  <g transform="translate(6,6)">
+    <path d="M19,0 A19,19 0 0,1 38,19 L27,19 A8,8 0 0,0 19,11 Z" fill="#4285F4"/>
+    <path d="M19,0 A19,19 0 0,0 2,9.5 L10.9,14.6 A8,8 0 0,1 19,11 Z" fill="#EA4335"/>
+    <path d="M2,9.5 A19,19 0 0,0 2,28.5 L10.9,23.4 A8,8 0 0,1 10.9,14.6 Z" fill="#FBBC05"/>
+    <path d="M2,28.5 A19,19 0 0,0 19,38 L19,27 A8,8 0 0,1 10.9,23.4 Z" fill="#34A853"/>
+    <path d="M19,38 A19,19 0 0,0 38,19 L27,19 A8,8 0 0,1 19,27 Z" fill="#4285F4"/>
+    <rect x="17" y="15" width="21" height="8" rx="4" fill="#4285F4"/>
+    <circle cx="19" cy="19" r="8" fill="#fff"/>
   </g>
-  <text x="57" y="28" text-anchor="middle" fill="#5F6368" font-size="16" font-weight="600" font-family="Arial,sans-serif" letter-spacing="-.5">Pay</text>
+  <text x="62" y="32" text-anchor="middle" fill="#5F6368" font-size="18" font-weight="500" font-family="Arial,sans-serif" letter-spacing="-.3">Pay</text>
 </svg>

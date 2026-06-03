@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <defs><clipPath id="cd"><rect width="80" height="50" rx="8"/></clipPath></defs>
-  <rect width="80" height="50" rx="8" fill="#fff"/>
-  <circle cx="72" cy="50" r="28" fill="#F76F20" clip-path="url(#cd)"/>
-  <text x="22" y="27" text-anchor="middle" fill="#231F20" font-size="7.5" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">DISC</text>
-  <text x="50" y="27" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".5">OVER</text>
+  <defs><clipPath id="cd"><rect width="80" height="50" rx="7"/></clipPath></defs>
+  <rect width="80" height="50" rx="7" fill="#fff" stroke="#e0e0e0" stroke-width="1"/>
+  <circle cx="77" cy="50" r="34" fill="#F76F20" clip-path="url(#cd)"/>
+  <text x="18" y="27" text-anchor="middle" fill="#231F20" font-size="8.5" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".3">DISC</text>
+  <text x="44" y="27" text-anchor="middle" fill="#fff" font-size="8.5" font-weight="900" font-family="Arial,sans-serif" letter-spacing=".3">OVER</text>
 </svg>
