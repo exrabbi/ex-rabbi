@@ -1896,6 +1896,19 @@
 
         <div id="paypalBtnContainer" style="display:none;margin-top:12px"></div>
 
+        <!-- Google Pay form -->
+        <div id="gpayForm" style="display:none;margin:4px 0 4px">
+          <google-pay-button
+            id="googlePayBtn"
+            environment="TEST"
+            button-color="default"
+            button-type="pay"
+            button-radius="8"
+            button-size-mode="fill"
+            style="width:100%;height:54px;display:block"
+          ></google-pay-button>
+        </div>
+
         <!-- Binance form -->
         <div id="binanceForm" style="display:none"><div class="binance-box"><div id="bncPayState"><div class="binance-box-header"><div class="binance-bnc-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M12 2L5.5 5.5v3.09L12 5.09l6.5 3.5V5.5L12 2zM5.5 10.41v3.09L12 16.91l6.5-3.41v-3.09L12 13.82 5.5 10.41zM5.5 15.5v3.09L12 22l6.5-3.41V15.5L12 18.91 5.5 15.5z"/></svg></div><div class="binance-box-title-wrap"><div class="binance-box-title">Binance Pay</div><div class="binance-box-net">Fast &amp; Secure Crypto</div></div><div class="binance-usdt-pill"><span class="binance-usdt-val" id="binanceUSDT">-- USDT</span></div></div><div class="binance-id-wrap"><div class="binance-id-lbl">Binance Pay ID</div><div class="binance-id-row"><span class="binance-id-num" id="binanceAddrTxt">1167244565</span><button class="binance-copy-btn" onclick="copyBinanceAddr()"><i class="fas fa-copy"></i></button></div><div class="binance-id-hint"><i class="fas fa-mobile-screen-button"></i> Binance App → Pay → Send → Enter ID above</div></div><div class="binance-amount-row"><span class="binance-amount-lbl">Send exactly:</span><span class="binance-amount-val" id="binanceAmtSAR"></span></div><div class="binance-ref-wrap"><label class="binance-ref-lbl"><i class="fas fa-receipt"></i> Binance Order / Reference No.</label><input class="binance-ref-input" type="text" id="binanceRefInput" placeholder="e.g. 12345678901234" maxlength="30" oninput="this.value=this.value.replace(/[^0-9a-zA-Z-]/g,'')" /><div class="binance-ref-hint">Copy the reference from your Binance payment receipt</div></div></div><div id="bncVerifyState" style="display:none"><div class="bnc-verify-anim"><div class="bnc-spinner"></div><div class="bnc-verify-text">Verifying payment...</div></div></div><div id="bncSuccessState" style="display:none"><div class="bnc-success"><div class="bnc-success-icon"><i class="fas fa-circle-check"></i></div><div class="bnc-success-title">Order Confirmed!</div><div class="bnc-order-badge" id="bncOrderNum">#EX-00000</div><div class="bnc-success-sub">Payment verified ✓<br>WhatsApp confirmation sending...</div></div></div></div></div>
 
@@ -2784,7 +2797,8 @@
   <script src="translations.js?v=97"></script>
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-  <script src="script.js?v=295"></script>
+  <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
+  <script src="script.js?v=296"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

@@ -5547,6 +5547,9 @@ function selectPayMethod(method) {
   document.getElementById('cardForm').style.display = (method === 'card') ? 'block' : 'none';
   document.getElementById('binanceForm').style.display = (method === 'binance') ? 'block' : 'none';
   document.getElementById('stcForm').style.display = (method === 'stc') ? 'block' : 'none';
+  const gpayFormEl = document.getElementById('gpayForm');
+  if (gpayFormEl) gpayFormEl.style.display = (method === 'gpay') ? 'block' : 'none';
+  if (method === 'gpay') _configGooglePayBtn();
   // Populate Binance form
   if (method === 'binance') {
     const lang3 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
@@ -5593,6 +5596,53 @@ function selectPayMethod(method) {
     method === 'stc'     ? 'linear-gradient(135deg,#6D2C8A,#9C27B0)' : '';
   document.getElementById('payBtnText').textContent =
     (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
+}
+
+function _configGooglePayBtn() {
+  const btn = document.getElementById('googlePayBtn');
+  if (!btn) return;
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const sub = cartSubtotalBase() * lang.rate;
+  const del = sub >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+  const total = (Math.round((sub + del) * 100) / 100).toFixed(2);
+
+  btn.paymentRequest = {
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [{
+      type: 'CARD',
+      parameters: {
+        allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+        allowedCardNetworks: ['AMEX', 'DISCOVER', 'MASTERCARD', 'VISA']
+      },
+      tokenizationSpecification: {
+        type: 'PAYMENT_GATEWAY',
+        parameters: { gateway: 'example', gatewayMerchantId: 'exampleGatewayMerchantId' }
+      }
+    }],
+    merchantInfo: { merchantName: 'ExGlobal' },
+    transactionInfo: {
+      totalPriceStatus: 'FINAL',
+      totalPriceLabel: 'Total',
+      totalPrice: total,
+      currencyCode: 'SAR',
+      countryCode: 'SA'
+    }
+  };
+
+  // Wire up success handler (replace previous)
+  if (btn._gpayHandler) btn.removeEventListener('loadpaymentdata', btn._gpayHandler);
+  btn._gpayHandler = function(e) {
+    const pd = e.detail;
+    // Payment authorized — place the order
+    closePayment();
+    whatsappCheckout();
+  };
+  btn.addEventListener('loadpaymentdata', btn._gpayHandler);
+
+  btn.addEventListener('error', function(e) {
+    showToast('⚠️ Google Pay error. Please try again or choose another method.');
+  }, { once: true });
 }
 
 function copyStcNumber() {
@@ -5684,7 +5734,9 @@ function processPayment() {
     });
     return;
   } else if (selectedPayMethod === 'gpay') {
-    showToast('⚠️ Google Pay not connected. Please choose another payment method.');
+    const gpayBtn = document.getElementById('googlePayBtn');
+    if (gpayBtn && typeof gpayBtn.click === 'function') { _configGooglePayBtn(); gpayBtn.click(); }
+    else showToast('⚠️ Google Pay is not available on this device.');
     return;
   } else if (selectedPayMethod === 'binance') {
     const ref = (document.getElementById('binanceRefInput')?.value || '').trim();
