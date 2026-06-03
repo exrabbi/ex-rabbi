@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=347" />
+  <link rel="stylesheet" href="styles.css?v=348" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2280,7 +2280,7 @@
   <div class="me-overlay" id="profileOverlay" onclick="closeProfile()"></div>
   <aside id="profilePanel" class="prof-panel">
 
-    <!-- Gradient header -->
+    <!-- Gradient header — compact horizontal -->
     <div class="prof-header">
       <div class="prof-topbar">
         <button class="prof-back" onclick="closeProfile()"><i class="fas fa-arrow-left"></i></button>
@@ -2288,18 +2288,20 @@
         <div style="width:36px"></div>
       </div>
 
-      <!-- Avatar -->
-      <div class="prof-avatar-wrap" onclick="_changeProfilePic()">
-        <div class="prof-avatar-ring"></div>
-        <img id="profileAvatarImg" src="" alt="" class="prof-avatar-img"/>
-        <div id="profileAvatarFallback" class="prof-avatar-fallback"></div>
-        <div class="prof-avatar-camera">
-          <i class="fas fa-camera"></i>
+      <!-- Horizontal identity row -->
+      <div class="prof-identity">
+        <div class="prof-avatar-wrap" onclick="_changeProfilePic()">
+          <div class="prof-avatar-ring"></div>
+          <img id="profileAvatarImg" src="" alt="" class="prof-avatar-img"/>
+          <div id="profileAvatarFallback" class="prof-avatar-fallback"></div>
+          <div class="prof-avatar-camera"><i class="fas fa-camera"></i></div>
+        </div>
+        <div class="prof-identity-info">
+          <div id="profileDisplayName" class="prof-name"></div>
+          <div id="profileDisplayEmail" class="prof-email"></div>
+          <div class="prof-vip-badge"><i class="fas fa-crown"></i> VIP Member</div>
         </div>
       </div>
-      <div id="profileDisplayName" class="prof-name"></div>
-      <div id="profileDisplayEmail" class="prof-email"></div>
-      <div class="prof-vip-badge"><i class="fas fa-crown"></i> VIP Member</div>
     </div>
 
     <!-- Fields -->
@@ -2315,54 +2317,72 @@
         </div>
         <div class="prof-divider"></div>
 
-        <div class="prof-field">
-          <div class="prof-field-icon" style="background:rgba(99,102,241,.12)"><i class="fas fa-user" style="color:#6366f1"></i></div>
-          <div class="prof-field-content">
-            <div class="prof-field-label" data-i18n="firstName">First Name</div>
-            <input id="profileFirstName" type="text" class="prof-field-input" placeholder="Enter first name"/>
+        <!-- First + Last name side by side -->
+        <div class="prof-field-2col">
+          <div class="prof-field">
+            <div class="prof-field-icon" style="background:rgba(99,102,241,.12)"><i class="fas fa-user" style="color:#6366f1"></i></div>
+            <div class="prof-field-content">
+              <div class="prof-field-label" data-i18n="firstName">First Name</div>
+              <input id="profileFirstName" type="text" class="prof-field-input" placeholder="First"/>
+            </div>
           </div>
-          <i class="fas fa-pen prof-pen"></i>
-        </div>
-        <div class="prof-divider"></div>
-
-        <div class="prof-field">
-          <div class="prof-field-icon" style="background:rgba(99,102,241,.12)"><i class="fas fa-user" style="color:#6366f1"></i></div>
-          <div class="prof-field-content">
-            <div class="prof-field-label" data-i18n="lastName">Last Name</div>
-            <input id="profileLastName" type="text" class="prof-field-input" placeholder="Enter last name"/>
+          <div class="prof-col-div"></div>
+          <div class="prof-field">
+            <div class="prof-field-icon" style="background:rgba(99,102,241,.12)"><i class="fas fa-user" style="color:#6366f1"></i></div>
+            <div class="prof-field-content">
+              <div class="prof-field-label" data-i18n="lastName">Last Name</div>
+              <input id="profileLastName" type="text" class="prof-field-input" placeholder="Last"/>
+            </div>
           </div>
-          <i class="fas fa-pen prof-pen"></i>
         </div>
         <div class="prof-divider"></div>
 
         <div class="prof-field">
           <div class="prof-field-icon" style="background:rgba(16,185,129,.12)"><i class="fas fa-phone" style="color:#10b981"></i></div>
           <div class="prof-field-content">
-            <div class="prof-field-label" data-i18n="phone">Phone Number</div>
+            <div class="prof-field-label" data-i18n="phone">Phone</div>
             <input id="profilePhone" type="tel" class="prof-field-input" placeholder="+966 XX XXX XXXX"/>
           </div>
           <i class="fas fa-pen prof-pen"></i>
         </div>
         <div class="prof-divider"></div>
 
+        <!-- Birthday — custom 3-select picker -->
         <div class="prof-field">
           <div class="prof-field-icon" style="background:rgba(245,158,11,.12)"><i class="fas fa-cake-candles" style="color:#f59e0b"></i></div>
           <div class="prof-field-content">
-            <div class="prof-field-label" data-i18n="birthday">Birthday</div>
-            <input id="profileBirthday" type="date" class="prof-field-input"/>
+            <div class="prof-field-label">🎂 Birthday</div>
+            <div class="prof-bday-picker">
+              <select class="prof-bday-sel" id="bdayDay" onchange="syncBdayInput()">
+                <option value="">Day</option>
+              </select>
+              <select class="prof-bday-sel" id="bdayMonth" onchange="syncBdayInput()">
+                <option value="">Month</option>
+                <option value="01">Jan</option><option value="02">Feb</option>
+                <option value="03">Mar</option><option value="04">Apr</option>
+                <option value="05">May</option><option value="06">Jun</option>
+                <option value="07">Jul</option><option value="08">Aug</option>
+                <option value="09">Sep</option><option value="10">Oct</option>
+                <option value="11">Nov</option><option value="12">Dec</option>
+              </select>
+              <select class="prof-bday-sel" id="bdayYear" onchange="syncBdayInput()">
+                <option value="">Year</option>
+              </select>
+            </div>
+            <input id="profileBirthday" type="hidden"/>
           </div>
-          <i class="fas fa-pen prof-pen"></i>
         </div>
         <div class="prof-divider"></div>
 
-        <div class="prof-field" style="align-items:flex-start;flex-direction:column;gap:10px">
-          <div style="display:flex;align-items:center;gap:10px">
-            <div class="prof-field-icon" style="background:rgba(139,43,226,.12)"><i class="fas fa-venus-mars" style="color:#8b2be2"></i></div>
+        <!-- Gender compact inline -->
+        <div class="prof-field prof-field-gender">
+          <div class="prof-field-icon" style="background:rgba(139,43,226,.12)"><i class="fas fa-venus-mars" style="color:#8b2be2"></i></div>
+          <div class="prof-field-content">
             <div class="prof-field-label" data-i18n="gender">Gender</div>
-          </div>
-          <div style="display:flex;gap:10px;width:100%">
-            <button id="genderMaleBtn" onclick="selectGender('male')" class="prof-gender-btn active-gender"><i class="fas fa-person"></i> <span data-i18n="male">Male</span></button>
-            <button id="genderFemaleBtn" onclick="selectGender('female')" class="prof-gender-btn"><i class="fas fa-person-dress"></i> <span data-i18n="female">Female</span></button>
+            <div class="prof-gender-row">
+              <button id="genderMaleBtn" onclick="selectGender('male')" class="prof-gender-btn active-gender"><i class="fas fa-person"></i> <span data-i18n="male">Male</span></button>
+              <button id="genderFemaleBtn" onclick="selectGender('female')" class="prof-gender-btn"><i class="fas fa-person-dress"></i> <span data-i18n="female">Female</span></button>
+            </div>
           </div>
         </div>
         <div class="prof-divider"></div>
@@ -2378,15 +2398,15 @@
 
       </div>
 
-      <!-- Save -->
-      <button onclick="saveProfile()" class="prof-save-btn">
-        <i class="fas fa-check"></i> <span data-i18n="save">Save Changes</span>
-      </button>
-
-      <!-- Sign Out -->
-      <button onclick="closeProfile();signOut();" class="prof-signout-btn">
-        <i class="fas fa-right-from-bracket"></i> <span data-i18n="signOut">Sign Out</span>
-      </button>
+      <!-- Save + Sign out row -->
+      <div class="prof-btn-row">
+        <button onclick="saveProfile()" class="prof-save-btn">
+          <i class="fas fa-check"></i> <span data-i18n="save">Save</span>
+        </button>
+        <button onclick="closeProfile();signOut();" class="prof-signout-btn">
+          <i class="fas fa-right-from-bracket"></i> <span data-i18n="signOut">Sign Out</span>
+        </button>
+      </div>
     </div>
   </aside>
   <!-- END PROFILE PANEL -->
@@ -2798,7 +2818,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=296"></script>
+  <script src="script.js?v=297"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

@@ -3630,6 +3630,7 @@ function openProfile() {
   document.getElementById('profileLastName').value     = u.lastName  || nameParts.slice(1).join(' ') || '';
   document.getElementById('profilePhone').value        = u.phone       || '';
   document.getElementById('profileBirthday').value     = u.birthday    || '';
+  _initBdayPicker(u.birthday || '');
   document.getElementById('profileNationality').value  = u.nationality || '';
   document.getElementById('profileEmailDisplay').textContent = u.email || '';
   document.getElementById('profileDisplayName').textContent  = u.name  || '';
@@ -3656,6 +3657,45 @@ function closeProfile() {
   document.getElementById('profileOverlay').classList.remove('open');
   document.getElementById('profilePanel').style.transform = 'translateX(100%)';
   document.body.style.overflow = '';
+}
+
+function _initBdayPicker(storedDate) {
+  // Populate Day options 1–31
+  const dayEl = document.getElementById('bdayDay');
+  const yearEl = document.getElementById('bdayYear');
+  if (!dayEl || !yearEl) return;
+  if (dayEl.options.length <= 1) {
+    for (let d = 1; d <= 31; d++) {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = d;
+      dayEl.appendChild(o);
+    }
+  }
+  if (yearEl.options.length <= 1) {
+    const now = new Date().getFullYear();
+    for (let y = now - 5; y >= 1950; y--) {
+      const o = document.createElement('option');
+      o.value = y; o.textContent = y;
+      yearEl.appendChild(o);
+    }
+  }
+  // Set values from stored YYYY-MM-DD
+  if (storedDate && storedDate.includes('-')) {
+    const [y, m, d] = storedDate.split('-');
+    yearEl.value = y;
+    document.getElementById('bdayMonth').value = m;
+    dayEl.value = parseInt(d, 10);
+  } else {
+    dayEl.value = ''; document.getElementById('bdayMonth').value = ''; yearEl.value = '';
+  }
+}
+
+function syncBdayInput() {
+  const d = document.getElementById('bdayDay')?.value;
+  const m = document.getElementById('bdayMonth')?.value;
+  const y = document.getElementById('bdayYear')?.value;
+  const hidden = document.getElementById('profileBirthday');
+  if (hidden) hidden.value = (d && m && y) ? `${y}-${m}-${String(d).padStart(2,'0')}` : '';
 }
 
 function selectGender(g) {

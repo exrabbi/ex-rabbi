@@ -21367,3 +21367,177 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   font-size: 15px !important; font-weight: 700 !important;
   padding: 15px !important;
 }
+
+/* ════════════════════════════════════════════════════════════════
+   Profile — compact one-screen layout (v347)
+   ════════════════════════════════════════════════════════════════ */
+
+/* Horizontal identity row */
+.prof-identity {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 14px 20px 22px !important;
+  position: relative; z-index: 1;
+  width: 100%;
+}
+.prof-identity-info {
+  display: flex; flex-direction: column;
+  align-items: flex-start; gap: 3px;
+  flex: 1; min-width: 0;
+}
+
+/* Compact avatar */
+.prof-avatar-wrap {
+  margin-top: 0 !important;
+  flex-shrink: 0 !important;
+}
+.prof-avatar-img,
+.prof-avatar-fallback {
+  width: 72px !important; height: 72px !important;
+}
+.prof-avatar-fallback { font-size: 28px !important; }
+.prof-avatar-ring {
+  inset: -4px !important;
+}
+.prof-avatar-camera {
+  width: 28px !important; height: 28px !important;
+  font-size: 11px !important;
+  bottom: 2px !important; right: 2px !important;
+  border-width: 2px !important;
+}
+
+/* Name / email aligned left in identity row */
+.prof-name {
+  margin-top: 0 !important;
+  font-size: 18px !important;
+  text-align: left !important;
+}
+.prof-email {
+  margin-top: 0 !important;
+  font-size: 12px !important;
+  text-align: left !important;
+}
+.prof-vip-badge {
+  margin-top: 4px !important;
+  font-size: 10px !important;
+  padding: 3px 10px !important;
+}
+
+/* Compact header */
+.prof-header {
+  padding: 0 0 16px !important;
+}
+.prof-header::after {
+  height: 18px !important;
+  border-radius: 20px 20px 0 0 !important;
+}
+
+/* Body tighter */
+.prof-body {
+  padding: 12px 14px 16px !important;
+  gap: 10px !important;
+}
+
+/* Fields compact */
+.prof-field {
+  padding: 10px 14px !important;
+  gap: 11px !important;
+}
+.prof-field-icon {
+  width: 34px !important; height: 34px !important;
+  border-radius: 10px !important;
+  font-size: 14px !important;
+}
+.prof-field-label {
+  font-size: 10px !important; margin-bottom: 2px !important;
+  letter-spacing: .5px !important;
+}
+.prof-field-input {
+  font-size: 13.5px !important;
+}
+.prof-field-val {
+  font-size: 13.5px !important;
+}
+
+/* 2-column name row */
+.prof-field-2col {
+  display: grid !important;
+  grid-template-columns: 1fr 1px 1fr !important;
+  align-items: stretch !important;
+}
+.prof-col-div {
+  background: rgba(0,0,0,.05) !important;
+  align-self: stretch !important;
+}
+[data-theme="dark"] .prof-col-div {
+  background: rgba(255,255,255,.06) !important;
+}
+
+/* Gender compact inline */
+.prof-field-gender {
+  align-items: center !important;
+  flex-direction: row !important;
+  gap: 11px !important;
+}
+.prof-gender-row {
+  display: flex !important; gap: 8px !important;
+  margin-top: 4px !important;
+}
+.prof-gender-btn {
+  padding: 7px 12px !important;
+  border-radius: 10px !important;
+  font-size: 12px !important;
+}
+
+/* Birthday custom picker */
+.prof-bday-picker {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-top: 2px !important;
+}
+.prof-bday-sel {
+  flex: 1 !important;
+  border: 1.5px solid #e8e8e8 !important;
+  border-radius: 8px !important;
+  background: #f7f8fc !important;
+  color: #1a1a2e !important;
+  font-size: 12px !important; font-weight: 600 !important;
+  font-family: inherit !important;
+  padding: 5px 4px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  -webkit-appearance: none !important;
+  text-align: center !important;
+  transition: border-color .2s !important;
+}
+.prof-bday-sel:focus {
+  border-color: #e91e8c !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.1) !important;
+}
+[data-theme="dark"] .prof-bday-sel {
+  background: #1e1c3a !important;
+  border-color: rgba(255,255,255,.12) !important;
+  color: #f0f0f0 !important;
+}
+[data-theme="dark"] .prof-bday-sel option {
+  background: #1e1c3a !important;
+}
+
+/* Save + signout side by side */
+.prof-btn-row {
+  display: flex !important; gap: 10px !important;
+}
+.prof-save-btn {
+  flex: 2 !important;
+  padding: 13px !important;
+  font-size: 14px !important;
+  border-radius: 14px !important;
+}
+.prof-signout-btn {
+  flex: 1 !important;
+  padding: 13px 10px !important;
+  font-size: 13px !important;
+  border-radius: 14px !important;
+}
