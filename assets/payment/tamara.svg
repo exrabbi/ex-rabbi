@@ -1,10 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
   <defs>
-    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#F97316"/>
-      <stop offset="100%" stop-color="#EC4899"/>
+    <linearGradient id="tBase" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FAD1A0"/>
+      <stop offset="45%" stop-color="#F9E8D0"/>
+      <stop offset="100%" stop-color="#EDCAE0"/>
     </linearGradient>
+    <radialGradient id="tOrange" cx="8%" cy="8%" r="55%">
+      <stop offset="0%" stop-color="#F0864A" stop-opacity="0.80"/>
+      <stop offset="100%" stop-color="#F0864A" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tPink" cx="92%" cy="12%" r="52%">
+      <stop offset="0%" stop-color="#CD5DA0" stop-opacity="0.72"/>
+      <stop offset="100%" stop-color="#CD5DA0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tBlue" cx="4%" cy="92%" r="52%">
+      <stop offset="0%" stop-color="#6BAEE6" stop-opacity="0.78"/>
+      <stop offset="100%" stop-color="#6BAEE6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tYellow" cx="50%" cy="2%" r="48%">
+      <stop offset="0%" stop-color="#F5D35A" stop-opacity="0.60"/>
+      <stop offset="100%" stop-color="#F5D35A" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect width="80" height="50" rx="8" fill="url(#tg)"/>
-  <text x="40" y="30" text-anchor="middle" fill="#fff" font-size="18" font-weight="900" font-style="italic" font-family="Arial,sans-serif" letter-spacing="-.3">tamara</text>
+  <rect width="90" height="48" rx="9" fill="url(#tBase)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tOrange)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tPink)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tBlue)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tYellow)"/>
+  <text x="45" y="31" text-anchor="middle" fill="#130a0a" font-size="18" font-weight="900" font-family="'Helvetica Neue',Arial,sans-serif" letter-spacing="-0.4">tamara</text>
 </svg>
