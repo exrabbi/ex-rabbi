@@ -1,14 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
-  <rect width="90" height="48" rx="9" fill="#1f1f1f"/>
-  <!-- Google G mark, cx=22 cy=24 r=11 -->
-  <path d="M22,13 A11,11 0 0,1 33,24 L27,24 A5,5 0 0,0 22,19 Z" fill="#4285F4"/>
-  <path d="M22,13 A11,11 0 0,0 12.5,18.5 L17.5,21.5 A5,5 0 0,1 22,19 Z" fill="#EA4335"/>
-  <path d="M12.5,18.5 A11,11 0 0,0 12.5,29.5 L17.5,26.5 A5,5 0 0,1 17.5,21.5 Z" fill="#FBBC05"/>
-  <path d="M12.5,29.5 A11,11 0 0,0 22,35 L22,29 A5,5 0 0,1 17.5,26.5 Z" fill="#34A853"/>
-  <path d="M22,35 A11,11 0 0,0 33,24 L27,24 A5,5 0 0,1 22,29 Z" fill="#4285F4"/>
-  <rect x="20.5" y="21.5" width="12.5" height="5" rx="2.5" fill="#4285F4"/>
-  <circle cx="22" cy="24" r="5" fill="#1f1f1f"/>
-  <!-- Pay with G Pay text -->
-  <text x="61" y="21" text-anchor="middle" fill="rgba(255,255,255,.7)" font-size="8.5" font-weight="400" font-family="'Google Sans',Arial,sans-serif" letter-spacing=".2">Pay with</text>
-  <text x="61" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="600" font-family="'Google Sans',Arial,sans-serif" letter-spacing=".2">G Pay</text>
+  <!-- White card background — official Google Pay light version -->
+  <rect width="90" height="48" rx="8" fill="#fff"/>
+  <rect width="90" height="48" rx="8" fill="none" stroke="#e5e5e5" stroke-width="1.5"/>
+
+  <!-- Google G mark, centred at cx=24 cy=24 r=11 -->
+  <!-- Blue arc (right) -->
+  <path d="M24,13 A11,11 0 0,1 35,24 L29.5,24 A5.5,5.5 0 0,0 24,18.5 Z" fill="#4285F4"/>
+  <!-- Red arc (top-left) -->
+  <path d="M24,13 A11,11 0 0,0 14,18.8 L18.8,21.7 A5.5,5.5 0 0,1 24,18.5 Z" fill="#EA4335"/>
+  <!-- Yellow arc (left) -->
+  <path d="M14,18.8 A11,11 0 0,0 14,29.2 L18.8,26.3 A5.5,5.5 0 0,1 18.8,21.7 Z" fill="#FBBC05"/>
+  <!-- Green arc (bottom) -->
+  <path d="M14,29.2 A11,11 0 0,0 24,35 L24,29.5 A5.5,5.5 0 0,1 18.8,26.3 Z" fill="#34A853"/>
+  <!-- Blue bottom-right arc -->
+  <path d="M24,35 A11,11 0 0,0 35,24 L29.5,24 A5.5,5.5 0 0,1 24,29.5 Z" fill="#4285F4"/>
+  <!-- Blue inner bar (the flat of the G) -->
+  <rect x="22.5" y="21.5" width="12.5" height="5" rx="2.5" fill="#4285F4"/>
+  <!-- White circle cutout for G centre -->
+  <circle cx="24" cy="24" r="5.5" fill="#fff"/>
+
+  <!-- "Pay" text — official Google gray #5F6368 -->
+  <text x="65" y="29" text-anchor="middle" dominant-baseline="middle"
+        fill="#5F6368" font-size="18" font-weight="700"
+        font-family="'Google Sans','Product Sans',Arial,sans-serif"
+        letter-spacing="0">Pay</text>
 </svg>
