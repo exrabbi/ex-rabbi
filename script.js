@@ -2726,7 +2726,7 @@ function openModal(id) {
     <h2 class="lux-product-name">${getName(p)}</h2>
     <div class="lux-prices-row">
       <span class="lux-price-current">${fmt(p.price)}</span>
-      ${p.discount>0?`<span class="lux-price-orig">${fmt(p.originalPrice||Math.round(p.price/(1-p.discount/100)))}</span><span class="lux-discount-badge">-${p.discount}%</span>`:''}
+      ${p.discount>0?`<span class="lux-price-orig">${fmt(p.originalPrice||Math.round(p.price/(1-p.discount/100)))}</span><span class="lux-discount-badge">-${p.discount}%</span><span class="lux-save-badge">Save ${fmt((p.originalPrice||Math.round(p.price/(1-p.discount/100)))-p.price)}</span>`:''}
       <span class="lux-coupon-chip" onclick="_openCouponSheet()">${t('withCoupon')||'with coupon'} <i class="fas fa-chevron-right"></i></span>
     </div>
 
@@ -2767,6 +2767,21 @@ function openModal(id) {
         :p.stock!==undefined&&p.stock<=5
           ?`<div class="lux-stock-chip low"><i class="fas fa-fire"></i> ${t('lowStock').replace('{n}',p.stock)}</div>`
           :`<div class="lux-stock-chip ok"><i class="fas fa-check-circle"></i> ${t('inStockLabel')||'In Stock'}</div>`}
+    </div>
+  </div>
+
+  <div class="pd-pay-strip lux-reveal">
+    <div class="pd-pay-lbl"><i class="fas fa-lock"></i> Secure Payments</div>
+    <div class="pd-pay-logos">
+      <img src="assets/payment/visa.svg" class="pd-pml" alt="Visa" loading="lazy">
+      <img src="assets/payment/mastercard.svg" class="pd-pml" alt="Mastercard" loading="lazy">
+      <img src="assets/payment/mada.svg" class="pd-pml" alt="Mada" loading="lazy">
+      <img src="assets/payment/applepay.svg" class="pd-pml" alt="Apple Pay" loading="lazy">
+      <img src="assets/payment/googlepay.svg" class="pd-pml" alt="Google Pay" loading="lazy">
+      <img src="assets/payment/stcpay.svg" class="pd-pml" alt="STC Pay" loading="lazy">
+      <img src="assets/payment/tabby.svg" class="pd-pml" alt="Tabby" loading="lazy">
+      <img src="assets/payment/tamara.svg" class="pd-pml" alt="Tamara" loading="lazy">
+      <img src="assets/payment/binancepay.svg" class="pd-pml" alt="Binance Pay" loading="lazy">
     </div>
   </div>
 
@@ -2922,7 +2937,7 @@ ${p.stock!==0?`
       <span class="lux-atc-loading" style="display:none"><i class="fas fa-spinner fa-spin"></i></span>
       <span class="lux-atc-done" style="display:none"><i class="fas fa-check"></i> ${t('addedTxt')||'Added!'}</span>
     </button>
-    <button class="lux-atc-now" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i></button>
+    <button class="lux-atc-now lux-buynow" onclick="buyNow(${p.id})"><i class="fas fa-bolt"></i><span>${t('buyNow')||'Buy Now'}</span></button>
   </div>
 </div>`:`
 <div class="lux-atc-bar" id="luxAtcBar">
@@ -11855,4 +11870,280 @@ function _closePromoLightbox() {
   const lb = document.getElementById('promoLightbox');
   if (lb) lb.classList.remove('open');
   document.body.style.overflow = '';
+}
+
+/* ── AliExpress-style Category Panel ── */
+const _CAT_PANEL = [
+  { key:'foryou', label:'For You', emoji:'⭐', title:'Recommended',
+    subs:[
+      {label:'New Arrivals',img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Flash Deals',img:'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Top Sellers',img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Under SAR 30',img:'https://images.unsplash.com/photo-1596783074918-c84cb06531ca?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Under SAR 50',img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Trending Now',img:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=200&h=200&fit=crop&q=75',cat:'all'},
+    ]},
+  { key:'women', label:"Women's", emoji:'👗', title:"Women's Fashion",
+    subs:[
+      {label:'Dresses',img:'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Tops & Blouses',img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Abayas',img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Jeans',img:'https://images.unsplash.com/photo-1598522382970-43e374e428b0?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Jackets',img:'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Modest Wear',img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Lingerie',img:'https://images.unsplash.com/photo-1604671368394-2240d0b1bb6c?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'View More',img:null,cat:'women'},
+    ]},
+  { key:'men', label:"Men's", emoji:'👔', title:"Men's Fashion",
+    subs:[
+      {label:'T-Shirts',img:'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Shirts',img:'https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Pants',img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Thobes',img:'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Jackets',img:'https://images.unsplash.com/photo-1520975867082-7b7c7d7e8a00?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Watches',img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=75',cat:'men'},
+    ]},
+  { key:'kids', label:'Kids', emoji:'👶', title:"Kids' Fashion",
+    subs:[
+      {label:'Boys',img:'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Girls',img:'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Babies',img:'https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Shoes',img:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'School Bags',img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Toys',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop&q=75',cat:'kids'},
+    ]},
+  { key:'beauty', label:'Beauty', emoji:'💄', title:'Beauty & Health',
+    subs:[
+      {label:'Skincare',img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Makeup',img:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Haircare',img:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Fragrances',img:'https://images.unsplash.com/photo-1541643600914-78b084683702?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Tools',img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'View More',img:null,cat:'beauty'},
+    ]},
+  { key:'bags', label:'Bags', emoji:'👜', title:'Bags & Accessories',
+    subs:[
+      {label:'Handbags',img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Backpacks',img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Clutches',img:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Wallets',img:'https://images.unsplash.com/photo-1563903530908-afdd155d054e?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'View More',img:null,cat:'bags'},
+    ]},
+  { key:'jewelry', label:'Jewelry', emoji:'💍', title:'Jewelry',
+    subs:[
+      {label:'Necklaces',img:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Rings',img:'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Earrings',img:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Bracelets',img:'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'View More',img:null,cat:'jewelry'},
+    ]},
+  { key:'home', label:'Home', emoji:'🏠', title:'Home & Living',
+    subs:[
+      {label:'Bedroom',img:'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Kitchen',img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Living Room',img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Bathroom',img:'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'View More',img:null,cat:'home'},
+    ]},
+  { key:'shoes', label:'Shoes', emoji:'👟', title:'Shoes',
+    subs:[
+      {label:"Women's",img:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:"Men's",img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'Sneakers',img:'https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'Heels',img:'https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'View More',img:null,cat:'shoes'},
+    ]},
+];
+
+let _catPanelActive = 0;
+
+function openCatPanel(catKey) {
+  const ov = document.getElementById('catPov');
+  const panel = document.getElementById('catPanel');
+  if (!ov || !panel) return;
+  _catPanelActive = catKey ? Math.max(0, _CAT_PANEL.findIndex(c => c.key === catKey)) : 0;
+  _buildCatPanelSide();
+  _buildCatPanelMain(_catPanelActive);
+  ov.classList.add('open');
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCatPanel() {
+  document.getElementById('catPov')?.classList.remove('open');
+  document.getElementById('catPanel')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _buildCatPanelSide() {
+  const el = document.getElementById('catPanelSide');
+  if (!el) return;
+  el.innerHTML = _CAT_PANEL.map((c, i) => `
+    <div class="cat-ps-item${i === _catPanelActive ? ' active' : ''}" onclick="_selCatPanelItem(${i})">
+      <span class="cat-ps-emoji">${c.emoji}</span>
+      <span class="cat-ps-lbl">${c.label}</span>
+    </div>`).join('');
+}
+
+function _selCatPanelItem(idx) {
+  _catPanelActive = idx;
+  document.querySelectorAll('.cat-ps-item').forEach((el, i) => el.classList.toggle('active', i === idx));
+  _buildCatPanelMain(idx);
+  const main = document.getElementById('catPanelMain');
+  if (main) main.scrollTop = 0;
+}
+
+function _buildCatPanelMain(idx) {
+  const cat = _CAT_PANEL[idx];
+  const el = document.getElementById('catPanelMain');
+  if (!cat || !el) return;
+  el.innerHTML = `<div class="cat-pm-head">${cat.title}</div>
+    <div class="cat-sub-grid">
+      ${cat.subs.map(sub => sub.label === 'View More' || !sub.img
+        ? `<div class="cat-sub-tile cat-sub-more" onclick="_catGo('${cat.key}')">
+             <div class="cat-sub-more-ico"><i class="fas fa-ellipsis"></i></div>
+             <span class="cat-sub-lbl">View More</span>
+           </div>`
+        : `<div class="cat-sub-tile" onclick="_catGo('${sub.cat}')">
+             <img class="cat-sub-img" src="${sub.img}" alt="${sub.label}" loading="lazy">
+             <span class="cat-sub-lbl">${sub.label}</span>
+           </div>`
+      ).join('')}
+    </div>`;
+}
+
+function _catGo(catKey) {
+  closeCatPanel();
+  if (typeof filterCategory === 'function') filterCategory(catKey);
+  setTimeout(() => {
+    const sec = document.getElementById('productsSection');
+    if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.querySelector('.tab-btn[data-tab="products"]')?.click();
+  }, 350);
+}
+
+/* ── AliExpress-style Category Panel (v360) ── */
+const _CAT_PANEL = [
+  { key:'foryou', label:'For You', emoji:'⭐', title:'Recommended',
+    subs:[
+      {label:'New Arrivals',img:'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Flash Deals',img:'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Top Sellers',img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Under SAR 30',img:'https://images.unsplash.com/photo-1596783074918-c84cb06531ca?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Under SAR 50',img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=200&h=200&fit=crop&q=75',cat:'all'},
+      {label:'Trending Now',img:'https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=200&h=200&fit=crop&q=75',cat:'all'},
+    ]},
+  { key:'women', label:"Women's", emoji:'👗', title:"Women's Fashion",
+    subs:[
+      {label:'Dresses',img:'https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Tops & Blouses',img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Abayas',img:'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Jeans',img:'https://images.unsplash.com/photo-1598522382970-43e374e428b0?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Jackets',img:'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Modest Wear',img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'Lingerie',img:'https://images.unsplash.com/photo-1604671368394-2240d0b1bb6c?w=200&h=200&fit=crop&q=75',cat:'women'},
+      {label:'View More',img:null,cat:'women'},
+    ]},
+  { key:'men', label:"Men's", emoji:'👔', title:"Men's Fashion",
+    subs:[
+      {label:'T-Shirts',img:'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Shirts',img:'https://images.unsplash.com/photo-1621072156002-e2fccdc0b176?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Pants',img:'https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Thobes',img:'https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Jackets',img:'https://images.unsplash.com/photo-1520975867082-7b7c7d7e8a00?w=200&h=200&fit=crop&q=75',cat:'men'},
+      {label:'Watches',img:'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=200&h=200&fit=crop&q=75',cat:'men'},
+    ]},
+  { key:'kids', label:'Kids', emoji:'👶', title:"Kids' Fashion",
+    subs:[
+      {label:'Boys',img:'https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Girls',img:'https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Babies',img:'https://images.unsplash.com/photo-1519689373023-dd07c7988603?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Shoes',img:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'School Bags',img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop&q=75',cat:'kids'},
+      {label:'Toys',img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop&q=75',cat:'kids'},
+    ]},
+  { key:'beauty', label:'Beauty', emoji:'💄', title:'Beauty & Health',
+    subs:[
+      {label:'Skincare',img:'https://images.unsplash.com/photo-1556228578-8c89e6adf883?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Makeup',img:'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Haircare',img:'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Fragrances',img:'https://images.unsplash.com/photo-1541643600914-78b084683702?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'Tools',img:'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&h=200&fit=crop&q=75',cat:'beauty'},
+      {label:'View More',img:null,cat:'beauty'},
+    ]},
+  { key:'bags', label:'Bags', emoji:'👜', title:'Bags & Accessories',
+    subs:[
+      {label:'Handbags',img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Backpacks',img:'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Clutches',img:'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'Wallets',img:'https://images.unsplash.com/photo-1563903530908-afdd155d054e?w=200&h=200&fit=crop&q=75',cat:'bags'},
+      {label:'View More',img:null,cat:'bags'},
+    ]},
+  { key:'jewelry', label:'Jewelry', emoji:'💍', title:'Jewelry',
+    subs:[
+      {label:'Necklaces',img:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Rings',img:'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Earrings',img:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'Bracelets',img:'https://images.unsplash.com/photo-1492707892479-7bc8d5a4ee93?w=200&h=200&fit=crop&q=75',cat:'jewelry'},
+      {label:'View More',img:null,cat:'jewelry'},
+    ]},
+  { key:'home', label:'Home', emoji:'🏠', title:'Home & Living',
+    subs:[
+      {label:'Bedroom',img:'https://images.unsplash.com/photo-1540518614846-7eded433c457?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Kitchen',img:'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Living Room',img:'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'Bathroom',img:'https://images.unsplash.com/photo-1552321554-5fefe8c9ef14?w=200&h=200&fit=crop&q=75',cat:'home'},
+      {label:'View More',img:null,cat:'home'},
+    ]},
+  { key:'shoes', label:'Shoes', emoji:'👟', title:'Shoes',
+    subs:[
+      {label:"Women's",img:'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:"Men's",img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'Sneakers',img:'https://images.unsplash.com/photo-1579338559194-a162d19bf842?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'Heels',img:'https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?w=200&h=200&fit=crop&q=75',cat:'shoes'},
+      {label:'View More',img:null,cat:'shoes'},
+    ]},
+];
+let _catPanelActive = 0;
+function openCatPanel(catKey) {
+  const ov = document.getElementById('catPov');
+  const panel = document.getElementById('catPanel');
+  if (!ov || !panel) return;
+  _catPanelActive = catKey ? Math.max(0, _CAT_PANEL.findIndex(c => c.key === catKey)) : 0;
+  _buildCatPanelSide();
+  _buildCatPanelMain(_catPanelActive);
+  ov.classList.add('open');
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCatPanel() {
+  document.getElementById('catPov')?.classList.remove('open');
+  document.getElementById('catPanel')?.classList.remove('open');
+  document.body.style.overflow = '';
+}
+function _buildCatPanelSide() {
+  const el = document.getElementById('catPanelSide');
+  if (!el) return;
+  el.innerHTML = _CAT_PANEL.map((c, i) => `<div class="cat-ps-item${i===_catPanelActive?' active':''}" onclick="_selCatPanelItem(${i})"><span class="cat-ps-emoji">${c.emoji}</span><span class="cat-ps-lbl">${c.label}</span></div>`).join('');
+}
+function _selCatPanelItem(idx) {
+  _catPanelActive = idx;
+  document.querySelectorAll('.cat-ps-item').forEach((el,i) => el.classList.toggle('active', i===idx));
+  _buildCatPanelMain(idx);
+  const main = document.getElementById('catPanelMain');
+  if (main) main.scrollTop = 0;
+}
+function _buildCatPanelMain(idx) {
+  const cat = _CAT_PANEL[idx];
+  const el = document.getElementById('catPanelMain');
+  if (!cat || !el) return;
+  el.innerHTML = `<div class="cat-pm-head">${cat.title}</div><div class="cat-sub-grid">${cat.subs.map(sub => (!sub.img || sub.label==='View More') ? `<div class="cat-sub-tile" onclick="_catGo('${cat.key}')"><div class="cat-sub-more-ico"><i class="fas fa-ellipsis"></i></div><span class="cat-sub-lbl">View More</span></div>` : `<div class="cat-sub-tile" onclick="_catGo('${sub.cat}')"><img class="cat-sub-img" src="${sub.img}" alt="${sub.label}" loading="lazy"><span class="cat-sub-lbl">${sub.label}</span></div>`).join('')}</div>`;
+}
+function _catGo(catKey) {
+  closeCatPanel();
+  if (typeof filterCategory === 'function') filterCategory(catKey);
+  setTimeout(() => {
+    document.getElementById('productsSection')?.scrollIntoView({ behavior:'smooth', block:'start' });
+    document.querySelector('.tab-btn[data-tab="products"]')?.click();
+  }, 350);
 }
