@@ -2712,6 +2712,14 @@ function openModal(id) {
     <button class="lux-gal-share" onclick="shareProduct(${id})"><i class="fas fa-share-nodes"></i></button>
     <button class="lux-gal-wish ${inWish?'active':''}" id="luxGalWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
     ${allImgs.length>1?`<div class="lux-img-count"><span id="luxImgCurr">1</span>/${allImgs.length}</div>`:''}
+    ${(()=>{
+      const leftB = p.discount>0
+        ? `<div class="lux-hb lux-hb-discount"><i class="fas fa-tag"></i> -${p.discount}% OFF TODAY</div>` : '';
+      const rightB = (p.stock!==undefined&&p.stock<=5&&p.stock>0)
+        ? `<div class="lux-hb lux-hb-stock">⚡ Only ${p.stock} left!</div>`
+        : p.sold ? `<div class="lux-hb lux-hb-sold"><i class="fas fa-fire"></i> ${String(p.sold).replace(/\++$/,'')}+ sold</div>` : '';
+      return (leftB||rightB) ? `<div class="lux-hero-badges">${leftB}<span style="flex:1"></span>${rightB}</div>` : '';
+    })()}
   </div>
   ${allImgs.length>1?`
   <div class="lux-thumbs" id="luxThumbs">

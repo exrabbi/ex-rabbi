@@ -8756,8 +8756,24 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
 /* ── FULLSCREEN GALLERY ── */
 .lux-gallery {
   position: relative;
-  background: #000;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 44%, rgba(255,255,255,.62) 0%, transparent 70%),
+    linear-gradient(145deg, #f5e6ff 0%, #fde8f4 38%, #e8eeff 100%);
   overflow: hidden;
+}
+[data-theme="dark"] .lux-gallery {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 44%, rgba(90,40,160,.22) 0%, transparent 70%),
+    linear-gradient(145deg, #1a0d2e 0%, #120818 40%, #0b1226 100%);
+}
+.lux-gallery::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 110px;
+  background: linear-gradient(to top, rgba(0,0,0,.34) 0%, rgba(0,0,0,.08) 55%, transparent 100%);
+  z-index: 2;
+  pointer-events: none;
 }
 .lux-slides {
   display: flex;
@@ -8774,14 +8790,16 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   aspect-ratio: 1/1;
   flex-shrink: 0;
   overflow: hidden;
-  background: #f8f8f8;
+  background: transparent;
 }
-[data-theme="dark"] .lux-slide { background: #1a1a2e; }
+[data-theme="dark"] .lux-slide { background: transparent; }
 .lux-slide img {
   width: 100%; height: 100%;
   object-fit: contain;
   cursor: zoom-in;
   transition: transform .4s ease;
+  filter: drop-shadow(0 14px 36px rgba(0,0,0,.22)) drop-shadow(0 4px 10px rgba(0,0,0,.12));
+  position: relative; z-index: 1;
 }
 .lux-slide img:active { transform: scale(1.04); }
 .lux-dots {
@@ -8832,6 +8850,44 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   color: #fff; font-size: 11px; font-weight: 700;
   padding: 4px 10px; border-radius: 20px;
   border: 1px solid rgba(255,255,255,.15);
+}
+
+/* ── HERO PRODUCT BADGES (floating on image) ── */
+.lux-hero-badges {
+  position: absolute;
+  bottom: 48px; left: 12px; right: 12px;
+  z-index: 6;
+  display: flex; align-items: center; gap: 8px;
+  pointer-events: none;
+}
+.lux-hb {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 13px; border-radius: 24px;
+  font-size: 12.5px; font-weight: 800; letter-spacing: .2px;
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  white-space: nowrap;
+}
+.lux-hb-discount {
+  background: linear-gradient(135deg, #e91e8c 0%, #b5116d 100%);
+  color: #fff;
+  box-shadow: 0 4px 18px rgba(233,30,140,.52), 0 1px 0 rgba(255,255,255,.22) inset;
+}
+.lux-hb-sold {
+  background: rgba(0,0,0,.54);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
+  margin-left: auto;
+}
+.lux-hb-stock {
+  background: linear-gradient(135deg, #ff6b35 0%, #f59e0b 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255,107,53,.48);
+  margin-left: auto;
+}
+.lux-hb-free {
+  background: rgba(22,163,74,.88);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
 }
 
 /* ── GLASSMORPHISM INFO CARD ── */
