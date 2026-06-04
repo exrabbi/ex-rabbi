@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=356" />
+  <link rel="stylesheet" href="styles.css?v=357" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -208,6 +208,42 @@
       <a class="desk-nav-link" data-desk-cat="home" onclick="filterCategory('home');return false;" href="#">Home &amp; Decor</a>
     </nav>
   </header>
+
+  <!-- FIRST-VISIT WELCOME POPUP -->
+  <div id="fwPop" class="fw-pop" style="display:none" onclick="dismissFwPop()">
+    <div class="fw-inner">
+      <div class="fw-title">Welcome to</div>
+      <div class="fw-brand"><span class="fw-brand-ex">EX</span><span class="fw-brand-gl">GLOBAL</span></div>
+
+      <!-- Box scene + sparkles share same relative parent -->
+      <div class="fw-scene-wrap">
+        <i class="fw-star fw-s1">✦</i>
+        <i class="fw-star fw-s2">✦</i>
+        <i class="fw-star fw-s3">+</i>
+        <i class="fw-star fw-s4">○</i>
+        <i class="fw-star fw-s5">✦</i>
+
+        <div class="fw-box-scene">
+          <div class="fw-lid">
+            <div class="fw-lid-ribbon"></div>
+            <div class="fw-bow-l"></div>
+            <div class="fw-bow-r"></div>
+          </div>
+          <div class="fw-coupon">
+            <div class="fw-notch-l"></div>
+            <div class="fw-notch-r"></div>
+            <div class="fw-coupon-text">Special Deals<br><span>Just For You</span></div>
+          </div>
+          <div class="fw-body">
+            <div class="fw-body-ribbon"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fw-subtitle">Tap anywhere to continue</div>
+      <div class="fw-countdown"><div class="fw-countdown-bar" id="fwCountBar"></div></div>
+    </div>
+  </div>
 
   <!-- DRAWER -->
   <div class="drawer-overlay" id="drawerOverlay"></div>

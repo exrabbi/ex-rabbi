@@ -1284,6 +1284,23 @@ function closeDrawer() {
   document.getElementById('drawerOverlay').classList.remove('open');
 }
 
+/* ===== FIRST-VISIT WELCOME POPUP ===== */
+function dismissFwPop() {
+  const pop = document.getElementById('fwPop');
+  if (!pop || pop.classList.contains('fw-hide')) return;
+  if (pop._fwTimer) clearTimeout(pop._fwTimer);
+  pop.classList.add('fw-hide');
+  setTimeout(() => { pop.style.display = 'none'; }, 380);
+}
+(function initFwPop() {
+  if (localStorage.getItem('exg_visited')) return;
+  localStorage.setItem('exg_visited', '1');
+  const pop = document.getElementById('fwPop');
+  if (!pop) return;
+  pop.style.display = 'flex';
+  pop._fwTimer = setTimeout(dismissFwPop, 4000);
+})();
+
 /* ===== CART ===== */
 function openCart() {
   document.getElementById('cartSidebar').classList.add('open');
