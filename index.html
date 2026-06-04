@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=362" />
+  <link rel="stylesheet" href="styles.css?v=363" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -210,30 +210,29 @@
     </nav>
   </header>
 
-  <!-- SAUDI INTRO ANIMATION -->
-  <div id="saudiIntro" class="si-wrap" style="display:none" onclick="dismissSaudiIntro()">
-    <button class="si-skip" onclick="event.stopPropagation();dismissSaudiIntro()">Skip Intro</button>
-    <div class="si-pole-area">
-      <div class="si-flag" id="siFlagEl">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" preserveAspectRatio="xMidYMid meet">
-          <rect width="240" height="160" fill="#006c35"/>
-          <text x="120" y="70" text-anchor="middle" fill="#fff" font-size="18"
-                font-family="'Scheherazade New','Traditional Arabic','Amiri','Arial Unicode MS',serif"
-                font-weight="700" letter-spacing="1">لا إله إلا الله محمد رسول الله</text>
-          <rect x="40" y="97" width="148" height="5.5" rx="2.75" fill="#fff"/>
-          <path d="M188,94 L202,99.75 L188,105.5Z" fill="#fff"/>
-          <rect x="31" y="91" width="8" height="17" rx="2" fill="#fff"/>
-          <rect x="25" y="95.5" width="19" height="5.5" rx="1.5" fill="#fff"/>
-        </svg>
+  <!-- PREMIUM SPLASH SCREEN -->
+  <div id="splashScreen" class="spl-wrap" style="display:none" onclick="dismissSplash()">
+    <button class="spl-skip" id="splSkip" onclick="event.stopPropagation();dismissSplash()">Skip</button>
+    <div class="spl-particles" id="splParticles"></div>
+
+    <!-- Center logo -->
+    <div class="spl-center" id="splCenter">
+      <div class="spl-ring-outer"></div>
+      <div class="spl-ring-inner"></div>
+      <div class="spl-logo-wrap">
+        <div class="spl-logo-text">
+          <span class="spl-ex">EX</span><span class="spl-global">GLOBAL</span>
+        </div>
+        <div class="spl-dot-row">
+          <span class="spl-dot"></span><span class="spl-dot"></span><span class="spl-dot"></span>
+        </div>
+        <div class="spl-tagline">Saudi Arabia's Premium Shopping</div>
+        <div class="spl-tagline-ar">التسوق الراقي في السعودية</div>
       </div>
-      <div class="si-pole"></div>
     </div>
-    <div class="si-text-area">
-      <div class="si-arabic" id="siArabicEl"></div>
-      <div class="si-english" id="siEnglishEl"></div>
-    </div>
-    <div class="si-city"></div>
-    <div class="si-dunes"></div>
+
+    <!-- Bottom progress bar -->
+    <div class="spl-bar-track"><div class="spl-bar" id="splBar"></div></div>
   </div>
 
   <!-- FIRST-VISIT WELCOME POPUP -->
@@ -3009,7 +3008,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=306"></script>
+  <script src="script.js?v=307"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

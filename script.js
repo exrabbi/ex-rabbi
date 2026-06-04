@@ -1285,51 +1285,52 @@ function closeDrawer() {
 }
 
 /* ===== SAUDI INTRO ANIMATION ===== */
-const _SI_ARABIC  = 'السعودية فخرنا';
-const _SI_ENGLISH = 'OUR PRIDE. OUR SAUDI.';
-
-function dismissSaudiIntro() {
-  const el = document.getElementById('saudiIntro');
-  if (!el || !el._siActive) return;
-  el._siActive = false;
-  if (el._siTimer) clearTimeout(el._siTimer);
-  el.classList.add('si-out');
+/* ===== PREMIUM SPLASH SCREEN ===== */
+function dismissSplash() {
+  const el = document.getElementById('splashScreen');
+  if (!el || !el._splActive) return;
+  el._splActive = false;
+  if (el._splTimer) clearTimeout(el._splTimer);
+  el.classList.add('spl-out');
   setTimeout(() => {
     el.style.display = 'none';
-    el.classList.remove('si-out');
     _maybeShowFwPop();
-  }, 520);
+  }, 500);
 }
 
-(function initSaudiIntro() {
-  const el = document.getElementById('saudiIntro');
+(function initSplash() {
+  const el = document.getElementById('splashScreen');
   if (!el) { _maybeShowFwPop(); return; }
   if (sessionStorage.getItem('exg_si_shown')) { _maybeShowFwPop(); return; }
   sessionStorage.setItem('exg_si_shown', '1');
-  el._siActive = true;
+  el._splActive = true;
   el.style.display = 'flex';
-  // Typewriter for Arabic (reveal char by char)
-  const arEl = document.getElementById('siArabicEl');
-  const enEl = document.getElementById('siEnglishEl');
-  let ai = 0;
-  const arTimer = setInterval(() => {
-    if (!arEl) return;
-    arEl.textContent = _SI_ARABIC.substring(0, ai + 1);
-    ai++;
-    if (ai >= _SI_ARABIC.length) clearInterval(arTimer);
-  }, 80);
-  // English fades in after Arabic done
-  setTimeout(() => {
-    if (enEl) {
-      let ei = 0;
-      const enTimer = setInterval(() => {
-        enEl.textContent = _SI_ENGLISH.substring(0, ei + 1);
-        ei++;
-        if (ei >= _SI_ENGLISH.length) clearInterval(enTimer);
-      }, 55);
+
+  // Generate floating particles
+  const container = document.getElementById('splParticles');
+  if (container) {
+    const shapes = ['50%', '4px', '3px'];
+    for (let i = 0; i < 28; i++) {
+      const p = document.createElement('div');
+      p.className = 'spl-particle';
+      const size = 4 + Math.random() * 14;
+      const op   = 0.06 + Math.random() * 0.12;
+      p.style.cssText = [
+        `width:${size}px`, `height:${size}px`,
+        `left:${(Math.random()*92+4).toFixed(1)}%`,
+        `top:${(Math.random()*92+4).toFixed(1)}%`,
+        `background:#0d0d0d`,
+        `border-radius:${shapes[i % shapes.length]}`,
+        `--dur:${(2.4+Math.random()*2.8).toFixed(2)}s`,
+        `--dly:${(Math.random()*2.2).toFixed(2)}s`,
+        `--op:${op.toFixed(2)}`
+      ].join(';');
+      container.appendChild(p);
     }
-  }, _SI_ARABIC.length * 80 + 300);
-  el._siTimer = setTimeout(dismissSaudiIntro, 7000);
+  }
+
+  // Auto-dismiss after 2.5s
+  el._splTimer = setTimeout(dismissSplash, 2500);
 })();
 
 /* ===== FIRST-VISIT WELCOME POPUP ===== */
