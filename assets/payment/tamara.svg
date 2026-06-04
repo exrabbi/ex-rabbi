@@ -1,31 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
   <defs>
     <linearGradient id="tBase" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FAD1A0"/>
-      <stop offset="45%" stop-color="#F9E8D0"/>
-      <stop offset="100%" stop-color="#EDCAE0"/>
+      <stop offset="0%"   stop-color="#F9C4A0"/>
+      <stop offset="40%"  stop-color="#FAE8D4"/>
+      <stop offset="100%" stop-color="#F0C8E8"/>
     </linearGradient>
-    <radialGradient id="tOrange" cx="8%" cy="8%" r="55%">
-      <stop offset="0%" stop-color="#F0864A" stop-opacity="0.80"/>
-      <stop offset="100%" stop-color="#F0864A" stop-opacity="0"/>
+    <radialGradient id="tOr" cx="5%" cy="5%" r="60%">
+      <stop offset="0%" stop-color="#F59070" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#F59070" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="tPink" cx="92%" cy="12%" r="52%">
-      <stop offset="0%" stop-color="#CD5DA0" stop-opacity="0.72"/>
-      <stop offset="100%" stop-color="#CD5DA0" stop-opacity="0"/>
+    <radialGradient id="tYe" cx="55%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#F5D060" stop-opacity="0.70"/>
+      <stop offset="100%" stop-color="#F5D060" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="tBlue" cx="4%" cy="92%" r="52%">
-      <stop offset="0%" stop-color="#6BAEE6" stop-opacity="0.78"/>
-      <stop offset="100%" stop-color="#6BAEE6" stop-opacity="0"/>
+    <radialGradient id="tPk" cx="100%" cy="20%" r="55%">
+      <stop offset="0%" stop-color="#E880C8" stop-opacity="0.80"/>
+      <stop offset="100%" stop-color="#E880C8" stop-opacity="0"/>
     </radialGradient>
-    <radialGradient id="tYellow" cx="50%" cy="2%" r="48%">
-      <stop offset="0%" stop-color="#F5D35A" stop-opacity="0.60"/>
-      <stop offset="100%" stop-color="#F5D35A" stop-opacity="0"/>
+    <radialGradient id="tBl" cx="0%" cy="100%" r="60%">
+      <stop offset="0%" stop-color="#90B8F0" stop-opacity="0.80"/>
+      <stop offset="100%" stop-color="#90B8F0" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="tPk2" cx="100%" cy="100%" r="50%">
+      <stop offset="0%" stop-color="#E890D8" stop-opacity="0.65"/>
+      <stop offset="100%" stop-color="#E890D8" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="90" height="48" rx="9" fill="url(#tBase)"/>
-  <rect width="90" height="48" rx="9" fill="url(#tOrange)"/>
-  <rect width="90" height="48" rx="9" fill="url(#tPink)"/>
-  <rect width="90" height="48" rx="9" fill="url(#tBlue)"/>
-  <rect width="90" height="48" rx="9" fill="url(#tYellow)"/>
-  <text x="45" y="31" text-anchor="middle" fill="#130a0a" font-size="18" font-weight="900" font-family="'Helvetica Neue',Arial,sans-serif" letter-spacing="-0.4">tamara</text>
+  <rect width="90" height="48" rx="9" fill="url(#tOr)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tYe)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tPk)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tBl)"/>
+  <rect width="90" height="48" rx="9" fill="url(#tPk2)"/>
+  <text x="45" y="31" text-anchor="middle" fill="#0D0D0D"
+        font-size="19" font-weight="900"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">tamara</text>
 </svg>
