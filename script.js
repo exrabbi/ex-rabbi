@@ -1284,7 +1284,63 @@ function closeDrawer() {
   document.getElementById('drawerOverlay').classList.remove('open');
 }
 
+/* ===== SAUDI INTRO ANIMATION ===== */
+const _SI_ARABIC  = 'السعودية فخرنا';
+const _SI_ENGLISH = 'OUR PRIDE. OUR SAUDI.';
+
+function dismissSaudiIntro() {
+  const el = document.getElementById('saudiIntro');
+  if (!el || !el._siActive) return;
+  el._siActive = false;
+  if (el._siTimer) clearTimeout(el._siTimer);
+  el.classList.add('si-out');
+  setTimeout(() => {
+    el.style.display = 'none';
+    el.classList.remove('si-out');
+    _maybeShowFwPop();
+  }, 520);
+}
+
+(function initSaudiIntro() {
+  const el = document.getElementById('saudiIntro');
+  if (!el) { _maybeShowFwPop(); return; }
+  if (sessionStorage.getItem('exg_si_shown')) { _maybeShowFwPop(); return; }
+  sessionStorage.setItem('exg_si_shown', '1');
+  el._siActive = true;
+  el.style.display = 'flex';
+  // Typewriter for Arabic (reveal char by char)
+  const arEl = document.getElementById('siArabicEl');
+  const enEl = document.getElementById('siEnglishEl');
+  let ai = 0;
+  const arTimer = setInterval(() => {
+    if (!arEl) return;
+    arEl.textContent = _SI_ARABIC.substring(0, ai + 1);
+    ai++;
+    if (ai >= _SI_ARABIC.length) clearInterval(arTimer);
+  }, 80);
+  // English fades in after Arabic done
+  setTimeout(() => {
+    if (enEl) {
+      let ei = 0;
+      const enTimer = setInterval(() => {
+        enEl.textContent = _SI_ENGLISH.substring(0, ei + 1);
+        ei++;
+        if (ei >= _SI_ENGLISH.length) clearInterval(enTimer);
+      }, 55);
+    }
+  }, _SI_ARABIC.length * 80 + 300);
+  el._siTimer = setTimeout(dismissSaudiIntro, 7000);
+})();
+
 /* ===== FIRST-VISIT WELCOME POPUP ===== */
+function _maybeShowFwPop() {
+  if (localStorage.getItem('exg_visited')) return;
+  localStorage.setItem('exg_visited', '1');
+  const pop = document.getElementById('fwPop');
+  if (!pop) return;
+  pop.style.display = 'flex';
+  pop._fwTimer = setTimeout(dismissFwPop, 4000);
+}
 function dismissFwPop() {
   const pop = document.getElementById('fwPop');
   if (!pop || pop.classList.contains('fw-hide')) return;
@@ -1292,14 +1348,6 @@ function dismissFwPop() {
   pop.classList.add('fw-hide');
   setTimeout(() => { pop.style.display = 'none'; }, 380);
 }
-(function initFwPop() {
-  if (localStorage.getItem('exg_visited')) return;
-  localStorage.setItem('exg_visited', '1');
-  const pop = document.getElementById('fwPop');
-  if (!pop) return;
-  pop.style.display = 'flex';
-  pop._fwTimer = setTimeout(dismissFwPop, 4000);
-})();
 
 /* ===== CART ===== */
 function openCart() {
@@ -2544,6 +2592,75 @@ function removeFromWishlist(id) {
   if (el) { el.classList.remove('active'); el.innerHTML = '<i class="far fa-heart"></i>'; }
 }
 
+/* ===== PRODUCT PAGE NOON-STYLE HELPERS ===== */
+function _pdServiceRow() {
+  const now = new Date(); const tmr = new Date(now); tmr.setDate(now.getDate()+1);
+  const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][tmr.getMonth()];
+  const ds = `${tmr.getDate()} ${mn}`;
+  return `<div class="pd-svc-row">
+    <div class="pd-svc-chip"><span class="pd-svc-ico"><i class="fas fa-truck-fast"></i></span><span>Delivery<br>by <b>${ds}</b></span></div>
+    <div class="pd-svc-chip"><span class="pd-svc-ico"><i class="fas fa-medal"></i></span><span>High Rated<br>Seller</span></div>
+    <div class="pd-svc-chip"><span class="pd-svc-ico"><i class="fas fa-rotate-left"></i></span><span>Easy<br>Returns</span></div>
+    <div class="pd-svc-chip"><span class="pd-svc-ico"><i class="fas fa-money-bill-wave"></i></span><span>Cash on<br>Delivery</span></div>
+    <div class="pd-svc-chip"><span class="pd-svc-ico"><i class="fas fa-shield-halved"></i></span><span>2 Year<br>Warranty</span></div>
+  </div>`;
+}
+function _pdDelivCard() {
+  const now = new Date(); const tmr = new Date(now); tmr.setDate(now.getDate()+1);
+  const dayN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][tmr.getDay()];
+  const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][tmr.getMonth()];
+  const ds = `${dayN}, ${mn} ${tmr.getDate()}`;
+  const h = 20 - now.getHours(); const m = 60 - now.getMinutes();
+  const timer = h > 0 ? `Order in ${h}h ${m > 0 ? m+'m' : ''}` : 'Order now for express delivery';
+  return `<div class="pd-deliv lux-reveal">
+    <div class="pd-deliv-title">Delivery Information</div>
+    <div class="pd-deliv-row">
+      <span class="pd-express-badge">express</span>
+      <div>
+        <div class="pd-deliv-date">Get it by <strong>${ds}</strong></div>
+        <div class="pd-deliv-timer">${timer}</div>
+      </div>
+    </div>
+  </div>`;
+}
+function _pdAddInfoCard(p) {
+  const cat = p.category||'';
+  const cats = PRODUCTS.filter(x=>x.category===cat).sort((a,b)=>(b.ratingCount||0)-(a.ratingCount||0));
+  const rank = cats.findIndex(x=>x.id===p.id)+1;
+  const bsRow = rank>0&&rank<=5&&(p.ratingCount||0)>=200
+    ?`<div class="pd-ai-row pd-ai-bs"><span class="pd-ai-row-ico" style="background:#ede7f6;color:#7c3aed"><i class="fas fa-trophy"></i></span><span>Best Seller #${rank} in <strong>${cat}</strong></span><i class="fas fa-chevron-right pd-ai-arr"></i></div>`:'' ;
+  const brandLogo = ((p.brand||'EX')[0]||'E').toUpperCase();
+  return `<div class="pd-addinfo lux-reveal">
+    <div class="pd-addinfo-title">Additional Information</div>
+    <div class="pd-addinfo-list">
+      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-truck-fast"></i></span><span>Free delivery on Lockers & Pickup Points</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-shield-halved"></i></span><span>2 year warranty included</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-rotate-left"></i></span><span>Easy and Hassle Free Returns</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      ${bsRow}
+      <div class="pd-ai-row pd-ai-seller-row"><div class="pd-ai-seller-logo">${brandLogo}</div><div class="pd-ai-seller-info"><div>Sold by <strong>${p.brand||'EX GLOBAL Store'}</strong></div><div class="pd-ai-seller-meta"><i class="fas fa-star pd-ai-star"></i> 4.8 &middot; <span class="pd-ai-pos">92% Positive</span> Seller Ratings</div></div><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-pills"><span class="pd-ai-pill"><i class="fas fa-box-open"></i> Item as shown 95%</span><span class="pd-ai-pill"><i class="fas fa-handshake"></i> Partner 3+ Years</span><span class="pd-ai-pill"><i class="fas fa-arrow-trend-down"></i> Low return seller</span><span class="pd-ai-pill"><i class="fas fa-thumbs-up"></i> Great recent rating</span></div>
+      <div class="pd-ai-row pd-ai-more"><span class="pd-ai-row-ico pd-ai-tag-ico"><i class="fas fa-tag"></i></span><span>More offers from other sellers</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+    </div>
+  </div>`;
+}
+function _pdRatingsCard(p) {
+  if (!p.rating||!p.ratingCount||p.ratingCount<10) return '';
+  const r=p.rating,c=p.ratingCount;
+  const fullS=Math.floor(r),halfS=r-fullS>=.5;
+  const starH=Array.from({length:5},(_,i)=>i<fullS?'<i class="fas fa-star pd-rv-star"></i>':i===fullS&&halfS?'<i class="fas fa-star-half-stroke pd-rv-star"></i>':'<i class="far fa-star pd-rv-star"></i>').join('');
+  const bullets=[`Customers consistently praise the quality and value of this ${p.category||'product'}.`,`Fast delivery and authentic packaging are frequently highlighted in reviews.`,`Most buyers on EX GLOBAL highly recommend this item.`];
+  const names=['Ahmed A.','Sara M.'];
+  const texts=['Amazing product! Exactly as described. Fast delivery and excellent quality.','Very satisfied with my purchase. The product matches the photos perfectly.'];
+  const revH=Array.from({length:2},(_,i)=>`<div class="pd-rv-item"><div class="pd-rv-item-head"><span class="pd-rv-name">${names[i]}</span><span class="pd-rv-verified"><i class="fas fa-circle-check"></i> Verified Purchase</span></div><div class="pd-rv-item-meta">${Array.from({length:5},()=>'<i class="fas fa-star" style="color:#22a74f;font-size:11px"></i>').join('')}<span class="pd-rv-ago"> · 2 months ago</span></div><div class="pd-rv-text">${texts[i]}</div></div>`).join('');
+  return `<div class="pd-ratings lux-reveal">
+    <div class="pd-rv-title">Ratings & Reviews</div>
+    <div class="pd-rv-overview"><span class="pd-rv-bignum">${r}</span><div><div>${starH}</div><div class="pd-rv-sub">Avg. rating based on ${c.toLocaleString()} ratings from trusted sources</div></div></div>
+    <div class="pd-rv-ai-box"><div class="pd-rv-ai-label">${Math.min(c,3718).toLocaleString()} reviews, summarised by EX AI <span class="pd-rv-sparkle">✦</span></div><ul class="pd-rv-bullets">${bullets.map(b=>`<li>${b}</li>`).join('')}</ul></div>
+    ${revH}
+    <div class="pd-rv-see-all">All reviews (${c.toLocaleString()}) <i class="fas fa-chevron-right"></i></div>
+  </div>`;
+}
+
 /* ===== PRODUCT MODAL ===== */
 function openModal(id) {
   const p = PRODUCTS.find(p => p.id === id);
@@ -2653,21 +2770,9 @@ function openModal(id) {
     </div>
   </div>
 
-  <!-- Delivery card -->
-  <div class="lux-ship-card lux-reveal">
-    <div class="lux-ship-free-row">
-      <i class="fas fa-truck-fast" style="color:#10b981"></i>
-      <span class="lux-ship-free-txt">${t('freeDeliveryFull')||t('freeDeliveryInfo')||'Free Shipping (Orders ≥ SAR 99)'}</span>
-    </div>
-    <div class="lux-ship-date-row">
-      <i class="fas fa-calendar-check" style="color:rgba(255,255,255,.4)"></i>
-      <span class="lux-ship-date-txt">${t('estDelivery')}: ${_deliveryRange()}</span>
-    </div>
-    <div class="lux-ship-date-row">
-      <i class="fas fa-rotate-left" style="color:rgba(255,255,255,.4)"></i>
-      <span class="lux-ship-date-txt">${t('returnDays')||t('trustReturns')||'7-Day Returns'}</span>
-    </div>
-  </div>
+  ${_pdServiceRow()}
+
+  ${_pdDelivCard()}
 
   ${p.sizes&&p.sizes.length>0?`
   <div class="lux-section lux-reveal">
@@ -2704,40 +2809,43 @@ function openModal(id) {
 
   ${videoEmbed?`<div class="lux-section lux-reveal">${videoEmbed}</div>`:''}
 
-  <div class="lux-accordion lux-reveal">
-    ${p.description?`
-    <div class="lux-accordion-item">
-      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-info-circle"></i> ${t('productDetails')||'Product Details'}</span>
-        <i class="fas fa-chevron-down lux-chev"></i>
-      </button>
-      <div class="lux-accordion-body">
-        <div class="lux-accordion-content">${p.description.replace(/\n/g,'<br>')}</div>
-      </div>
-    </div>`:''}
-    <div class="lux-accordion-item">
-      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-truck"></i> ${t('deliveryReturnsTitle')||'Delivery & Returns'}</span>
-        <i class="fas fa-chevron-down lux-chev"></i>
-      </button>
-      <div class="lux-accordion-body">
-        <div class="lux-accordion-content">
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('freeDeliveryFull')||'Free delivery on orders over SAR 99'}</p>
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('returnDays')||t('trustReturns')||'7-Day Returns'}</p>
-          <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('pctAuthentic')||'100% Authentic'}</p>
+  <div class="pd-overview lux-reveal">
+    <div class="pd-overview-title">Product Overview</div>
+    <div class="lux-accordion">
+      ${p.description?`
+      <div class="lux-accordion-item">
+        <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+          <span>Description</span>
+          <i class="fas fa-chevron-down lux-chev"></i>
+        </button>
+        <div class="lux-accordion-body">
+          <div class="lux-accordion-content">${p.description.replace(/\n/g,'<br>')}</div>
+        </div>
+      </div>`:''}
+      <div class="lux-accordion-item">
+        <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+          <span>Highlights</span>
+          <i class="fas fa-chevron-down lux-chev"></i>
+        </button>
+        <div class="lux-accordion-body">
+          <div class="lux-accordion-content">
+            <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('freeDeliveryFull')||'Free delivery on orders over SAR 99'}</p>
+            <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('returnDays')||t('trustReturns')||'7-Day Returns'}</p>
+            <p><i class="fas fa-check" style="color:#0ab35c"></i> ${t('pctAuthentic')||'100% Authentic'}</p>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="lux-accordion-item">
-      <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
-        <span><i class="fas fa-shield-halved"></i> ${t('securePayment')||'Secure Payment'}</span>
-        <i class="fas fa-chevron-down lux-chev"></i>
-      </button>
-      <div class="lux-accordion-body">
-        <div class="lux-accordion-content">
-          <p><i class="fas fa-lock" style="color:#e91e8c"></i> SSL encrypted checkout</p>
-          <p><i class="fas fa-credit-card" style="color:#e91e8c"></i> Visa, Mastercard, Apple Pay, STC Pay</p>
-          <p><i class="fas fa-shield-halved" style="color:#e91e8c"></i> Buyer protection on all orders</p>
+      <div class="lux-accordion-item">
+        <button class="lux-accordion-header" onclick="_luxToggleAccordion(this)">
+          <span>Specifications</span>
+          <i class="fas fa-chevron-down lux-chev"></i>
+        </button>
+        <div class="lux-accordion-body">
+          <div class="lux-accordion-content">
+            <p><i class="fas fa-lock" style="color:#e91e8c"></i> SSL encrypted checkout</p>
+            <p><i class="fas fa-credit-card" style="color:#e91e8c"></i> Visa, Mastercard, Apple Pay, STC Pay</p>
+            <p><i class="fas fa-shield-halved" style="color:#e91e8c"></i> Buyer protection on all orders</p>
+          </div>
         </div>
       </div>
     </div>
@@ -2770,21 +2878,10 @@ function openModal(id) {
 
   ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="lux-coupon-strip lux-reveal" onclick="openPdCoupons()"><i class="fas fa-percent lux-coupon-icon"></i><span>Extra ${av[0][1].pct}% off — Code: <b>${av[0][0]}</b></span><i class="fas fa-chevron-right"></i></div>`:''})()}
 
-  <div class="lux-static-trust lux-reveal">
-    <div class="lux-trust-item"><i class="fas fa-lock"></i><span>${t('securePayment')||'Secure'}</span></div>
-    <div class="lux-trust-item"><i class="fas fa-rotate-left"></i><span>${t('returns30')||'30-Day Returns'}</span></div>
-    <div class="lux-trust-item"><i class="fas fa-shield-halved"></i><span>${t('authentic')||'Authentic'}</span></div>
-    <div class="lux-trust-item"><i class="fas fa-truck-fast"></i><span>${t('trustDelivery')||'Fast Ship'}</span></div>
-  </div>
-
-  <div class="lux-policy-row lux-reveal">
-    <div class="lux-policy-item"><i class="fas fa-truck-fast"></i>${t('freeShipping')||'Free Delivery'}<br>≥ SAR 99</div>
-    <div class="lux-policy-item"><i class="fas fa-rotate-left"></i>${t('trustReturns')||'7-Day Returns'}</div>
-    <div class="lux-policy-item"><i class="fas fa-shield-halved"></i>${t('pctAuthentic')||'100% Authentic'}</div>
-    <div class="lux-policy-item"><i class="fas fa-lock"></i>${t('securePayment')||'Secure Payment'}</div>
-  </div>
+  ${_pdAddInfoCard(p)}
 
   ${_fbtHTML(p)}
+  ${_pdRatingsCard(p)}
   ${_qaHTML(p)}
   ${_relatedHTML(p)}
 
