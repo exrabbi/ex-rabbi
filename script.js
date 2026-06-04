@@ -1304,8 +1304,6 @@ function dismissSaudiIntro() {
 (function initSaudiIntro() {
   const el = document.getElementById('saudiIntro');
   if (!el) { _maybeShowFwPop(); return; }
-  if (sessionStorage.getItem('exg_si_shown')) { _maybeShowFwPop(); return; }
-  sessionStorage.setItem('exg_si_shown', '1');
   el._siActive = true;
   el.style.display = 'flex';
 
