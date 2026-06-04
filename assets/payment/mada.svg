@@ -1,12 +1,16 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
   <rect width="90" height="48" rx="9" fill="#fff"/>
   <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
-  <!-- Blue bar -->
-  <rect x="5" y="9" width="34" height="13" rx="2" fill="#1E9ED7"/>
-  <!-- Green bar -->
-  <rect x="5" y="26" width="34" height="13" rx="2" fill="#7CBB3F"/>
-  <!-- Arabic text -->
-  <text x="65" y="22" text-anchor="middle" fill="#2D2D2D" font-size="13" font-weight="900" font-family="Arial,sans-serif">مدى</text>
-  <!-- mada text -->
-  <text x="65" y="39" text-anchor="middle" fill="#2D2D2D" font-size="13" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.3">mada</text>
+  <!-- Blue bar (top) -->
+  <rect x="4" y="6"  width="36" height="16" rx="2" fill="#29ABE2"/>
+  <!-- Green bar (bottom) -->
+  <rect x="4" y="26" width="36" height="16" rx="2" fill="#8DC63F"/>
+  <!-- Arabic مدى -->
+  <text x="66" y="20" text-anchor="middle" fill="#2D2D2D"
+        font-size="14" font-weight="900"
+        font-family="'Segoe UI',Tahoma,Arial,sans-serif">مدى</text>
+  <!-- mada -->
+  <text x="66" y="39" text-anchor="middle" fill="#2D2D2D"
+        font-size="15" font-weight="900"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">mada</text>
 </svg>
