@@ -389,6 +389,8 @@ function setLang(lang) {
   });
   const lbl = document.getElementById('curLangLabel');
   if (lbl) lbl.textContent = _langLabels[lang] || lang;
+  const drwLv = document.getElementById('drwLangVal');
+  if (drwLv) drwLv.textContent = _langLabels[lang] || lang;
   applyTranslations();
   _applySocialLinks();
   renderFlashDeals();
@@ -5030,12 +5032,54 @@ function updateAuthUI(animateGuest) {
   const userEl  = document.getElementById('meUserState');
   const signOutItem = document.getElementById('meSignOutItem');
   const drawerSignOut = document.getElementById('drawerSignOutItem');
+  const drwUserHero  = document.getElementById('drwUserHero');
+  const drwGuestHero = document.getElementById('drwGuestHero');
   if (!guestEl || !userEl) return;
   if (currentUser) {
     guestEl.style.display = 'none';
     userEl.style.display  = 'block';
     if (signOutItem) signOutItem.style.display = 'flex';
-    if (drawerSignOut) drawerSignOut.style.display = 'block';
+    if (drawerSignOut) drawerSignOut.style.display = 'flex';
+    // Drawer user hero
+    if (drwUserHero) drwUserHero.style.display = 'flex';
+    if (drwGuestHero) drwGuestHero.style.display = 'none';
+    const drwName = document.getElementById('drwUserName');
+    if (drwName) drwName.textContent = (currentUser.name || '').split(' ')[0] || 'there';
+    // Drawer avatar
+    const drwAvatarImg = document.getElementById('drwAvatarImg');
+    const drwInitial   = document.getElementById('drwAvatarInitial');
+    if (drwAvatarImg && drwInitial) {
+      if (currentUser.avatar) {
+        drwAvatarImg.src = currentUser.avatar;
+        drwAvatarImg.style.display = 'block';
+        drwInitial.style.display = 'none';
+      } else {
+        drwAvatarImg.style.display = 'none';
+        drwInitial.style.display = 'flex';
+        drwInitial.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
+      }
+    }
+    // Drawer tier badge
+    const drwTier = document.getElementById('drwTierBadge');
+    if (drwTier) {
+      const _pts = parseInt(localStorage.getItem('exg_loyalty_pts') || '0');
+      if (_pts >= 500) {
+        drwTier.innerHTML = '<i class="fas fa-crown"></i> Gold Member';
+        drwTier.style.background = 'rgba(245,158,11,.15)';
+        drwTier.style.color = '#d97706';
+        drwTier.style.borderColor = 'rgba(245,158,11,.3)';
+      } else if (_pts >= 200) {
+        drwTier.innerHTML = '<i class="fas fa-shield-halved"></i> Silver Member';
+        drwTier.style.background = 'rgba(156,163,175,.15)';
+        drwTier.style.color = '#6b7280';
+        drwTier.style.borderColor = 'rgba(156,163,175,.3)';
+      } else {
+        drwTier.innerHTML = '<i class="fas fa-shield-halved"></i> VIP Member';
+        drwTier.style.background = 'rgba(233,30,140,.1)';
+        drwTier.style.color = '#e91e8c';
+        drwTier.style.borderColor = 'rgba(233,30,140,.2)';
+      }
+    }
 
     // Name
     const nameEl = document.getElementById('meUserName');
@@ -5107,6 +5151,8 @@ function updateAuthUI(animateGuest) {
     userEl.style.display  = 'none';
     if (signOutItem) signOutItem.style.display = 'none';
     if (drawerSignOut) drawerSignOut.style.display = 'none';
+    if (drwUserHero) drwUserHero.style.display = 'none';
+    if (drwGuestHero) drwGuestHero.style.display = 'block';
     if (animateGuest) {
       requestAnimationFrame(() => {
         guestEl.classList.remove('anim-in');

@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=355" />
+  <link rel="stylesheet" href="styles.css?v=356" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -212,37 +212,128 @@
   <!-- DRAWER -->
   <div class="drawer-overlay" id="drawerOverlay"></div>
   <aside class="drawer" id="drawer">
-    <div class="drawer-head">
+
+    <!-- Header -->
+    <div class="drw-head">
       <div class="logo nav-wordmark" style="gap:0">
         <span class="nwm-ex">EX</span><span class="nwm-global"> GLOBAL</span>
       </div>
-      <button class="icon-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
+      <button class="icon-btn drw-close-btn" id="closeDrawer"><i class="fas fa-times"></i></button>
     </div>
-    <ul class="drawer-menu">
-      <li><a href="#" onclick="closeDrawer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return false;"><i class="fas fa-user"></i> <span data-i18n="myAccount">My Account</span></a></li>
-      <li><a href="#" onclick="closeDrawer();openMe();return false;"><i class="fas fa-box"></i> <span data-i18n="myOrders">My Orders</span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openWishlist,200);return false;"><i class="fas fa-heart" style="color:#e91e8c"></i> <span data-i18n="wishlistMenu">Wishlist</span> <span id="drawerWishCount" style="background:#e91e8c;color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;margin-left:4px;display:none"></span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;"><i class="fas fa-tag" style="color:#8b2be2"></i> <span data-i18n="coupon">কুপন</span></a></li>
-      <li><a href="#" onclick="closeDrawer();openReviews();return false;"><i class="fas fa-star" style="color:#f59e0b"></i> <span data-i18n="myReviews">Reviews</span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;"><i class="fas fa-gear" style="color:#64748b"></i> <span data-i18n="settings">Settings</span></a></li>
-      <li><a href="#" onclick="closeDrawer();setTimeout(openAiChat,200);return false;" style="position:relative">
-          <span class="drawer-ai-icon"><i class="fas fa-robot"></i></span>
-          <span style="font-weight:800">AI Assistant</span>
-          <span style="font-size:9px;font-weight:800;color:#fff;margin-left:auto;background:linear-gradient(135deg,#e91e8c,#7c3aed);padding:2px 9px;border-radius:20px;box-shadow:0 2px 8px rgba(233,30,140,.4)">NEW</span>
-        </a></li>
-      <li><a href="https://wa.me/966546224029" target="_blank"><i class="fab fa-whatsapp" style="color:#25d366"></i> <span data-i18n="support">Support</span></a></li>
-      <li id="drawerSignOutItem" style="display:none"><a href="#" onclick="closeDrawer();signOut();return false;"><i class="fas fa-right-from-bracket" style="color:#ef4444"></i> <span data-i18n="signOut">Sign Out</span></a></li>
-      <li id="drawerInstallItem">
-        <a href="#" onclick="installPWA();return false;" style="position:relative">
-          <i class="fas fa-download" style="color:#e91e8c"></i>
-          <span data-i18n="installApp">অ্যাপ ডাউনলোড করুন</span>
-          <span style="font-size:9px;font-weight:700;color:#fff;margin-left:auto;background:linear-gradient(135deg,#e91e8c,#9415f5);padding:2px 8px;border-radius:20px;box-shadow:0 2px 8px rgba(233,30,140,.4)">FREE</span>
+
+    <!-- User Hero (logged in) -->
+    <div class="drw-user-hero" id="drwUserHero" style="display:none">
+      <div class="drw-avatar" id="drwAvatar">
+        <img id="drwAvatarImg" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover;border-radius:50%">
+        <span id="drwAvatarInitial" style="font-size:22px;font-weight:800;color:#fff"></span>
+      </div>
+      <div class="drw-user-info">
+        <div class="drw-greeting">Hello, <span id="drwUserName" style="font-weight:800">there</span> 👋</div>
+        <div class="drw-tier-row">
+          <span class="drw-tier-badge" id="drwTierBadge"><i class="fas fa-shield-halved"></i> Member</span>
+        </div>
+      </div>
+      <button class="drw-profile-btn" onclick="closeDrawer();setTimeout(openProfile,200)" title="Edit profile">
+        <i class="fas fa-pen"></i>
+      </button>
+    </div>
+
+    <!-- Guest Hero (not logged in) -->
+    <div class="drw-guest-hero" id="drwGuestHero">
+      <div class="drw-guest-icon"><i class="fas fa-user-circle"></i></div>
+      <div class="drw-guest-text">
+        <div class="drw-guest-title">Welcome to EX GLOBAL</div>
+        <div class="drw-guest-sub">Sign in to access your account</div>
+      </div>
+      <div class="drw-guest-btns">
+        <button class="drw-btn-login" onclick="closeDrawer();openAuth()">Login</button>
+        <button class="drw-btn-register" onclick="closeDrawer();openAuth()">Register</button>
+      </div>
+    </div>
+
+    <!-- Scrollable menu -->
+    <div class="drw-body">
+
+      <!-- Account section -->
+      <div class="drw-section-lbl">Account</div>
+      <div class="drw-list">
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(()=>currentUser?openProfile():openAuth(),200);return false;">
+          <span class="drw-item-icon drw-ic-pink"><i class="fas fa-user"></i></span>
+          <span class="drw-item-label" data-i18n="myAccount">My Account</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
         </a>
-      </li>
-    </ul>
-    <div class="drawer-footer" id="drawerFooter">
-      <button class="btn-outline" onclick="closeDrawer();openAuth();" data-i18n="login">Login</button>
-      <button class="btn-primary" onclick="closeDrawer();openAuth();" data-i18n="register">Register</button>
+        <a class="drw-item" href="#" onclick="closeDrawer();openMe();return false;">
+          <span class="drw-item-icon drw-ic-blue"><i class="fas fa-box"></i></span>
+          <span class="drw-item-label" data-i18n="myOrders">My Orders</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openWishlist,200);return false;">
+          <span class="drw-item-icon drw-ic-red"><i class="fas fa-heart"></i></span>
+          <span class="drw-item-label" data-i18n="wishlistMenu">Wishlist</span>
+          <span id="drawerWishCount" class="drw-item-badge" style="display:none"></span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;">
+          <span class="drw-item-icon drw-ic-purple"><i class="fas fa-tag"></i></span>
+          <span class="drw-item-label" data-i18n="coupon">Coupons & Offers</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();openReviews();return false;">
+          <span class="drw-item-icon drw-ic-amber"><i class="fas fa-star"></i></span>
+          <span class="drw-item-label" data-i18n="myReviews">Reviews</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+      </div>
+
+      <!-- Smart section -->
+      <div class="drw-section-lbl">Smart Features</div>
+      <div class="drw-list">
+        <a class="drw-item drw-item-ai" href="#" onclick="closeDrawer();setTimeout(openAiChat,200);return false;">
+          <span class="drw-item-icon drw-ic-ai"><i class="fas fa-robot"></i></span>
+          <span class="drw-item-label" style="font-weight:800">AI Assistant</span>
+          <span class="drw-badge-new">NEW</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+      </div>
+
+      <!-- Preferences section -->
+      <div class="drw-section-lbl">Preferences</div>
+      <div class="drw-list">
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openLangPicker,200);return false;">
+          <span class="drw-item-icon drw-ic-teal"><i class="fas fa-globe"></i></span>
+          <span class="drw-item-label">Language</span>
+          <span class="drw-item-value" id="drwLangVal">English</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openSettings,200);return false;">
+          <span class="drw-item-icon drw-ic-slate"><i class="fas fa-gear"></i></span>
+          <span class="drw-item-label" data-i18n="settings">Settings</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+      </div>
+
+      <!-- Help section -->
+      <div class="drw-section-lbl">Help & More</div>
+      <div class="drw-list">
+        <a class="drw-item" href="https://wa.me/966546224029" target="_blank">
+          <span class="drw-item-icon drw-ic-green"><i class="fab fa-whatsapp"></i></span>
+          <span class="drw-item-label" data-i18n="support">WhatsApp Support</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" id="drawerInstallItem" onclick="installPWA();return false;">
+          <span class="drw-item-icon drw-ic-pink"><i class="fas fa-download"></i></span>
+          <span class="drw-item-label" data-i18n="installApp">Download App</span>
+          <span class="drw-badge-free">FREE</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item drw-item-signout" href="#" id="drawerSignOutItem" style="display:none" onclick="closeDrawer();signOut();return false;">
+          <span class="drw-item-icon drw-ic-danger"><i class="fas fa-right-from-bracket"></i></span>
+          <span class="drw-item-label" data-i18n="signOut">Sign Out</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+      </div>
+
+      <div style="height:20px"></div>
     </div>
   </aside>
 
