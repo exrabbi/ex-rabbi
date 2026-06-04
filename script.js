@@ -11374,6 +11374,10 @@ function _renderPlayFeed() {
               onclick="event.stopPropagation();nxAtc(event,${p.id})">
               Add to Bag
             </button>
+            <button class="play-shelf-buy"
+              onclick="event.stopPropagation();closePlayFeed();buyNow(${p.id})">
+              Buy Now
+            </button>
           </div>
         </div>
         <div class="play-shelf-thumbs">${thumbsHtml}</div>
@@ -11417,6 +11421,11 @@ function _renderPlayFeed() {
           <i class="fas fa-share-nodes"></i>
           <span>Share</span>
         </button>
+        ${currentUser && v.creatorId === currentUser.email ? `
+        <button class="play-action-btn play-del-btn" onclick="event.stopPropagation();_playDeleteVideo('${v.id}')">
+          <i class="fas fa-trash"></i>
+          <span>Delete</span>
+        </button>` : ''}
       </div>
 
       <button class="play-mute-btn" id="pmute-${v.id}" onclick="event.stopPropagation();_playToggleMute('${v.id}')">
@@ -11427,8 +11436,8 @@ function _renderPlayFeed() {
 
       <div class="play-info${p ? ' has-shelf' : ''}">
         <div class="play-creator-row">
-          <div class="play-avatar">${initials}</div>
-          <span class="play-creator-name">${v.creator || 'EX GLOBAL'}</span>
+          <div class="play-avatar" onclick="event.stopPropagation();_playOpenProfile('${(v.creatorId||v.creator||'exglobal').replace(/'/g,'')}','${(v.creator||'EX GLOBAL').replace(/'/g,'')}')">${initials}</div>
+          <span class="play-creator-name" onclick="event.stopPropagation();_playOpenProfile('${(v.creatorId||v.creator||'exglobal').replace(/'/g,'')}','${(v.creator||'EX GLOBAL').replace(/'/g,'')}')">${v.creator || 'EX GLOBAL'}</span>
           ${followBtn}
         </div>
         <div class="play-title">${v.title}</div>
@@ -11727,6 +11736,96 @@ function _pcdLike(btn) {
   const span = btn.querySelector('span');
   if (span) span.textContent = (parseInt(span.textContent)||0) + 1;
   btn.style.color = '#e91e8c';
+}
+
+// ── Delete own video ───────────────────────────────────────
+function _playDeleteVideo(vid) {
+  const saved = JSON.parse(localStorage.getItem('exg_play_videos') || '[]');
+  if (!saved.find(v => v.id === vid)) return;
+  const updated = saved.filter(v => v.id !== vid);
+  localStorage.setItem('exg_play_videos', JSON.stringify(updated));
+  _renderPlayFeed();
+  showToast('🗑️ Video deleted');
+}
+
+// ── Creator Profile Drawer ─────────────────────────────────
+let _ppdCreatorId = null;
+
+function _playOpenProfile(creatorId, creatorName) {
+  _ppdCreatorId = creatorId;
+  const drawer  = document.getElementById('playProfileDrawer');
+  const overlay = document.getElementById('playProfileOverlay');
+  if (!drawer || !overlay) return;
+
+  const initials = (creatorName||'EX').split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  const avatarEl    = document.getElementById('ppdAvatar');
+  const nameEl      = document.getElementById('ppdName');
+  const followersEl = document.getElementById('ppdFollowers');
+  const followingEl = document.getElementById('ppdFollowing');
+  const videosEl    = document.getElementById('ppdVideos');
+  const followBtn   = document.getElementById('ppdFollowBtn');
+  const videosGrid  = document.getElementById('ppdVideosGrid');
+
+  if (avatarEl) avatarEl.textContent = initials;
+  if (nameEl) nameEl.textContent = creatorName || 'Creator';
+
+  // Deterministic follower count seeded from creator ID
+  const seed = (creatorId||'').split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const baseFlw = (seed % 9500) + 120;
+  const stored  = parseInt(localStorage.getItem('exg_pfl_'+creatorId)||baseFlw);
+  if (followersEl) followersEl.textContent = stored>=1000 ? (stored/1000).toFixed(1)+'K' : stored;
+  if (followingEl) followingEl.textContent = (seed%280)+15;
+
+  const allVids = _playGetVideos();
+  const mine    = allVids.filter(v=>(v.creatorId||v.creator||'')===(creatorId)||v.creator===creatorName);
+  if (videosEl) videosEl.textContent = mine.length;
+
+  const isFollowing = _playFollowing.has(creatorId);
+  const isStore = creatorId==='exglobal'||creatorId==='EX GLOBAL';
+  if (followBtn) {
+    followBtn.textContent  = isFollowing ? '✓ Following' : '+ Follow';
+    followBtn.className    = 'ppd-follow-btn'+(isFollowing?' following':'');
+    followBtn.style.display= isStore ? 'none' : '';
+  }
+
+  if (videosGrid) {
+    videosGrid.innerHTML = mine.length
+      ? mine.map(v=>{
+          const thumb = v.type==='youtube' ? `https://img.youtube.com/vi/${v.yt}/mqdefault.jpg` : '';
+          return `<div class="ppd-video-item" onclick="_closePlayProfile()">
+            ${thumb
+              ? `<img src="${thumb}" class="ppd-vid-thumb" alt="" onerror="this.style.display='none'">`
+              : `<div class="ppd-vid-thumb ppd-vid-local"><i class="fas fa-play-circle"></i></div>`}
+            <div class="ppd-vid-title">${_escHtml((v.title||'Video').slice(0,28))}</div>
+          </div>`;
+        }).join('')
+      : `<div class="ppd-no-videos">No videos yet</div>`;
+  }
+
+  drawer.classList.add('open');
+  overlay.classList.add('open');
+}
+
+function _closePlayProfile() {
+  document.getElementById('playProfileDrawer')?.classList.remove('open');
+  document.getElementById('playProfileOverlay')?.classList.remove('open');
+  _ppdCreatorId = null;
+}
+
+function _ppdToggleFollow() {
+  const cid = _ppdCreatorId;
+  if (!cid) return;
+  _playFollow(cid, null);
+  const isNow = _playFollowing.has(cid);
+  const btn   = document.getElementById('ppdFollowBtn');
+  if (btn) { btn.textContent = isNow ? '✓ Following' : '+ Follow'; btn.className = 'ppd-follow-btn'+(isNow?' following':''); }
+  const seed = cid.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+  const base = (seed%9500)+120;
+  const newCount = isNow ? base+1 : base;
+  localStorage.setItem('exg_pfl_'+cid, newCount);
+  const flwEl = document.getElementById('ppdFollowers');
+  if (flwEl) flwEl.textContent = newCount>=1000?(newCount/1000).toFixed(1)+'K':newCount;
+  showToast(isNow ? '🔔 Following '+cid.split(' ')[0]+'!' : 'Unfollowed');
 }
 
 function _escHtml(str) {

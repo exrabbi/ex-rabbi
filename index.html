@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=365" />
+  <link rel="stylesheet" href="styles.css?v=366" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -3034,7 +3034,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=309"></script>
+  <script src="script.js?v=310"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
@@ -3176,6 +3176,29 @@
     </div>
   </div>
   <div class="pcd-overlay" id="pcdOverlay" onclick="_closePlayComments()"></div>
+
+  <!-- Play Creator Profile Drawer -->
+  <div class="play-profile-overlay" id="playProfileOverlay" onclick="_closePlayProfile()"></div>
+  <div class="play-profile-drawer" id="playProfileDrawer">
+    <div class="ppd-inner">
+      <div class="ppd-handle"></div>
+      <button class="ppd-close-btn" onclick="_closePlayProfile()"><i class="fas fa-xmark"></i></button>
+      <div class="ppd-top">
+        <div class="ppd-avatar" id="ppdAvatar">EX</div>
+        <div class="ppd-name" id="ppdName">Creator</div>
+        <div class="ppd-stats-row">
+          <div class="ppd-stat"><span class="ppd-stat-num" id="ppdFollowers">0</span><span class="ppd-stat-lbl">Followers</span></div>
+          <div class="ppd-stat-div"></div>
+          <div class="ppd-stat"><span class="ppd-stat-num" id="ppdFollowing">0</span><span class="ppd-stat-lbl">Following</span></div>
+          <div class="ppd-stat-div"></div>
+          <div class="ppd-stat"><span class="ppd-stat-num" id="ppdVideos">0</span><span class="ppd-stat-lbl">Videos</span></div>
+        </div>
+        <button class="ppd-follow-btn" id="ppdFollowBtn" onclick="_ppdToggleFollow()">+ Follow</button>
+      </div>
+      <div class="ppd-section-lbl">Videos</div>
+      <div class="ppd-videos-grid" id="ppdVideosGrid"></div>
+    </div>
+  </div>
 
   <!-- Birthday Wish Overlay -->
   <div class="bday-overlay" id="bdayOverlay">
