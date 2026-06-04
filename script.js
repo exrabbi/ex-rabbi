@@ -6609,65 +6609,6 @@ function markHelpful(btn) {
   }
 }
 
-/* ===== SPLASH SCREEN ===== */
-(function initSplash() {
-  // ── Letter-by-letter brand name ──
-  const brandEl = document.getElementById('exsBrand');
-  if (brandEl) {
-    const text = 'EX GLOBAL';
-    let delay = 1.4;
-    text.split('').forEach(ch => {
-      if (ch === ' ') {
-        const sp = document.createElement('span');
-        sp.className = 'exs-space';
-        brandEl.appendChild(sp);
-      } else {
-        const sp = document.createElement('span');
-        sp.textContent = ch;
-        sp.style.animationDelay = delay + 's';
-        delay += 0.1;
-        brandEl.appendChild(sp);
-      }
-    });
-  }
-
-  // ── Floating gold particles (circles + diamonds) ──
-  const pContainer = document.getElementById('exsParticles');
-  if (pContainer) {
-    const golds = ['#d4a017','#f0c040','#e8b520','#ffd700','rgba(255,215,0,.75)','rgba(212,160,23,.55)'];
-    for (let i = 0; i < 26; i++) {
-      const p = document.createElement('div');
-      p.className = 'exs-particle';
-      const isDiamond = Math.random() > .5;
-      const size = isDiamond ? Math.random() * 4 + 3 : Math.random() * 3 + 2;
-      const color = golds[Math.floor(Math.random() * golds.length)];
-      p.style.cssText = [
-        `width:${size}px`, `height:${size}px`,
-        `left:${Math.random() * 100}%`,
-        `top:${Math.random() * 80 + 55}%`,
-        `background:${color}`,
-        isDiamond ? 'border-radius:1px;transform:rotate(45deg)' : 'border-radius:50%',
-        `opacity:${Math.random() * .5 + .25}`,
-        `animation-duration:${Math.random() * 6 + 5}s`,
-        `animation-delay:${Math.random() * 5}s`,
-        `box-shadow:0 0 ${Math.ceil(size * 2)}px ${color}`,
-      ].join(';');
-      pContainer.appendChild(p);
-    }
-  }
-
-  function hideSplash() {
-    const s = document.getElementById('exSplash');
-    if (s) { s.classList.add('hidden'); setTimeout(() => s.remove(), 900); }
-  }
-  const t = setTimeout(hideSplash, 2000);
-  window.addEventListener('load', () => {
-    if (document.readyState === 'complete') {
-      clearTimeout(t);
-      setTimeout(hideSplash, 1500);
-    }
-  });
-})();
 
 /* ===== PWA INSTALL ===== */
 (function initPWA() {

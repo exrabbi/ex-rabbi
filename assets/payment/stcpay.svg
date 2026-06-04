@@ -1,10 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
   <rect width="90" height="48" rx="9" fill="#fff"/>
   <rect width="90" height="48" rx="9" fill="none" stroke="#f0f0f0" stroke-width="1"/>
-  <!-- "stc" in official deep purple -->
-  <text x="26" y="31" text-anchor="middle" fill="#4A007E" font-size="22" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">stc</text>
-  <!-- small square separator dot -->
-  <rect x="50" y="17" width="5" height="5" rx="1.2" fill="#4A007E"/>
-  <!-- "pay" in official teal-green -->
-  <text x="70" y="31" text-anchor="middle" fill="#00C87A" font-size="22" font-weight="900" font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">pay</text>
+  <!-- stc in official deep purple, bold -->
+  <text x="25" y="30" text-anchor="middle" fill="#4B0082" font-size="21" font-weight="900"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">stc</text>
+  <!-- small square separator (official brand mark) -->
+  <rect x="47" y="16" width="6" height="6" rx="1.5" fill="#4B0082"/>
+  <!-- pay in official teal-green, slightly lighter weight -->
+  <text x="68" y="30" text-anchor="middle" fill="#00C87A" font-size="21" font-weight="700"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.5">pay</text>
 </svg>
