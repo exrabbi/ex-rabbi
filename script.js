@@ -12008,7 +12008,11 @@ function closeCatPanel() {
 function _buildCatPanelSide() {
   const el = document.getElementById('catPanelSide');
   if (!el) return;
-  el.innerHTML = _CAT_PANEL.map((c, i) => `<div class="cat-ps-item${i===_catPanelActive?' active':''}" onclick="_selCatPanelItem(${i})"><span class="cat-ps-emoji">${c.emoji}</span><span class="cat-ps-lbl">${c.label}</span></div>`).join('');
+  el.innerHTML = _CAT_PANEL.map((c, i) =>
+    `<div class="cat-ps-item${i===_catPanelActive?' active':''}" onclick="_selCatPanelItem(${i})">` +
+    `<div class="cat-ps-ico-wrap"><span class="cat-ps-emoji">${c.emoji}</span></div>` +
+    `<span class="cat-ps-lbl">${c.label}</span></div>`
+  ).join('');
 }
 function _selCatPanelItem(idx) {
   _catPanelActive = idx;
