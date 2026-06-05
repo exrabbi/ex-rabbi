@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=380" />
+  <link rel="stylesheet" href="styles.css?v=381" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1186,7 +1186,10 @@
       <div class="cc-order-card">
         <div class="cc-card-shine"></div>
         <div class="cc-order-badge"><i class="fas fa-receipt"></i> Order ID</div>
-        <div class="cc-id" id="ccOrderId"></div>
+        <div class="cc-id" id="ccOrderId" onclick="_copyOrderId()" title="Tap to copy">
+          <span class="cc-id-num" id="ccOrderIdNum">—</span>
+          <span class="cc-id-copy"><i class="fas fa-copy"></i></span>
+        </div>
         <div class="cc-dashed-line"></div>
         <div class="cc-total" id="ccOrderTotal"></div>
         <div class="cc-eta">
@@ -3176,7 +3179,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=325"></script>
+  <script src="script.js?v=326"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

@@ -1469,7 +1469,10 @@ function showOrderConfirm(orderId, totalDisplay) {
   const hc  = document.getElementById('cartHeadCount');
   if (!cc) return;
   // Fill details
-  document.getElementById('ccOrderId').textContent   = orderId  ? '#' + orderId  : '';
+  const ccIdEl = document.getElementById('ccOrderId');
+  const ccIdNum = document.getElementById('ccOrderIdNum');
+  if (ccIdNum) ccIdNum.textContent = orderId ? '#' + orderId : '—';
+  if (ccIdEl) ccIdEl.dataset.oid = orderId || '';
   document.getElementById('ccOrderTotal').textContent = totalDisplay || '';
   if (hc) hc.textContent = '';
   // Apply current language labels
@@ -1481,6 +1484,20 @@ function showOrderConfirm(orderId, totalDisplay) {
   setTimeout(() => cc.classList.add('animate'), 30);
   setTimeout(_ccLaunchConfetti, 200);
 }
+function _copyOrderId() {
+  const el = document.getElementById('ccOrderId');
+  const oid = el ? el.dataset.oid : '';
+  if (!oid) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText('#' + oid).then(() => showToast('✅ Order ID copied!'));
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = '#' + oid; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    showToast('✅ Order ID copied!');
+  }
+}
+
 function _ccLaunchConfetti() {
   const wrap = document.getElementById('ccConfettiWrap');
   if (!wrap) return;
@@ -10564,7 +10581,6 @@ function _showZatcaInvoice(orderId, totalSAR) {
   const el = document.getElementById('zatcaInvoiceBox');
   if (!el) return;
   const vat = +(totalSAR * 0.15).toFixed(2);
-  const excl = +(totalSAR - vat).toFixed(2);
   const qid = 'zqr_' + orderId;
   el.innerHTML = `<div class="zatca-invoice">
     <div class="zatca-header"><span class="zatca-logo">EXG Global Trading</span><span class="zatca-inv-label">فاتورة ضريبية · Tax Invoice</span></div>
@@ -10572,7 +10588,6 @@ function _showZatcaInvoice(orderId, totalSAR) {
       <div class="zatca-row"><span>VAT No.</span><span>310000000000003</span></div>
       <div class="zatca-row"><span>Invoice #</span><span>${orderId}</span></div>
       <div class="zatca-row"><span>Date</span><span>${new Date().toLocaleDateString('en-SA')}</span></div>
-      <div class="zatca-row"><span>Excl. VAT</span><span>SAR ${excl.toFixed(2)}</span></div>
       <div class="zatca-row"><span>VAT 15%</span><span>SAR ${vat.toFixed(2)}</span></div>
       <div class="zatca-row zatca-total"><b>Total</b><b>SAR ${totalSAR.toFixed(2)}</b></div>
     </div>
