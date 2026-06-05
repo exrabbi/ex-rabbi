@@ -1,5 +1,52 @@
 {
-  "products_custom": {},
+  "products_custom": {
+    "1": {
+      "image": "",
+      "video": "mhZ1g5x-m2g",
+      "names": {
+        "en": "Floral Print Midi Dress - Summer Collection",
+        "ar": "فستان ميدي بطباعة زهرية - كولكشن الصيف",
+        "bn": "ফ্লোরাল প্রিন্ট মিডি ড্রেস - গ্রীষ্মকালীন কালেকশন"
+      },
+      "price": 1,
+      "originalPrice": 1299,
+      "discount": 50,
+      "category": "women",
+      "tag": "bestseller",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "colors": [
+        "#e91e8c",
+        "#9c27b0",
+        "#2196f3",
+        "#4caf50"
+      ],
+      "description": "",
+      "imgFocus": {
+        "x": 52.88000000000002,
+        "y": 78.16999999999999,
+        "scale": 1.003367939358353
+      },
+      "stock": 8,
+      "rating": 4.8,
+      "ratingCount": 2340,
+      "sold": "10K+"
+    },
+    "2": {
+      "stock": 2
+    },
+    "19": {
+      "stock": 1
+    },
+    "68": {
+      "stock": 998
+    }
+  },
   "products_added": [],
   "products_deleted": [],
   "hero_slides": [
@@ -63,5 +110,5 @@
       "link": ""
     }
   ],
-  "published_at": "2026-06-02T18:50:11.278Z"
+  "published_at": "2026-06-05T08:30:46.726Z"
 }
