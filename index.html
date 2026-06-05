@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=375" />
+  <link rel="stylesheet" href="styles.css?v=376" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1732,11 +1732,7 @@
     <div class="ck-steps">
       <div class="ck-stp ck-stp-on" id="ckSt1"><div class="ck-stn">1</div><span>Address</span></div>
       <div class="ck-stl" id="ckStL1"></div>
-      <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Items</span></div>
-      <div class="ck-stl" id="ckStL2"></div>
-      <div class="ck-stp" id="ckSt3"><div class="ck-stn">3</div><span>Payment</span></div>
-      <div class="ck-stl" id="ckStL3"></div>
-      <div class="ck-stp" id="ckSt4"><div class="ck-stn">4</div><span>Review</span></div>
+      <div class="ck-stp" id="ckSt2"><div class="ck-stn">2</div><span>Payment</span></div>
     </div>
     <!-- SCROLLABLE BODY -->
     <div class="ck-body">
@@ -1803,7 +1799,7 @@
       </div>
 
       <div class="ck-pg-foot">
-        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue to Items &nbsp;<i class="fas fa-arrow-right"></i></button>
+        <button class="ck-cont-btn" onclick="ckGoPage(2)">Continue &nbsp;<i class="fas fa-arrow-right"></i></button>
       </div>
       </div><!-- /ckPg1 -->
       <div class="ck-pg" id="ckPg2">
@@ -1828,11 +1824,6 @@
         <div class="pay-coupon-msg" id="couponMsg"></div>
         <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
       </div>
-      <div class="ck-pg-foot">
-        <button class="ck-cont-btn" onclick="ckGoPage(3)">Continue to Payment &nbsp;<i class="fas fa-arrow-right"></i></button>
-      </div>
-      </div><!-- /ckPg2 -->
-      <div class="ck-pg" id="ckPg3">
 
       <!-- 5. PAY WITH -->
       <div class="ck-sec">
@@ -2122,45 +2113,7 @@
         </div>
 
       </div>
-      <div style="height:90px"></div>
-      </div><!-- /ckPg3 -->
-
-      <div class="ck-pg" id="ckPg4">
-        <!-- Trust header -->
-        <div class="oc-trust-hdr-bar">
-          <i class="fas fa-check-circle"></i>
-          <span>Refund if items damaged</span>
-        </div>
-
-        <!-- Summary card (tappable to expand/collapse) -->
-        <div class="oc-card" onclick="ocToggleExpand()">
-          <div class="oc-row oc-row-main">
-            <span>Subtotal</span>
-            <span><span id="ocSubtotal">SAR 0</span> <i class="fas fa-chevron-up oc-caret" id="ocCaret"></i></span>
-          </div>
-          <div class="oc-expand" id="ocExpand">
-            <div class="oc-row oc-row-dim">
-              <span>Items total</span>
-              <s id="ocItemsTotal" style="color:#999">SAR 0</s>
-            </div>
-            <div class="oc-row oc-row-dim">
-              <span>Items discount</span>
-              <span id="ocDiscount" style="color:#e91e8c;font-weight:600">-SAR 0</span>
-            </div>
-          </div>
-          <div class="oc-sep"></div>
-          <div class="oc-row oc-row-dim">
-            <span>Shipping fee</span>
-            <span id="ocShipping">SAR 0</span>
-          </div>
-          <div class="oc-sep"></div>
-          <div class="oc-row oc-total-row">
-            <span>Total</span>
-            <span id="ocTotal" style="font-weight:800;font-size:18px">SAR 0</span>
-          </div>
-        </div>
-
-        <!-- Fast Delivery trust -->
+        <!-- Fast Delivery -->
         <div class="oc-trust-card">
           <div class="oc-trust-row-hdr">
             <i class="fas fa-truck-fast" style="color:#16a34a"></i>
@@ -2174,7 +2127,6 @@
             <div class="oc-guar-item"><i class="fas fa-check"></i><span>Refund if no delivery</span></div>
           </div>
         </div>
-
         <!-- Security & Privacy -->
         <div class="oc-trust-card">
           <div class="oc-trust-row-hdr">
@@ -2184,7 +2136,6 @@
           </div>
           <div class="oc-trust-sub">Safe payments · Secure personal details</div>
         </div>
-
         <!-- Safe Payments -->
         <div class="oc-trust-card">
           <div class="oc-trust-row-hdr" style="margin-bottom:12px">
@@ -2192,32 +2143,19 @@
             <span class="oc-trust-title">Safe Payments</span>
           </div>
           <div class="oc-safe-pay-logos">
-            <!-- Visa Secure -->
-            <div class="oc-pay-badge">
-              <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="4" y="4" width="72" height="40" rx="4" fill="#1a1f71"/><text x="40" y="26" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text><text x="40" y="38" text-anchor="middle" fill="#f9a823" font-size="7" font-family="Arial,sans-serif" letter-spacing=".5">SECURE</text></svg>
-            </div>
-            <!-- Mastercard ID Check -->
-            <div class="oc-pay-badge">
-              <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><circle cx="28" cy="22" r="13" fill="#eb001b"/><circle cx="44" cy="22" r="13" fill="#f79e1b"/><path d="M36 10.6a13 13 0 0 1 0 22.8A13 13 0 0 1 36 10.6z" fill="#ff5f00"/><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7.5" font-family="Arial,sans-serif" letter-spacing=".2">ID Check</text></svg>
-            </div>
-            <!-- JCB J/Secure -->
-            <div class="oc-pay-badge">
-              <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="6" y="6" width="20" height="36" rx="6" fill="#003087"/><rect x="30" y="6" width="20" height="36" rx="6" fill="#cc0000"/><rect x="54" y="6" width="20" height="36" rx="6" fill="#009a44"/><text x="16" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">J</text><text x="40" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">C</text><text x="64" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">B</text><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7" font-family="Arial,sans-serif">J/Secure</text></svg>
-            </div>
-            <!-- Amex SafeKey -->
-            <div class="oc-pay-badge">
-              <svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#016fd0"/><text x="40" y="17" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">AMERICAN</text><text x="40" y="27" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">EXPRESS</text><text x="40" y="40" text-anchor="middle" fill="#f9a823" font-size="8.5" font-weight="700" font-family="Helvetica,Arial,sans-serif">SafeKey</text></svg>
-            </div>
+            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="4" y="4" width="72" height="40" rx="4" fill="#1a1f71"/><text x="40" y="26" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text><text x="40" y="38" text-anchor="middle" fill="#f9a823" font-size="7" font-family="Arial,sans-serif" letter-spacing=".5">SECURE</text></svg></div>
+            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><circle cx="28" cy="22" r="13" fill="#eb001b"/><circle cx="44" cy="22" r="13" fill="#f79e1b"/><path d="M36 10.6a13 13 0 0 1 0 22.8A13 13 0 0 1 36 10.6z" fill="#ff5f00"/><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7.5" font-family="Arial,sans-serif" letter-spacing=".2">ID Check</text></svg></div>
+            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="6" y="6" width="20" height="36" rx="6" fill="#003087"/><rect x="30" y="6" width="20" height="36" rx="6" fill="#cc0000"/><rect x="54" y="6" width="20" height="36" rx="6" fill="#009a44"/><text x="16" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">J</text><text x="40" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">C</text><text x="64" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">B</text><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7" font-family="Arial,sans-serif">J/Secure</text></svg></div>
+            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#016fd0"/><text x="40" y="17" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">AMERICAN</text><text x="40" y="27" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">EXPRESS</text><text x="40" y="40" text-anchor="middle" fill="#f9a823" font-size="8.5" font-weight="700" font-family="Helvetica,Arial,sans-serif">SafeKey</text></svg></div>
           </div>
           <div class="oc-safe-pay-desc">With popular payment partners, your personal details are safe.</div>
         </div>
-
         <!-- Terms -->
         <div class="oc-terms-txt">
           Upon clicking 'Place Order', I confirm I have read and acknowledged <a href="https://wa.me/966546224029" target="_blank" style="color:#0070ba;text-decoration:none">all terms and policies</a>.
         </div>
-
-      </div><!-- /ckPg4 -->
+      <div style="height:90px"></div>
+      </div><!-- /ckPg2 -->
     </div>
 
     <!-- STICKY BOTTOM BAR -->
@@ -3203,7 +3141,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=321"></script>
+  <script src="script.js?v=322"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>

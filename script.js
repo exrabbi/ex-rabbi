@@ -3445,7 +3445,7 @@ function refreshPaymentSummary() {
     }
   }
   const btn = document.getElementById('payBtnText');
-  if (btn) btn.textContent = (t('placeOrder') || 'Order') + ' — ' + fmtD(grandDisp);
+  if (btn && window._ckPage >= 2) btn.textContent = (t('placeOrder') || 'Place Order') + ' — ' + fmtD(grandDisp);
 }
 
 /* ===== WHATSAPP CHECKOUT ===== */
@@ -5498,7 +5498,7 @@ function openPayment() {
     delivEl.style.color = '#e91e8c';
   }
   document.getElementById('payTotal').textContent = fmtD(grandDisp);
-  document.getElementById('payBtnText').textContent = (t('placeOrder')||'Order') + ' — ' + fmtD(grandDisp);
+  document.getElementById('payBtnText').textContent = 'Continue →';
   // VAT row in payment summary
   const payVatRow0 = document.getElementById('payVatRow');
   const payVatEl0 = document.getElementById('payVat');
@@ -5694,10 +5694,9 @@ function closePayment() {
   ckGoPage(1);
 }
 
-/* ── CHECKOUT 3-PAGE NAVIGATION ── */
+/* ── CHECKOUT 2-PAGE NAVIGATION ── */
 window._ckPage = 1;
 function ckGoPage(n) {
-  // When advancing from page 1, validate address
   if (n === 2 && window._ckPage === 1) {
     if (!savedLocation || !savedLocation.city) {
       showToast('📍 Please add a delivery address to continue');
@@ -5705,18 +5704,15 @@ function ckGoPage(n) {
       return;
     }
   }
-  // Populate review page when advancing to page 4
-  if (n === 4) _populateReviewPage();
   window._ckPage = n;
   const modal = document.getElementById('payModal');
-  modal.classList.remove('ck-p1','ck-p2','ck-p3','ck-p4');
+  modal.classList.remove('ck-p1','ck-p2');
   modal.classList.add('ck-p' + n);
-  [1,2,3,4].forEach(i => {
+  [1,2].forEach(i => {
     const pg = document.getElementById('ckPg'+i);
     if (pg) pg.classList.toggle('ck-pg-on', i === n);
   });
-  // Update step indicator
-  [1,2,3,4].forEach(i => {
+  [1,2].forEach(i => {
     const st = document.getElementById('ckSt'+i);
     const line = document.getElementById('ckStL'+i);
     if (!st) return;
@@ -5727,14 +5723,24 @@ function ckGoPage(n) {
   });
   const body = document.querySelector('.ck-body');
   if (body) body.scrollTop = 0;
+  const btnTxt = document.getElementById('payBtnText');
+  if (btnTxt) {
+    if (n === 1) {
+      btnTxt.textContent = 'Continue →';
+    } else {
+      const totalEl = document.getElementById('payTotal');
+      const label = (typeof t === 'function' ? (t('placeOrder') || 'Place Order') : 'Place Order');
+      btnTxt.textContent = totalEl ? label + ' — ' + totalEl.textContent : label;
+    }
+  }
 }
 function ckBack() {
   if (window._ckPage > 1) ckGoPage(window._ckPage - 1);
   else closePayment();
 }
 function ckBarAction() {
-  if (window._ckPage === 3) {
-    ckGoPage(4);
+  if (window._ckPage === 1) {
+    ckGoPage(2);
   } else {
     processPayment();
   }
