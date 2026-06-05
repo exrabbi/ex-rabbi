@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=381" />
+  <link rel="stylesheet" href="styles.css?v=382" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2084,10 +2084,22 @@
           <span class="ck-payinfo-label">Pay safe &amp; secure</span>
           <!-- mini logo strip -->
           <div class="ck-payinfo-logos">
-            <span class="psb psb-visa">VISA</span>
-            <span class="psb psb-mc"><svg width="22" height="14" viewBox="0 0 38 24"><circle cx="14" cy="12" r="11" fill="#eb001b"/><circle cx="24" cy="12" r="11" fill="#f79e1b"/><path d="M19 4.8a11 11 0 0 1 0 14.4A11 11 0 0 1 19 4.8z" fill="#ff5f00"/></svg></span>
-            <span class="psb psb-amex">AMEX</span>
-            <span class="psb psb-more">+10</span>
+            <img src="assets/payment/mada.svg"       alt="mada"       class="psb-logo">
+            <img src="assets/payment/visa.svg"        alt="Visa"        class="psb-logo">
+            <img src="assets/payment/mastercard.svg"  alt="MC"          class="psb-logo">
+            <img src="assets/payment/amex.svg"        alt="Amex"        class="psb-logo">
+            <img src="assets/payment/stcpay.svg"      alt="STC Pay"     class="psb-logo">
+            <img src="assets/payment/googlepay.svg"   alt="G Pay"       class="psb-logo">
+            <img src="assets/payment/applepay.svg"    alt="Apple Pay"   class="psb-logo">
+            <img src="assets/payment/tamara.svg"      alt="Tamara"      class="psb-logo">
+            <img src="assets/payment/tabby.svg"       alt="Tabby"       class="psb-logo">
+            <img src="assets/payment/paypal.svg"      alt="PayPal"      class="psb-logo">
+            <img src="assets/payment/binancepay.svg"  alt="Binance"     class="psb-logo">
+            <img src="assets/payment/discover.svg"    alt="Discover"    class="psb-logo">
+            <img src="assets/payment/maestro.svg"     alt="Maestro"     class="psb-logo">
+            <img src="assets/payment/jcb.svg"         alt="JCB"         class="psb-logo">
+            <img src="assets/payment/unionpay.svg"    alt="UnionPay"    class="psb-logo">
+            <img src="assets/payment/cod.svg"         alt="COD"         class="psb-logo">
           </div>
           <i class="fas fa-chevron-down ck-payinfo-chev" id="payInfoChev"></i>
         </div>
@@ -2153,10 +2165,23 @@
             <span class="oc-trust-title">Safe Payments</span>
           </div>
           <div class="oc-safe-pay-logos">
-            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="4" y="4" width="72" height="40" rx="4" fill="#1a1f71"/><text x="40" y="26" text-anchor="middle" fill="#fff" font-size="16" font-weight="900" font-style="italic" font-family="Arial,sans-serif">VISA</text><text x="40" y="38" text-anchor="middle" fill="#f9a823" font-size="7" font-family="Arial,sans-serif" letter-spacing=".5">SECURE</text></svg></div>
-            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><circle cx="28" cy="22" r="13" fill="#eb001b"/><circle cx="44" cy="22" r="13" fill="#f79e1b"/><path d="M36 10.6a13 13 0 0 1 0 22.8A13 13 0 0 1 36 10.6z" fill="#ff5f00"/><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7.5" font-family="Arial,sans-serif" letter-spacing=".2">ID Check</text></svg></div>
-            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/><rect x="6" y="6" width="20" height="36" rx="6" fill="#003087"/><rect x="30" y="6" width="20" height="36" rx="6" fill="#cc0000"/><rect x="54" y="6" width="20" height="36" rx="6" fill="#009a44"/><text x="16" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">J</text><text x="40" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">C</text><text x="64" y="28" text-anchor="middle" fill="#fff" font-size="11" font-weight="900" font-family="Arial,sans-serif">B</text><text x="40" y="42" text-anchor="middle" fill="#555" font-size="7" font-family="Arial,sans-serif">J/Secure</text></svg></div>
-            <div class="oc-pay-badge"><svg viewBox="0 0 80 48" xmlns="http://www.w3.org/2000/svg"><rect width="80" height="48" rx="6" fill="#016fd0"/><text x="40" y="17" text-anchor="middle" fill="rgba(255,255,255,.9)" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">AMERICAN</text><text x="40" y="27" text-anchor="middle" fill="#fff" font-size="7.5" font-weight="600" font-family="Helvetica,Arial,sans-serif" letter-spacing=".4">EXPRESS</text><text x="40" y="40" text-anchor="middle" fill="#f9a823" font-size="8.5" font-weight="700" font-family="Helvetica,Arial,sans-serif">SafeKey</text></svg></div>
+            <img src="assets/payment/mada.svg"       alt="mada"       class="oc-pay-logo">
+            <img src="assets/payment/visa.svg"        alt="Visa"        class="oc-pay-logo">
+            <img src="assets/payment/mastercard.svg"  alt="Mastercard"  class="oc-pay-logo">
+            <img src="assets/payment/amex.svg"        alt="Amex"        class="oc-pay-logo">
+            <img src="assets/payment/maestro.svg"     alt="Maestro"     class="oc-pay-logo">
+            <img src="assets/payment/discover.svg"    alt="Discover"    class="oc-pay-logo">
+            <img src="assets/payment/jcb.svg"         alt="JCB"         class="oc-pay-logo">
+            <img src="assets/payment/unionpay.svg"    alt="UnionPay"    class="oc-pay-logo">
+            <img src="assets/payment/diners.svg"      alt="Diners"      class="oc-pay-logo">
+            <img src="assets/payment/applepay.svg"    alt="Apple Pay"   class="oc-pay-logo">
+            <img src="assets/payment/googlepay.svg"   alt="Google Pay"  class="oc-pay-logo">
+            <img src="assets/payment/stcpay.svg"      alt="STC Pay"     class="oc-pay-logo">
+            <img src="assets/payment/tamara.svg"      alt="Tamara"      class="oc-pay-logo">
+            <img src="assets/payment/tabby.svg"       alt="Tabby"       class="oc-pay-logo">
+            <img src="assets/payment/paypal.svg"      alt="PayPal"      class="oc-pay-logo">
+            <img src="assets/payment/binancepay.svg"  alt="Binance Pay" class="oc-pay-logo">
+            <img src="assets/payment/cod.svg"         alt="Cash"        class="oc-pay-logo">
           </div>
           <div class="oc-safe-pay-desc">With popular payment partners, your personal details are safe.</div>
         </div>

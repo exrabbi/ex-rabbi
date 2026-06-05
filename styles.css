@@ -11767,9 +11767,18 @@ body:has(#authModal.open) .hc-fab {
 .ck-payinfo-logos {
   display: flex !important;
   align-items: center !important;
-  gap: 5px !important;
+  gap: 4px 5px !important;
   flex: 1 !important;
+  flex-wrap: wrap !important;
+  max-height: 40px !important;
   overflow: hidden !important;
+}
+.psb-logo {
+  height: 15px !important;
+  width: auto !important;
+  border-radius: 3px !important;
+  object-fit: contain !important;
+  flex-shrink: 0 !important;
 }
 .psb {
   font-size: 8.5px !important;
@@ -22707,10 +22716,17 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .oc-guar-item i { color: #16a34a; font-size: 11px; flex-shrink: 0; }
 [data-theme="dark"] .oc-guar-item { color: #aaa; }
 .oc-safe-pay-logos {
-  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;
+  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
 }
-.oc-pay-badge { width: 72px; height: 44px; }
-.oc-pay-badge svg { width: 100%; height: 100%; }
+.oc-pay-logo {
+  height: 30px; width: auto;
+  border-radius: 6px;
+  border: 1px solid #f0f0f0;
+  object-fit: contain;
+  background: #fff;
+  padding: 2px 4px;
+}
+[data-theme="dark"] .oc-pay-logo { border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.06); }
 .oc-safe-pay-desc { font-size: 12px; color: #888; }
 .oc-terms-txt {
   font-size: 12px; color: #888; text-align: center;
