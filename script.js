@@ -946,23 +946,24 @@ function renderTrustpilotReviews() {
   ];
   const starsFilled = Math.round(parseFloat(avgRating));
   const starsHtml = Array.from({length:5},(_,i)=>`<i class="${i<starsFilled?'fas':'far'} fa-star tpr-star"></i>`).join('');
-  const cards = SEED_REVIEWS.slice(0,30).map((r,i) => {
+  const cards = SEED_REVIEWS.map((r,i) => {
     const txt = r.text[currentLang] || r.text.en || '';
     const firstLine = txt.split(/[.!?।\n]/)[0].trim();
-    const body = txt.slice(firstLine.length+1).trim().split(' ').slice(0,14).join(' ');
+    const body = txt.slice(firstLine.length + 1).trim().split(' ').slice(0, 10).join(' ');
     const rStars = Array.from({length:5},(_,j)=>`<i class="${j<r.rating?'fas':'far'} fa-star tpr-gstar"></i>`).join('');
     const av = avatars[i % avatars.length];
+    const firstName = r.name.split(' ')[0];
     return `<div class="tpr-card">
-      <div class="tpr-av-wrap">
-        <img class="tpr-av" src="${av}" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
+      <div class="tpr-top-row">
+        <div class="tpr-av-wrap">
+          <img class="tpr-av" src="${av}" alt="${r.name}" loading="lazy" onerror="this.style.display='none'">
+        </div>
+        <div class="tpr-name">${firstName}</div>
       </div>
-      <div class="tpr-card-inner">
-        <div class="tpr-name">${r.name}</div>
-        <div class="tpr-stars">${rStars}</div>
-        <div class="tpr-title">${firstLine.slice(0,36)}${firstLine.length>36?'…':''}</div>
-        <div class="tpr-body">${body.slice(0,80)}${body.length>80?'…':''}</div>
-        <div class="tpr-meta"><i class="fas fa-check-circle"></i> Verified Purchase · ${r.country}</div>
-      </div>
+      <div class="tpr-stars">${rStars}</div>
+      <div class="tpr-title">${firstLine.slice(0,30)}${firstLine.length>30?'…':''}</div>
+      <div class="tpr-body">${body.slice(0,55)}${body.length>55?'…':''}</div>
+      <div class="tpr-meta"><i class="fas fa-check-circle"></i> ${r.country}</div>
     </div>`;
   }).join('');
   sec.innerHTML = `
@@ -6485,7 +6486,57 @@ const SEED_REVIEWS = [
   { id:50, name:'Karima Bensalem', initial:'K', grad:'linear-gradient(135deg,#f97316,#0891b2)', rating:5, date:'2024-11-25', country:'Morocco',
     product:'Moroccan Kaftan — Embroidered Blue',
     text:{ bn:'কাফতানটা দেখে মনে হলো মরক্কো থেকে আনা! এমব্রয়ডারি হাতের কাজের মতো সূক্ষ্ম। কাপড় ভারী ও দামি মনের হয়। বিয়েতে পরে দেশীয় ঐতিহ্য ধরে রেখেছিলাম। প্রত্যেকে ছবি তুলতে চেয়েছে আমার সাথে!', en:'The kaftan looks like it was brought from Morocco itself! Embroidery is as intricate as handwork. Fabric is heavy and feels expensive. Wore it to a wedding maintaining cultural heritage. Everyone wanted to take photos with me!', ar:'الكفتان يبدو كأنه جُلب من المغرب نفسه! التطريز دقيق كالعمل اليدوي. القماش ثقيل ويشعر بالفخامة. ارتديته في حفل زفاف محتفظاً بالتراث الثقافي. الجميع أراد التقاط الصور معي!' },
-    photos:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=120&h=120&fit=crop&q=80'], helpful:145 }
+    photos:['https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=120&h=120&fit=crop&q=80'], helpful:145 },
+
+  { id:51, name:'Aisha Noor', initial:'A', grad:'linear-gradient(135deg,#e91e8c,#f97316)', rating:5, date:'2024-11-21', country:'Pakistan',
+    product:'Modest Maxi Dress — Dusty Pink',
+    text:{ bn:'মাক্সি ড্রেসটা পরে সবাই তাকায়! রঙ অসাধারণ, কাপড় নরম ও ঝরঝরে। পর্দার জন্য একদম মানানসই পোশাক।', en:'Everyone stares when I wear this! Such a beautiful color, soft and flowy fabric. Perfect modest wear. Recommended to all my friends.', ar:'الجميع ينظر عندما أرتديه! لون جميل وقماش ناعم. ملابس محتشمة مثالية.' },
+    photos:[], helpful:87 },
+
+  { id:52, name:'Carlos Ramirez', initial:'C', grad:'linear-gradient(135deg,#1d4ed8,#10b981)', rating:5, date:'2024-11-17', country:'Saudi Arabia',
+    product:'Laptop Bag — Waterproof 15.6"',
+    text:{ bn:'ল্যাপটপ ব্যাগটা পারফেক্ট! ওয়াটারপ্রুফ, অনেক পকেট, কাঁধে ব্যথা করে না। অফিসে সবাই কোথায় থেকে কিনলাম জিজ্ঞেস করে।', en:'Perfect laptop bag! Waterproof, many pockets, comfortable straps. Everyone at office asks where I bought it. Great quality!', ar:'حقيبة لابتوب مثالية! مقاومة للماء وجيوب كثيرة وأحزمة مريحة. الجميع يسأل أين اشتريتها.' },
+    photos:[], helpful:93 },
+
+  { id:53, name:'Fatou Keita', initial:'F', grad:'linear-gradient(135deg,#f59e0b,#e91e8c)', rating:5, date:'2024-11-13', country:'UAE',
+    product:'Vitamin C Serum — Brightening 30ml',
+    text:{ bn:'ভিটামিন সি সিরামটা ১ সপ্তাহেই মুখে পার্থক্য দেখাচ্ছে! কালো দাগ কমেছে, ত্বক উজ্জ্বল। দামে এরকম সিরাম আর নেই।', en:'Visible difference in my face in just 1 week! Dark spots reduced, skin brightened. Cannot find such serum at this price elsewhere.', ar:'فرق واضح على وجهي في أسبوع! تقلصت البقع وأشرقت البشرة. لا يمكن إيجاده بهذا السعر.' },
+    photos:[], helpful:118 },
+
+  { id:54, name:'Wei Zhang', initial:'W', grad:'linear-gradient(135deg,#dc2626,#f97316)', rating:4, date:'2024-11-09', country:'Riyadh',
+    product:"Men's Slim Fit Trousers — Navy",
+    text:{ bn:'ট্রাউজারের ফিটিং দারুণ! অফিসে পরার জন্য পারফেক্ট। কাপড় একটু পাতলা, তাই ৪ স্টার। দামের তুলনায় সন্তুষ্ট।', en:'Trouser fit is excellent! Perfect for office wear. Fabric slightly thin so 4 stars. Overall satisfied with the quality for the price.', ar:'قصة البنطلون ممتازة! مثالي للعمل. القماش رفيع قليلاً لذا 4 نجوم. راضٍ عموماً.' },
+    photos:[], helpful:58 },
+
+  { id:55, name:'Natasha Volkova', initial:'N', grad:'linear-gradient(135deg,#7c3aed,#0891b2)', rating:5, date:'2024-11-05', country:'Saudi Arabia',
+    product:'Scented Candle Set — 6pcs Luxury',
+    text:{ bn:'ক্যান্ডেল জ্বালালে পুরো ঘরের পরিবেশ পাল্টে যায়! সুগন্ধ মনোমুগ্ধকর ও দীর্ঘস্থায়ী। বন্ধুকে গিফট দিয়েছিলাম, সে বলেছে এটাই সেরা গিফট।', en:'Lighting these candles transforms the entire room! Fragrance is enchanting and long-lasting. Gifted to a friend who said it was the best gift ever.', ar:'إضاءة الشموع تحول أجواء الغرفة بالكامل! عطر ساحر وطويل الأمد. أهديتها لصديقة وقالت إنها أفضل هدية.' },
+    photos:[], helpful:79 },
+
+  { id:56, name:'Sana Mirza', initial:'S', grad:'linear-gradient(135deg,#e91e8c,#7c3aed)', rating:5, date:'2024-11-01', country:'Jeddah',
+    product:'Hyaluronic Acid Moisturizer — 50ml',
+    text:{ bn:'ময়শ্চারাইজার লাগালেই মনে হয় ত্বক পানি পান করছে! ৩ দিনে শুষ্কতা চলে গেছে। হাইড্রেশনের জন্য সেরা বাজেট প্রোডাক্ট।', en:"Applying feels like skin is drinking water! Dryness gone in just 3 days. Best budget moisturizer for hydration I've ever tried. 💧", ar:'وضعه يشعرك كأن البشرة تشرب الماء! الجفاف اختفى في 3 أيام. أفضل مرطب بميزانية محدودة.' },
+    photos:[], helpful:102 },
+
+  { id:57, name:'Ahmad Kamal', initial:'A', grad:'linear-gradient(135deg,#10b981,#f59e0b)', rating:5, date:'2024-10-27', country:'Kuwait',
+    product:"Boy's School Uniform Set — Blue",
+    text:{ bn:'ছেলের স্কুল ইউনিফর্ম দারুণ! কাপড় মজবুত, রঙ ধুলেও যায় না। দামে দুটো সেট কিনেছি সারা বছরের জন্য।', en:"Son's school uniform is great! Durable fabric, color holds after washing. Bought two sets for the whole year at this amazing price.", ar:'زي ابني المدرسي رائع! قماش متين واللون ثابت بعد الغسيل. اشتريت مجموعتين لطوال العام.' },
+    photos:[], helpful:74 },
+
+  { id:58, name:'Mona Hassan', initial:'M', grad:'linear-gradient(135deg,#db2777,#f97316)', rating:5, date:'2024-10-23', country:'Egypt',
+    product:'Floral Jumpsuit — Burgundy M',
+    text:{ bn:'জাম্পসুটটা পরে রানওয়েতে হাঁটার মতো অনুভব! প্রিমিয়াম কাপড়, ভাইব্রান্ট ফ্লোরাল প্রিন্ট। পার্টিতে সেরা ড্রেস আমারটাই ছিল! 🌺', en:'Wearing this jumpsuit felt like walking the runway! Premium fabric, vibrant floral print. Had the best dressed look at the party! 🌺', ar:'ارتداؤه شعرت كالمشي على المنصة! قماش ممتاز وطباعة زهور نابضة. كنت الأجمل في الحفلة! 🌺' },
+    photos:[], helpful:96 },
+
+  { id:59, name:'Ranjit Singh', initial:'R', grad:'linear-gradient(135deg,#f97316,#7c3aed)', rating:5, date:'2024-10-18', country:'Saudi Arabia',
+    product:'Cricket Batting Gloves — Pro',
+    text:{ bn:'গ্লাভসের মান দেখে চমকে গেলাম! গ্রিপ অনেক ভালো, প্যাডিং প্রো মানের। মাঠে বন্ধুরা ভেবেছে বিদেশ থেকে এনেছি।', en:'Gloves quality was surprising! Excellent grip and pro-grade padding. Friends on field thought I bought it from abroad. Will gift to coach too.', ar:'جودة القفازات كانت مفاجأة! قبضة ممتازة وحشو احترافي. الأصدقاء ظنوا أنني اشتريتها من الخارج.' },
+    photos:[], helpful:65 },
+
+  { id:60, name:'Lina Khoury', initial:'L', grad:'linear-gradient(135deg,#a855f7,#e91e8c)', rating:5, date:'2024-10-14', country:'Lebanon',
+    product:'Pearl Bracelet Set — 3 layers',
+    text:{ bn:'পার্ল ব্রেসলেট পরলে হাত অসাধারণ দেখায়! মুক্তার চকচকে ভাব একদম আসলের মতো। মা ভেবেছেন আসল মুক্তা! ক্লাসপও মজবুত।', en:'Pearl bracelet makes hands look so beautiful! Luster looks real. Mom thought it was real pearls! Clasp is also strong and durable. Love it! 💖', ar:'أساور اللؤلؤ تجعل اليدين جميلتين! البريق يبدو حقيقياً. أمي ظنت أنه لؤلؤ حقيقي! الإبزيم متين. أحبها! 💖' },
+    photos:[], helpful:122 }
 ];
 
 function getAllReviews() {
