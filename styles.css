@@ -22627,3 +22627,64 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   gap: 6px !important; font-size: 13px !important; font-weight: 800 !important;
 }
 .lux-buynow span { white-space: nowrap; }
+
+/* ===== ORDER REVIEW PAGE (Step 4) ===== */
+.oc-trust-hdr-bar {
+  display: flex; align-items: center; gap: 7px;
+  color: #16a34a; font-size: 13px; font-weight: 600;
+  padding: 8px 0 14px;
+}
+.oc-card {
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  padding: 18px 16px; margin-bottom: 12px;
+  cursor: pointer;
+}
+[data-theme="dark"] .oc-card { background: #1a1a2e; box-shadow: 0 2px 12px rgba(0,0,0,.3); }
+.oc-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 5px 0;
+}
+.oc-row-main { font-size: 15px; font-weight: 700; color: #1a1a2a; padding-bottom: 10px; }
+[data-theme="dark"] .oc-row-main { color: #f0f0f0; }
+.oc-row-dim { font-size: 13.5px; color: #666; padding: 4px 0; }
+.oc-total-row { font-size: 16px; font-weight: 800; color: #1a1a2a; padding-top: 10px; }
+[data-theme="dark"] .oc-total-row { color: #f0f0f0; }
+.oc-caret { font-size: 12px; color: #888; margin-left: 5px; transition: transform .25s; }
+.oc-caret.oc-collapsed { transform: rotate(180deg); }
+.oc-expand { overflow: hidden; transition: max-height .3s ease; max-height: 200px; }
+.oc-expand.oc-closed { max-height: 0; }
+.oc-sep { height: 1px; background: #f0f0f0; margin: 8px 0; }
+[data-theme="dark"] .oc-sep { background: rgba(255,255,255,.06); }
+.oc-trust-card {
+  background: #fff; border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  padding: 16px; margin-bottom: 10px;
+}
+[data-theme="dark"] .oc-trust-card { background: #1a1a2e; }
+.oc-trust-row-hdr {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 10px;
+}
+.oc-trust-title { font-size: 15px; font-weight: 700; color: #1a1a2a; flex: 1; }
+[data-theme="dark"] .oc-trust-title { color: #f0f0f0; }
+.oc-trust-sub { font-size: 13px; color: #888; }
+.oc-guarantee-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 6px;
+}
+.oc-guar-item {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #555;
+}
+.oc-guar-item i { color: #16a34a; font-size: 11px; flex-shrink: 0; }
+[data-theme="dark"] .oc-guar-item { color: #aaa; }
+.oc-safe-pay-logos {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px;
+}
+.oc-pay-badge { width: 72px; height: 44px; }
+.oc-pay-badge svg { width: 100%; height: 100%; }
+.oc-safe-pay-desc { font-size: 12px; color: #888; }
+.oc-terms-txt {
+  font-size: 12px; color: #888; text-align: center;
+  padding: 12px 16px 24px; line-height: 1.6;
+}
