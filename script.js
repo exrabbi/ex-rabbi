@@ -5375,8 +5375,8 @@ const SAR_TO_USDT = 0.267;
 let selectedPayMethod = '';
 let paypalLoaded = false;
 
-let DELIVERY_SAR = 17;
-let FREE_DELIVERY_THRESHOLD_SAR = 100;
+let DELIVERY_SAR = 0;
+let FREE_DELIVERY_THRESHOLD_SAR = 0;
 let VAT_RATE = 10; // default 10% — overridden by admin settings
 
 function cartSubtotalBase() {

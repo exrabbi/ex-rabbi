@@ -733,5 +733,19 @@ const PRODUCTS = [
       ar: "صندوق غامض صغير للجمال والأزياء",
       hi: "मिनी ब्यूटी और फैशन मिस्ट्री बॉक्स"
     }
+  },
+  {
+    id: 68, category: "sale", price: 1, originalPrice: 99, discount: 99,
+    image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=80",
+    rating: 5.0, ratingCount: 9999, sold: "99K+", stock: 999, tag: "hot",
+    colors: ["#e91e8c","#f59e0b","#7c3aed","#16a34a"],
+    sizes: ["One Size"],
+    description: "Flash Sale! Grab any item for just SAR 1. Limited time offer — while stocks last!",
+    names: {
+      bn: "ফ্ল্যাশ সেল — মাত্র ১ SAR! সীমিত সময়ের অফার",
+      en: "Flash Sale — Only SAR 1! Limited Time Offer",
+      ar: "تخفيضات مجنونة — فقط 1 ريال! عرض محدود",
+      hi: "फ्लैश सेल — सिर्फ 1 SAR! सीमित समय ऑफर"
+    }
   }
 ];
