@@ -1285,10 +1285,7 @@ function closeDrawer() {
   document.getElementById('drawerOverlay').classList.remove('open');
 }
 
-/* ===== SAUDI INTRO ANIMATION ===== */
-const _SI_ARABIC  = 'السعودية فخرنا';
-const _SI_ENGLISH = 'OUR PRIDE. OUR SAUDI.';
-
+/* ===== PREMIUM LOADING SCREEN ===== */
 function dismissSaudiIntro() {
   const el = document.getElementById('saudiIntro');
   if (!el || !el._siActive) return;
@@ -1299,7 +1296,7 @@ function dismissSaudiIntro() {
     el.style.display = 'none';
     el.classList.remove('si-out');
     _maybeShowFwPop();
-  }, 560);
+  }, 420);
 }
 
 (function initSaudiIntro() {
@@ -1308,55 +1305,37 @@ function dismissSaudiIntro() {
   el._siActive = true;
   el.style.display = 'flex';
 
-  // Typewriter — Arabic char by char
-  const arEl = document.getElementById('siArabicEl');
-  const enEl = document.getElementById('siEnglishEl');
-  let ai = 0;
-  const arTimer = setInterval(() => {
-    if (!arEl) return;
-    arEl.textContent = _SI_ARABIC.substring(0, ai + 1);
-    if (++ai >= _SI_ARABIC.length) clearInterval(arTimer);
-  }, 75);
-  // English fades in after Arabic finishes
-  setTimeout(() => {
-    if (!enEl) return;
-    let ei = 0;
-    const enTimer = setInterval(() => {
-      enEl.textContent = _SI_ENGLISH.substring(0, ei + 1);
-      if (++ei >= _SI_ENGLISH.length) clearInterval(enTimer);
-    }, 50);
-  }, _SI_ARABIC.length * 75 + 280);
+  // Kick off progress bar animation
+  const bar = document.getElementById('siBar');
+  if (bar) requestAnimationFrame(() => { bar.style.width = '100%'; });
 
-  // Generate sand / dust particles drifting upward
+  // Generate floating sparkle particles
   const dustEl = document.getElementById('siDust');
   if (dustEl) {
-    const sandColors = [
-      'rgba(210,170,110,.55)', 'rgba(224,188,130,.45)',
-      'rgba(238,206,152,.38)', 'rgba(196,154,88,.50)',
-      'rgba(248,222,168,.30)', 'rgba(182,142,72,.52)'
-    ];
-    for (let i = 0; i < 55; i++) {
-      const p = document.createElement('div');
-      p.className = 'si-dust-p';
-      const w = 2 + Math.random() * 6;
-      const h = w * (.5 + Math.random() * .75);
+    const glyphs = ['✦','✶','★','◆','●','✦','✸','✺'];
+    for (let i = 0; i < 26; i++) {
+      const p = document.createElement('span');
+      p.className = 'si-particle';
+      const size = 8 + Math.random() * 14;
+      const isPink = Math.random() > .5;
+      p.textContent = glyphs[i % glyphs.length];
       p.style.cssText = [
-        `width:${w.toFixed(1)}px`,
-        `height:${h.toFixed(1)}px`,
-        `left:${(3 + Math.random() * 92).toFixed(1)}%`,
-        `top:${(46 + Math.random() * 52).toFixed(1)}%`,
-        `background:${sandColors[i % sandColors.length]}`,
-        `--dx:${(-(18 + Math.random() * 90)).toFixed(0)}px`,
-        `--dy:${(-(14 + Math.random() * 65)).toFixed(0)}px`,
-        `--dur:${(2.8 + Math.random() * 4.2).toFixed(2)}s`,
-        `--dly:${(Math.random() * 4.5).toFixed(2)}s`,
-        `--op:${(.32 + Math.random() * .38).toFixed(2)}`
+        `left:${(4 + Math.random() * 92).toFixed(1)}%`,
+        `top:${(10 + Math.random() * 80).toFixed(1)}%`,
+        `font-size:${size.toFixed(0)}px`,
+        `color:${isPink ? 'rgba(233,30,140,' : 'rgba(0,0,0,'}${(.08 + Math.random() * .22).toFixed(2)})`,
+        `--dx:${((Math.random() - .5) * 70).toFixed(0)}px`,
+        `--dy:${(-(18 + Math.random() * 90)).toFixed(0)}px`,
+        `--dur:${(2.2 + Math.random() * 3.2).toFixed(2)}s`,
+        `--dly:${(Math.random() * 2.2).toFixed(2)}s`,
+        `--op:${(.12 + Math.random() * .3).toFixed(2)}`,
+        `--rot:${(90 + Math.random() * 270).toFixed(0)}deg`
       ].join(';');
       dustEl.appendChild(p);
     }
   }
 
-  el._siTimer = setTimeout(dismissSaudiIntro, 7000);
+  el._siTimer = setTimeout(dismissSaudiIntro, 2500);
 })();
 
 /* ===== FIRST-VISIT WELCOME POPUP ===== */

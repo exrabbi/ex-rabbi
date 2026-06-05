@@ -735,7 +735,7 @@ const PRODUCTS = [
     }
   },
   {
-    id: 68, category: "sale", price: 1, originalPrice: 99, discount: 99,
+    id: 68, category: "sale", price: 30, originalPrice: 2912, discount: 99,
     image: "https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=400&q=80",
     rating: 5.0, ratingCount: 9999, sold: "99K+", stock: 999, tag: "hot",
     colors: ["#e91e8c","#f59e0b","#7c3aed","#16a34a"],

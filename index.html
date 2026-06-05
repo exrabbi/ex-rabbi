@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=367" />
+  <link rel="stylesheet" href="styles.css?v=368" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -210,60 +210,20 @@
     </nav>
   </header>
 
-  <!-- SAUDI INTRO ANIMATION -->
+  <!-- PREMIUM LOADING SCREEN -->
   <div id="saudiIntro" class="si-wrap" style="display:none" onclick="dismissSaudiIntro()">
-    <button class="si-skip" onclick="event.stopPropagation();dismissSaudiIntro()">Skip Intro</button>
-
-    <!-- Sand / dust particles (JS-generated) -->
-    <div class="si-dust" id="siDust"></div>
-
-    <!-- Saudi flag — flies LEFT, pole on RIGHT -->
-    <div class="si-flag" id="siFlagEl">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 160" preserveAspectRatio="xMidYMid meet">
-        <defs>
-          <linearGradient id="sfHi" x1="100%" y1="0%" x2="20%" y2="100%">
-            <stop offset="0%"  stop-color="rgba(255,255,255,.18)"/>
-            <stop offset="45%" stop-color="rgba(255,255,255,0)"/>
-          </linearGradient>
-          <linearGradient id="sfSh" x1="0%" y1="100%" x2="80%" y2="0%">
-            <stop offset="0%"  stop-color="rgba(0,0,0,.14)"/>
-            <stop offset="40%" stop-color="rgba(0,0,0,0)"/>
-          </linearGradient>
-          <linearGradient id="sfBd" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"  stop-color="rgba(255,255,255,.07)"/>
-            <stop offset="50%" stop-color="rgba(255,255,255,0)"/>
-            <stop offset="100%" stop-color="rgba(0,0,0,.07)"/>
-          </linearGradient>
-        </defs>
-        <rect width="240" height="160" fill="#006C35"/>
-        <rect width="240" height="160" fill="url(#sfHi)"/>
-        <rect width="240" height="160" fill="url(#sfSh)"/>
-        <rect width="240" height="160" fill="url(#sfBd)"/>
-        <!-- Shahada inscription -->
-        <text x="120" y="70" text-anchor="middle" fill="#ffffff"
-              font-family="'Scheherazade New','Traditional Arabic','Amiri','Arial Unicode MS',serif"
-              font-size="19" font-weight="700" letter-spacing="0.8">لا إله إلا الله محمد رسول الله</text>
-        <!-- Sword: handle LEFT (fly end) → tip pointing RIGHT (toward pole/hoist) -->
-        <rect x="26" y="90" width="7" height="20" rx="2" fill="#ffffff"/>
-        <rect x="19" y="94" width="21" height="7" rx="2" fill="#ffffff"/>
-        <rect x="38" y="97" width="155" height="6" rx="2" fill="#ffffff"/>
-        <path d="M 193,97 L 209,100 L 193,103 Z" fill="#ffffff"/>
-      </svg>
+    <button class="si-skip" onclick="event.stopPropagation();dismissSaudiIntro()">Skip</button>
+    <div class="si-particles" id="siDust"></div>
+    <div class="si-center">
+      <div class="si-logo-wrap">
+        <div class="si-logo"><span class="si-ex">EX</span><span class="si-gl">GLOBAL</span></div>
+        <div class="si-dot-row">
+          <span class="si-dot"></span><span class="si-dot"></span><span class="si-dot"></span>
+        </div>
+      </div>
+      <div class="si-tagline">متجرك المفضل · Your Favorite Store</div>
     </div>
-
-    <!-- Pole (full-height vertical line, slightly right of center) -->
-    <div class="si-pole"></div>
-
-    <!-- Text -->
-    <div class="si-text-area">
-      <div class="si-arabic" id="siArabicEl"></div>
-      <div class="si-english" id="siEnglishEl"></div>
-    </div>
-
-    <!-- Atmospheric layers -->
-    <div class="si-mist"></div>
-    <div class="si-city"></div>
-    <div class="si-dunes"></div>
+    <div class="si-bar-wrap"><div class="si-bar" id="siBar"></div></div>
   </div>
 
   <!-- FIRST-VISIT WELCOME POPUP -->
@@ -3044,7 +3004,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=311"></script>
+  <script src="script.js?v=312"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
