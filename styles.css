@@ -22831,3 +22831,119 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .lux-share-wa { background: #25d366 !important; border-radius: 12px !important; }
 .lux-share-copy { border-radius: 12px !important; }
 
+
+/* ══════════════════════════════════════════════════════════
+   PROMO / COUPON CARD in checkout (v380)
+   ══════════════════════════════════════════════════════════ */
+.ck-promo-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 0 !important;
+  overflow: hidden;
+  border: 1.5px dashed rgba(233,30,140,.3);
+  margin-bottom: 10px;
+}
+[data-theme="dark"] .ck-promo-card {
+  background: #1a1a2e;
+  border-color: rgba(233,30,140,.25);
+}
+.ck-promo-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+.ck-promo-pct-badge {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+  clip-path: polygon(50% 0%,54% 4%,58% 1%,61% 5%,66% 3%,68% 7%,73% 6%,74% 11%,79% 11%,79% 16%,84% 17%,83% 22%,88% 24%,86% 29%,91% 32%,88% 37%,92% 40%,89% 45%,93% 49%,89% 53%,92% 57%,88% 61%,91% 65%,87% 68%,89% 73%,85% 75%,86% 80%,82% 82%,82% 87%,78% 88%,77% 93%,73% 93%,71% 98%,67% 97%,64% 100%,61% 98%,57% 100%,54% 97%,50% 99%,46% 97%,43% 100%,39% 98%,36% 100%,33% 97%,29% 98%,27% 93%,23% 93%,22% 88%,18% 87%,18% 82%,14% 80%,15% 75%,11% 73%,13% 68%,9% 65%,12% 61%,8% 57%,11% 53%,8% 49%,12% 45%,9% 40%,12% 37%,9% 32%,14% 29%,12% 24%,17% 22%,16% 17%,21% 16%,21% 11%,26% 11%,27% 6%,32% 7%,34% 3%,39% 5%,42% 1%,46% 4%);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 20px; font-weight: 900;
+  filter: drop-shadow(0 2px 8px rgba(200,0,0,.45));
+  letter-spacing: -1px;
+}
+.ck-promo-body { flex: 1; min-width: 0; }
+.ck-promo-title {
+  font-size: 13px; font-weight: 700; color: #444; margin-bottom: 8px; letter-spacing: .2px;
+}
+[data-theme="dark"] .ck-promo-title { color: #aaa; }
+.ck-promo-inp-row {
+  display: flex; gap: 8px; align-items: center;
+}
+.ck-promo-inp {
+  flex: 1; min-width: 0;
+  height: 40px; padding: 0 12px;
+  border: 1.5px solid #f0d0e8;
+  border-radius: 12px;
+  font-size: 13.5px; font-weight: 600; color: #1a1a2a;
+  background: #fdf5fa;
+  outline: none;
+  transition: border-color .2s;
+  text-transform: uppercase; letter-spacing: .5px;
+}
+.ck-promo-inp::placeholder { text-transform: none; letter-spacing: 0; font-weight: 400; color: #bbb; }
+.ck-promo-inp:focus { border-color: #e91e8c; background: #fff; }
+[data-theme="dark"] .ck-promo-inp {
+  background: #0d0b1e; border-color: rgba(233,30,140,.3);
+  color: #e5e7eb;
+}
+[data-theme="dark"] .ck-promo-inp:focus { background: #14122a; }
+.ck-promo-apply-btn {
+  flex-shrink: 0;
+  height: 40px; padding: 0 18px;
+  background: linear-gradient(135deg, #e91e8c, #c2185b);
+  color: #fff; border: none; border-radius: 12px;
+  font-size: 13px; font-weight: 800; cursor: pointer;
+  transition: opacity .2s, transform .15s;
+  letter-spacing: .3px;
+}
+.ck-promo-apply-btn:active { opacity: .85; transform: scale(.97); }
+
+/* ── Logo circle fix (override flex:1 stretching nav-icon-wrap into an oval) ── */
+.logo.nav-icon-wrap {
+  flex: 0 0 48px !important;
+  width: 48px !important; height: 48px !important;
+  border-radius: 50% !important;
+  margin: 0 auto;
+}
+.logo.nav-icon-wrap .nav-icon-img {
+  width: 32px !important; height: 32px !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   AUTH MODAL FIXES: inputs visible on white card (v380)
+   ══════════════════════════════════════════════════════════ */
+#authModal .auth-inp {
+  color: #1a1a2a !important;
+  background: #f4f5f8 !important;
+  border: 1.5px solid #e5e7eb !important;
+  box-shadow: none !important;
+}
+#authModal .auth-inp::placeholder { color: #aaa !important; }
+#authModal .auth-inp:focus {
+  border-color: #e91e8c !important;
+  background: #fff !important;
+  box-shadow: 0 0 0 3px rgba(233,30,140,.12) !important;
+}
+#authModal .auth-inp-icon { color: #bbb !important; }
+#authModal .auth-inp-wrap:focus-within .auth-inp-icon { color: #e91e8c !important; }
+#authModal .auth-pw-eye { color: #bbb !important; }
+#authModal .auth-pw-eye:hover { color: #e91e8c !important; }
+#authModal .auth-or-sep span,
+#authModal .auth-or-divider span { color: #bbb !important; }
+#authModal .auth-remember-label,
+#authModal .auth-forgot-link { color: #888 !important; }
+
+/* Phone login button */
+.auth-phone-btn {
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7) !important;
+  border: 1.5px solid #bbf7d0 !important;
+  color: #16a34a !important;
+  font-weight: 700 !important;
+}
+[data-theme="dark"] .auth-phone-btn {
+  background: rgba(22,163,74,.12) !important;
+  border-color: rgba(22,163,74,.3) !important;
+  color: #4ade80 !important;
+}

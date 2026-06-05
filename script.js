@@ -4861,12 +4861,86 @@ let _authIsLogin = true;
 function _showAuthEmailForm() {
   const form = document.getElementById('authEmailForm');
   if (!form) return;
+  document.getElementById('authPhoneForm').style.display = 'none';
   if (form.style.display === 'none' || !form.style.display) {
     form.style.display = 'block';
     setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
   } else {
     form.style.display = 'none';
   }
+}
+
+function _showAuthPhoneForm() {
+  document.getElementById('authEmailForm').style.display = 'none';
+  const form = document.getElementById('authPhoneForm');
+  if (!form) return;
+  if (form.style.display === 'none' || !form.style.display) {
+    form.style.display = 'block';
+    setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+    _initRecaptcha();
+  } else {
+    form.style.display = 'none';
+  }
+}
+
+function _initRecaptcha() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) return;
+  if (window._recaptchaVerifier) return;
+  try {
+    window._recaptchaVerifier = new firebase.auth.RecaptchaVerifier('authRecaptchaWrap', {
+      size: 'normal',
+      callback: () => {},
+      'expired-callback': () => { window._recaptchaVerifier = null; }
+    });
+    window._recaptchaVerifier.render();
+  } catch(e) { console.warn('Recaptcha init failed', e); }
+}
+
+async function sendPhoneOTP() {
+  if (typeof firebase === 'undefined' || !firebase.apps || !firebase.apps.length) {
+    showToast(t('firebaseNotSetup')); return;
+  }
+  const phone = (document.getElementById('authPhone').value || '').trim();
+  if (!phone || phone.replace(/\D/g,'').length < 9) {
+    showToast('Enter a valid phone number with country code'); return;
+  }
+  const btn = document.getElementById('sendOTPBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
+  try {
+    if (!window._recaptchaVerifier) _initRecaptcha();
+    const result = await firebase.auth().signInWithPhoneNumber(phone, window._recaptchaVerifier);
+    window._phoneConfirmResult = result;
+    document.getElementById('authOTPWrap').style.display = 'block';
+    showToast('OTP sent to ' + phone);
+  } catch(e) {
+    showToast('Error: ' + (e.message || 'Could not send OTP'));
+    if (window._recaptchaVerifier) { try { window._recaptchaVerifier.clear(); } catch(_) {} window._recaptchaVerifier = null; }
+    if (btn) { btn.disabled = false; btn.textContent = 'Send OTP'; }
+  }
+}
+
+async function verifyPhoneOTP() {
+  const otp = (document.getElementById('authOTPCode').value || '').trim();
+  if (!otp || otp.length < 6) { showToast('Enter the 6-digit OTP'); return; }
+  if (!window._phoneConfirmResult) { showToast('Request OTP first'); return; }
+  try {
+    const result = await window._phoneConfirmResult.confirm(otp);
+    const u = result.user;
+    setUser({ name: u.displayName || u.phoneNumber || 'User', email: u.email || '', avatar: u.photoURL || '', uid: u.uid, provider: 'phone' });
+    closeAuth();
+    showToast('✅ Signed in with phone!');
+  } catch(e) {
+    showToast('Invalid OTP. Please try again.');
+  }
+}
+
+async function _resendOTP() {
+  window._phoneConfirmResult = null;
+  if (window._recaptchaVerifier) { try { window._recaptchaVerifier.clear(); } catch(_) {} window._recaptchaVerifier = null; }
+  document.getElementById('authOTPWrap').style.display = 'none';
+  const btn = document.getElementById('sendOTPBtn');
+  if (btn) { btn.disabled = false; btn.innerHTML = '<span>Send OTP</span><span class="auth-arrow-circle"><i class="fas fa-paper-plane"></i></span>'; }
+  _initRecaptcha();
 }
 
 function _toggleAuthMode() {
