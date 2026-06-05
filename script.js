@@ -3403,8 +3403,15 @@ function refreshPaymentSummary() {
   const itemDiscountDisp = originalDisp - subtotalDisp;
   const origEl = document.getElementById('payOriginalTotal');
   const itemDiscEl = document.getElementById('payItemDiscount');
-  if (origEl) origEl.textContent = fmtD(originalDisp);
-  if (itemDiscEl) itemDiscEl.textContent = '-' + fmtD(itemDiscountDisp);
+  const itemDiscRow = document.getElementById('payItemDiscountRow');
+  if (itemDiscountDisp > 0) {
+    if (origEl) { origEl.textContent = fmtD(originalDisp); origEl.style.display = 'inline'; }
+    if (itemDiscEl) itemDiscEl.textContent = '-' + fmtD(itemDiscountDisp);
+    if (itemDiscRow) itemDiscRow.style.display = 'flex';
+  } else {
+    if (origEl) origEl.style.display = 'none';
+    if (itemDiscRow) itemDiscRow.style.display = 'none';
+  }
 
   const discountAmt = appliedCoupon ? subtotalDisp * (appliedCoupon.pct / 100) : 0;
   const discountedSub = subtotalDisp - discountAmt;

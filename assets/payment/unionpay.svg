@@ -1,0 +1,7 @@
+<svg viewBox="0 0 80 50" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
+  <rect x="5" y="5" width="70" height="18" rx="4" fill="#e31837"/>
+  <rect x="5" y="27" width="70" height="18" rx="4" fill="#005b99"/>
+  <text x="40" y="18" text-anchor="middle" fill="#fff" font-size="10" font-weight="800" font-family="Arial,Helvetica,sans-serif" letter-spacing="-.3">UnionPay</text>
+  <text x="40" y="41" text-anchor="middle" fill="#fff" font-size="11" font-weight="700" font-family="Arial,Helvetica,sans-serif">银联</text>
+</svg>
