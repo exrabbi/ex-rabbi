@@ -22697,3 +22697,137 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   font-size: 12px; color: #888; text-align: center;
   padding: 12px 16px 24px; line-height: 1.6;
 }
+
+/* ============================================================
+   PRODUCT MODAL — 2026 PROFESSIONAL REDESIGN
+   ============================================================ */
+
+/* Gray canvas so white sections pop */
+.lux-modal-wrap { background: #f4f5f7 !important; }
+[data-theme="dark"] .lux-modal-wrap { background: #07061a !important; }
+
+/* Consistent section spacing — 8px gray gaps */
+.pd-deliv, .pd-overview, .pd-addinfo,
+.pd-ratings, .modal-qa, .prel-wrap, .pfbt-wrap,
+.pd-pay-strip, .pd-svc-row { margin: 0 0 8px !important; }
+
+/* ── Delivery card → Noon-style green ── */
+.pd-deliv { padding: 16px !important; }
+.pd-deliv-row {
+  background: linear-gradient(135deg, #f0fdf4, #d1fae5) !important;
+  border: 1.5px solid #6ee7b7 !important;
+  border-radius: 14px !important;
+  padding: 13px 14px !important;
+}
+[data-theme="dark"] .pd-deliv-row {
+  background: rgba(16,185,129,.1) !important;
+  border-color: rgba(16,185,129,.3) !important;
+}
+.pd-express-badge {
+  background: #059669 !important; color: #fff !important;
+  font-style: normal !important; border-radius: 8px !important;
+  padding: 5px 12px !important; letter-spacing: .3px !important;
+  font-size: 13px !important;
+}
+.pd-deliv-date { color: #065f46 !important; font-weight: 800 !important; font-size: 15px !important; }
+[data-theme="dark"] .pd-deliv-date { color: #34d399 !important; }
+.pd-deliv-timer { color: #d97706 !important; font-weight: 700 !important; font-size: 12px !important; }
+.pd-deliv-title { font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; margin-bottom: 12px !important; }
+[data-theme="dark"] .pd-deliv-title { color: #f0f0f0 !important; }
+
+/* ── Product Overview ── */
+.pd-overview { padding: 16px 16px 8px !important; }
+.pd-overview-title { font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; margin-bottom: 10px !important; }
+[data-theme="dark"] .pd-overview-title { color: #f0f0f0 !important; }
+
+/* ── Additional Info (seller, benefits) ── */
+.pd-addinfo { padding: 0 !important; }
+.pd-addinfo-title { padding: 14px 16px 10px !important; font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; }
+[data-theme="dark"] .pd-addinfo-title { color: #f0f0f0 !important; }
+.pd-ai-row { padding: 12px 16px !important; border-bottom: 1px solid #f3f4f6; }
+.pd-ai-row:last-child { border-bottom: none !important; }
+[data-theme="dark"] .pd-ai-row { border-bottom-color: rgba(255,255,255,.05) !important; }
+.pd-ai-seller-logo {
+  width: 42px !important; height: 42px !important;
+  border-radius: 12px !important; font-size: 16px !important;
+  font-weight: 900 !important;
+}
+.pd-ai-seller-meta { font-size: 12.5px !important; color: #777 !important; margin-top: 2px !important; }
+.pd-ai-pill {
+  border-radius: 8px !important; font-size: 10.5px !important;
+  padding: 5px 10px !important; font-weight: 700 !important;
+}
+
+/* ── Ratings & Reviews ── */
+.pd-ratings { padding: 16px !important; }
+.pd-rv-title { font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; margin-bottom: 16px !important; }
+[data-theme="dark"] .pd-rv-title { color: #f0f0f0 !important; }
+.pd-rv-bignum { font-size: 56px !important; font-weight: 900 !important; line-height: 1 !important; }
+.pd-rv-ai-box { border-radius: 14px !important; padding: 14px 16px !important; margin-bottom: 16px !important; }
+.pd-rv-item { padding: 16px 0 !important; border-top: 1px solid #f3f4f6 !important; }
+[data-theme="dark"] .pd-rv-item { border-top-color: rgba(255,255,255,.06) !important; }
+.pd-rv-verified {
+  background: #f0fdf4 !important; color: #16a34a !important;
+  border: 1px solid #bbf7d0 !important; border-radius: 6px !important;
+  padding: 2px 8px !important; font-size: 11px !important; font-weight: 700 !important;
+}
+[data-theme="dark"] .pd-rv-verified { background: rgba(22,163,74,.12) !important; border-color: rgba(22,163,74,.3) !important; }
+.pd-rv-item-head { display: flex !important; align-items: center !important; justify-content: space-between !important; margin-bottom: 6px !important; }
+.pd-rv-name { font-size: 14px !important; font-weight: 700 !important; color: #1a1a2a !important; }
+[data-theme="dark"] .pd-rv-name { color: #f0f0f0 !important; }
+.pd-rv-text { font-size: 13.5px !important; color: #444 !important; line-height: 1.6 !important; }
+[data-theme="dark"] .pd-rv-text { color: #9ca3af !important; }
+
+/* ── Q&A ── */
+.modal-qa { padding: 16px 16px 8px !important; }
+.modal-qa-title { font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; margin-bottom: 10px !important; }
+[data-theme="dark"] .modal-qa-title { color: #f0f0f0 !important; }
+.qa-item { border-bottom: 1px solid #f3f4f6 !important; }
+[data-theme="dark"] .qa-item { border-bottom-color: rgba(255,255,255,.05) !important; }
+.qa-question { padding: 13px 4px !important; font-weight: 600 !important; font-size: 14px !important; color: #222 !important; }
+[data-theme="dark"] .qa-question { color: #e5e7eb !important; }
+.qa-answer { font-size: 13.5px !important; line-height: 1.6 !important; color: #555 !important; padding-bottom: 12px !important; }
+[data-theme="dark"] .qa-answer { color: #9ca3af !important; }
+
+/* ── You May Also Like (related products) ── */
+.prel-wrap { padding: 16px 0 6px 16px !important; }
+.prel-title { font-size: 16px !important; font-weight: 800 !important; color: #1a1a2a !important; }
+[data-theme="dark"] .prel-title { color: #f0f0f0 !important; }
+.prel-count { font-size: 12px !important; color: #888 !important; font-weight: 600 !important; }
+.prel-card {
+  border-radius: 14px !important; overflow: hidden !important;
+  box-shadow: 0 2px 12px rgba(0,0,0,.07) !important;
+  border: 1px solid #f0f0f0 !important;
+  background: #fff !important;
+  transition: transform .18s, box-shadow .18s !important;
+}
+[data-theme="dark"] .prel-card { background: #14122a !important; border-color: rgba(255,255,255,.08) !important; }
+.prel-card:active { transform: scale(.95) !important; }
+.prel-name { font-size: 12px !important; font-weight: 600 !important; color: #1a1a2a !important; line-height: 1.4 !important; }
+[data-theme="dark"] .prel-name { color: #e5e7eb !important; }
+.prel-price { color: #e91e8c !important; font-weight: 900 !important; font-size: 14px !important; margin-top: 4px !important; }
+
+/* ── Frequently Bought Together ── */
+.pfbt-wrap {
+  border-radius: 0 !important; border: none !important;
+  padding: 16px !important;
+}
+.pfbt-title { font-size: 15px !important; font-weight: 800 !important; }
+.pfbt-add-btn {
+  background: linear-gradient(135deg, #7c3aed, #5b21b6) !important;
+  border-radius: 14px !important; font-size: 15px !important;
+  padding: 14px 18px !important; font-weight: 800 !important;
+  box-shadow: 0 4px 16px rgba(124,58,237,.4) !important;
+}
+
+/* ── Share section ── */
+.lux-share-bar {
+  background: #fff !important; margin: 0 0 8px !important;
+  padding: 14px 16px !important;
+  border-top: 1px solid #f0f0f0 !important;
+}
+[data-theme="dark"] .lux-share-bar { background: #14122a !important; border-color: rgba(255,255,255,.07) !important; }
+.lux-share-url { border-radius: 10px !important; font-size: 12px !important; }
+.lux-share-wa { background: #25d366 !important; border-radius: 12px !important; }
+.lux-share-copy { border-radius: 12px !important; }
+

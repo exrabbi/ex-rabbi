@@ -3406,7 +3406,7 @@ function refreshPaymentSummary() {
   const origEl = document.getElementById('payOriginalTotal');
   const itemDiscEl = document.getElementById('payItemDiscount');
   const itemDiscRow = document.getElementById('payItemDiscountRow');
-  if (itemDiscountDisp > 0) {
+  if (Math.round(itemDiscountDisp) > 0) {
     if (origEl) { origEl.textContent = fmtD(originalDisp); origEl.style.display = 'inline'; }
     if (itemDiscEl) itemDiscEl.textContent = '-' + fmtD(itemDiscountDisp);
     if (itemDiscRow) itemDiscRow.style.display = 'flex';
@@ -5988,30 +5988,44 @@ function selectPayMethod(method) {
     if (amtEl)   amtEl.textContent   = 'SAR ' + Math.round(totalSAR4);
     if (pillEl)  pillEl.textContent  = 'SAR ' + Math.round(totalSAR4);
   }
-  // Update button text & color
+  // Update button with payment method logo & color
   const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const subtotalDisp2 = cartSubtotalBase() * lang2.rate;
   const delDisp2 = subtotalDisp2 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
   const grandDisp2 = subtotalDisp2 + delDisp2;
-  const methodLabel = {
-    whatsapp: t('placeOrder'), paypal: 'PayPal',
-    card: t('cardName'), apple: 'Apple Pay',
-    gpay: 'Google Pay', tamara: 'Pay with Tamara',
-    tabby: 'Pay with Tabby',
-    binance: '⚡ Verify & Confirm Order',
-    stc: '✅ Confirm STC Pay Order',
+  const _btnBg = {
+    binance:  'linear-gradient(135deg,#F3BA2F,#F0A500)',
+    stc:      'linear-gradient(135deg,#6D2C8A,#9C27B0)',
+    paypal:   '#0070ba',
+    gpay:     '#000',
+    tamara:   'linear-gradient(135deg,#F97316,#EC4899)',
+    whatsapp: 'linear-gradient(135deg,#25d366,#128c7e)',
+    cod:      'linear-gradient(135deg,#16a34a,#15803d)',
+  };
+  const _pmLogo = {
+    card:    'assets/payment/mada.svg',
+    gpay:    'assets/payment/googlepay.svg',
+    stc:     'assets/payment/stcpay.svg',
+    binance: 'assets/payment/binancepay.svg',
+    paypal:  'assets/payment/paypal.svg',
+    tamara:  'assets/payment/tamara.svg',
+    cod:     'assets/payment/cod.svg',
   };
   const btnEl = document.getElementById('btnPayNow');
-  if (btnEl) btnEl.style.background =
-    method === 'binance' ? 'linear-gradient(135deg,#F3BA2F,#F0A500)' :
-    method === 'stc'     ? 'linear-gradient(135deg,#6D2C8A,#9C27B0)' :
-    method === 'paypal'  ? '#0070ba' : '';
+  if (btnEl) btnEl.style.background = _btnBg[method] || '';
   const payBtnEl = document.getElementById('payBtnText');
   if (payBtnEl) {
-    if (method === 'paypal') {
-      payBtnEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px;vertical-align:middle"><svg height="18" viewBox="0 0 101 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.2 2.4H5.4C5 2.4 4.6 2.7 4.5 3.1L1.8 20c-.1.3.1.6.4.6h3.3c.4 0 .8-.3.8-.7l.7-4.6c.1-.4.5-.7.8-.7h2.2c4.6 0 7.3-2.2 7.9-6.6.3-1.9 0-3.4-.8-4.5-.9-1.1-2.5-1.6-4.9-1.6Zm.8 6.5c-.4 2.5-2.3 2.5-4.2 2.5h-1l.7-4.7h1.1c1.3 0 2.5 0 3.1.7.4.4.5 1 .3 1.5Z" fill="#fff"/><path d="M33.7 8.8h-3.3c-.4 0-.7.3-.8.6l-.2 1-.3-.4c-.9-1.3-2.9-1.7-4.9-1.7-4.6 0-8.5 3.5-9.3 8.4-.4 2.4.2 4.8 1.6 6.4 1.3 1.5 3.1 2.1 5.3 2.1 3.7 0 5.7-2.4 5.7-2.4l-.2 1c-.1.3.1.6.4.6h3c.4 0 .8-.3.8-.7l1.8-11.4c.1-.2-.1-.5-.6-.5Zm-4.6 8.1c-.4 2.4-2.3 4-4.7 4-1.2 0-2.2-.4-2.8-1.1-.6-.7-.9-1.7-.7-2.8.4-2.4 2.3-4.1 4.7-4.1 1.2 0 2.1.4 2.7 1.1.7.7.9 1.7.8 2.9Z" fill="#fff"/><path d="M52.3 8.8h-3.4c-.4 0-.7.2-.9.5L43.6 16l-2-6.3c-.1-.4-.5-.7-.9-.7h-3.3c-.4 0-.6.3-.5.7l3.8 11.1-3.6 5c-.3.4 0 .9.4.9h3.4c.4 0 .7-.2.9-.5l11.5-16.6c.2-.3 0-.8-.5-.8Z" fill="#fff"/><path d="M64.6 2.4h-6.8c-.4 0-.8.3-.8.7l-2.7 17c-.1.3.1.6.4.6h3.6c.3 0 .5-.2.6-.5l.8-4.8c.1-.4.5-.7.8-.7h2.2c4.6 0 7.3-2.2 7.9-6.6.3-1.9 0-3.4-.8-4.5-.9-1.1-2.5-1.6-5.2-1.7Zm.8 6.5c-.4 2.5-2.3 2.5-4.2 2.5h-1l.7-4.7h1.1c1.3 0 2.5 0 3.1.7.4.4.5 1 .3 1.5Z" fill="#fff" opacity=".8"/><path d="M86.2 8.8h-3.3c-.4 0-.7.3-.8.6l-.2 1-.3-.4c-.9-1.3-2.9-1.7-4.9-1.7-4.6 0-8.5 3.5-9.3 8.4-.4 2.4.2 4.8 1.6 6.4 1.3 1.5 3.1 2.1 5.3 2.1 3.7 0 5.7-2.4 5.7-2.4l-.2 1c-.1.3.1.6.4.6h3c.4 0 .8-.3.8-.7l1.8-11.4c.1-.2-.1-.5-.6-.5Zm-4.6 8.1c-.4 2.4-2.3 4-4.7 4-1.2 0-2.2-.4-2.8-1.1-.6-.7-.9-1.7-.7-2.8.4-2.4 2.3-4.1 4.7-4.1 1.2 0 2.1.4 2.7 1.1.7.7.9 1.7.8 2.9Z" fill="#fff" opacity=".8"/><path d="M91 3l-2.7 17.2c-.1.3.1.6.4.6h2.9c.4 0 .8-.3.8-.7l2.7-17c.1-.3-.1-.6-.4-.6H91.5c-.3 0-.4.2-.5.5Z" fill="#fff" opacity=".8"/></svg><span>— SAR ${Math.round(grandDisp2)}</span></span>`;
+    const amtTxt = lang2.currency + Math.round(grandDisp2).toLocaleString();
+    const logo = _pmLogo[method];
+    if (logo) {
+      const logoImg = `<img src="${logo}" alt="" style="height:22px;width:auto;border-radius:4px;vertical-align:middle;flex-shrink:0">`;
+      const lbl = method === 'gpay' ? 'Buy with G Pay' : method === 'binance' ? 'Pay with Binance' : method === 'stc' ? 'Pay with STC Pay' : method === 'tamara' ? 'Pay with Tamara' : method === 'cod' ? 'Cash on Delivery' : 'Pay';
+      payBtnEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px">${logoImg}<span>${lbl} — ${amtTxt}</span></span>`;
+    } else if (method === 'whatsapp') {
+      payBtnEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><i class="fab fa-whatsapp" style="font-size:20px"></i><span>Order via WhatsApp — ${amtTxt}</span></span>`;
     } else {
-      payBtnEl.textContent = (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
+      const fbLabel = { apple: 'Apple Pay', tabby: 'Pay with Tabby' };
+      payBtnEl.textContent = (fbLabel[method] || t('placeOrder')) + ' — ' + amtTxt;
     }
   }
 }
