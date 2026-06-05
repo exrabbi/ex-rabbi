@@ -20536,11 +20536,21 @@ html {
 /* ── fc2-card unified detail rows ── */
 .fc2-disc-pill {
   position: absolute; bottom: 8px; left: 8px; z-index: 3;
-  background: linear-gradient(135deg, #ff6a00, #ee0979);
-  color: #fff; font-size: 13px; font-weight: 900;
-  padding: 4px 12px; border-radius: 50px;
-  box-shadow: 0 3px 14px rgba(238,9,121,.45);
-  letter-spacing: .4px; pointer-events: none;
+  width: 52px; height: 52px;
+  background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%);
+  clip-path: polygon(
+    50% 0%,54% 4%,59% 2%,62% 6%,67% 5%,70% 9%,75% 9%,77% 14%,82% 15%,83% 20%,
+    88% 22%,88% 27%,92% 31%,91% 36%,95% 40%,93% 45%,96% 50%,93% 55%,95% 60%,
+    91% 64%,92% 69%,88% 73%,88% 78%,83% 80%,82% 85%,77% 86%,75% 91%,70% 91%,
+    67% 95%,62% 94%,59% 98%,54% 96%,50% 100%,46% 96%,41% 98%,38% 94%,33% 95%,
+    30% 91%,25% 91%,23% 86%,18% 85%,17% 80%,12% 78%,12% 73%,8% 69%,9% 64%,
+    5% 60%,7% 55%,4% 50%,7% 45%,5% 40%,9% 36%,8% 31%,12% 27%,12% 22%,17% 20%,
+    18% 15%,23% 14%,25% 9%,30% 9%,33% 5%,38% 6%,41% 2%,46% 4%
+  );
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 900;
+  filter: drop-shadow(0 2px 8px rgba(200,0,0,.55));
+  pointer-events: none; letter-spacing: -.3px; line-height: 1;
 }
 .fc2-choice {
   display: inline-flex; align-items: center; gap: 4px;
@@ -21093,8 +21103,8 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 
 /* Discount pill: smaller */
 .products-grid .fc2-disc-pill {
-  font-size: 11px !important;
-  padding: 3px 9px !important;
+  width: 44px !important; height: 44px !important;
+  font-size: 10px !important;
   bottom: 6px !important; left: 6px !important;
 }
 
@@ -21136,10 +21146,9 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .ck-pg { display: none; }
 .ck-pg.ck-pg-on { display: block; }
 
-/* ck-bar hidden on pages 1 & 2 */
-#payModal.ck-p1 #ckBar,
-#payModal.ck-p2 #ckBar { display: none !important; }
-#payModal.ck-p3 #ckBar { display: flex !important; }
+/* ck-bar: hidden on page 1 only, shown on page 2 */
+#payModal.ck-p1 #ckBar { display: none !important; }
+#payModal.ck-p2 #ckBar { display: flex !important; }
 
 /* Continue button */
 .ck-pg-foot {

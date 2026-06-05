@@ -783,7 +783,9 @@ function flashCardHTML(p) {
     : p.tag === 'bestseller' ? `<span class="fc2-badge fc2-badge-best"><i class="fas fa-trophy"></i></span>`
     : p.tag === 'new' ? `<span class="fc2-badge fc2-badge-new">NEW</span>` : '';
 
-  const discPill = p.discount > 0 ? `<div class="fc2-disc-pill">-${p.discount}%</div>` : '';
+  const _discPct = p.discount > 0 ? p.discount
+    : (p.originalPrice && p.originalPrice > p.price ? Math.round((1 - p.price / p.originalPrice) * 100) : 0);
+  const discPill = _discPct > 0 ? `<div class="fc2-disc-pill">-${_discPct}%</div>` : '';
 
   const choiceBadge = (p.ratingCount >= 300 || p.tag === 'bestseller')
     ? `<div class="fc2-choice"><i class="fas fa-crown"></i> Top Choice</div>` : '';
