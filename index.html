@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=369" />
+  <link rel="stylesheet" href="styles.css?v=370" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -134,10 +134,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js"></script>
   <script src="firebase-config.js"></script>
-  <!-- Prevent Bengali flash; hard timeout ensures page never stays blank -->
+  <!-- Prevent flash; hard timeout ensures page never stays blank -->
   <script>
     document.documentElement.style.opacity='0';
-    setTimeout(function(){document.documentElement.style.opacity='1';},2500);
+    setTimeout(function(){document.documentElement.style.opacity='1';},800);
   </script>
 
   <!-- Google Analytics 4 — replace G-XXXXXXXXXX with real ID -->
@@ -398,19 +398,19 @@
       <div class="hero-slides" id="heroSlides">
 
         <div class="hero-slide slide-1">
-          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="eager" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="Fashion Sale" loading="eager" />
         </div>
         <div class="hero-slide slide-2">
-          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" alt="New Collection" loading="lazy" />
         </div>
         <div class="hero-slide slide-3">
-          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="Women Fashion" loading="lazy" />
         </div>
         <div class="hero-slide slide-4">
-          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80" alt="Beauty" loading="lazy" />
         </div>
         <div class="hero-slide slide-5">
-          <img class="hero-slide-img" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'/>" alt="" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80" alt="Shopping" loading="lazy" />
         </div>
 
       </div>
@@ -1626,10 +1626,10 @@
     </div>
     <div class="settings-body">
       <div class="settings-group">
-        <div class="settings-item">
+        <div class="settings-item" onclick="openCountryPicker()">
           <i class="fas fa-globe"></i>
           <span data-i18n="country">দেশ</span>
-          <span class="settings-val">🇸🇦 KSA</span>
+          <span class="settings-val" id="countryValLabel">🇸🇦 KSA</span>
           <i class="fas fa-chevron-right"></i>
         </div>
         <div class="settings-item" onclick="openLangPicker()">
@@ -1654,7 +1654,7 @@
           <span data-i18n="soundFeedback">বাটন সাউন্ড</span>
           <button id="soundToggle" class="snd-toggle on" role="switch" aria-checked="true" onclick="event.stopPropagation();toggleSound(this)"></button>
         </div>
-        <div class="settings-item">
+        <div class="settings-item" onclick="openPreferencesSheet()">
           <i class="fas fa-sliders-h"></i>
           <span data-i18n="preferences">পছন্দ</span>
           <i class="fas fa-chevron-right"></i>
@@ -1669,7 +1669,7 @@
       </div>
 
       <div class="settings-sell-wrap">
-        <button class="settings-sell-btn" data-i18n="sellWithUs">আমাদের সাথে বিক্রি করুন</button>
+        <button class="settings-sell-btn" data-i18n="sellWithUs" onclick="openSellWithUs()">আমাদের সাথে বিক্রি করুন</button>
       </div>
 
       <!-- WhatsApp VIP card -->
@@ -2863,6 +2863,105 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
   <!-- LANGUAGE PICKER SHEET -->
+  <!-- ===== COUNTRY PICKER SHEET ===== -->
+  <div class="lang-sheet-overlay" id="countrySheetOverlay" onclick="closeCountryPicker()"></div>
+  <div class="lang-sheet" id="countrySheet">
+    <div class="lang-sheet-handle"></div>
+    <div class="lang-sheet-title">Select Country</div>
+    <div class="lang-sheet-list">
+      <button class="lang-sheet-row" data-country="sa" onclick="pickCountry('sa','🇸🇦 KSA')">
+        <span class="lang-sheet-flag">🇸🇦</span>
+        <span class="lang-sheet-name">المملكة العربية السعودية</span>
+        <span class="lang-sheet-native">Saudi Arabia</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-sa"></i>
+      </button>
+      <button class="lang-sheet-row" data-country="ae" onclick="pickCountry('ae','🇦🇪 UAE')">
+        <span class="lang-sheet-flag">🇦🇪</span>
+        <span class="lang-sheet-name">الإمارات العربية المتحدة</span>
+        <span class="lang-sheet-native">UAE</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-ae"></i>
+      </button>
+      <button class="lang-sheet-row" data-country="kw" onclick="pickCountry('kw','🇰🇼 Kuwait')">
+        <span class="lang-sheet-flag">🇰🇼</span>
+        <span class="lang-sheet-name">الكويت</span>
+        <span class="lang-sheet-native">Kuwait</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-kw"></i>
+      </button>
+      <button class="lang-sheet-row" data-country="bh" onclick="pickCountry('bh','🇧🇭 Bahrain')">
+        <span class="lang-sheet-flag">🇧🇭</span>
+        <span class="lang-sheet-name">البحرين</span>
+        <span class="lang-sheet-native">Bahrain</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-bh"></i>
+      </button>
+      <button class="lang-sheet-row" data-country="qa" onclick="pickCountry('qa','🇶🇦 Qatar')">
+        <span class="lang-sheet-flag">🇶🇦</span>
+        <span class="lang-sheet-name">قطر</span>
+        <span class="lang-sheet-native">Qatar</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-qa"></i>
+      </button>
+      <button class="lang-sheet-row" data-country="bd" onclick="pickCountry('bd','🇧🇩 Bangladesh')">
+        <span class="lang-sheet-flag">🇧🇩</span>
+        <span class="lang-sheet-name">বাংলাদেশ</span>
+        <span class="lang-sheet-native">Bangladesh</span>
+        <i class="fas fa-check lang-sheet-check" id="cchk-bd"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== PREFERENCES SHEET ===== -->
+  <div class="lang-sheet-overlay" id="prefSheetOverlay" onclick="closePrefSheet()"></div>
+  <div class="lang-sheet" id="prefSheet" style="max-height:80vh">
+    <div class="lang-sheet-handle"></div>
+    <div class="lang-sheet-title">Preferences</div>
+    <div style="padding:0 16px 20px">
+      <div class="pref-row" id="prefThemeRow">
+        <div class="pref-row-info">
+          <i class="fas fa-moon" style="color:#7c3aed;width:20px;text-align:center"></i>
+          <div>
+            <div class="pref-row-name">Dark Mode</div>
+            <div class="pref-row-sub">Switch between light and dark theme</div>
+          </div>
+        </div>
+        <button class="snd-toggle" id="prefDarkToggle" role="switch" onclick="prefToggleDark(this)"></button>
+      </div>
+      <div class="pref-row">
+        <div class="pref-row-info">
+          <i class="fas fa-volume-high" style="color:#e91e8c;width:20px;text-align:center"></i>
+          <div>
+            <div class="pref-row-name">Sound Feedback</div>
+            <div class="pref-row-sub">Play sounds when tapping buttons</div>
+          </div>
+        </div>
+        <button class="snd-toggle" id="prefSoundToggle" role="switch" onclick="prefToggleSound(this)"></button>
+      </div>
+      <div class="pref-row">
+        <div class="pref-row-info">
+          <i class="fas fa-fire" style="color:#f97316;width:20px;text-align:center"></i>
+          <div>
+            <div class="pref-row-name">Flash Sale Alerts</div>
+            <div class="pref-row-sub">Get notified about limited-time deals</div>
+          </div>
+        </div>
+        <button class="snd-toggle on" id="prefFlashToggle" role="switch" onclick="prefToggleFlash(this)"></button>
+      </div>
+      <div class="pref-row">
+        <div class="pref-row-info">
+          <i class="fas fa-star" style="color:#f59e0b;width:20px;text-align:center"></i>
+          <div>
+            <div class="pref-row-name">Recently Viewed</div>
+            <div class="pref-row-sub">Show products you've recently browsed</div>
+          </div>
+        </div>
+        <button class="snd-toggle on" id="prefRecentToggle" role="switch" onclick="prefToggleRecent(this)"></button>
+      </div>
+      <div style="margin-top:18px;border-top:1px solid #f0f0f0;padding-top:16px">
+        <button onclick="clearRecentlyViewed()" style="width:100%;padding:12px;background:#fff5f5;border:1.5px solid #fecaca;border-radius:12px;color:#dc2626;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">
+          <i class="fas fa-clock-rotate-left"></i> &nbsp;Clear Recently Viewed
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="lang-sheet-overlay" id="langSheetOverlay" onclick="closeLangPicker()"></div>
   <div class="lang-sheet" id="langSheet">
     <div class="lang-sheet-handle"></div>
@@ -3004,7 +3103,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=314"></script>
+  <script src="script.js?v=315"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
