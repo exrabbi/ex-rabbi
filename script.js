@@ -515,6 +515,8 @@ function _revealPage() {
 document.addEventListener('DOMContentLoaded', async () => {
   if (history.scrollRestoration) history.scrollRestoration = 'manual';
   window.scrollTo(0, 0);
+  // Show any pre-existing reveal elements immediately (don't wait for data load)
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery always free — overrides any stored setting)
@@ -543,6 +545,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   _renderReferralBlock();
   renderProducts();
   startHeroSlider();
+  // Show all newly rendered reveal elements immediately (no animation delay)
+  document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
   // Deep link: auto-open product from URL ?p=ID
   const pid = new URLSearchParams(location.search).get('p');
   if (pid) setTimeout(() => openModal(parseInt(pid)), 400);
@@ -663,7 +667,7 @@ function _applyHeroOverrides() {
         }
       }
       if (!inner && s.image) {
-        inner = `<img class="hero-slide-img" src="${s.image}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" />`;
+        inner = `<img class="hero-slide-img" src="${s.image}" alt="" loading="${i === 0 ? 'eager' : 'lazy'}" onerror="this.style.display='none'" />`;
       }
       return `<div class="hero-slide slide-${i + 1}">${inner}</div>`;
     }).join('');

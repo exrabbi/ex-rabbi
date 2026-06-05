@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=370" />
+  <link rel="stylesheet" href="styles.css?v=371" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -398,19 +398,49 @@
       <div class="hero-slides" id="heroSlides">
 
         <div class="hero-slide slide-1">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="Fashion Sale" loading="eager" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=800&q=80" alt="" loading="eager" onerror="this.style.display='none'" />
+          <div class="hero-txt-overlay">
+            <div class="hto-badge"><i class="fas fa-bolt"></i> Flash Sale</div>
+            <div class="hto-title">Women's Fashion</div>
+            <div class="hto-sub">Up to 70% OFF · Free Delivery</div>
+            <button class="hto-cta" onclick="filterCategory('women')">Shop Now</button>
+          </div>
         </div>
         <div class="hero-slide slide-2">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" alt="New Collection" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=80" alt="" loading="lazy" onerror="this.style.display='none'" />
+          <div class="hero-txt-overlay">
+            <div class="hto-badge"><i class="fas fa-star"></i> New Arrivals</div>
+            <div class="hto-title">New Collection</div>
+            <div class="hto-sub">Exclusive Styles · 2026</div>
+            <button class="hto-cta" onclick="filterCategory('all')">Explore</button>
+          </div>
         </div>
         <div class="hero-slide slide-3">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="Women Fashion" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=800&q=80" alt="" loading="lazy" onerror="this.style.display='none'" />
+          <div class="hero-txt-overlay">
+            <div class="hto-badge"><i class="fas fa-fire"></i> Trending</div>
+            <div class="hto-title">Premium Looks</div>
+            <div class="hto-sub">Saudi Arabia's Fav Store</div>
+            <button class="hto-cta" onclick="filterCategory('women')">Shop Now</button>
+          </div>
         </div>
         <div class="hero-slide slide-4">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80" alt="Beauty" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&q=80" alt="" loading="lazy" onerror="this.style.display='none'" />
+          <div class="hero-txt-overlay">
+            <div class="hto-badge"><i class="fas fa-gem"></i> Beauty</div>
+            <div class="hto-title">Beauty & Care</div>
+            <div class="hto-sub">Glow Up · Top Brands</div>
+            <button class="hto-cta" onclick="filterCategory('beauty')">Discover</button>
+          </div>
         </div>
         <div class="hero-slide slide-5">
-          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80" alt="Shopping" loading="lazy" />
+          <img class="hero-slide-img" src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=800&q=80" alt="" loading="lazy" onerror="this.style.display='none'" />
+          <div class="hero-txt-overlay">
+            <div class="hto-badge"><i class="fas fa-tag"></i> Super Deals</div>
+            <div class="hto-title">Best Prices</div>
+            <div class="hto-sub">Guaranteed Lowest Price</div>
+            <button class="hto-cta" onclick="filterCategory('all')">Shop All</button>
+          </div>
         </div>
 
       </div>
@@ -3103,7 +3133,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=315"></script>
+  <script src="script.js?v=316"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
