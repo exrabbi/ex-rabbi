@@ -430,6 +430,82 @@ function pickLang(lang) {
   closeLangPicker();
 }
 
+/* ===== COUNTRY PICKER ===== */
+function openCountryPicker() {
+  const saved = localStorage.getItem('exg_country') || 'sa';
+  document.querySelectorAll('#countrySheet .lang-sheet-row').forEach(row => {
+    row.classList.toggle('active', row.dataset.country === saved);
+    const chk = row.querySelector('.lang-sheet-check');
+    if (chk) chk.style.opacity = row.dataset.country === saved ? '1' : '0';
+  });
+  document.getElementById('countrySheetOverlay').classList.add('open');
+  document.getElementById('countrySheet').classList.add('open');
+}
+function closeCountryPicker() {
+  document.getElementById('countrySheetOverlay').classList.remove('open');
+  document.getElementById('countrySheet').classList.remove('open');
+}
+function pickCountry(code, label) {
+  localStorage.setItem('exg_country', code);
+  const el = document.getElementById('countryValLabel');
+  if (el) el.textContent = label;
+  closeCountryPicker();
+  showToast('✅ Country updated to ' + label);
+}
+
+/* ===== PREFERENCES SHEET ===== */
+function openPreferencesSheet() {
+  const darkBtn = document.getElementById('prefDarkToggle');
+  const soundBtn = document.getElementById('prefSoundToggle');
+  if (darkBtn) darkBtn.classList.toggle('on', document.documentElement.getAttribute('data-theme') === 'dark');
+  if (soundBtn) soundBtn.classList.toggle('on', typeof soundEnabled === 'undefined' ? true : soundEnabled);
+  const flashOn = localStorage.getItem('exg_pref_flash') !== 'off';
+  const recentOn = localStorage.getItem('exg_pref_recent') !== 'off';
+  const ft = document.getElementById('prefFlashToggle');
+  const rt = document.getElementById('prefRecentToggle');
+  if (ft) ft.classList.toggle('on', flashOn);
+  if (rt) rt.classList.toggle('on', recentOn);
+  document.getElementById('prefSheetOverlay').classList.add('open');
+  document.getElementById('prefSheet').classList.add('open');
+}
+function closePrefSheet() {
+  document.getElementById('prefSheetOverlay').classList.remove('open');
+  document.getElementById('prefSheet').classList.remove('open');
+}
+function prefToggleDark(btn) {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  applyTheme(isDark ? 'light' : 'dark');
+  btn.classList.toggle('on', !isDark);
+}
+function prefToggleSound(btn) {
+  toggleSound(document.getElementById('soundToggle'));
+  btn.classList.toggle('on', typeof soundEnabled !== 'undefined' ? soundEnabled : true);
+}
+function prefToggleFlash(btn) {
+  const on = !btn.classList.contains('on');
+  btn.classList.toggle('on', on);
+  localStorage.setItem('exg_pref_flash', on ? 'on' : 'off');
+  showToast(on ? '🔔 Flash Sale Alerts enabled' : '🔕 Flash Sale Alerts disabled');
+}
+function prefToggleRecent(btn) {
+  const on = !btn.classList.contains('on');
+  btn.classList.toggle('on', on);
+  localStorage.setItem('exg_pref_recent', on ? 'on' : 'off');
+  showToast(on ? '✅ Recently Viewed enabled' : 'Recently Viewed hidden');
+}
+function clearRecentlyViewed() {
+  localStorage.removeItem('exg_recently_viewed');
+  if (typeof renderRecentlyViewed === 'function') renderRecentlyViewed();
+  showToast('🗑 Recently viewed cleared');
+  closePrefSheet();
+}
+
+/* ===== SELL WITH US ===== */
+function openSellWithUs() {
+  const msg = encodeURIComponent('مرحباً! أريد البيع على منصة EX GLOBAL 🛍\n\nHello! I want to sell on EX GLOBAL 🛍');
+  window.open('https://wa.me/966546224029?text=' + msg, '_blank', 'noopener');
+}
+
 function _revealPage() {
   document.documentElement.style.transition = 'opacity .18s';
   document.documentElement.style.opacity = '1';
@@ -10436,18 +10512,18 @@ function clearCompare() {
 function initScrollReveal() {
   const els = document.querySelectorAll('.reveal');
   if (!els.length) return;
-  // Lower threshold → elements trigger sooner (less than 3% in view)
+  // Pre-trigger reveals 300px before they enter viewport → no white flash on fast scroll
   const obs = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.03, rootMargin: '0px 0px -20px 0px' });
+  }, { threshold: 0, rootMargin: '0px 0px 300px 0px' });
   els.forEach(el => obs.observe(el));
 
-  // Safety fallback: force-show all reveals after 2.5 s if still invisible
+  // Safety fallback: force-show all reveals after 400ms
   setTimeout(() => {
     document.querySelectorAll('.reveal:not(.visible)').forEach(el => el.classList.add('visible'));
     const nr = document.getElementById('nrSection');
     if (nr && !nr.classList.contains('nr-visible')) nr.classList.add('nr-visible');
-  }, 2500);
+  }, 400);
 }
 
 /* ===== ESTIMATED DELIVERY ===== */
