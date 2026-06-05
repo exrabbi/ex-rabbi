@@ -6212,8 +6212,9 @@ function renderPayPalButtons() {
   const subtotalDisp = cartSubtotalBase() * (TRANSLATIONS[currentLang]||TRANSLATIONS.en).rate;
   const delivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
   const sarTotal = subtotalDisp + delivery;
-  const amount = (sarTotal / 3.75).toFixed(2); // Convert SAR → USD (1 USD = 3.75 SAR)
+  const amount = Math.max(0.01, (sarTotal / 3.75)).toFixed(2); // SAR → USD
   paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
     }),
@@ -6225,7 +6226,16 @@ function renderPayPalButtons() {
       cart = []; _saveCart(); updateCartBadge(); closePayment(); openCart();
       showOrderConfirm(ppOrd?.id, ppTotal);
     }),
-    onError: () => showToast(t('paymentFailed'))
+    onCancel: () => {
+      showToast('Payment cancelled — try again');
+      setTimeout(() => renderPayPalButtons(), 500);
+    },
+    onError: (err) => {
+      console.warn('PayPal error:', err);
+      showToast(t('paymentFailed'));
+      // Re-render buttons after 1.5s so user can try again without refreshing
+      setTimeout(() => renderPayPalButtons(), 1500);
+    }
   }).render('#paypalBtnContainer');
 }
 
