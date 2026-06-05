@@ -5690,7 +5690,7 @@ function closePayment() {
 /* ── CHECKOUT 3-PAGE NAVIGATION ── */
 window._ckPage = 1;
 function ckGoPage(n) {
-  // When advancing from page 1, validate address has been set
+  // When advancing from page 1, validate address
   if (n === 2 && window._ckPage === 1) {
     if (!savedLocation || !savedLocation.city) {
       showToast('📍 Please add a delivery address to continue');
@@ -5698,22 +5698,18 @@ function ckGoPage(n) {
       return;
     }
   }
+  // Populate review page when advancing to page 4
+  if (n === 4) _populateReviewPage();
   window._ckPage = n;
   const modal = document.getElementById('payModal');
-  // Toggle modal page class
-  modal.classList.remove('ck-p1','ck-p2','ck-p3');
+  modal.classList.remove('ck-p1','ck-p2','ck-p3','ck-p4');
   modal.classList.add('ck-p' + n);
-  // Show/hide pages
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     const pg = document.getElementById('ckPg'+i);
-    if (pg) { pg.classList.toggle('ck-pg-on', i === n); }
+    if (pg) pg.classList.toggle('ck-pg-on', i === n);
   });
   // Update step indicator
-  const titles = ['','Address','Items','Payment'];
-  const titleEl = document.getElementById('ckHdrTitle');
-  if (titleEl) titleEl.textContent = 'Checkout';
-  const steps = [1,2,3];
-  steps.forEach(i => {
+  [1,2,3,4].forEach(i => {
     const st = document.getElementById('ckSt'+i);
     const line = document.getElementById('ckStL'+i);
     if (!st) return;
@@ -5722,7 +5718,6 @@ function ckGoPage(n) {
     else if (i === n) st.classList.add('ck-stp-on');
     if (line) line.classList.toggle('ck-stl-done', i < n);
   });
-  // Scroll body to top
   const body = document.querySelector('.ck-body');
   if (body) body.scrollTop = 0;
 }
@@ -5731,7 +5726,71 @@ function ckBack() {
   else closePayment();
 }
 function ckBarAction() {
-  processPayment();
+  if (window._ckPage === 3) {
+    ckGoPage(4);
+  } else {
+    processPayment();
+  }
+}
+
+function _populateReviewPage() {
+  const lang = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+  const subtotalBase = cartSubtotalBase();
+  const subtotalSAR = subtotalBase * lang.rate;
+  const freeShip = subtotalSAR >= FREE_DELIVERY_THRESHOLD_SAR;
+  const shippingSAR = freeShip ? 0 : DELIVERY_SAR;
+  const totalSAR = subtotalSAR + shippingSAR;
+  const fmt = v => lang.currency + Math.round(v).toLocaleString();
+
+  // Compute original total and discount
+  let itemsTotalBase = 0;
+  cart.forEach(item => {
+    const p = PRODUCTS.find(p => p.id === item.id);
+    if (p) itemsTotalBase += (p.originalPrice || p.price) * item.qty;
+  });
+  const itemsTotalSAR = itemsTotalBase * lang.rate;
+  const discountSAR = Math.max(0, itemsTotalSAR - subtotalSAR);
+
+  const el = id => document.getElementById(id);
+  if (el('ocSubtotal')) el('ocSubtotal').textContent = fmt(subtotalSAR);
+  if (el('ocItemsTotal')) el('ocItemsTotal').textContent = fmt(itemsTotalSAR);
+  if (el('ocDiscount')) el('ocDiscount').textContent = '-' + fmt(discountSAR);
+  if (el('ocShipping')) {
+    el('ocShipping').textContent = freeShip ? 'Free' : fmt(shippingSAR);
+    el('ocShipping').style.color = freeShip ? '#16a34a' : '';
+  }
+  if (el('ocTotal')) el('ocTotal').textContent = fmt(totalSAR);
+
+  // Update bottom bar button for selected payment method
+  const payBtnEl = document.getElementById('payBtnText');
+  const btnEl = document.getElementById('btnPayNow');
+  if (payBtnEl && btnEl) {
+    const methodNames = {
+      paypal: 'PayPal', card: 'Pay Now', whatsapp: 'WhatsApp Order',
+      tamara: 'Pay with Tamara', tabby: 'Pay with Tabby',
+      binance: 'Pay with Crypto', stc: 'Pay with STC', gpay: 'Pay with GPay',
+      cod: 'Cash on Delivery',
+    };
+    const methodName = methodNames[selectedPayMethod] || 'Place Order';
+    payBtnEl.textContent = methodName + ' — ' + fmt(totalSAR);
+    if (selectedPayMethod === 'paypal') {
+      btnEl.style.background = '#003087';
+    } else if (selectedPayMethod === 'stc') {
+      btnEl.style.background = 'linear-gradient(135deg,#6D2C8A,#9C27B0)';
+    } else {
+      btnEl.style.background = '';
+    }
+  }
+}
+
+let _ocExpanded = true;
+function ocToggleExpand() {
+  const expand = document.getElementById('ocExpand');
+  const caret = document.getElementById('ocCaret');
+  if (!expand) return;
+  _ocExpanded = !_ocExpanded;
+  expand.classList.toggle('oc-closed', !_ocExpanded);
+  if (caret) caret.classList.toggle('oc-collapsed', !_ocExpanded);
 }
 
 // ── NOON-STYLE CHECKOUT HELPERS ──────────────────────────
