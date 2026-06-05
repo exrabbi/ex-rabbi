@@ -5940,6 +5940,7 @@ function selectPayMethod(method) {
       payBtnEl.textContent = (methodLabel[method] || t('placeOrder')) + ' — ' + lang2.currency + Math.round(grandDisp2).toLocaleString();
     }
   }
+}
 
 function _configGooglePayBtn() {
   const btn = document.getElementById('googlePayBtn');
