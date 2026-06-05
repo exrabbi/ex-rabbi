@@ -14,7 +14,7 @@
  */
 
 const PAYPAL_CONFIG = {
-  clientId: 'AYCqh2SQjhxqLU9D6pKQNhBVgU7dVIUN_e_UhQ_HT2ziGSe0vzxY7bAIDDB4q_eUHZU5Q8DLIvXqjlSE',
+  clientId: 'AYCqh2SQjhxqLU9D6pKQNhBVgU7dVIUN_e_UhQ_HT2ziGSe0vzxY7bAiDDB4q_eUHZU5Q8DLlvXqjISE',
   currency: 'USD',
   environment: 'production'
 };
