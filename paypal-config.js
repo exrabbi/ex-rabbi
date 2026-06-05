@@ -14,10 +14,9 @@
  */
 
 const PAYPAL_CONFIG = {
-  clientId: 'PASTE_YOUR_PAYPAL_CLIENT_ID',
-  currency: 'SAR',
-  // Change to 'production' after testing
-  environment: 'sandbox'
+  clientId: 'AYCqh2SQjhxqLU9D6pKQNhBVgU7dVIUN_e_UhQ_HT2ziGSe0vzxY7bAIDDB4q_eUHZU5Q8DLIvXqjlSE',
+  currency: 'USD',
+  environment: 'production'
 };
 
 // Check if configured
