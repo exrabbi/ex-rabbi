@@ -1,51 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
   <defs>
-    <!-- Official Tamara rainbow: orange → yellow → cream → pink → purple → blue -->
-    <linearGradient id="tmBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#FCC8A0"/>
-      <stop offset="28%"  stop-color="#FDEACC"/>
-      <stop offset="60%"  stop-color="#F2C0EC"/>
-      <stop offset="100%" stop-color="#D0B8F8"/>
+    <linearGradient id="tg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#F9A060"/>
+      <stop offset="30%"  stop-color="#F5D060"/>
+      <stop offset="65%"  stop-color="#E870BD"/>
+      <stop offset="100%" stop-color="#AA6AD4"/>
     </linearGradient>
-    <radialGradient id="tmO" cx="0%" cy="0%" r="65%">
-      <stop offset="0%" stop-color="#FF7030" stop-opacity=".9"/>
-      <stop offset="100%" stop-color="#FF7030" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="tmY" cx="52%" cy="0%" r="50%">
-      <stop offset="0%" stop-color="#FFD830" stop-opacity=".72"/>
-      <stop offset="100%" stop-color="#FFD830" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="tmP" cx="100%" cy="16%" r="56%">
-      <stop offset="0%" stop-color="#F030C8" stop-opacity=".85"/>
-      <stop offset="100%" stop-color="#F030C8" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="tmB" cx="0%" cy="100%" r="60%">
-      <stop offset="0%" stop-color="#5598FF" stop-opacity=".82"/>
-      <stop offset="100%" stop-color="#5598FF" stop-opacity="0"/>
-    </radialGradient>
-    <radialGradient id="tmV" cx="100%" cy="98%" r="50%">
-      <stop offset="0%" stop-color="#A040F0" stop-opacity=".55"/>
-      <stop offset="100%" stop-color="#A040F0" stop-opacity="0"/>
-    </radialGradient>
   </defs>
-
-  <!-- Layered gradient background -->
-  <rect width="90" height="48" rx="8" fill="url(#tmBg)"/>
-  <rect width="90" height="48" rx="8" fill="url(#tmO)"/>
-  <rect width="90" height="48" rx="8" fill="url(#tmY)"/>
-  <rect width="90" height="48" rx="8" fill="url(#tmP)"/>
-  <rect width="90" height="48" rx="8" fill="url(#tmB)"/>
-  <rect width="90" height="48" rx="8" fill="url(#tmV)"/>
-
-  <!-- Tamara icon mark: pac-man + solid dot (official two-circle brand symbol) -->
-  <!-- Pac-man: center (17,24) r=9, mouth facing right ±30° -->
-  <path d="M 17,24 L 24.8,19.5 A 9,9 0 1,1 24.8,28.5 Z" fill="#0D0D0D"/>
-  <!-- Solid circle (right dot) -->
-  <circle cx="30" cy="24" r="6" fill="#0D0D0D"/>
-
-  <!-- "tamara" wordmark -->
-  <text x="62" y="24" text-anchor="middle" dominant-baseline="middle"
-        fill="#0D0D0D" font-size="17" font-weight="900"
-        font-family="'Arial Black',Arial,sans-serif"
+  <rect width="80" height="50" rx="8" fill="url(#tg)"/>
+  <text x="40" y="32" text-anchor="middle" fill="#111111"
+        font-size="17" font-weight="900"
+        font-family="'Arial Rounded MT Bold','Arial Black',Arial,sans-serif"
         letter-spacing="-0.4">tamara</text>
 </svg>

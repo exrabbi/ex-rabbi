@@ -1,7 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
-  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e8e8e8" stroke-width="1.5"/>
-  <!-- Light blue P (rear, slightly right+down) -->
-  <path fill="#009cde" fill-rule="evenodd" d="M36 11h6a8 8 0 0 1 0 16v16h-6z M42 14a5 5 0 0 1 0 10z"/>
+  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/>
+  <!-- Light blue P (back, offset right 4px down 3px) -->
+  <path fill="#009cde" fill-rule="evenodd"
+    d="M38 13 h6 a9 9 0 0 1 0 18 v14 h-6 z
+       M44 16.5 a5.5 5.5 0 0 1 0 11 z"/>
   <!-- Dark navy P (front) -->
-  <path fill="#003087" fill-rule="evenodd" d="M31 8h6a8 8 0 0 1 0 16v16h-6z M37 11a5 5 0 0 1 0 10z"/>
+  <path fill="#003087" fill-rule="evenodd"
+    d="M32 9 h6 a9 9 0 0 1 0 18 v17 h-6 z
+       M38 12.5 a5.5 5.5 0 0 1 0 11 z"/>
 </svg>
