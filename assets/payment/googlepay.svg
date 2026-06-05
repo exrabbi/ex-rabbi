@@ -1,27 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
-  <!-- White card background — official Google Pay light version -->
-  <rect width="90" height="48" rx="8" fill="#fff"/>
-  <rect width="90" height="48" rx="8" fill="none" stroke="#e5e5e5" stroke-width="1.5"/>
-
-  <!-- Google G mark, centred at cx=24 cy=24 r=11 -->
-  <!-- Blue arc (right) -->
-  <path d="M24,13 A11,11 0 0,1 35,24 L29.5,24 A5.5,5.5 0 0,0 24,18.5 Z" fill="#4285F4"/>
-  <!-- Red arc (top-left) -->
-  <path d="M24,13 A11,11 0 0,0 14,18.8 L18.8,21.7 A5.5,5.5 0 0,1 24,18.5 Z" fill="#EA4335"/>
-  <!-- Yellow arc (left) -->
-  <path d="M14,18.8 A11,11 0 0,0 14,29.2 L18.8,26.3 A5.5,5.5 0 0,1 18.8,21.7 Z" fill="#FBBC05"/>
-  <!-- Green arc (bottom) -->
-  <path d="M14,29.2 A11,11 0 0,0 24,35 L24,29.5 A5.5,5.5 0 0,1 18.8,26.3 Z" fill="#34A853"/>
-  <!-- Blue bottom-right arc -->
-  <path d="M24,35 A11,11 0 0,0 35,24 L29.5,24 A5.5,5.5 0 0,1 24,29.5 Z" fill="#4285F4"/>
-  <!-- Blue inner bar (the flat of the G) -->
-  <rect x="22.5" y="21.5" width="12.5" height="5" rx="2.5" fill="#4285F4"/>
-  <!-- White circle cutout for G centre -->
-  <circle cx="24" cy="24" r="5.5" fill="#fff"/>
-
-  <!-- "Pay" text — official Google gray #5F6368 -->
-  <text x="65" y="29" text-anchor="middle" dominant-baseline="middle"
-        fill="#5F6368" font-size="18" font-weight="700"
-        font-family="'Google Sans','Product Sans',Arial,sans-serif"
-        letter-spacing="0">Pay</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/>
+  <defs>
+    <clipPath id="gc"><circle cx="22" cy="25" r="13"/></clipPath>
+  </defs>
+  <!-- Google G: base red (top-right) -->
+  <circle cx="22" cy="25" r="13" fill="#EA4335"/>
+  <!-- Blue: left half -->
+  <rect x="9" y="12" width="13" height="26" fill="#4285F4" clip-path="url(#gc)"/>
+  <!-- Green: bottom-left quarter -->
+  <rect x="9" y="25" width="13" height="13" fill="#34A853" clip-path="url(#gc)"/>
+  <!-- Yellow: bottom-right quarter -->
+  <rect x="22" y="25" width="13" height="13" fill="#FBBC04" clip-path="url(#gc)"/>
+  <!-- White inner ring -->
+  <circle cx="22" cy="25" r="7.5" fill="#fff"/>
+  <!-- Blue horizontal bar (the flat of the G) -->
+  <rect x="22" y="22" width="13" height="6" fill="#4285F4"/>
+  <!-- White G opening (left half of bar area = inner circle space) -->
+  <rect x="22" y="22" width="7.5" height="6" fill="#fff"/>
+  <!-- "Pay" text -->
+  <text x="40" y="31" fill="#5F6368" font-size="16" font-weight="600"
+        font-family="Arial,sans-serif" letter-spacing="-0.3">Pay</text>
 </svg>

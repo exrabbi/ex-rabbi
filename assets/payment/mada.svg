@@ -1,22 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 48">
-  <!-- Card background -->
-  <rect width="90" height="48" rx="8" fill="#fff"/>
-  <rect width="90" height="48" rx="8" fill="none" stroke="#e5e5e5" stroke-width="1.5"/>
-
-  <!-- Blue bar — official mada brand color #29ABE2 -->
-  <rect x="5" y="7" width="38" height="15" rx="1.5" fill="#29ABE2"/>
-
-  <!-- Green bar — official mada brand color #8DC63F -->
-  <rect x="5" y="26" width="38" height="15" rx="1.5" fill="#8DC63F"/>
-
-  <!-- Arabic مدى — near-black, bold -->
-  <text x="68" y="18" text-anchor="middle" dominant-baseline="middle"
-        fill="#222" font-size="13" font-weight="900"
-        font-family="'Tahoma','Segoe UI Arabic',Arial,sans-serif">مدى</text>
-
-  <!-- mada — near-black, bold, matches brand typeface -->
-  <text x="68" y="36" text-anchor="middle" dominant-baseline="middle"
-        fill="#222" font-size="15" font-weight="900"
-        font-family="'Arial Black','Arial Rounded MT Bold',Arial,sans-serif"
-        letter-spacing="-0.4">mada</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/>
+  <!-- Blue stripe -->
+  <rect x="7" y="10" width="24" height="12" rx="1.5" fill="#2BAEE0"/>
+  <!-- Green stripe -->
+  <rect x="7" y="28" width="24" height="12" rx="1.5" fill="#72BE44"/>
+  <!-- Arabic مدى -->
+  <text x="38" y="22" fill="#2d2d2d" font-size="11" font-weight="800"
+        font-family="Arial,sans-serif" text-anchor="start">مدى</text>
+  <!-- Latin mada -->
+  <text x="38" y="38" fill="#2d2d2d" font-size="13" font-weight="900"
+        font-family="Arial,sans-serif" text-anchor="start" letter-spacing="0.3">mada</text>
 </svg>
