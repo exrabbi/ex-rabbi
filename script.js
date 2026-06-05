@@ -441,8 +441,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.scrollTo(0, 0);
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
   _applyProductOverrides();  // apply product additions/edits/deletions
-  // Apply admin settings (delivery charge, free delivery threshold)
-  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.delivery!==undefined)DELIVERY_SAR=parseFloat(s.delivery)||0;if(s.freeDelivery)FREE_DELIVERY_THRESHOLD_SAR=parseFloat(s.freeDelivery)||100;if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
+  // Apply admin settings (delivery always free — overrides any stored setting)
+  try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
+  DELIVERY_SAR = 0; FREE_DELIVERY_THRESHOLD_SAR = 0;
   applyTheme(currentTheme);
   setLang(localStorage.getItem('exg_lang') || 'ar');
   _revealPage(); // remove opacity:0 set in <head>
@@ -6131,7 +6132,8 @@ function renderPayPalButtons() {
   container.innerHTML = '';
   const subtotalDisp = cartSubtotalBase() * (TRANSLATIONS[currentLang]||TRANSLATIONS.en).rate;
   const delivery = subtotalDisp >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
-  const amount = (subtotalDisp + delivery).toFixed(2);
+  const sarTotal = subtotalDisp + delivery;
+  const amount = (sarTotal / 3.75).toFixed(2); // Convert SAR → USD (1 USD = 3.75 SAR)
   paypal.Buttons({
     createOrder: (data, actions) => actions.order.create({
       purchase_units: [{ amount: { value: amount, currency_code: PAYPAL_CONFIG.currency }, description: 'EX GLOBAL Order' }]
