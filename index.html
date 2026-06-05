@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=379" />
+  <link rel="stylesheet" href="styles.css?v=380" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -1814,16 +1814,7 @@
         <div id="payFreeNudge" class="ck-get-row"></div>
       </div>
 
-      <!-- 4. COUPON -->
-      <div class="ck-sec">
-        <div class="ck-coupon-row">
-          <i class="fas fa-tag ck-coupon-tag"></i>
-          <input type="text" id="couponInput" class="ck-coupon-inp" placeholder="Coupon code" maxlength="20" onfocus="_showCouponSuggestions()" />
-          <button class="ck-coupon-btn" id="couponApplyBtn" onclick="applyCoupon()">Apply</button>
-        </div>
-        <div class="pay-coupon-msg" id="couponMsg"></div>
-        <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
-      </div>
+
 
       <!-- 5. PAY WITH -->
       <div class="ck-sec">
@@ -2026,6 +2017,22 @@
           <div class="ck-trust-badge"><i class="fas fa-award"></i><span>PCI DSS Compliant</span></div>
           <div class="ck-trust-badge"><i class="fas fa-user-shield"></i><span>100% Buyer Protection</span></div>
           <div class="ck-trust-badge ck-trust-full"><i class="fas fa-rotate-left"></i><span>Fast Refund Support</span></div>
+        </div>
+      </div>
+
+      <!-- PROMO CODE (before payment summary) -->
+      <div class="ck-sec ck-promo-card">
+        <div class="ck-promo-inner">
+          <div class="ck-promo-pct-badge">%</div>
+          <div class="ck-promo-body">
+            <div class="ck-promo-title">Promo / Coupon Code</div>
+            <div class="ck-promo-inp-row">
+              <input type="text" id="couponInput" class="ck-promo-inp" placeholder="Enter promo or coupon code" maxlength="20" onfocus="_showCouponSuggestions()" />
+              <button class="ck-promo-apply-btn" id="couponApplyBtn" onclick="applyCoupon()">Apply</button>
+            </div>
+            <div class="pay-coupon-msg" id="couponMsg"></div>
+            <div class="coupon-suggest-box" id="couponSuggestBox" style="display:none"></div>
+          </div>
         </div>
       </div>
 
@@ -2309,6 +2316,34 @@
             <span id="authSubmitText">SIGN IN</span>
             <span class="auth-arrow-circle"><i class="fas fa-arrow-right"></i></span>
           </button>
+        </div>
+
+        <!-- Phone form (hidden by default) -->
+        <div id="authPhoneForm" style="display:none">
+          <div class="auth-or-sep" style="margin:0 0 14px"><span>Enter Phone Number</span></div>
+          <div class="auth-inp-wrap" id="authPhoneInputWrap">
+            <i class="fas fa-phone auth-inp-icon"></i>
+            <input type="tel" id="authPhone" class="auth-inp" placeholder="+966 5X XXX XXXX" autocomplete="tel" maxlength="16" />
+          </div>
+          <div id="authRecaptchaWrap" style="margin:12px 0;display:flex;justify-content:center;min-height:78px"></div>
+          <button class="auth-submit-btn" onclick="sendPhoneOTP()" id="sendOTPBtn" style="margin-bottom:0">
+            <span>Send OTP</span>
+            <span class="auth-arrow-circle"><i class="fas fa-paper-plane"></i></span>
+          </button>
+          <div id="authOTPWrap" style="display:none;margin-top:16px">
+            <div class="auth-or-sep" style="margin:0 0 12px"><span>Enter OTP Code</span></div>
+            <div class="auth-inp-wrap">
+              <i class="fas fa-key auth-inp-icon"></i>
+              <input type="tel" id="authOTPCode" class="auth-inp" placeholder="6-digit OTP" maxlength="6" inputmode="numeric" />
+            </div>
+            <button class="auth-submit-btn" onclick="verifyPhoneOTP()" style="margin-top:12px;margin-bottom:0">
+              <span>Verify &amp; Sign In</span>
+              <span class="auth-arrow-circle"><i class="fas fa-check"></i></span>
+            </button>
+            <div style="text-align:center;margin-top:10px">
+              <a href="#" class="auth-forgot-link" onclick="_resendOTP();return false;">Resend OTP</a>
+            </div>
+          </div>
         </div>
 
         <!-- Bottom: sign up line (Daraz style) -->
@@ -3141,7 +3176,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=324"></script>
+  <script src="script.js?v=325"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
