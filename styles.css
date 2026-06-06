@@ -23802,3 +23802,172 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   bottom: 0 !important;
   z-index: 60 !important;
 }
+
+/* ============================================================
+   MODAL: TRUE 50vh IMAGE / 50vh SCROLLABLE DETAILS
+   ============================================================ */
+.product-modal {
+  top: 0 !important;
+  border-radius: 0 !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+#modalBody {
+  flex: 1 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+.lux-modal-wrap {
+  flex: 1 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+}
+.lux-gallery {
+  height: 50vh !important;
+  max-height: 50vh !important;
+  min-height: 50vh !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+}
+.lux-slide {
+  aspect-ratio: unset !important;
+  height: 50vh !important;
+  max-height: 50vh !important;
+  min-height: 50vh !important;
+}
+.lux-scroll-body {
+  flex: 1 !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-y: contain !important;
+  background: #f4f5f7 !important;
+}
+[data-theme="dark"] .lux-scroll-body {
+  background: #07061a !important;
+}
+/* Info card: flush top, no overlap */
+.lux-info-card {
+  margin: 0 !important;
+  border-radius: 20px 20px 0 0 !important;
+  padding: 16px 16px 12px !important;
+}
+/* ATC bar: flex item at bottom, no longer sticky */
+.lux-atc-bar {
+  position: static !important;
+  flex-shrink: 0 !important;
+}
+
+/* ============================================================
+   ADDITIONAL INFORMATION SECTION
+   ============================================================ */
+.lux-addinfo {
+  background: #fff;
+  margin: 8px 0 0;
+  padding: 14px 16px;
+}
+[data-theme="dark"] .lux-addinfo {
+  background: #0e0d23;
+}
+.lux-addinfo-hd {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 12px;
+}
+[data-theme="dark"] .lux-addinfo-hd { color: #f0eeff; }
+.lux-addinfo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f3f3f3;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: #222;
+}
+[data-theme="dark"] .lux-addinfo-row { color: #ccc; border-color: rgba(255,255,255,.06); }
+.lux-addinfo-row span { flex: 1; }
+.lux-addinfo-ic {
+  width: 34px; height: 34px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; flex-shrink: 0;
+}
+.lux-addinfo-ic-blue  { background: rgba(59,130,246,.12); color: #3b82f6; }
+.lux-addinfo-ic-green { background: rgba(22,163,74,.12);  color: #16a34a; }
+.lux-addinfo-ic-amber { background: rgba(245,158,11,.12); color: #d97706; }
+.lux-addinfo-ic-purple{ background: rgba(124,58,237,.12); color: #7c3aed; }
+.lux-addinfo-arr {
+  color: #ccc; font-size: 12px; flex-shrink: 0;
+}
+/* Seller strip */
+.lux-seller-strip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0 0; margin-top: 4px;
+  cursor: pointer;
+}
+.lux-seller-av {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: linear-gradient(135deg, #7c3aed, #e91e8c);
+  color: #fff; font-size: 20px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.lux-seller-inf { flex: 1; }
+.lux-seller-nm { font-size: 13px; color: #111; margin-bottom: 2px; }
+[data-theme="dark"] .lux-seller-nm { color: #eee; }
+.lux-seller-rt { font-size: 11.5px; color: #888; }
+.lux-pos-rate { color: #16a34a; font-weight: 700; }
+/* Trust chips row */
+.lux-trust-chips-row {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 10px 0 2px;
+}
+.lux-trust-chip-sm {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #f5f5f5; border-radius: 20px;
+  padding: 5px 11px; font-size: 11px; color: #555; font-weight: 600;
+}
+[data-theme="dark"] .lux-trust-chip-sm { background: rgba(255,255,255,.07); color: #aaa; }
+
+/* ============================================================
+   FOOTER: SINGLE-LINE PAYMENT LOGOS + COMPACT CONTACT
+   ============================================================ */
+.footer-compact .fpm-icons,
+.fpm-icons {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  overflow-x: auto !important;
+  scrollbar-width: none !important;
+  gap: 7px !important;
+  justify-content: flex-start !important;
+  padding-bottom: 4px !important;
+  grid-template-columns: unset !important;
+}
+.footer-compact .fpm-icons::-webkit-scrollbar,
+.fpm-icons::-webkit-scrollbar { display: none !important; }
+.footer-compact .fpm-icons .pay-bdg,
+.fpm-icons .pay-bdg {
+  width: 62px !important;
+  height: 38px !important;
+  flex-shrink: 0 !important;
+  border-radius: 8px !important;
+}
+/* Contact info: wrap into compact row */
+.footer-compact .footer-contact-mini {
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  gap: 4px 14px !important;
+}
+.fcm-row {
+  font-size: 11.5px !important;
+  gap: 4px !important;
+}
