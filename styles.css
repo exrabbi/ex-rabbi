@@ -23971,3 +23971,102 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   font-size: 11.5px !important;
   gap: 4px !important;
 }
+
+/* ============================================================
+   ACCOUNT SECURITY — PREMIUM REDESIGN
+   ============================================================ */
+
+/* Body: no horizontal padding — sections use margin */
+.sec-body {
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+/* ── Protected banner ── */
+.sec-protected-banner {
+  margin: 0 !important;
+  border-radius: 0 0 24px 24px !important;
+  background: linear-gradient(135deg, #047a2e 0%, #07bc47 55%, #00d462 100%) !important;
+  padding: 22px 20px 28px !important;
+  box-shadow: 0 8px 28px rgba(7,188,71,.35) !important;
+}
+.sec-shield-wrap {
+  width: 54px !important; height: 54px !important;
+  border: 2.5px solid rgba(255,255,255,.5) !important;
+  background: rgba(255,255,255,.18) !important;
+}
+.sec-shield-wrap i { font-size: 26px !important; }
+.sec-protected-title { font-size: 16px !important; font-weight: 900 !important; }
+.sec-protected-sub   { font-size: 12.5px !important; }
+
+/* ── Sections: full-width cards with margin ── */
+.sec-section {
+  margin: 14px 16px 0 !important;
+  border-radius: 18px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 14px rgba(0,0,0,.08) !important;
+  background: #fff !important;
+}
+[data-theme="dark"] .sec-section {
+  background: #14132e !important;
+}
+.sec-section:last-child { margin-bottom: 24px !important; }
+
+/* ── Section title ── */
+.sec-section-title {
+  font-size: 10.5px !important;
+  font-weight: 900 !important;
+  letter-spacing: 1.2px !important;
+  padding: 12px 16px 10px !important;
+  color: #888 !important;
+  background: #fafafa !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+}
+[data-theme="dark"] .sec-section-title {
+  background: rgba(255,255,255,.03) !important;
+  border-bottom-color: rgba(255,255,255,.06) !important;
+}
+
+/* ── Row ── */
+.sec-row {
+  padding: 15px 16px !important;
+  gap: 13px !important;
+}
+
+/* ── Row icon ── */
+.sec-row-icon {
+  width: 40px !important; height: 40px !important;
+  border-radius: 12px !important;
+}
+.sec-row-icon i { font-size: 16px !important; }
+
+/* ── Labels ── */
+.sec-row-label { font-size: 14px !important; font-weight: 700 !important; }
+.sec-row-val   { font-size: 12px !important; margin-top: 3px !important; }
+
+/* ── Action buttons ── */
+.sec-action-btn {
+  padding: 8px 18px !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  border-radius: 22px !important;
+  letter-spacing: .2px !important;
+  box-shadow: 0 3px 10px rgba(233,30,140,.3) !important;
+}
+/* Linked state → green */
+.sec-action-btn.linked {
+  background: #e8f5ec !important;
+  color: #16a34a !important;
+  border: 1.5px solid #b7e4ca !important;
+  box-shadow: none !important;
+  cursor: default !important;
+}
+[data-theme="dark"] .sec-action-btn.linked {
+  background: rgba(22,163,74,.15) !important;
+  color: #4ade80 !important;
+  border-color: rgba(22,163,74,.3) !important;
+}
+
+/* ── Danger row ── */
+.sec-danger-label { color: #ef4444 !important; }
+.sec-icon-danger  { background: linear-gradient(135deg,#ff4c4c,#c62828) !important; }
