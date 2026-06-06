@@ -2854,7 +2854,11 @@ function openModal(id) {
     <!-- Top-left product badges -->
     <div class="lux-tl-badges">
       <div class="lux-tl-badge lux-tl-free"><i class="fas fa-box"></i> FREE SHIPPING</div>
-      ${p.discount>0?`<div class="lux-tl-badge lux-tl-sale"><i class="fas fa-arrow-trend-down"></i> ON SALE</div>`:''}
+    </div>
+    ${p.discount>=20?`<div class="lux-flash-circle"><i class="fas fa-bolt"></i><span>FLASH</span><span>SALE</span></div>`:''}
+    <div class="lux-tl-bottom-badges">
+      ${p.discount>0?`<div class="lux-best-price-badge">BEST PRICE</div>`:''}
+      ${p.sold||p.soldCount?`<div class="lux-fast-del-badge"><i class="fas fa-truck-fast"></i> FAST DELIVERY</div>`:''}
     </div>
     <!-- Viewer count chip -->
     <div class="lux-viewer-chip" id="luxViewerChip">
@@ -2885,6 +2889,7 @@ function openModal(id) {
     <div class="lux-brand-row">
       <span class="lux-category-pill">${p.category?p.category.toUpperCase():'PREMIUM'}</span>
       ${p.discount>=30?`<span class="lux-hot-pill">🔥 HOT</span>`:''}
+      ${p.sold?`<span class="lux-most-viewed-pill">#1 Most viewed <i class="fas fa-chevron-right"></i></span>`:''}
     </div>
     <h2 class="lux-product-name">${getName(p)}</h2>
     <div class="lux-prices-row">
@@ -2899,6 +2904,13 @@ function openModal(id) {
       <div class="lux-offer-pill"><i class="fas fa-truck-fast"></i> ${t('freeShipChip')||'Free Ship ≥ SAR 99'}</div>
       <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-ticket"></i> ${t('codeLabel')||'Code'}: WELCOME10</div>
       <div class="lux-offer-pill" onclick="_openCouponSheet()"><i class="fas fa-gift"></i> ${t('codeLabel')||'Code'}: BDAY10</div>
+    </div>
+
+    <!-- Coupon collect row -->
+    <div class="lux-coupon-collect-row" onclick="_openCouponSheet()">
+      <span class="lux-coupon-collect-icon">🏷️</span>
+      <span class="lux-coupon-collect-txt">You have a <b>2 SAR coupon!</b></span>
+      <button class="lux-coupon-collect-btn">Collect</button>
     </div>
 
     ${p.rating||p.ratingCount?`<div class="lux-rating-row">
@@ -2922,6 +2934,25 @@ function openModal(id) {
       }
       return '';
     })()}
+
+    <!-- Customers love it -->
+    ${(p.rating&&p.rating>=4.3)?`<div class="lux-cust-love-row" onclick="document.querySelector('.lux-reviews-section')?.scrollIntoView({behavior:'smooth'})">
+      <span class="lux-cust-love-star">⭐</span>
+      <span class="lux-cust-love-txt"><b>Customers love it!</b></span>
+      <span class="lux-cust-love-link">Read reviews <i class="fas fa-chevron-right"></i></span>
+    </div>`:''}
+
+    <!-- Pick 3 & Save -->
+    <div class="lux-pick3-row" onclick="closeModal();setTimeout(openSpdPanel,300)">
+      <div class="lux-pick3-left">
+        <div class="lux-pick3-title">Pick 3 &amp; Save</div>
+        <div class="lux-pick3-sub">Add at least 3 items to enjoy savings (up to 10)</div>
+      </div>
+      <div class="lux-pick3-right">
+        <div class="lux-pick3-deal-badge"><span>%</span> Special Deals</div>
+        <div class="lux-pick3-show-btn">Show all items <i class="fas fa-chevron-right"></i></div>
+      </div>
+    </div>
 
     <div class="lux-meta-row">
       <div class="lux-viewing-chip"><span class="lux-view-pulse"></span><span><b>${15+((p.id*7+(p.ratingCount||100))%70)}</b> ${t('viewingNow')||'viewing now'}</span></div>
