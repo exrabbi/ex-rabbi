@@ -11767,17 +11767,26 @@ body:has(#authModal.open) .hc-fab {
 .ck-payinfo-logos {
   display: flex !important;
   align-items: center !important;
-  gap: 4px !important;
+  gap: 6px !important;
   flex: 1 !important;
   flex-wrap: nowrap !important;
-  overflow: hidden !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
   min-width: 0 !important;
+  padding: 2px 0 !important;
 }
+.ck-payinfo-logos::-webkit-scrollbar { display: none !important; }
 .psb-logo {
-  height: 13px !important;
+  height: 26px !important;
   width: auto !important;
-  border-radius: 2px !important;
+  min-width: 40px !important;
+  border-radius: 6px !important;
+  border: 1px solid #e8e8e8 !important;
+  background: #fff !important;
   object-fit: contain !important;
+  padding: 3px 6px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,.07) !important;
   flex-shrink: 0 !important;
 }
 .psb {
@@ -11824,19 +11833,20 @@ body:has(#authModal.open) .hc-fab {
   padding: 14px 14px 10px !important;
 }
 .ck-pmi {
-  border-radius: 0 !important;
-  border: none !important;
-  background: transparent !important;
-  height: 46px !important;
+  border-radius: 8px !important;
+  border: 1.5px solid #e8e8e8 !important;
+  background: #fff !important;
+  height: 44px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  overflow: visible !important;
-  padding: 2px !important;
+  overflow: hidden !important;
+  padding: 5px 8px !important;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06) !important;
 }
 .ck-pmi svg { width: 100% !important; height: 100% !important; display: block !important; }
 .ck-pmi-img { width: 100% !important; height: 100% !important; object-fit: contain !important; display: block !important; }
-[data-theme="dark"] .ck-pmi { background: transparent !important; }
+[data-theme="dark"] .ck-pmi { background: #1e1e2e !important; border-color: rgba(255,255,255,.1) !important; }
 
 /* Trust badge strip */
 .ck-trust-strip {
@@ -22716,17 +22726,19 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .oc-guar-item i { color: #16a34a; font-size: 11px; flex-shrink: 0; }
 [data-theme="dark"] .oc-guar-item { color: #aaa; }
 .oc-safe-pay-logos {
-  display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px;
+  display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px;
 }
 .oc-pay-logo {
-  height: 30px; width: auto;
-  border-radius: 6px;
-  border: 1px solid #f0f0f0;
+  height: 38px; width: auto;
+  min-width: 58px;
+  border-radius: 8px;
+  border: 1.5px solid #e8e8e8;
   object-fit: contain;
   background: #fff;
-  padding: 2px 4px;
+  padding: 4px 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.07);
 }
-[data-theme="dark"] .oc-pay-logo { border-color: rgba(255,255,255,.1); background: rgba(255,255,255,.06); }
+[data-theme="dark"] .oc-pay-logo { border-color: rgba(255,255,255,.1); background: #1e1e2e; }
 .oc-safe-pay-desc { font-size: 12px; color: #888; }
 .oc-terms-txt {
   font-size: 12px; color: #888; text-align: center;
