@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=388" />
+  <link rel="stylesheet" href="styles.css?v=390" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -334,6 +334,12 @@
         <a class="drw-item" href="#" onclick="closeDrawer();openReviews();return false;">
           <span class="drw-item-icon drw-ic-amber"><i class="fas fa-star"></i></span>
           <span class="drw-item-label" data-i18n="myReviews">Reviews</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openCommunity,200);return false;">
+          <span class="drw-item-icon drw-ic-comm"><i class="fas fa-users"></i></span>
+          <span class="drw-item-label">Community</span>
+          <span class="drw-badge-new">NEW</span>
           <i class="fas fa-chevron-right drw-item-arr"></i>
         </a>
         <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openReturns,200);return false;">
@@ -1624,6 +1630,59 @@
     </button>
 
   </aside>
+
+  <!-- COMMUNITY PANEL -->
+  <aside class="comm-panel" id="commPanel">
+    <div class="comm-head">
+      <button class="icon-btn" onclick="closeCommunity()"><i class="fas fa-arrow-left"></i></button>
+      <span class="comm-head-title">Community</span>
+      <button class="comm-compose-btn" onclick="_commOpenCreate()"><i class="fas fa-plus"></i></button>
+    </div>
+    <!-- Tabs -->
+    <div class="comm-tabs">
+      <button class="comm-tab active" onclick="_commSwitchTab(this,'feed')" data-tab="feed">Feed</button>
+      <button class="comm-tab" onclick="_commSwitchTab(this,'mine')" data-tab="mine">My Posts</button>
+      <button class="comm-tab" onclick="_commSwitchTab(this,'liked')" data-tab="liked">Liked</button>
+    </div>
+    <!-- Feed container -->
+    <div class="comm-body" id="commBody">
+      <div class="comm-loading" id="commLoading"><div class="comm-spinner"></div></div>
+      <div id="commFeed"></div>
+    </div>
+  </aside>
+
+  <!-- CREATE POST SHEET -->
+  <div class="comm-create-backdrop" id="commCreateBackdrop" onclick="_commCloseCreate()"></div>
+  <div class="comm-create-sheet" id="commCreateSheet">
+    <div class="comm-create-head">
+      <button class="icon-btn" onclick="_commCloseCreate()"><i class="fas fa-xmark"></i></button>
+      <span class="comm-create-title">New Post</span>
+      <button class="comm-post-btn" id="commPostBtn" onclick="_commSubmitPost()">Post</button>
+    </div>
+    <div class="comm-create-body">
+      <div class="comm-img-pick-wrap" id="commImgPickWrap" onclick="document.getElementById('commImgInput').click()">
+        <i class="fas fa-image comm-img-pick-icon"></i>
+        <span>Add photo</span>
+      </div>
+      <img class="comm-img-preview" id="commImgPreview" style="display:none">
+      <textarea class="comm-caption-inp" id="commCaptionInp" placeholder="Share something with the community…" rows="4"></textarea>
+      <input type="file" id="commImgInput" accept="image/*" style="display:none" onchange="_commHandleImage(this)">
+    </div>
+  </div>
+
+  <!-- COMMENTS SHEET -->
+  <div class="comm-cmt-backdrop" id="commCmtBackdrop" onclick="_commCloseComments()"></div>
+  <div class="comm-cmt-sheet" id="commCmtSheet">
+    <div class="comm-cmt-head">
+      <div class="comm-cmt-title">Comments</div>
+      <button class="icon-btn" onclick="_commCloseComments()"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="comm-cmt-list" id="commCmtList"></div>
+    <div class="comm-cmt-inp-row">
+      <input class="comm-cmt-inp" id="commCmtInput" placeholder="Write a comment…" onkeydown="if(event.key==='Enter')_commSubmitComment()">
+      <button class="comm-cmt-send-btn" onclick="_commSubmitComment()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
 
   <!-- RETURNS PANEL -->
   <aside class="returns-panel" id="returnsPanel">
@@ -3333,7 +3392,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=329"></script>
+  <script src="script.js?v=331"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
