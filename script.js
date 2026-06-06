@@ -3084,17 +3084,22 @@ function openModal(id) {
   <!-- Additional Information section -->
   <div class="lux-addinfo lux-reveal">
     <div class="lux-addinfo-hd">Additional Information</div>
-    <div class="lux-addinfo-row" onclick="showToast('🚚 Free delivery available at pickup points')">
+    <div class="lux-addinfo-row" onclick="openInfoDetail('delivery')">
       <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-truck"></i></div>
       <span>Free delivery on Pickup Points</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    <div class="lux-addinfo-row" onclick="closeModal();openReturns()">
-      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
-      <span>7-Day Easy &amp; Hassle-Free Returns</span>
+    <div class="lux-addinfo-row" onclick="openInfoDetail('warranty')">
+      <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-shield-halved"></i></div>
+      <span>2 year warranty included</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    ${p.sold?`<div class="lux-addinfo-row">
+    <div class="lux-addinfo-row" onclick="openInfoDetail('returns')">
+      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
+      <span>Easy and Hassle Free Returns</span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    ${p.sold?`<div class="lux-addinfo-row" onclick="openInfoDetail('bestseller','${p.category||'Fashion'}')">
       <div class="lux-addinfo-ic lux-addinfo-ic-amber"><i class="fas fa-trophy"></i></div>
       <span>Best Seller in <b>${p.category||'Fashion'}</b></span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
@@ -3104,7 +3109,7 @@ function openModal(id) {
       <span>EX GLOBAL Buyer Protection</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    <div class="lux-seller-strip">
+    <div class="lux-seller-strip" onclick="openSellerProfile()">
       <div class="lux-seller-av">E</div>
       <div class="lux-seller-inf">
         <div class="lux-seller-nm">Sold by <b>EX GLOBAL Store</b></div>
@@ -12941,125 +12946,103 @@ async function _commSubmitComment() {
   } catch(e) { showToast('❌ Failed to comment'); }
 }
 
-/* ===== SPECIAL DEALS PANEL ===== */
-let _spdPicks = []; // array of product ids picked
-
-function openSpdPanel() {
-  document.getElementById('spdPanel').classList.add('open');
+/* ─── SELLER PROFILE SHEET ─────────────────────── */
+function openSellerProfile() {
+  // populate mini product row
+  const row = document.getElementById('sellerProdRow');
+  if (row && !row.dataset.loaded) {
+    const picks = PRODUCTS.slice().sort(() => Math.random() - .5).slice(0, 6);
+    row.innerHTML = picks.map(p => `
+      <div class="sprod-card" onclick="closeSellerProfile();openModal(${p.id})">
+        <img src="${p.image}" onerror="this.src='https://picsum.photos/seed/${p.id}/80/80'">
+        <div class="sprod-price">${fmt(p.price)}</div>
+      </div>`).join('');
+    row.dataset.loaded = '1';
+  }
+  document.getElementById('sellerOverlay').classList.add('open');
+  document.getElementById('sellerSheet').classList.add('open');
   document.body.style.overflow = 'hidden';
-  _spdRenderGrid();
-  _spdUpdateBar();
 }
-function closeSpdPanel() {
-  document.getElementById('spdPanel').classList.remove('open');
+function closeSellerProfile() {
+  document.getElementById('sellerOverlay').classList.remove('open');
+  document.getElementById('sellerSheet').classList.remove('open');
   document.body.style.overflow = '';
 }
 
-function _spdRenderGrid() {
-  const grid = document.getElementById('spdGrid');
-  if (!grid || typeof PRODUCTS === 'undefined') return;
-  // Show discounted products first, then fill with others
-  const pool = [...PRODUCTS].sort((a,b)=>(b.discount||0)-(a.discount||0)).slice(0,30);
-  const lang = (typeof TRANSLATIONS !== 'undefined' && typeof currentLang !== 'undefined')
-    ? (TRANSLATIONS[currentLang] || TRANSLATIONS.en) : { currency:'SAR ', rate:1 };
-  grid.innerHTML = pool.map(p => {
-    const price = (p.price * lang.rate).toFixed(2);
-    const name = typeof getName === 'function' ? getName(p) : (p.name || '');
-    const picked = _spdPicks.includes(p.id);
-    return `<div class="spd-card" id="spdCard-${p.id}">
-      <div class="spd-card-img-wrap">
-        <img class="spd-card-img" src="${p.image}" alt="${name}" loading="lazy" onerror="this.src=''">
-        <div class="spd-best-badge">★★★<br>BEST<br>SELLING</div>
-        <div class="spd-free-ship-bar"><i class="fas fa-truck"></i> Free shipping</div>
-      </div>
-      <div class="spd-card-body">
-        <div class="spd-deal-badge"><i class="fas fa-percent"></i> Special Deals</div>
-        <div class="spd-card-name">${name}</div>
-        <div class="spd-card-price">${price} SAR</div>
-        <button class="spd-add-btn ${picked?'picked':''}" id="spdBtn-${p.id}" onclick="_spdTogglePick(${p.id})">
-          ${picked ? '✓ Added to picks' : 'Add to picks'}
-        </button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function _spdTogglePick(id) {
-  const idx = _spdPicks.indexOf(id);
-  if (idx > -1) {
-    _spdPicks.splice(idx, 1);
-  } else {
-    if (_spdPicks.length >= 6) { showToast('⚠️ Max 6 items in picks'); return; }
-    _spdPicks.push(id);
+/* ─── INFO DETAIL SHEET ─────────────────────────── */
+const _infoData = {
+  delivery: {
+    icon: 'fas fa-truck',
+    color: '#3b82f6',
+    title: 'Free Delivery',
+    rows: [
+      { icon: 'fas fa-store', label: 'Pickup Points', val: 'Free — pick up at nearest locker' },
+      { icon: 'fas fa-box', label: 'Standard Delivery', val: '2–4 business days · SAR 15' },
+      { icon: 'fas fa-bolt', label: 'Express (1–2 days)', val: 'SAR 25 — order before 2PM' },
+      { icon: 'fas fa-gift', label: 'Free on orders ≥ SAR 99', val: 'Nationwide Saudi Arabia 🇸🇦' },
+    ],
+    note: 'Orders placed before 2 PM are dispatched the same day. Tracking via WhatsApp.'
+  },
+  warranty: {
+    icon: 'fas fa-shield-halved',
+    color: '#3b82f6',
+    title: '2 Year Warranty',
+    rows: [
+      { icon: 'fas fa-check-circle', label: 'Coverage', val: 'Manufacturing defects & quality issues' },
+      { icon: 'fas fa-calendar', label: 'Duration', val: '2 years from purchase date' },
+      { icon: 'fas fa-rotate-left', label: 'Claim', val: 'Contact via WhatsApp within 7 days of issue' },
+      { icon: 'fas fa-times-circle', label: 'Not covered', val: 'Physical damage, misuse, or wear & tear' },
+    ],
+    note: 'Warranty claims are processed within 48 hours. We replace or refund — your choice.'
+  },
+  returns: {
+    icon: 'fas fa-rotate-left',
+    color: '#16a34a',
+    title: 'Easy & Free Returns',
+    rows: [
+      { icon: 'fas fa-clock', label: 'Return window', val: '7 days from delivery date' },
+      { icon: 'fas fa-box-open', label: 'Condition', val: 'Unworn, original tags attached' },
+      { icon: 'fas fa-money-bill', label: 'Refund', val: 'Full refund within 3–5 business days' },
+      { icon: 'fas fa-whatsapp', label: 'How to return', val: 'WhatsApp us — we arrange pickup' },
+    ],
+    note: 'We make returns hassle-free. No questions asked for quality issues.'
+  },
+  bestseller: {
+    icon: 'fas fa-trophy',
+    color: '#d97706',
+    title: 'Best Seller',
+    rows: [
+      { icon: 'fas fa-fire', label: 'Ranking', val: '#1 Best Seller in this category' },
+      { icon: 'fas fa-users', label: 'Customers', val: '30,000+ happy buyers' },
+      { icon: 'fas fa-star', label: 'Rating', val: '4.8 / 5 from 960+ reviews' },
+      { icon: 'fas fa-bolt', label: 'Selling fast', val: 'Limited stock — order soon!' },
+    ],
+    note: 'This product is consistently our top performer based on sales & customer satisfaction.'
   }
-  // Update button UI
-  const btn = document.getElementById('spdBtn-' + id);
-  const picked = _spdPicks.includes(id);
-  if (btn) {
-    btn.classList.toggle('picked', picked);
-    btn.textContent = picked ? '✓ Added to picks' : 'Add to picks';
-  }
-  _spdUpdateBar();
-}
+};
 
-function _spdUpdateBar() {
-  const cnt = _spdPicks.length;
-  const countEl = document.getElementById('spdPicksCount');
-  if (countEl) countEl.textContent = cnt + '/3';
-  // Subtotal
-  const lang = (typeof TRANSLATIONS !== 'undefined' && typeof currentLang !== 'undefined')
-    ? (TRANSLATIONS[currentLang] || TRANSLATIONS.en) : { currency:'SAR ', rate:1 };
-  const total = _spdPicks.reduce((s, id) => {
-    const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(x => x.id === id) : null;
-    return s + (p ? p.price * lang.rate : 0);
-  }, 0);
-  const subEl = document.getElementById('spdSubtotal');
-  if (subEl) subEl.textContent = total.toFixed(2) + ' SAR';
-  // Button ready state
-  const btn = document.getElementById('spdPicksBtn');
-  if (btn) {
-    const ready = cnt >= 3;
-    btn.classList.toggle('ready', ready);
-    btn.textContent = ready ? 'Checkout (' + cnt + ' items)' : 'Add 3+ to buy';
-  }
-  // Render slots
-  _spdRenderSlots();
+function openInfoDetail(type, cat) {
+  const data = _infoData[type];
+  if (!data) return;
+  if (type === 'bestseller' && cat) data.rows[0].val = `#1 Best Seller in ${cat}`;
+  document.getElementById('infoDetailHead').innerHTML = `
+    <div class="idd-icon" style="background:${data.color}20;color:${data.color}"><i class="${data.icon}"></i></div>
+    <span>${data.title}</span>`;
+  document.getElementById('infoDetailBody').innerHTML = `
+    <div class="idd-rows">
+      ${data.rows.map(r=>`<div class="idd-row">
+        <div class="idd-row-ic" style="color:${data.color}"><i class="${r.icon}"></i></div>
+        <div class="idd-row-txt"><div class="idd-row-lbl">${r.label}</div><div class="idd-row-val">${r.val}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="idd-note"><i class="fas fa-circle-info"></i> ${data.note}</div>
+    <a class="idd-wa-btn" href="https://wa.me/966546224029" target="_blank">
+      <i class="fab fa-whatsapp"></i> Ask us on WhatsApp
+    </a>`;
+  document.getElementById('infoDetailOverlay').classList.add('open');
+  document.getElementById('infoDetailSheet').classList.add('open');
 }
-
-function _spdRenderSlots() {
-  const slotsEl = document.getElementById('spdPicksSlots');
-  if (!slotsEl) return;
-  const slots = [];
-  for (let i = 0; i < 3; i++) {
-    const id = _spdPicks[i];
-    const p = id && typeof PRODUCTS !== 'undefined' ? PRODUCTS.find(x => x.id === id) : null;
-    slots.push(p
-      ? `<div class="spd-slot"><img src="${p.image}" alt="" loading="lazy"></div>`
-      : `<div class="spd-slot spd-slot-empty"><i class="fas fa-box-open"></i></div>`);
-  }
-  slotsEl.innerHTML = slots.join('');
-}
-
-function _spdTogglePicks() {
-  const wrap = document.getElementById('spdPicksSlotsWrap');
-  const chev = document.getElementById('spdPicksChev');
-  if (!wrap) return;
-  const open = wrap.style.display !== 'none';
-  wrap.style.display = open ? 'none' : 'block';
-  chev?.classList.toggle('open', !open);
-}
-
-function _spdCheckout() {
-  if (_spdPicks.length < 3) { showToast('⚠️ Pick at least 3 items first'); return; }
-  // Add all picks to cart
-  _spdPicks.forEach(id => {
-    if (typeof addToCart === 'function') {
-      const p = PRODUCTS.find(x => x.id === id);
-      if (p) addToCart(id, p.sizes?.[0]||'', p.colors?.[0]||'');
-    }
-  });
-  showToast('🎉 ' + _spdPicks.length + ' items added — Free Shipping unlocked!');
-  _spdPicks = [];
-  closeSpdPanel();
-  setTimeout(() => typeof openCart === 'function' && openCart(), 400);
+function closeInfoDetail() {
+  document.getElementById('infoDetailOverlay').classList.remove('open');
+  document.getElementById('infoDetailSheet').classList.remove('open');
 }
