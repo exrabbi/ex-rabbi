@@ -21978,6 +21978,27 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 [data-theme="dark"] .prof-bday-sel option {
   background: #1e1c3a !important;
 }
+.prof-bday-offer {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #16a34a;
+}
+.prof-bday-offer-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px; height: 20px;
+  background: #16a34a;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
 
 /* Save + signout side by side */
 .prof-btn-row {
