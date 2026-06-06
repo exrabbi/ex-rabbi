@@ -12452,3 +12452,73 @@ function _catGo(catKey) {
     document.querySelector('.tab-btn[data-tab="products"]')?.click();
   }, 350);
 }
+
+/* ===== RETURNS PANEL ===== */
+function openReturns() {
+  const panel = document.getElementById('returnsPanel');
+  if (!panel) return;
+  panel.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _renderReturnOrders();
+}
+function closeReturns() {
+  const panel = document.getElementById('returnsPanel');
+  if (!panel) return;
+  panel.classList.remove('open');
+  document.body.style.overflow = '';
+  _cancelReturnForm();
+}
+function _renderReturnOrders() {
+  const list = document.getElementById('retOrdersList');
+  const empty = document.getElementById('retEmptyMsg');
+  if (!list) return;
+  const orders = JSON.parse(localStorage.getItem('exOrders') || '[]');
+  if (!orders.length) {
+    empty && (empty.style.display = 'flex');
+    return;
+  }
+  empty && (empty.style.display = 'none');
+  const deliveredOrders = orders.filter(o => o.status !== 'cancelled');
+  if (!deliveredOrders.length) {
+    empty && (empty.style.display = 'flex');
+    return;
+  }
+  list.innerHTML = deliveredOrders.map(o => {
+    const img = o.items?.[0]?.image || 'https://via.placeholder.com/52';
+    const date = o.date ? new Date(o.date).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'}) : '';
+    return `<div class="ret-order-card">
+      <img class="ret-order-img" src="${img}" alt="order" onerror="this.src='https://via.placeholder.com/52'" loading="lazy">
+      <div class="ret-order-info">
+        <div class="ret-order-id">${o.id || ('ORD' + o.ts)}</div>
+        <div class="ret-order-date">${date}</div>
+        <div class="ret-order-amt">SAR ${(o.total||0).toFixed(2)}</div>
+      </div>
+      <button class="ret-request-btn" onclick="_openReturnForm('${o.id || o.ts}')">Return</button>
+    </div>`;
+  }).join('');
+}
+function _openReturnForm(orderId) {
+  document.getElementById('retFormWrap').style.display = 'block';
+  document.getElementById('retFormOrderRef').textContent = 'Order: ' + orderId;
+  document.getElementById('retFormWrap')._orderId = orderId;
+  document.getElementById('retFormWrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function _cancelReturnForm() {
+  const fw = document.getElementById('retFormWrap');
+  if (!fw) return;
+  fw.style.display = 'none';
+  const sel = document.getElementById('retReason');
+  if (sel) sel.value = '';
+  const txt = document.getElementById('retDetails');
+  if (txt) txt.value = '';
+}
+function _submitReturn() {
+  const reason = document.getElementById('retReason')?.value;
+  if (!reason) { showToast('⚠️ Please select a reason'); return; }
+  const orderId = document.getElementById('retFormWrap')?._orderId || '';
+  const details = document.getElementById('retDetails')?.value || '';
+  const msg = encodeURIComponent(`Return Request\nOrder: ${orderId}\nReason: ${reason}\n${details ? 'Details: ' + details : ''}`);
+  window.open('https://wa.me/966546224029?text=' + msg, '_blank');
+  _cancelReturnForm();
+  showToast('✅ Return request sent via WhatsApp!');
+}

@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=385" />
+  <link rel="stylesheet" href="styles.css?v=386" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -334,6 +334,11 @@
         <a class="drw-item" href="#" onclick="closeDrawer();openReviews();return false;">
           <span class="drw-item-icon drw-ic-amber"><i class="fas fa-star"></i></span>
           <span class="drw-item-label" data-i18n="myReviews">Reviews</span>
+          <i class="fas fa-chevron-right drw-item-arr"></i>
+        </a>
+        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openReturns,200);return false;">
+          <span class="drw-item-icon drw-ic-yellow"><i class="fas fa-rotate-left"></i></span>
+          <span class="drw-item-label">Returns</span>
           <i class="fas fa-chevron-right drw-item-arr"></i>
         </a>
       </div>
@@ -1618,6 +1623,82 @@
       <span data-i18n="needHelp">Need Help?</span>
     </button>
 
+  </aside>
+
+  <!-- RETURNS PANEL -->
+  <aside class="returns-panel" id="returnsPanel">
+    <div class="ret-head">
+      <button class="icon-btn" onclick="closeReturns()"><i class="fas fa-arrow-left"></i></button>
+      <span class="ret-head-title">Returns</span>
+      <div style="width:36px"></div>
+    </div>
+    <div class="ret-body">
+
+      <!-- Policy card -->
+      <div class="ret-policy-card">
+        <div class="ret-policy-icon"><i class="fas fa-shield-halved"></i></div>
+        <div>
+          <div class="ret-policy-title">7-Day Return Policy</div>
+          <div class="ret-policy-sub">Unused items in original packaging can be returned within 7 days of delivery.</div>
+        </div>
+      </div>
+
+      <!-- Steps -->
+      <div class="ret-steps-title">How to return?</div>
+      <div class="ret-steps">
+        <div class="ret-step"><div class="ret-step-num">1</div><div class="ret-step-txt">Choose your order below and tap <b>Request Return</b></div></div>
+        <div class="ret-step"><div class="ret-step-num">2</div><div class="ret-step-txt">Our team reviews and approves within <b>24 hours</b></div></div>
+        <div class="ret-step"><div class="ret-step-num">3</div><div class="ret-step-txt">Drop off the item or schedule a <b>free pickup</b></div></div>
+        <div class="ret-step"><div class="ret-step-num">4</div><div class="ret-step-txt">Refund issued in <b>3–5 business days</b></div></div>
+      </div>
+
+      <!-- Orders list for return -->
+      <div class="ret-orders-title">Select Order to Return</div>
+      <div id="retOrdersList" class="ret-orders-list">
+        <div class="ret-empty" id="retEmptyMsg">
+          <i class="fas fa-box-open"></i>
+          <div>No recent orders found.<br>Orders appear here after delivery.</div>
+        </div>
+      </div>
+
+      <!-- Return request form (hidden by default) -->
+      <div class="ret-form-wrap" id="retFormWrap" style="display:none">
+        <div class="ret-form-title">Return Request</div>
+        <div class="ret-form-order-ref" id="retFormOrderRef"></div>
+        <div class="ret-form-group">
+          <label class="ret-form-lbl">Reason for return</label>
+          <select class="ret-form-sel" id="retReason">
+            <option value="">Select a reason…</option>
+            <option>Wrong item received</option>
+            <option>Item damaged / defective</option>
+            <option>Not as described</option>
+            <option>Changed my mind</option>
+            <option>Item too small / too large</option>
+            <option>Quality not as expected</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="ret-form-group">
+          <label class="ret-form-lbl">Additional details (optional)</label>
+          <textarea class="ret-form-txt" id="retDetails" rows="3" placeholder="Describe the issue…"></textarea>
+        </div>
+        <div class="ret-form-btns">
+          <button class="ret-cancel-btn" onclick="_cancelReturnForm()">Cancel</button>
+          <button class="ret-submit-btn" onclick="_submitReturn()"><i class="fas fa-paper-plane"></i> Submit Request</button>
+        </div>
+      </div>
+
+      <!-- WhatsApp fast return -->
+      <div class="ret-wa-card">
+        <i class="fab fa-whatsapp ret-wa-icon"></i>
+        <div>
+          <div class="ret-wa-title">Faster via WhatsApp</div>
+          <div class="ret-wa-sub">Chat with our team for instant return support</div>
+        </div>
+        <a class="ret-wa-btn" href="https://wa.me/966546224029?text=Hello%2C%20I%20would%20like%20to%20request%20a%20return" target="_blank">Chat</a>
+      </div>
+
+    </div>
   </aside>
 
   <!-- SETTINGS PANEL -->
@@ -3205,7 +3286,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=326"></script>
+  <script src="script.js?v=327"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
