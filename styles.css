@@ -23690,3 +23690,115 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .lux-special-banner { padding: 8px 12px !important; font-size: 12px !important; }
 .lux-special-timer { font-size: 12px !important; }
 .lux-meta-row { margin-bottom: 6px !important; padding: 7px 10px !important; }
+
+/* ===== FULL-SCREEN PRODUCT MODAL LAYOUT ===== */
+.product-modal {
+  top: 0 !important;
+  border-radius: 0 !important;
+  max-height: 100dvh !important;
+  height: 100dvh !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  background: var(--bg, #f4f5f7) !important;
+}
+[data-theme="dark"] .product-modal {
+  background: #07061a !important;
+}
+
+/* Gallery: fixed height instead of 1:1 square */
+.lux-gallery {
+  height: 46vw !important;
+  min-height: 220px !important;
+  max-height: 48vh !important;
+}
+.lux-slide {
+  aspect-ratio: unset !important;
+  height: 46vw !important;
+  min-height: 220px !important;
+  max-height: 48vh !important;
+}
+
+/* Remove gallery bottom dark gradient — info card covers cleanly */
+.lux-gallery::after {
+  height: 60px !important;
+}
+
+/* Info card: clean overlap + rounded top */
+.lux-info-card {
+  margin: -20px 0 0 !important;
+  border-radius: 22px 22px 0 0 !important;
+  padding: 18px 16px 14px !important;
+  background: #fff !important;
+}
+[data-theme="dark"] .lux-info-card {
+  background: #0e0d23 !important;
+}
+
+/* Tighter name + price for single-screen fit */
+.lux-product-name {
+  font-size: 15px !important;
+  line-height: 1.3 !important;
+  margin-bottom: 8px !important;
+  font-weight: 800 !important;
+}
+.lux-price-current {
+  font-size: 22px !important;
+  font-weight: 900 !important;
+}
+.lux-price-orig { font-size: 13px !important; }
+.lux-discount-badge { font-size: 11px !important; padding: 3px 8px !important; }
+.lux-prices-row { margin-bottom: 8px !important; gap: 6px !important; }
+.lux-rating-row { margin-bottom: 6px !important; }
+.lux-stars { font-size: 13px !important; }
+.lux-rating-num { font-size: 13px !important; }
+.lux-rating-count, .lux-sold-count { font-size: 11px !important; }
+.lux-meta-row { margin-bottom: 6px !important; }
+.lux-brand-row { margin-bottom: 6px !important; }
+
+/* Thumbnails row: compact */
+.lux-thumbs {
+  padding: 6px 12px !important;
+  gap: 6px !important;
+  background: #fff !important;
+}
+[data-theme="dark"] .lux-thumbs {
+  background: #0e0d23 !important;
+}
+.lux-thumb-item {
+  width: 48px !important;
+  height: 48px !important;
+  border-radius: 8px !important;
+}
+
+/* Special banner: compact */
+.lux-special-banner {
+  margin: 0 !important;
+  border-radius: 0 !important;
+  padding: 7px 14px !important;
+  font-size: 12px !important;
+}
+
+/* Delivery card: closer spacing */
+.lux-delivery-card {
+  margin: 8px 0 0 !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+}
+
+/* Viewer + stock chips: smaller */
+.lux-viewing-chip, .lux-stock-chip {
+  font-size: 11px !important;
+  padding: 4px 10px !important;
+}
+
+/* Coupon/pick3/cust-love: tighter */
+.lux-coupon-collect-row { padding: 7px 10px !important; margin-bottom: 6px !important; }
+.lux-pick3-row { padding: 8px 12px !important; margin-bottom: 6px !important; }
+.lux-cust-love-row { padding: 5px 0 !important; margin-bottom: 4px !important; }
+
+/* ATC bar: stays sticky at bottom */
+.lux-atc-bar {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 60 !important;
+}
