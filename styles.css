@@ -23654,3 +23654,39 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   display:inline-flex; align-items:center; justify-content:center; font-size:9px;
 }
 .lux-pick3-show-btn { font-size:11.5px; color:#f97316; font-weight:700; }
+
+/* ===== COMPACT MODAL — fit all info on one screen ===== */
+.lux-info-card { padding: 12px 14px 10px !important; margin: -24px 8px 0 !important; }
+.lux-product-name { font-size: 16px !important; line-height: 1.3 !important; margin-bottom: 6px !important; }
+.lux-brand-row { margin-bottom: 5px !important; }
+.lux-price-current { font-size: 24px !important; font-weight: 900 !important; }
+.lux-price-orig { font-size: 13px !important; }
+.lux-discount-badge { font-size: 11px !important; padding: 3px 9px !important; }
+.lux-prices-row { gap: 7px !important; margin-bottom: 7px !important; flex-wrap: wrap !important; align-items: center !important; }
+.lux-save-badge { font-size: 11px !important; padding: 3px 8px !important; }
+.lux-coupon-chip { font-size: 11px !important; padding: 3px 10px !important; }
+.lux-offers-row { margin-bottom: 6px !important; gap: 5px !important; }
+.lux-offer-pill { font-size: 11px !important; padding: 5px 10px !important; }
+.lux-coupon-collect-row { padding: 7px 10px !important; margin-bottom: 6px !important; border-radius: 10px !important; }
+.lux-coupon-collect-txt { font-size: 11.5px !important; }
+.lux-coupon-collect-btn { padding: 4px 11px !important; font-size: 11px !important; }
+.lux-rating-row { margin-bottom: 5px !important; }
+.lux-stars { font-size: 13px !important; }
+.lux-rating-num { font-size: 13px !important; }
+.lux-rating-count { font-size: 11px !important; }
+.lux-sold-count { font-size: 11px !important; }
+.lux-bestseller-row { padding: 7px 10px !important; margin-bottom: 6px !important; border-radius: 10px !important; }
+.lux-bs-text { font-size: 12px !important; }
+.lux-bs-av { width: 22px !important; height: 22px !important; }
+.lux-cust-love-row { padding: 6px 0 !important; margin-bottom: 4px !important; }
+.lux-cust-love-txt { font-size: 12px !important; }
+.lux-cust-love-link { font-size: 11px !important; }
+.lux-pick3-row { padding: 9px 12px !important; margin-bottom: 7px !important; border-radius: 10px !important; }
+.lux-pick3-title { font-size: 13px !important; }
+.lux-pick3-sub { font-size: 10.5px !important; margin-top: 1px !important; }
+.lux-pick3-show-btn { font-size: 10.5px !important; }
+.lux-pick3-deal-badge { font-size: 9.5px !important; padding: 2px 7px !important; margin-bottom: 2px !important; }
+.lux-viewing-chip, .lux-stock-chip { font-size: 11.5px !important; padding: 5px 11px !important; }
+.lux-special-banner { padding: 8px 12px !important; font-size: 12px !important; }
+.lux-special-timer { font-size: 12px !important; }
+.lux-meta-row { margin-bottom: 6px !important; padding: 7px 10px !important; }
