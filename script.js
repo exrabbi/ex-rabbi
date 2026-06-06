@@ -2845,9 +2845,22 @@ function openModal(id) {
       ${allImgs.map((_,i)=>`<span class="lux-dot${i===0?' active':''}" onclick="_luxGotoSlide(${i})"></span>`).join('')}
     </div>
     <button class="lux-gal-back" onclick="closeModal()"><i class="fas fa-arrow-left"></i></button>
-    <button class="lux-gal-share" onclick="shareProduct(${id})"><i class="fas fa-share-nodes"></i></button>
+    <div class="lux-share-win-wrap">
+      <button class="lux-gal-share" onclick="shareProduct(${id})"><i class="fas fa-share-nodes"></i></button>
+      <span class="lux-share-win-lbl">Share &amp; Win</span>
+    </div>
     <button class="lux-gal-wish ${inWish?'active':''}" id="luxGalWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
     ${allImgs.length>1?`<div class="lux-img-count"><span id="luxImgCurr">1</span>/${allImgs.length}</div>`:''}
+    <!-- Top-left product badges -->
+    <div class="lux-tl-badges">
+      <div class="lux-tl-badge lux-tl-free"><i class="fas fa-box"></i> FREE SHIPPING</div>
+      ${p.discount>0?`<div class="lux-tl-badge lux-tl-sale"><i class="fas fa-arrow-trend-down"></i> ON SALE</div>`:''}
+    </div>
+    <!-- Viewer count chip -->
+    <div class="lux-viewer-chip" id="luxViewerChip">
+      <span class="lux-viewer-dots"><span></span><span></span></span>
+      <span id="luxViewerCount">${Math.floor(Math.random()*28)+5}</span>
+    </div>
     ${(()=>{
       const leftB = p.discount>0
         ? `<div class="lux-hb lux-hb-discount"><i class="fas fa-tag"></i> -${p.discount}% OFF TODAY</div>` : '';
@@ -2860,6 +2873,12 @@ function openModal(id) {
   ${allImgs.length>1?`
   <div class="lux-thumbs" id="luxThumbs">
     ${allImgs.map((u,i)=>`<div class="lux-thumb-item${i===0?' active':''}" onclick="_luxGotoSlide(${i})"><img src="${u}" loading="lazy"/></div>`).join('')}
+  </div>`:''}
+
+  <!-- Special code countdown banner -->
+  ${p.discount>0?`<div class="lux-special-banner" id="luxSpecialBanner">
+    <div class="lux-special-left"><i class="fas fa-clock lux-special-clock"></i> <span>Special code for you</span></div>
+    <div class="lux-special-timer">Ends in <span id="luxSpecialTimer">--:--:--</span></div>
   </div>`:''}
 
   <div class="lux-info-card lux-reveal">
@@ -3150,6 +3169,8 @@ function closeModal() {
   document.body.style.overflow = '';
   document.body.classList.remove('modal-open');
   history.replaceState({}, '', location.pathname);
+  clearInterval(_luxTimerInterval);
+  clearInterval(_luxViewerInterval);
 }
 
 function switchGalleryImg(idx) {
@@ -10906,10 +10927,40 @@ function _initScrollReveal() {
 }
 
 /* ── RE-INIT REVEALS AFTER MODAL OPEN ── */
+let _luxTimerInterval = null, _luxViewerInterval = null;
 function _luxModalReady(imgs) {
   _initLuxGallery(imgs);
   setTimeout(_initScrollReveal, 60);
   document.body.classList.add('modal-open');
+  _startModalSpecialTimer();
+  _startModalViewerFlicker();
+}
+function _startModalSpecialTimer() {
+  clearInterval(_luxTimerInterval);
+  const el = document.getElementById('luxSpecialTimer');
+  if (!el) return;
+  // Random end time 4–7 hours from now, seeded by product id
+  const seed = parseInt(el.closest('[id]')?.id?.replace(/\D/g,'') || '0') || 0;
+  const endMs = Date.now() + (4 * 3600 + (seed % 10800)) * 1000;
+  function tick() {
+    const left = Math.max(0, endMs - Date.now());
+    const h = Math.floor(left / 3600000);
+    const m = Math.floor((left % 3600000) / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  tick();
+  _luxTimerInterval = setInterval(tick, 1000);
+}
+function _startModalViewerFlicker() {
+  clearInterval(_luxViewerInterval);
+  const el = document.getElementById('luxViewerCount');
+  if (!el) return;
+  let v = parseInt(el.textContent) || 8;
+  _luxViewerInterval = setInterval(() => {
+    v = Math.max(3, v + (Math.random() > 0.5 ? 1 : -1));
+    el.textContent = v;
+  }, 4000);
 }
 
 /* ── INIT LUXURY FEATURES ── */
@@ -12576,4 +12627,255 @@ function closeCommitment() {
   document.getElementById('commitBackdrop').classList.remove('open');
   document.getElementById('commitSheet').classList.remove('open');
   document.body.style.overflow = '';
+}
+
+/* ===== COMMUNITY FEED ===== */
+let _commTab = 'feed';
+let _commCmtPostId = null;
+
+function openCommunity() {
+  document.getElementById('commPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _commLoadFeed();
+}
+function closeCommunity() {
+  document.getElementById('commPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function _commSwitchTab(el, tab) {
+  document.querySelectorAll('.comm-tab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  _commTab = tab;
+  _commLoadFeed();
+}
+async function _commLoadFeed() {
+  const feed = document.getElementById('commFeed');
+  const loading = document.getElementById('commLoading');
+  if (!feed) return;
+  loading.style.display = 'flex';
+  feed.innerHTML = '';
+  try {
+    if (typeof firebase === 'undefined' || !firebase.apps?.length) throw new Error('no-firebase');
+    const db = firebase.firestore();
+    let q = db.collection('community_posts').orderBy('timestamp','desc').limit(40);
+    if (_commTab === 'mine') {
+      if (!currentUser) { feed.innerHTML = _commEmptyHTML('Sign in to see your posts', 'fas fa-user-circle'); loading.style.display='none'; return; }
+      q = q.where('uid','==', currentUser.uid || currentUser.email);
+    } else if (_commTab === 'liked') {
+      if (!currentUser) { feed.innerHTML = _commEmptyHTML('Sign in to see liked posts', 'fas fa-heart'); loading.style.display='none'; return; }
+      q = db.collection('community_posts').where('likes','array-contains', currentUser.uid || currentUser.email).orderBy('timestamp','desc').limit(40);
+    }
+    const snap = await q.get();
+    if (snap.empty) {
+      feed.innerHTML = _commEmptyHTML(_commTab === 'feed' ? 'No posts yet. Be the first!' : 'Nothing here yet.', 'fas fa-images');
+    } else {
+      feed.innerHTML = snap.docs.map(doc => _commPostHTML(doc.id, doc.data())).join('');
+    }
+  } catch(e) {
+    feed.innerHTML = _commEmptyHTML('Could not load posts.<br>Check your connection.', 'fas fa-wifi-slash');
+  }
+  loading.style.display = 'none';
+}
+function _commEmptyHTML(msg, icon) {
+  return `<div class="comm-empty"><i class="${icon}"></i><div class="comm-empty-title">${msg}</div><div class="comm-empty-sub">Pull down to refresh</div></div>`;
+}
+function _commPostHTML(id, d) {
+  const uid = currentUser ? (currentUser.uid || currentUser.email) : null;
+  const liked = Array.isArray(d.likes) && uid && d.likes.includes(uid);
+  const isOwn = uid && d.uid === uid;
+  const initials = (d.username || 'U').charAt(0).toUpperCase();
+  const av = d.avatar ? `<img src="${d.avatar}" onerror="this.style.display='none'" style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover">` : '';
+  const timeAgo = _commTimeAgo(d.timestamp?.toDate?.() || new Date());
+  return `<div class="comm-post-card" id="cpost-${id}">
+    <div class="comm-post-hdr">
+      <div class="comm-post-av" style="position:relative">${initials}${av}</div>
+      <div>
+        <div class="comm-post-uname">${_escHtml(d.username || 'User')}</div>
+        <div class="comm-post-time">${timeAgo}</div>
+      </div>
+      ${isOwn ? `<button class="comm-post-del" onclick="_commDeletePost('${id}')"><i class="fas fa-trash-can"></i></button>` : ''}
+    </div>
+    ${d.image ? `<img class="comm-post-img" src="${d.image}" loading="lazy">` : ''}
+    ${d.caption ? `<div class="comm-post-caption">${_escHtml(d.caption)}</div>` : ''}
+    <div class="comm-post-date">${new Date(d.timestamp?.toDate?.() || Date.now()).toLocaleDateString('en-US',{day:'numeric',month:'short',year:'numeric'})}</div>
+    <div class="comm-post-actions">
+      <button class="comm-action-btn ${liked?'liked':''}" onclick="_commToggleLike('${id}',this)">
+        <i class="${liked?'fas':'far'} fa-thumbs-up"></i> <span class="comm-like-cnt">${d.likeCount||0}</span>
+      </button>
+      <button class="comm-action-btn" onclick="_commOpenComments('${id}')">
+        <i class="far fa-comment"></i> <span>${d.commentCount||0}</span>
+      </button>
+      <button class="comm-action-btn comm-share-btn" onclick="_commShare('${id}',${JSON.stringify(_escHtml(d.caption||''))})">
+        <i class="fas fa-share-nodes"></i>
+      </button>
+    </div>
+  </div>`;
+}
+function _escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _commTimeAgo(date) {
+  const s = Math.floor((Date.now() - date) / 1000);
+  if (s < 60) return 'just now';
+  const m = Math.floor(s/60); if (m < 60) return m+'m ago';
+  const h = Math.floor(m/60); if (h < 24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+async function _commToggleLike(postId, btn) {
+  if (!currentUser) { openAuth(); return; }
+  const uid = currentUser.uid || currentUser.email;
+  const liked = btn.classList.contains('liked');
+  btn.classList.toggle('liked', !liked);
+  const icon = btn.querySelector('i');
+  if (icon) { icon.className = (!liked ? 'fas' : 'far') + ' fa-thumbs-up'; }
+  const cntEl = btn.querySelector('.comm-like-cnt');
+  const cur = parseInt(cntEl?.textContent||'0');
+  if (cntEl) cntEl.textContent = Math.max(0, cur + (liked ? -1 : 1));
+  try {
+    const db = firebase.firestore();
+    const ref = db.collection('community_posts').doc(postId);
+    await ref.update({
+      likes: firebase.firestore.FieldValue[liked ? 'arrayRemove' : 'arrayUnion'](uid),
+      likeCount: firebase.firestore.FieldValue.increment(liked ? -1 : 1)
+    });
+  } catch(e) { /* revert */ btn.classList.toggle('liked', liked); }
+}
+function _commShare(postId, caption) {
+  const url = window.location.href.split('?')[0] + '?post=' + postId;
+  if (navigator.share) {
+    navigator.share({ title: 'EX GLOBAL Community', text: caption, url });
+  } else {
+    navigator.clipboard?.writeText(url).then(() => showToast('✅ Link copied!'));
+  }
+}
+/* Create Post */
+let _commImgData = null;
+function _commOpenCreate() {
+  if (!currentUser) { openAuth(); return; }
+  document.getElementById('commCreateBackdrop').classList.add('open');
+  document.getElementById('commCreateSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function _commCloseCreate() {
+  document.getElementById('commCreateBackdrop').classList.remove('open');
+  document.getElementById('commCreateSheet').classList.remove('open');
+  _commImgData = null;
+  document.getElementById('commImgPreview').style.display = 'none';
+  document.getElementById('commImgPickWrap').style.display = 'flex';
+  document.getElementById('commCaptionInp').value = '';
+}
+async function _commHandleImage(input) {
+  const file = input.files[0];
+  if (!file) return;
+  _commImgData = await _commCompressImage(file);
+  const prev = document.getElementById('commImgPreview');
+  prev.src = _commImgData;
+  prev.style.display = 'block';
+  document.getElementById('commImgPickWrap').style.display = 'none';
+  input.value = '';
+}
+function _commCompressImage(file, maxW=900, quality=0.72) {
+  return new Promise(resolve => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxW/img.width);
+        const c = document.createElement('canvas');
+        c.width = Math.round(img.width*scale);
+        c.height = Math.round(img.height*scale);
+        c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+        resolve(c.toDataURL('image/jpeg', quality));
+      };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+async function _commSubmitPost() {
+  const caption = document.getElementById('commCaptionInp').value.trim();
+  if (!_commImgData && !caption) { showToast('⚠️ Add a photo or caption'); return; }
+  const btn = document.getElementById('commPostBtn');
+  btn.disabled = true; btn.textContent = 'Posting…';
+  try {
+    const db = firebase.firestore();
+    await db.collection('community_posts').add({
+      uid: currentUser.uid || currentUser.email,
+      username: currentUser.name || currentUser.email?.split('@')[0] || 'User',
+      avatar: currentUser.avatar || '',
+      caption,
+      image: _commImgData || '',
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      likes: [],
+      likeCount: 0,
+      commentCount: 0
+    });
+    showToast('✅ Posted!');
+    _commCloseCreate();
+    _commTab = 'feed';
+    document.querySelectorAll('.comm-tab').forEach((b,i)=>b.classList.toggle('active',i===0));
+    _commLoadFeed();
+  } catch(e) {
+    showToast('❌ Failed to post. Try again.');
+  }
+  btn.disabled = false; btn.textContent = 'Post';
+}
+async function _commDeletePost(postId) {
+  if (!confirm('Delete this post?')) return;
+  try {
+    await firebase.firestore().collection('community_posts').doc(postId).delete();
+    document.getElementById('cpost-'+postId)?.remove();
+    showToast('🗑️ Post deleted');
+  } catch(e) { showToast('❌ Could not delete'); }
+}
+/* Comments */
+async function _commOpenComments(postId) {
+  _commCmtPostId = postId;
+  document.getElementById('commCmtBackdrop').classList.add('open');
+  document.getElementById('commCmtSheet').classList.add('open');
+  const list = document.getElementById('commCmtList');
+  list.innerHTML = '<div style="color:#aaa;text-align:center;padding:20px">Loading…</div>';
+  try {
+    const snap = await firebase.firestore().collection('community_posts').doc(postId)
+      .collection('comments').orderBy('timestamp','asc').limit(50).get();
+    if (snap.empty) {
+      list.innerHTML = '<div style="color:#aaa;text-align:center;padding:20px;font-size:13px">No comments yet. Be the first!</div>';
+    } else {
+      list.innerHTML = snap.docs.map(d => {
+        const data = d.data();
+        const init = (data.username||'U').charAt(0).toUpperCase();
+        return `<div class="comm-cmt-item">
+          <div class="comm-cmt-av">${init}</div>
+          <div class="comm-cmt-bubble">
+            <div class="comm-cmt-user">${_escHtml(data.username||'User')}</div>
+            <div class="comm-cmt-text">${_escHtml(data.text)}</div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) { list.innerHTML = '<div style="color:#aaa;text-align:center;padding:20px">Could not load.</div>'; }
+}
+function _commCloseComments() {
+  document.getElementById('commCmtBackdrop').classList.remove('open');
+  document.getElementById('commCmtSheet').classList.remove('open');
+  _commCmtPostId = null;
+}
+async function _commSubmitComment() {
+  if (!currentUser) { openAuth(); return; }
+  if (!_commCmtPostId) return;
+  const inp = document.getElementById('commCmtInput');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  try {
+    const db = firebase.firestore();
+    const postRef = db.collection('community_posts').doc(_commCmtPostId);
+    await postRef.collection('comments').add({
+      uid: currentUser.uid || currentUser.email,
+      username: currentUser.name || currentUser.email?.split('@')[0] || 'User',
+      text,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    await postRef.update({ commentCount: firebase.firestore.FieldValue.increment(1) });
+    // Re-open to refresh
+    _commOpenComments(_commCmtPostId);
+  } catch(e) { showToast('❌ Failed to comment'); }
 }
