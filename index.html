@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=391" />
+  <link rel="stylesheet" href="styles.css?v=394" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2346,10 +2346,11 @@
           <div class="oc-trust-sub">Safe payments · Secure personal details</div>
         </div>
         <!-- Safe Payments -->
-        <div class="oc-trust-card">
+        <div class="oc-trust-card" onclick="openCommitment()" style="cursor:pointer">
           <div class="oc-trust-row-hdr" style="margin-bottom:12px">
             <i class="fas fa-lock" style="color:#16a34a"></i>
             <span class="oc-trust-title">Safe Payments</span>
+            <i class="fas fa-chevron-right" style="color:#ccc;margin-left:auto"></i>
           </div>
           <div class="oc-safe-pay-logos">
             <img src="assets/payment/mada.svg"       alt="mada"       class="oc-pay-logo">
