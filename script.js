@@ -2851,15 +2851,6 @@ function openModal(id) {
     </div>
     <button class="lux-gal-wish ${inWish?'active':''}" id="luxGalWish" onclick="modalToggleWish(${p.id})"><i class="${inWish?'fas':'far'} fa-heart"></i></button>
     ${allImgs.length>1?`<div class="lux-img-count"><span id="luxImgCurr">1</span>/${allImgs.length}</div>`:''}
-    <!-- Top-left product badges -->
-    <div class="lux-tl-badges">
-      <div class="lux-tl-badge lux-tl-free"><i class="fas fa-box"></i> FREE SHIPPING</div>
-    </div>
-    ${p.discount>=20?`<div class="lux-flash-circle"><i class="fas fa-bolt"></i><span>FLASH</span><span>SALE</span></div>`:''}
-    <div class="lux-tl-bottom-badges">
-      ${p.discount>0?`<div class="lux-best-price-badge">BEST PRICE</div>`:''}
-      ${p.sold||p.soldCount?`<div class="lux-fast-del-badge"><i class="fas fa-truck-fast"></i> FAST DELIVERY</div>`:''}
-    </div>
     <!-- Viewer count chip -->
     <div class="lux-viewer-chip" id="luxViewerChip">
       <span class="lux-viewer-dots"><span></span><span></span></span>
@@ -2868,9 +2859,7 @@ function openModal(id) {
     ${(()=>{
       const leftB = p.discount>0
         ? `<div class="lux-hb lux-hb-discount"><i class="fas fa-tag"></i> -${p.discount}% OFF TODAY</div>` : '';
-      const rightB = (p.stock!==undefined&&p.stock<=5&&p.stock>0)
-        ? `<div class="lux-hb lux-hb-stock">⚡ Only ${p.stock} left!</div>`
-        : p.sold ? `<div class="lux-hb lux-hb-sold"><i class="fas fa-fire"></i> ${String(p.sold).replace(/\++$/,'')}+ sold</div>` : '';
+      const rightB = p.sold ? `<div class="lux-hb lux-hb-sold"><i class="fas fa-fire"></i> ${String(p.sold).replace(/\++$/,'')}+ sold</div>` : '';
       return (leftB||rightB) ? `<div class="lux-hero-badges">${leftB}<span style="flex:1"></span>${rightB}</div>` : '';
     })()}
   </div>
