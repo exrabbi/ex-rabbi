@@ -9558,11 +9558,24 @@ function _vspClearHistory() {
 function _vspRenderTrending() {
   const wrap = document.getElementById('vspTrending');
   if (!wrap) return;
-  wrap.innerHTML = VSP_TRENDING.map(t => `
-    <button class="vsp-trend-chip" onclick="_vspDoTerm('${t}')">
-      <i class="fas fa-arrow-trend-up"></i> ${t}
-    </button>
-  `).join('');
+  const pool = (typeof PRODUCTS !== 'undefined' && PRODUCTS.length)
+    ? [...PRODUCTS].sort(() => Math.random() - 0.5).slice(0, 12)
+    : [];
+  if (!pool.length) {
+    wrap.innerHTML = VSP_TRENDING.map(t => `
+      <button class="vsp-trend-chip" onclick="_vspDoTerm('${t}')">
+        <i class="fas fa-arrow-trend-up"></i> ${t}
+      </button>`).join('');
+    return;
+  }
+  wrap.innerHTML = pool.map(p => {
+    const name = typeof getName === 'function' ? getName(p) : (p.name || '');
+    const safeName = name.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    return `<div class="vsp-disc-card" onclick="_vspPickProduct(${p.id},'${safeName}','${(p.image||'').replace(/'/g,"\\'")}')">
+      <img class="vsp-disc-img" src="${p.image || ''}" alt="${safeName}" loading="lazy" onerror="this.style.background='#f5f5f7';this.src=''">
+      <div class="vsp-disc-name">${name}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ===================================================
