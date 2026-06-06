@@ -8957,13 +8957,65 @@ html { scrollbar-width: thin; scrollbar-color: #e91e8c transparent; }
   transition: background .2s;
 }
 .lux-gal-back:active { background: rgba(0,0,0,.7); }
-.lux-gal-share {
+/* Share & Win wrapper */
+.lux-share-win-wrap {
   position: absolute; top: 14px; right: 60px; z-index: 10;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.lux-share-win-lbl {
+  font-size: 9.5px; font-weight: 800; color: #FFD700;
+  text-shadow: 0 1px 3px rgba(0,0,0,.6);
+  white-space: nowrap; letter-spacing: .2px;
+}
+.lux-gal-share {
   width: 38px; height: 38px; border-radius: 50%;
-  background: rgba(0,0,0,.45); backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,.18); color: #fff;
+  background: rgba(255,255,255,.92); backdrop-filter: blur(12px);
+  border: none; color: #1a1a2a;
   font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
 }
+/* Top-left badges (FREE SHIPPING, ON SALE) */
+.lux-tl-badges {
+  position: absolute; top: 14px; left: 0; z-index: 10;
+  display: flex; flex-direction: column; gap: 5px;
+  pointer-events: none;
+}
+.lux-tl-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 10px; font-size: 11px; font-weight: 900;
+  letter-spacing: .4px; border-radius: 0 6px 6px 0;
+}
+.lux-tl-free { background: #16a34a; color: #fff; }
+.lux-tl-sale { background: #dc2626; color: #fff; }
+/* Viewer count chip */
+.lux-viewer-chip {
+  position: absolute; bottom: 14px; left: 14px; z-index: 6;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(0,0,0,.55); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 20px; padding: 4px 10px;
+  font-size: 12px; font-weight: 700; color: #fff;
+}
+.lux-viewer-dots { display: flex; gap: 2px; }
+.lux-viewer-dots span {
+  width: 8px; height: 8px; border-radius: 50%;
+}
+.lux-viewer-dots span:first-child { background: #FFD700; }
+.lux-viewer-dots span:last-child  { background: #60a5fa; }
+/* Special code countdown banner */
+.lux-special-banner {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 14px;
+  background: linear-gradient(90deg, #dc2626 0%, #ea580c 55%, #f97316 100%);
+  color: #fff; font-size: 13px; font-weight: 700;
+  border-radius: 0;
+}
+.lux-special-left { display: flex; align-items: center; gap: 7px; }
+.lux-special-clock {
+  font-size: 18px;
+  animation: lux-clock-pulse 1s ease-in-out infinite alternate;
+}
+@keyframes lux-clock-pulse { from { opacity:1; } to { opacity:.5; } }
+.lux-special-timer { font-size: 14px; font-weight: 900; letter-spacing: 1px; }
 .lux-gal-wish {
   position: absolute; top: 14px; right: 14px; z-index: 10;
   width: 38px; height: 38px; border-radius: 50%;
