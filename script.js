@@ -3084,17 +3084,22 @@ function openModal(id) {
   <!-- Additional Information section -->
   <div class="lux-addinfo lux-reveal">
     <div class="lux-addinfo-hd">Additional Information</div>
-    <div class="lux-addinfo-row" onclick="showToast('🚚 Free delivery available at pickup points')">
+    <div class="lux-addinfo-row" onclick="openInfoDetail('delivery')">
       <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-truck"></i></div>
       <span>Free delivery on Pickup Points</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    <div class="lux-addinfo-row" onclick="closeModal();openReturns()">
-      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
-      <span>7-Day Easy &amp; Hassle-Free Returns</span>
+    <div class="lux-addinfo-row" onclick="openInfoDetail('warranty')">
+      <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-shield-halved"></i></div>
+      <span>2 year warranty included</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    ${p.sold?`<div class="lux-addinfo-row">
+    <div class="lux-addinfo-row" onclick="openInfoDetail('returns')">
+      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
+      <span>Easy and Hassle Free Returns</span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    ${p.sold?`<div class="lux-addinfo-row" onclick="openInfoDetail('bestseller','${p.category||'Fashion'}')">
       <div class="lux-addinfo-ic lux-addinfo-ic-amber"><i class="fas fa-trophy"></i></div>
       <span>Best Seller in <b>${p.category||'Fashion'}</b></span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
@@ -3104,7 +3109,7 @@ function openModal(id) {
       <span>EX GLOBAL Buyer Protection</span>
       <i class="fas fa-chevron-right lux-addinfo-arr"></i>
     </div>
-    <div class="lux-seller-strip">
+    <div class="lux-seller-strip" onclick="openSellerProfile()">
       <div class="lux-seller-av">E</div>
       <div class="lux-seller-inf">
         <div class="lux-seller-nm">Sold by <b>EX GLOBAL Store</b></div>
@@ -12939,4 +12944,105 @@ async function _commSubmitComment() {
     // Re-open to refresh
     _commOpenComments(_commCmtPostId);
   } catch(e) { showToast('❌ Failed to comment'); }
+}
+
+/* ─── SELLER PROFILE SHEET ─────────────────────── */
+function openSellerProfile() {
+  // populate mini product row
+  const row = document.getElementById('sellerProdRow');
+  if (row && !row.dataset.loaded) {
+    const picks = PRODUCTS.slice().sort(() => Math.random() - .5).slice(0, 6);
+    row.innerHTML = picks.map(p => `
+      <div class="sprod-card" onclick="closeSellerProfile();openModal(${p.id})">
+        <img src="${p.image}" onerror="this.src='https://picsum.photos/seed/${p.id}/80/80'">
+        <div class="sprod-price">${fmt(p.price)}</div>
+      </div>`).join('');
+    row.dataset.loaded = '1';
+  }
+  document.getElementById('sellerOverlay').classList.add('open');
+  document.getElementById('sellerSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSellerProfile() {
+  document.getElementById('sellerOverlay').classList.remove('open');
+  document.getElementById('sellerSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ─── INFO DETAIL SHEET ─────────────────────────── */
+const _infoData = {
+  delivery: {
+    icon: 'fas fa-truck',
+    color: '#3b82f6',
+    title: 'Free Delivery',
+    rows: [
+      { icon: 'fas fa-store', label: 'Pickup Points', val: 'Free — pick up at nearest locker' },
+      { icon: 'fas fa-box', label: 'Standard Delivery', val: '2–4 business days · SAR 15' },
+      { icon: 'fas fa-bolt', label: 'Express (1–2 days)', val: 'SAR 25 — order before 2PM' },
+      { icon: 'fas fa-gift', label: 'Free on orders ≥ SAR 99', val: 'Nationwide Saudi Arabia 🇸🇦' },
+    ],
+    note: 'Orders placed before 2 PM are dispatched the same day. Tracking via WhatsApp.'
+  },
+  warranty: {
+    icon: 'fas fa-shield-halved',
+    color: '#3b82f6',
+    title: '2 Year Warranty',
+    rows: [
+      { icon: 'fas fa-check-circle', label: 'Coverage', val: 'Manufacturing defects & quality issues' },
+      { icon: 'fas fa-calendar', label: 'Duration', val: '2 years from purchase date' },
+      { icon: 'fas fa-rotate-left', label: 'Claim', val: 'Contact via WhatsApp within 7 days of issue' },
+      { icon: 'fas fa-times-circle', label: 'Not covered', val: 'Physical damage, misuse, or wear & tear' },
+    ],
+    note: 'Warranty claims are processed within 48 hours. We replace or refund — your choice.'
+  },
+  returns: {
+    icon: 'fas fa-rotate-left',
+    color: '#16a34a',
+    title: 'Easy & Free Returns',
+    rows: [
+      { icon: 'fas fa-clock', label: 'Return window', val: '7 days from delivery date' },
+      { icon: 'fas fa-box-open', label: 'Condition', val: 'Unworn, original tags attached' },
+      { icon: 'fas fa-money-bill', label: 'Refund', val: 'Full refund within 3–5 business days' },
+      { icon: 'fas fa-whatsapp', label: 'How to return', val: 'WhatsApp us — we arrange pickup' },
+    ],
+    note: 'We make returns hassle-free. No questions asked for quality issues.'
+  },
+  bestseller: {
+    icon: 'fas fa-trophy',
+    color: '#d97706',
+    title: 'Best Seller',
+    rows: [
+      { icon: 'fas fa-fire', label: 'Ranking', val: '#1 Best Seller in this category' },
+      { icon: 'fas fa-users', label: 'Customers', val: '30,000+ happy buyers' },
+      { icon: 'fas fa-star', label: 'Rating', val: '4.8 / 5 from 960+ reviews' },
+      { icon: 'fas fa-bolt', label: 'Selling fast', val: 'Limited stock — order soon!' },
+    ],
+    note: 'This product is consistently our top performer based on sales & customer satisfaction.'
+  }
+};
+
+function openInfoDetail(type, cat) {
+  const data = _infoData[type];
+  if (!data) return;
+  if (type === 'bestseller' && cat) data.rows[0].val = `#1 Best Seller in ${cat}`;
+  document.getElementById('infoDetailHead').innerHTML = `
+    <div class="idd-icon" style="background:${data.color}20;color:${data.color}"><i class="${data.icon}"></i></div>
+    <span>${data.title}</span>`;
+  document.getElementById('infoDetailBody').innerHTML = `
+    <div class="idd-rows">
+      ${data.rows.map(r=>`<div class="idd-row">
+        <div class="idd-row-ic" style="color:${data.color}"><i class="${r.icon}"></i></div>
+        <div class="idd-row-txt"><div class="idd-row-lbl">${r.label}</div><div class="idd-row-val">${r.val}</div></div>
+      </div>`).join('')}
+    </div>
+    <div class="idd-note"><i class="fas fa-circle-info"></i> ${data.note}</div>
+    <a class="idd-wa-btn" href="https://wa.me/966546224029" target="_blank">
+      <i class="fab fa-whatsapp"></i> Ask us on WhatsApp
+    </a>`;
+  document.getElementById('infoDetailOverlay').classList.add('open');
+  document.getElementById('infoDetailSheet').classList.add('open');
+}
+function closeInfoDetail() {
+  document.getElementById('infoDetailOverlay').classList.remove('open');
+  document.getElementById('infoDetailSheet').classList.remove('open');
 }

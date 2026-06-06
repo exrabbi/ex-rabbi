@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=400" />
+  <link rel="stylesheet" href="styles.css?v=401" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -3150,6 +3150,63 @@
     <div id="pdCouponList"></div>
   </div>
 
+  <!-- ===== SELLER PROFILE SHEET ===== -->
+  <div class="seller-overlay" id="sellerOverlay" onclick="closeSellerProfile()"></div>
+  <aside class="seller-sheet" id="sellerSheet">
+    <div class="seller-sh-head">
+      <button class="seller-sh-back" onclick="closeSellerProfile()"><i class="fas fa-arrow-left"></i></button>
+      <span>Store Profile</span>
+      <div style="width:36px"></div>
+    </div>
+    <div class="seller-sh-body">
+      <!-- Store banner -->
+      <div class="seller-banner">
+        <div class="seller-banner-bg"></div>
+        <div class="seller-banner-info">
+          <div class="seller-big-av">E</div>
+          <div>
+            <div class="seller-big-name">EX GLOBAL Store</div>
+            <div class="seller-big-tag">Official Saudi Seller · Since 2021</div>
+          </div>
+        </div>
+        <div class="seller-banner-stats">
+          <div class="seller-stat"><span class="seller-stat-val">4.8</span><span class="seller-stat-lbl">Rating</span></div>
+          <div class="seller-stat-div"></div>
+          <div class="seller-stat"><span class="seller-stat-val">92%</span><span class="seller-stat-lbl">Positive</span></div>
+          <div class="seller-stat-div"></div>
+          <div class="seller-stat"><span class="seller-stat-val">30K+</span><span class="seller-stat-lbl">Sold</span></div>
+        </div>
+      </div>
+      <!-- Trust badges -->
+      <div class="seller-badges">
+        <div class="seller-badge"><i class="fas fa-image"></i><span>Item as shown<br><b>95%</b></span></div>
+        <div class="seller-badge"><i class="fas fa-handshake"></i><span>Partner<br><b>3+ Years</b></span></div>
+        <div class="seller-badge"><i class="fas fa-rotate-left"></i><span>Low Return<br><b>Rate</b></span></div>
+        <div class="seller-badge"><i class="fas fa-thumbs-up"></i><span>Great Recent<br><b>Rating</b></span></div>
+      </div>
+      <!-- About -->
+      <div class="seller-about">
+        <div class="seller-about-title">About the Store</div>
+        <p class="seller-about-text">EX GLOBAL is an official Saudi fashion brand specializing in premium men's and women's clothing. All products are sourced directly and quality-checked before shipping.</p>
+      </div>
+      <!-- Contact -->
+      <a class="seller-wa-btn" href="https://wa.me/966546224029?text=Hello+EX+GLOBAL+%F0%9F%91%8B" target="_blank">
+        <i class="fab fa-whatsapp"></i> Chat with Store on WhatsApp
+      </a>
+      <!-- More products -->
+      <div class="seller-more-hd">More from EX GLOBAL Store</div>
+      <div class="seller-prod-row" id="sellerProdRow"></div>
+    </div>
+  </aside>
+
+  <!-- ===== INFO DETAIL SHEET ===== -->
+  <div class="info-detail-overlay" id="infoDetailOverlay" onclick="closeInfoDetail()"></div>
+  <div class="info-detail-sheet" id="infoDetailSheet">
+    <div class="info-detail-handle"></div>
+    <div class="info-detail-head" id="infoDetailHead"></div>
+    <div class="info-detail-body" id="infoDetailBody"></div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="paypal-config.js"></script>
   <!-- LANGUAGE PICKER SHEET -->
@@ -3393,7 +3450,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=334"></script>
+  <script src="script.js?v=335"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
