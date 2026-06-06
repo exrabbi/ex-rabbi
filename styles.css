@@ -22856,11 +22856,17 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .oc-guar-item i { color: #16a34a; font-size: 11px; flex-shrink: 0; }
 [data-theme="dark"] .oc-guar-item { color: #aaa; }
 .oc-safe-pay-logos {
-  display: flex; gap: 7px; flex-wrap: wrap; margin-bottom: 10px;
+  display: flex; gap: 7px; flex-wrap: nowrap;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  margin-bottom: 10px;
+  padding-bottom: 4px;
 }
+.oc-safe-pay-logos::-webkit-scrollbar { display: none; }
 .oc-pay-logo {
   height: 38px; width: auto;
   min-width: 58px;
+  flex-shrink: 0;
   border-radius: 8px;
   border: 1.5px solid #e8e8e8;
   object-fit: contain;

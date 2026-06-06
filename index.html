@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=392" />
+  <link rel="stylesheet" href="styles.css?v=394" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -324,12 +324,6 @@
           <span class="drw-item-icon drw-ic-red"><i class="fas fa-heart"></i></span>
           <span class="drw-item-label" data-i18n="wishlistMenu">Wishlist</span>
           <span id="drawerWishCount" class="drw-item-badge" style="display:none"></span>
-          <i class="fas fa-chevron-right drw-item-arr"></i>
-        </a>
-        <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openSpdPanel,200);return false;">
-          <span class="drw-item-icon drw-ic-spd"><i class="fas fa-percent"></i></span>
-          <span class="drw-item-label">Special Deals</span>
-          <span class="drw-badge-hot">HOT</span>
           <i class="fas fa-chevron-right drw-item-arr"></i>
         </a>
         <a class="drw-item" href="#" onclick="closeDrawer();setTimeout(openCouponPanel,200);return false;">
@@ -1637,44 +1631,6 @@
 
   </aside>
 
-  <!-- SPECIAL DEALS PANEL -->
-  <aside class="spd-panel" id="spdPanel">
-    <!-- Header -->
-    <div class="spd-header">
-      <button class="icon-btn spd-back-btn" onclick="closeSpdPanel()"><i class="fas fa-arrow-left"></i></button>
-      <div class="spd-header-mid">
-        <div class="spd-header-title"><span class="spd-pct-badge">%</span> Special Deals</div>
-        <div class="spd-header-sub"><i class="fas fa-arrow-trend-down"></i> Buy Any 3 Items &nbsp;|&nbsp; <i class="fas fa-truck"></i> Get Free Shipping</div>
-      </div>
-      <button class="icon-btn" onclick="shareProduct&&navigator.share&&navigator.share({title:'Special Deals',url:location.href})"><i class="fas fa-share-nodes"></i></button>
-    </div>
-
-    <!-- Products grid -->
-    <div class="spd-body" id="spdBody">
-      <div class="spd-section-lbl"><span>🥇</span> Top-rated products</div>
-      <div class="spd-grid" id="spdGrid"></div>
-    </div>
-
-    <!-- Sticky bottom picks bar -->
-    <div class="spd-picks-bar" id="spdPicksBar">
-      <div class="spd-picks-top" onclick="_spdTogglePicks()">
-        <div class="spd-picks-label">My picks <span class="spd-picks-count" id="spdPicksCount">0/3</span> item(s)</div>
-        <i class="fas fa-chevron-down spd-picks-chev" id="spdPicksChev"></i>
-      </div>
-      <div class="spd-picks-slots-wrap" id="spdPicksSlotsWrap" style="display:none">
-        <div class="spd-picks-hint">You need to select at least 3 items to get the discount.</div>
-        <div class="spd-picks-slots" id="spdPicksSlots"></div>
-      </div>
-      <div class="spd-picks-bottom">
-        <div class="spd-picks-subtotal">
-          <div class="spd-picks-sub-lbl">Subtotal</div>
-          <div class="spd-picks-sub-val" id="spdSubtotal">0 SAR</div>
-        </div>
-        <button class="spd-picks-btn" id="spdPicksBtn" onclick="_spdCheckout()">Add 3+ to buy</button>
-      </div>
-    </div>
-  </aside>
-
   <!-- COMMUNITY PANEL -->
   <aside class="comm-panel" id="commPanel">
     <div class="comm-head">
@@ -2390,10 +2346,11 @@
           <div class="oc-trust-sub">Safe payments · Secure personal details</div>
         </div>
         <!-- Safe Payments -->
-        <div class="oc-trust-card">
+        <div class="oc-trust-card" onclick="openCommitment()" style="cursor:pointer">
           <div class="oc-trust-row-hdr" style="margin-bottom:12px">
             <i class="fas fa-lock" style="color:#16a34a"></i>
             <span class="oc-trust-title">Safe Payments</span>
+            <i class="fas fa-chevron-right" style="color:#ccc;margin-left:auto"></i>
           </div>
           <div class="oc-safe-pay-logos">
             <img src="assets/payment/mada.svg"       alt="mada"       class="oc-pay-logo">
@@ -3436,7 +3393,7 @@
   <script src="products.js?v=85"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=333"></script>
+  <script src="script.js?v=332"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
