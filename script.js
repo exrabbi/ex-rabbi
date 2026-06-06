@@ -12879,3 +12879,126 @@ async function _commSubmitComment() {
     _commOpenComments(_commCmtPostId);
   } catch(e) { showToast('❌ Failed to comment'); }
 }
+
+/* ===== SPECIAL DEALS PANEL ===== */
+let _spdPicks = []; // array of product ids picked
+
+function openSpdPanel() {
+  document.getElementById('spdPanel').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  _spdRenderGrid();
+  _spdUpdateBar();
+}
+function closeSpdPanel() {
+  document.getElementById('spdPanel').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function _spdRenderGrid() {
+  const grid = document.getElementById('spdGrid');
+  if (!grid || typeof PRODUCTS === 'undefined') return;
+  // Show discounted products first, then fill with others
+  const pool = [...PRODUCTS].sort((a,b)=>(b.discount||0)-(a.discount||0)).slice(0,30);
+  const lang = (typeof TRANSLATIONS !== 'undefined' && typeof currentLang !== 'undefined')
+    ? (TRANSLATIONS[currentLang] || TRANSLATIONS.en) : { currency:'SAR ', rate:1 };
+  grid.innerHTML = pool.map(p => {
+    const price = (p.price * lang.rate).toFixed(2);
+    const name = typeof getName === 'function' ? getName(p) : (p.name || '');
+    const picked = _spdPicks.includes(p.id);
+    return `<div class="spd-card" id="spdCard-${p.id}">
+      <div class="spd-card-img-wrap">
+        <img class="spd-card-img" src="${p.image}" alt="${name}" loading="lazy" onerror="this.src=''">
+        <div class="spd-best-badge">★★★<br>BEST<br>SELLING</div>
+        <div class="spd-free-ship-bar"><i class="fas fa-truck"></i> Free shipping</div>
+      </div>
+      <div class="spd-card-body">
+        <div class="spd-deal-badge"><i class="fas fa-percent"></i> Special Deals</div>
+        <div class="spd-card-name">${name}</div>
+        <div class="spd-card-price">${price} SAR</div>
+        <button class="spd-add-btn ${picked?'picked':''}" id="spdBtn-${p.id}" onclick="_spdTogglePick(${p.id})">
+          ${picked ? '✓ Added to picks' : 'Add to picks'}
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function _spdTogglePick(id) {
+  const idx = _spdPicks.indexOf(id);
+  if (idx > -1) {
+    _spdPicks.splice(idx, 1);
+  } else {
+    if (_spdPicks.length >= 6) { showToast('⚠️ Max 6 items in picks'); return; }
+    _spdPicks.push(id);
+  }
+  // Update button UI
+  const btn = document.getElementById('spdBtn-' + id);
+  const picked = _spdPicks.includes(id);
+  if (btn) {
+    btn.classList.toggle('picked', picked);
+    btn.textContent = picked ? '✓ Added to picks' : 'Add to picks';
+  }
+  _spdUpdateBar();
+}
+
+function _spdUpdateBar() {
+  const cnt = _spdPicks.length;
+  const countEl = document.getElementById('spdPicksCount');
+  if (countEl) countEl.textContent = cnt + '/3';
+  // Subtotal
+  const lang = (typeof TRANSLATIONS !== 'undefined' && typeof currentLang !== 'undefined')
+    ? (TRANSLATIONS[currentLang] || TRANSLATIONS.en) : { currency:'SAR ', rate:1 };
+  const total = _spdPicks.reduce((s, id) => {
+    const p = (typeof PRODUCTS !== 'undefined') ? PRODUCTS.find(x => x.id === id) : null;
+    return s + (p ? p.price * lang.rate : 0);
+  }, 0);
+  const subEl = document.getElementById('spdSubtotal');
+  if (subEl) subEl.textContent = total.toFixed(2) + ' SAR';
+  // Button ready state
+  const btn = document.getElementById('spdPicksBtn');
+  if (btn) {
+    const ready = cnt >= 3;
+    btn.classList.toggle('ready', ready);
+    btn.textContent = ready ? 'Checkout (' + cnt + ' items)' : 'Add 3+ to buy';
+  }
+  // Render slots
+  _spdRenderSlots();
+}
+
+function _spdRenderSlots() {
+  const slotsEl = document.getElementById('spdPicksSlots');
+  if (!slotsEl) return;
+  const slots = [];
+  for (let i = 0; i < 3; i++) {
+    const id = _spdPicks[i];
+    const p = id && typeof PRODUCTS !== 'undefined' ? PRODUCTS.find(x => x.id === id) : null;
+    slots.push(p
+      ? `<div class="spd-slot"><img src="${p.image}" alt="" loading="lazy"></div>`
+      : `<div class="spd-slot spd-slot-empty"><i class="fas fa-box-open"></i></div>`);
+  }
+  slotsEl.innerHTML = slots.join('');
+}
+
+function _spdTogglePicks() {
+  const wrap = document.getElementById('spdPicksSlotsWrap');
+  const chev = document.getElementById('spdPicksChev');
+  if (!wrap) return;
+  const open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  chev?.classList.toggle('open', !open);
+}
+
+function _spdCheckout() {
+  if (_spdPicks.length < 3) { showToast('⚠️ Pick at least 3 items first'); return; }
+  // Add all picks to cart
+  _spdPicks.forEach(id => {
+    if (typeof addToCart === 'function') {
+      const p = PRODUCTS.find(x => x.id === id);
+      if (p) addToCart(id, p.sizes?.[0]||'', p.colors?.[0]||'');
+    }
+  });
+  showToast('🎉 ' + _spdPicks.length + ' items added — Free Shipping unlocked!');
+  _spdPicks = [];
+  closeSpdPanel();
+  setTimeout(() => typeof openCart === 'function' && openCart(), 400);
+}
