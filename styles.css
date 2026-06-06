@@ -22706,8 +22706,14 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 [data-theme="dark"] .pd-pay-strip { background: #13112a; border-color: rgba(255,255,255,.07); }
 .pd-pay-lbl { font-size: 11.5px; font-weight: 700; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
 .pd-pay-lbl i { color: #16a34a; }
-.pd-pay-logos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.pd-pml { height: 26px; width: auto; border-radius: 6px; object-fit: contain; }
+.pd-pay-logos {
+  display: flex; flex-wrap: nowrap; gap: 6px; align-items: center;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+}
+.pd-pay-logos::-webkit-scrollbar { display: none; }
+.pd-pml { height: 26px; width: auto; min-width: 36px; flex-shrink: 0; border-radius: 6px; object-fit: contain; }
 
 /* Buy Now button premium */
 .lux-buynow {
@@ -22795,8 +22801,13 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 [data-theme="dark"] .pd-pay-strip { background: #13112a; border-color: rgba(255,255,255,.07); }
 .pd-pay-lbl { font-size: 11.5px; font-weight: 700; color: #888; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
 .pd-pay-lbl i { color: #16a34a; }
-.pd-pay-logos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.pd-pml { height: 26px; width: auto; border-radius: 6px; object-fit: contain; max-width: 48px; }
+.pd-pay-logos {
+  display: flex; flex-wrap: nowrap; gap: 6px; align-items: center;
+  overflow-x: auto; overflow-y: hidden;
+  scrollbar-width: none; padding-bottom: 2px;
+}
+.pd-pay-logos::-webkit-scrollbar { display: none; }
+.pd-pml { height: 26px; width: auto; min-width: 36px; flex-shrink: 0; border-radius: 6px; object-fit: contain; }
 .lux-buynow {
   min-width: 110px !important; padding: 0 16px !important;
   background: linear-gradient(135deg, #ff6b35, #ff3b30) !important;
