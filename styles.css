@@ -23692,16 +23692,14 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 .lux-meta-row { margin-bottom: 6px !important; padding: 7px 10px !important; }
 
 /* ===== FULL-SCREEN PRODUCT MODAL LAYOUT ===== */
-.product-modal {
+.product-modal.open {
   top: 0 !important;
   border-radius: 0 !important;
   max-height: 100dvh !important;
-  height: 100dvh !important;
-  overflow-y: auto !important;
   overflow-x: hidden !important;
   background: var(--bg, #f4f5f7) !important;
 }
-[data-theme="dark"] .product-modal {
+[data-theme="dark"] .product-modal.open {
   background: #07061a !important;
 }
 
@@ -23806,7 +23804,7 @@ input[type="date"].prof-field-input { color-scheme: auto; }
 /* ============================================================
    MODAL: TRUE 50vh IMAGE / 50vh SCROLLABLE DETAILS
    ============================================================ */
-.product-modal {
+.product-modal.open {
   top: 0 !important;
   border-radius: 0 !important;
   height: 100dvh !important;
