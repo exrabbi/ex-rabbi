@@ -2863,6 +2863,9 @@ function openModal(id) {
       return (leftB||rightB) ? `<div class="lux-hero-badges">${leftB}<span style="flex:1"></span>${rightB}</div>` : '';
     })()}
   </div>
+
+  <!-- scrollable body below gallery -->
+  <div class="lux-scroll-body">
   ${allImgs.length>1?`
   <div class="lux-thumbs" id="luxThumbs">
     ${allImgs.map((u,i)=>`<div class="lux-thumb-item${i===0?' active':''}" onclick="_luxGotoSlide(${i})"><img src="${u}" loading="lazy"/></div>`).join('')}
@@ -3078,6 +3081,43 @@ function openModal(id) {
 
   ${_pdAddInfoCard(p)}
 
+  <!-- Additional Information section -->
+  <div class="lux-addinfo lux-reveal">
+    <div class="lux-addinfo-hd">Additional Information</div>
+    <div class="lux-addinfo-row" onclick="showToast('🚚 Free delivery available at pickup points')">
+      <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-truck"></i></div>
+      <span>Free delivery on Pickup Points</span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    <div class="lux-addinfo-row" onclick="closeModal();openReturns()">
+      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
+      <span>7-Day Easy &amp; Hassle-Free Returns</span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    ${p.sold?`<div class="lux-addinfo-row">
+      <div class="lux-addinfo-ic lux-addinfo-ic-amber"><i class="fas fa-trophy"></i></div>
+      <span>Best Seller in <b>${p.category||'Fashion'}</b></span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>`:''}
+    <div class="lux-addinfo-row" onclick="closeModal();openCommitment()">
+      <div class="lux-addinfo-ic lux-addinfo-ic-purple"><i class="fas fa-shield-halved"></i></div>
+      <span>EX GLOBAL Buyer Protection</span>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    <div class="lux-seller-strip">
+      <div class="lux-seller-av">E</div>
+      <div class="lux-seller-inf">
+        <div class="lux-seller-nm">Sold by <b>EX GLOBAL Store</b></div>
+        <div class="lux-seller-rt">⭐ 4.8 · <span class="lux-pos-rate">92% Positive</span> Ratings</div>
+      </div>
+      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
+    </div>
+    <div class="lux-trust-chips-row">
+      <span class="lux-trust-chip-sm"><i class="fas fa-image"></i> Item as shown 95%</span>
+      <span class="lux-trust-chip-sm"><i class="fas fa-handshake"></i> Partner 3+ Years</span>
+    </div>
+  </div>
+
   ${_fbtHTML(p)}
   ${_pdRatingsCard(p)}
   ${_qaHTML(p)}
@@ -3092,6 +3132,7 @@ function openModal(id) {
   </div>
 
   <div style="height:90px"></div>
+  </div><!-- /lux-scroll-body -->
 </div>
 
 ${p.stock!==0?`
