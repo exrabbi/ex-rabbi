@@ -1600,6 +1600,36 @@ function renderCart() {
     }
   }
 
+  // Milestone promotion bar
+  const MILESTONE_SAR = 60;
+  const MILESTONE_OFF = 12;
+  let mileEl = document.getElementById('cartMilestoneBar');
+  if (!mileEl) {
+    mileEl = document.createElement('div');
+    mileEl.id = 'cartMilestoneBar';
+    const progBox = document.getElementById('cartDelProg');
+    if (progBox) progBox.parentNode.insertBefore(mileEl, progBox.nextSibling);
+  }
+  if (subtotalDisp >= MILESTONE_SAR) {
+    mileEl.innerHTML = `<div class="cart-milestone reached">
+      <i class="fas fa-tag"></i>
+      <span>🎉 <b>SAR ${MILESTONE_OFF} off</b> applied! Milestone reached!</span>
+    </div>`;
+  } else {
+    const milestoneNeeded = (MILESTONE_SAR - subtotalDisp).toFixed(2);
+    const milestonePct = Math.min(100, (subtotalDisp / MILESTONE_SAR) * 100);
+    mileEl.innerHTML = `<div class="cart-milestone">
+      <div class="cart-milestone-head">
+        <i class="fas fa-tag"></i>
+        <span>Spend <b>SAR${MILESTONE_SAR}+</b>, get <b>SAR${MILESTONE_OFF}</b> off</span>
+      </div>
+      <div class="cart-milestone-bar-wrap">
+        <div class="cart-milestone-bar-fill" style="width:${milestonePct}%"></div>
+      </div>
+      <div class="cart-milestone-sub">Add <b>SAR ${milestoneNeeded}</b> to use <b>SAR${MILESTONE_OFF}.00</b> off coupon</div>
+    </div>`;
+  }
+
   // Summary values
   const origEl = document.getElementById('cartOriginalTotal');
   const discEl = document.getElementById('cartDiscountDisp');
