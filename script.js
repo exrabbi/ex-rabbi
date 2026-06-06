@@ -12535,3 +12535,15 @@ function _submitReturn() {
   _cancelReturnForm();
   showToast('✅ Return request sent via WhatsApp!');
 }
+
+/* ===== EX GLOBAL COMMITMENT SHEET ===== */
+function openCommitment() {
+  document.getElementById('commitBackdrop').classList.add('open');
+  document.getElementById('commitSheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeCommitment() {
+  document.getElementById('commitBackdrop').classList.remove('open');
+  document.getElementById('commitSheet').classList.remove('open');
+  document.body.style.overflow = '';
+}
