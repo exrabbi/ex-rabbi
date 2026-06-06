@@ -2766,16 +2766,16 @@ function _pdAddInfoCard(p) {
   const bsRow = rank>0&&rank<=5&&(p.ratingCount||0)>=200
     ?`<div class="pd-ai-row pd-ai-bs"><span class="pd-ai-row-ico" style="background:#ede7f6;color:#7c3aed"><i class="fas fa-trophy"></i></span><span>Best Seller #${rank} in <strong>${cat}</strong></span><i class="fas fa-chevron-right pd-ai-arr"></i></div>`:'' ;
   const brandLogo = ((p.brand||'EX')[0]||'E').toUpperCase();
+  const bsCat = cat||'Fashion';
   return `<div class="pd-addinfo lux-reveal">
     <div class="pd-addinfo-title">Additional Information</div>
     <div class="pd-addinfo-list">
-      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-truck-fast"></i></span><span>Free delivery on Lockers & Pickup Points</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
-      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-shield-halved"></i></span><span>2 year warranty included</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
-      <div class="pd-ai-row"><span class="pd-ai-row-ico"><i class="fas fa-rotate-left"></i></span><span>Easy and Hassle Free Returns</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
-      ${bsRow}
-      <div class="pd-ai-row pd-ai-seller-row"><div class="pd-ai-seller-logo">${brandLogo}</div><div class="pd-ai-seller-info"><div>Sold by <strong>${p.brand||'EX GLOBAL Store'}</strong></div><div class="pd-ai-seller-meta"><i class="fas fa-star pd-ai-star"></i> 4.8 &middot; <span class="pd-ai-pos">92% Positive</span> Seller Ratings</div></div><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-row" onclick="openInfoDetail('delivery')"><span class="pd-ai-row-ico"><i class="fas fa-truck-fast"></i></span><span>Free delivery on Lockers & Pickup Points</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-row" onclick="openInfoDetail('warranty')"><span class="pd-ai-row-ico"><i class="fas fa-shield-halved"></i></span><span>2 year warranty included</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      <div class="pd-ai-row" onclick="openInfoDetail('returns')"><span class="pd-ai-row-ico"><i class="fas fa-rotate-left"></i></span><span>Easy and Hassle Free Returns</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
+      ${bsRow ? bsRow.replace('<div class="pd-ai-row', `<div class="pd-ai-row" onclick="openInfoDetail('bestseller','${bsCat}')"`) : ''}
+      <div class="pd-ai-row pd-ai-seller-row" onclick="openSellerProfile()"><div class="pd-ai-seller-logo">${brandLogo}</div><div class="pd-ai-seller-info"><div>Sold by <strong>${p.brand||'EX GLOBAL Store'}</strong></div><div class="pd-ai-seller-meta"><i class="fas fa-star pd-ai-star"></i> 4.8 &middot; <span class="pd-ai-pos">92% Positive</span> Seller Ratings</div></div><i class="fas fa-chevron-right pd-ai-arr"></i></div>
       <div class="pd-ai-pills"><span class="pd-ai-pill"><i class="fas fa-box-open"></i> Item as shown 95%</span><span class="pd-ai-pill"><i class="fas fa-handshake"></i> Partner 3+ Years</span><span class="pd-ai-pill"><i class="fas fa-arrow-trend-down"></i> Low return seller</span><span class="pd-ai-pill"><i class="fas fa-thumbs-up"></i> Great recent rating</span></div>
-      <div class="pd-ai-row pd-ai-more"><span class="pd-ai-row-ico pd-ai-tag-ico"><i class="fas fa-tag"></i></span><span>More offers from other sellers</span><i class="fas fa-chevron-right pd-ai-arr"></i></div>
     </div>
   </div>`;
 }
@@ -3080,48 +3080,6 @@ function openModal(id) {
   ${(()=>{const av=Object.entries(_allCoupons()).filter(([c])=>!isCouponUsed(c));return av.length?`<div class="lux-coupon-strip lux-reveal" onclick="openPdCoupons()"><i class="fas fa-percent lux-coupon-icon"></i><span>Extra ${av[0][1].pct}% off — Code: <b>${av[0][0]}</b></span><i class="fas fa-chevron-right"></i></div>`:''})()}
 
   ${_pdAddInfoCard(p)}
-
-  <!-- Additional Information section -->
-  <div class="lux-addinfo lux-reveal">
-    <div class="lux-addinfo-hd">Additional Information</div>
-    <div class="lux-addinfo-row" onclick="openInfoDetail('delivery')">
-      <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-truck"></i></div>
-      <span>Free delivery on Pickup Points</span>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>
-    <div class="lux-addinfo-row" onclick="openInfoDetail('warranty')">
-      <div class="lux-addinfo-ic lux-addinfo-ic-blue"><i class="fas fa-shield-halved"></i></div>
-      <span>2 year warranty included</span>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>
-    <div class="lux-addinfo-row" onclick="openInfoDetail('returns')">
-      <div class="lux-addinfo-ic lux-addinfo-ic-green"><i class="fas fa-rotate-left"></i></div>
-      <span>Easy and Hassle Free Returns</span>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>
-    ${p.sold?`<div class="lux-addinfo-row" onclick="openInfoDetail('bestseller','${p.category||'Fashion'}')">
-      <div class="lux-addinfo-ic lux-addinfo-ic-amber"><i class="fas fa-trophy"></i></div>
-      <span>Best Seller in <b>${p.category||'Fashion'}</b></span>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>`:''}
-    <div class="lux-addinfo-row" onclick="closeModal();openCommitment()">
-      <div class="lux-addinfo-ic lux-addinfo-ic-purple"><i class="fas fa-shield-halved"></i></div>
-      <span>EX GLOBAL Buyer Protection</span>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>
-    <div class="lux-seller-strip" onclick="openSellerProfile()">
-      <div class="lux-seller-av">E</div>
-      <div class="lux-seller-inf">
-        <div class="lux-seller-nm">Sold by <b>EX GLOBAL Store</b></div>
-        <div class="lux-seller-rt">⭐ 4.8 · <span class="lux-pos-rate">92% Positive</span> Ratings</div>
-      </div>
-      <i class="fas fa-chevron-right lux-addinfo-arr"></i>
-    </div>
-    <div class="lux-trust-chips-row">
-      <span class="lux-trust-chip-sm"><i class="fas fa-image"></i> Item as shown 95%</span>
-      <span class="lux-trust-chip-sm"><i class="fas fa-handshake"></i> Partner 3+ Years</span>
-    </div>
-  </div>
 
   ${_fbtHTML(p)}
   ${_pdRatingsCard(p)}
