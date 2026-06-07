@@ -1,4 +1,4 @@
-const PRODUCTS = [
+const PRODUCTS_SA = [
   {
     id: 1, category: "women", price: 649, originalPrice: 1299, discount: 50,
     image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&q=80",

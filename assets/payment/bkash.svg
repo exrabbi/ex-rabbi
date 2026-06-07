@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#E2136E"/>
+  <!-- stylised wing/swirl mark -->
+  <path d="M14 32c2-8 8-14 12-14 3 0 4 2 2 5-3 4-8 6-8 9 0 2 2 3 5 2 6-2 10-8 10-8" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+  <text x="34" y="32" fill="#fff" font-size="16" font-weight="800"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.3">bKash</text>
+</svg>

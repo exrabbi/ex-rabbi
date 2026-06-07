@@ -121,7 +121,7 @@
       }
     })();
   </script>
-  <link rel="stylesheet" href="styles.css?v=402" />
+  <link rel="stylesheet" href="styles.css?v=403" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,700&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet" />
@@ -2014,9 +2014,9 @@
         </div>
 
         <!-- ── 💳 Cards ─────────────────────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fas fa-credit-card"></i>Cards</div>
+        <div class="ck-pm-group-hdr" data-countries="sa,bd"><i class="fas fa-credit-card"></i>Cards</div>
 
-        <div class="ck-pm" id="pmCard" onclick="selectPayMethod('card')">
+        <div class="ck-pm" id="pmCard" data-countries="sa,bd" onclick="selectPayMethod('card')">
           <div class="ck-pm-radio" id="checkCard"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-info ck-pm-info-card">
             <div class="ck-pm-name">Credit / Debit Card</div>
@@ -2109,23 +2109,23 @@
         </div>
 
         <!-- ── 📱 Digital Wallets ──────────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fas fa-mobile-screen-button"></i>Digital Wallets</div>
+        <div class="ck-pm-group-hdr" data-countries="sa,bd"><i class="fas fa-mobile-screen-button"></i>Digital Wallets</div>
 
-        <div class="ck-pm" id="pmApple" onclick="selectPayMethod('apple')">
+        <div class="ck-pm" id="pmApple" data-countries="sa,bd" onclick="selectPayMethod('apple')">
           <div class="ck-pm-radio" id="checkApple"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/applepay.svg" alt="Apple Pay" class="ck-pm-logo apple-pay-hide" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Apple Pay</div><div class="ck-pm-sub">Touch / Face ID</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <div class="ck-pm" id="pmGpay" onclick="selectPayMethod('gpay')">
+        <div class="ck-pm" id="pmGpay" data-countries="sa,bd" onclick="selectPayMethod('gpay')">
           <div class="ck-pm-radio" id="checkGpay"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/googlepay.svg" alt="Google Pay" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Google Pay</div><div class="ck-pm-sub">Fast &amp; secure checkout</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <div class="ck-pm" id="pmStc" onclick="selectPayMethod('stc')">
+        <div class="ck-pm" id="pmStc" data-countries="sa" onclick="selectPayMethod('stc')">
           <div class="ck-pm-radio" id="checkStc"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/stcpay.svg" alt="STC Pay" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">STC Pay</div><div class="ck-pm-sub">Instant SAR transfer</div></div>
@@ -2133,16 +2133,16 @@
         </div>
 
         <!-- ── 🛍️ Buy Now, Pay Later ──────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fas fa-calendar-check"></i>Buy Now, Pay Later</div>
+        <div class="ck-pm-group-hdr" data-countries="sa"><i class="fas fa-calendar-check"></i>Buy Now, Pay Later</div>
 
-        <div class="ck-pm" id="pmTamara" onclick="selectPayMethod('tamara')">
+        <div class="ck-pm" id="pmTamara" data-countries="sa" onclick="selectPayMethod('tamara')">
           <div class="ck-pm-radio" id="checkTamara"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/tamara.svg" alt="Tamara" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Tamara</div><div class="ck-pm-sub">Split in 4 · Buy now, pay later</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <div class="ck-pm" id="pmTabby" onclick="selectPayMethod('tabby')">
+        <div class="ck-pm" id="pmTabby" data-countries="sa" onclick="selectPayMethod('tabby')">
           <div class="ck-pm-radio" id="checkTabby"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/tabby.svg" alt="Tabby" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Tabby</div><div class="ck-pm-sub">Split in 4 · 0% interest</div></div>
@@ -2150,19 +2150,63 @@
         </div>
 
         <!-- ── 🌐 International ──────────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fas fa-globe"></i>International</div>
+        <div class="ck-pm-group-hdr" data-countries="sa,bd"><i class="fas fa-globe"></i>International</div>
 
-        <div class="ck-pm" id="pmPaypal" onclick="selectPayMethod('paypal')">
+        <div class="ck-pm" id="pmPaypal" data-countries="sa,bd" onclick="selectPayMethod('paypal')">
           <div class="ck-pm-radio" id="checkPaypal"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/paypal.svg" alt="PayPal" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">PayPal</div><div class="ck-pm-sub">Pay with PayPal · USD</div></div>
           <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
         </div>
 
-        <!-- ── ₿ Crypto ──────────────────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fab fa-bitcoin"></i>Crypto Payments</div>
+        <!-- ── 📲 Mobile Banking (Bangladesh) ─────────── -->
+        <div class="ck-pm-group-hdr" data-countries="bd"><i class="fas fa-mobile-retro"></i>Mobile Banking</div>
 
-        <div class="ck-pm" id="pmBinance" onclick="selectPayMethod('binance')">
+        <div class="ck-pm" id="pmBkash" data-countries="bd" onclick="selectPayMethod('bkash')">
+          <div class="ck-pm-radio" id="checkBkash"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/bkash.svg" alt="bKash" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">bKash</div><div class="ck-pm-sub">Send money instantly</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmNagad" data-countries="bd" onclick="selectPayMethod('nagad')">
+          <div class="ck-pm-radio" id="checkNagad"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/nagad.svg" alt="Nagad" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Nagad</div><div class="ck-pm-sub">Digital financial service</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmRocket" data-countries="bd" onclick="selectPayMethod('rocket')">
+          <div class="ck-pm-radio" id="checkRocket"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/rocket.svg" alt="Rocket" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Rocket</div><div class="ck-pm-sub">Dutch-Bangla Bank mobile banking</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <div class="ck-pm" id="pmBankcard" data-countries="bd" onclick="selectPayMethod('bankcard')">
+          <div class="ck-pm-radio" id="checkBankcard"><span class="ck-radio-dot"></span></div>
+          <div class="ck-pm-logo-wrap"><img src="assets/payment/banktransfer.svg" alt="Bank Card &amp; Transfer" class="ck-pm-logo" loading="lazy"></div>
+          <div class="ck-pm-info"><div class="ck-pm-name">Bank Card &amp; Bank Transfer</div><div class="ck-pm-sub">Local bank card or direct transfer</div></div>
+          <div class="ck-pm-check-icon"><i class="fas fa-circle-check"></i></div>
+        </div>
+
+        <!-- bKash / Nagad / Rocket — manual mobile-banking transfer instructions (mirrors STC Pay flow) -->
+        <div id="bkashForm" class="ck-mobpay-form" style="display:none">
+          <div class="ck-mobpay-icon" id="mobpayIcon"><i class="fas fa-mobile-screen-button"></i></div>
+          <div class="ck-mobpay-title" id="mobpayTitle">Send Money via bKash</div>
+          <div class="ck-mobpay-steps">
+            <div class="ck-mobpay-step"><span>1</span><div id="mobpayStep1">Open the app and choose <b>Send Money</b> to:</div></div>
+            <div class="ck-mobpay-number" id="mobpayNumber">01XXXXXXXXX <i class="fas fa-copy" onclick="_copyMobpayNumber()"></i></div>
+            <div class="ck-mobpay-step"><span>2</span><div id="mobpayStep2">Enter the exact amount shown below</div></div>
+            <div class="ck-mobpay-amount-pill" id="mobpayAmount">৳ 0</div>
+            <div class="ck-mobpay-step"><span>3</span><div id="mobpayStep3">Tap <b>Place Order</b> after sending — we'll confirm via WhatsApp</div></div>
+          </div>
+        </div>
+
+        <!-- ── ₿ Crypto ──────────────────────────────── -->
+        <div class="ck-pm-group-hdr" data-countries="sa,bd"><i class="fab fa-bitcoin"></i>Crypto Payments</div>
+
+        <div class="ck-pm" id="pmBinance" data-countries="sa,bd" onclick="selectPayMethod('binance')">
           <div class="ck-pm-radio" id="checkBinance"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/binancepay.svg" alt="Binance Pay" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Binance Pay</div><div class="ck-pm-sub">USDT · BNB · Crypto</div></div>
@@ -2170,9 +2214,9 @@
         </div>
 
         <!-- ── 💵 Cash Payment ──────────────────────── -->
-        <div class="ck-pm-group-hdr"><i class="fas fa-money-bill-wave"></i>Cash Payment</div>
+        <div class="ck-pm-group-hdr" data-countries="sa,bd"><i class="fas fa-money-bill-wave"></i>Cash Payment</div>
 
-        <div class="ck-pm" id="pmWhatsapp" onclick="selectPayMethod('whatsapp')">
+        <div class="ck-pm" id="pmWhatsapp" data-countries="sa,bd" onclick="selectPayMethod('whatsapp')">
           <div class="ck-pm-radio" id="checkWhatsapp"><span class="ck-radio-dot"></span></div>
           <div class="ck-pm-logo-wrap"><img src="assets/payment/cod.svg" alt="Cash on Delivery" class="ck-pm-logo" loading="lazy"></div>
           <div class="ck-pm-info"><div class="ck-pm-name">Cash On Delivery</div><div class="ck-pm-sub">Pay when you receive</div></div>
@@ -3255,6 +3299,25 @@
     </div>
   </div>
 
+  <!-- ===== COUNTRY CONFIRM POPUP (first-visit IP-detected suggestion) ===== -->
+  <div class="country-confirm-pop" id="countryConfirmPop">
+    <div class="ccp-card">
+      <div class="ccp-flag">🇸🇦</div>
+      <div class="ccp-headline">It looks like you're shopping from</div>
+      <div class="ccp-country-name">Saudi Arabia</div>
+      <button class="ccp-confirm-btn">Continue</button>
+      <div class="ccp-divider">Or choose your country</div>
+      <button class="ccp-other-row" data-country="sa">
+        <span class="ccp-flag">🇸🇦</span>
+        <span class="ccp-other-name">Saudi Arabia</span>
+      </button>
+      <button class="ccp-other-row" data-country="bd">
+        <span class="ccp-flag">🇧🇩</span>
+        <span class="ccp-other-name">Bangladesh</span>
+      </button>
+    </div>
+  </div>
+
   <!-- ===== PREFERENCES SHEET ===== -->
   <div class="lang-sheet-overlay" id="prefSheetOverlay" onclick="closePrefSheet()"></div>
   <div class="lang-sheet" id="prefSheet" style="max-height:80vh">
@@ -3447,10 +3510,13 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="translations.js?v=97"></script>
-  <script src="products.js?v=85"></script>
+  <script src="countries.js?v=1"></script>
+  <script src="products.js?v=86"></script>
+  <script src="products-bd.js?v=1"></script>
+  <script>let PRODUCTS = (typeof PRODUCTS_SA !== 'undefined') ? PRODUCTS_SA : [];</script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script type="module" src="https://unpkg.com/@google-pay/button-element"></script>
-  <script src="script.js?v=337"></script>
+  <script src="script.js?v=338"></script>
 
   <!-- TRENDING PAGE PANEL -->
   <div class="tp-overlay" id="tpOverlay" onclick="closeTrendingPage()"></div>
