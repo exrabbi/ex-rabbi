@@ -215,6 +215,7 @@ let _rnFilter = '', _rnSort = '', _rnSearch = '', _rnPrice = 9999, _rnColors = '
 let currentColors = [];
 let currentLang = 'ar';
 let currentCountry = localStorage.getItem('exg_country') || null;
+let _isApplePayAvailable = false;
 let selectedSize = '';
 let selectedColor = '';
 let _modalQty = 1;
@@ -527,9 +528,11 @@ function applyCountry(code, opts) {
 /* Show only the payment methods (and group headers) relevant to the active country.
    Cards/group headers opt in via data-countries="sa,bd" (comma-separated country codes). */
 function _filterPaymentMethodsByCountry(code) {
-  document.querySelectorAll('.ck-pm[data-countries], .ck-pm-group-hdr[data-countries]').forEach(el => {
+  document.querySelectorAll('.ck-pm[data-countries], .ck-pm-group-hdr[data-countries], .ck-cl-svg[data-countries], .psb-logo[data-countries], .ck-pmi[data-countries], .oc-pay-logo[data-countries]').forEach(el => {
     const allowed = el.dataset.countries.split(',');
-    el.style.display = allowed.includes(code) ? '' : 'none';
+    // Apple Pay stays hidden on devices that don't support it, regardless of country
+    const isApplePayEl = el.id === 'pmApple' || el.classList.contains('apple-pay-hide');
+    el.style.display = (allowed.includes(code) && (!isApplePayEl || _isApplePayAvailable)) ? '' : 'none';
   });
   // Hide a group header when none of the cards following it (until the next header) are visible
   document.querySelectorAll('.ck-pm-group-hdr[data-countries]').forEach(hdr => {
@@ -660,11 +663,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.scrollTo(0, 0);
   // Show any pre-existing reveal elements immediately (don't wait for data load)
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
-  // Hide Apple Pay on non-iOS devices
+  // Hide Apple Pay on non-iOS devices (flag is global so _filterPaymentMethodsByCountry respects it too)
   const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const isApplePayAvailable = isIOS && window.ApplePaySession && ApplePaySession.canMakePayments();
-  if (!isApplePayAvailable) {
+  _isApplePayAvailable = isIOS && window.ApplePaySession && ApplePaySession.canMakePayments();
+  if (!_isApplePayAvailable) {
     document.querySelectorAll('#pmApple, .apple-pay-hide').forEach(el => el.style.display = 'none');
   }
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
@@ -2887,6 +2890,20 @@ function removeFromWishlist(id) {
 }
 
 /* ===== PRODUCT PAGE NOON-STYLE HELPERS ===== */
+function _pdPayLogosHtml() {
+  const common = [
+    ['visa','Visa'], ['mastercard','Mastercard'],
+    ['applepay apple-pay-hide','Apple Pay'], ['googlepay','Google Pay'],
+    ['binancepay','Binance Pay'], ['cod','Cash on Delivery']
+  ];
+  const sa = [['mada','Mada'], ['stcpay','STC Pay'], ['tabby','Tabby'], ['tamara','Tamara']];
+  const bd = [['bkash','bKash'], ['nagad','Nagad'], ['rocket','Rocket']];
+  const list = currentCountry === 'bd' ? [...common, ...bd] : [...common, ...sa];
+  return list.map(([cls, name]) => {
+    const file = cls.split(' ')[0];
+    return `<img src="assets/payment/${file}.svg" class="pd-pml ${cls.includes(' ') ? cls.split(' ')[1] : ''}" alt="${name}" loading="lazy">`;
+  }).join('');
+}
 function _pdServiceRow() {
   const now = new Date(); const tmr = new Date(now); tmr.setDate(now.getDate()+1);
   const mn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][tmr.getMonth()];
@@ -3117,15 +3134,7 @@ function openModal(id) {
   <div class="pd-pay-strip lux-reveal">
     <div class="pd-pay-lbl"><i class="fas fa-lock"></i> Secure Payments</div>
     <div class="pd-pay-logos">
-      <img src="assets/payment/visa.svg" class="pd-pml" alt="Visa" loading="lazy">
-      <img src="assets/payment/mastercard.svg" class="pd-pml" alt="Mastercard" loading="lazy">
-      <img src="assets/payment/mada.svg" class="pd-pml" alt="Mada" loading="lazy">
-      <img src="assets/payment/applepay.svg" class="pd-pml apple-pay-hide" alt="Apple Pay" loading="lazy">
-      <img src="assets/payment/googlepay.svg" class="pd-pml" alt="Google Pay" loading="lazy">
-      <img src="assets/payment/stcpay.svg" class="pd-pml" alt="STC Pay" loading="lazy">
-      <img src="assets/payment/tabby.svg" class="pd-pml" alt="Tabby" loading="lazy">
-      <img src="assets/payment/tamara.svg" class="pd-pml" alt="Tamara" loading="lazy">
-      <img src="assets/payment/binancepay.svg" class="pd-pml" alt="Binance Pay" loading="lazy">
+      ${_pdPayLogosHtml()}
     </div>
   </div>
 
@@ -5900,7 +5909,7 @@ function openPayment() {
     const _s = JSON.parse(localStorage.getItem('exg_settings') || '{}');
     const _cardLabelEl = document.getElementById('pmCardLabel');
     if (_cardLabelEl) {
-      _cardLabelEl.textContent = _s.moyasarPubKey
+      _cardLabelEl.textContent = (_s.moyasarPubKey && currentCountry === 'sa')
         ? '💳 mada / Visa / Mastercard'
         : (t('cardName') || 'Credit Card');
     }
@@ -6369,7 +6378,7 @@ function selectPayMethod(method) {
     bankcard: 'linear-gradient(135deg,#1a4f8a,#16a34a)',
   };
   const _pmLogo = {
-    card:    'assets/payment/mada.svg',
+    card:    currentCountry === 'sa' ? 'assets/payment/mada.svg' : 'assets/payment/visa.svg',
     gpay:    'assets/payment/googlepay.svg',
     stc:     'assets/payment/stcpay.svg',
     binance: 'assets/payment/binancepay.svg',
