@@ -517,6 +517,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   window.scrollTo(0, 0);
   // Show any pre-existing reveal elements immediately (don't wait for data load)
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+  // Hide Apple Pay on non-iOS devices
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isApplePayAvailable = isIOS && window.ApplePaySession && ApplePaySession.canMakePayments();
+  if (!isApplePayAvailable) {
+    document.querySelectorAll('#pmApple, .apple-pay-hide').forEach(el => el.style.display = 'none');
+  }
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
   _applyProductOverrides();  // apply product additions/edits/deletions
   // Apply admin settings (delivery always free — overrides any stored setting)
@@ -2962,7 +2969,7 @@ function openModal(id) {
       <img src="assets/payment/visa.svg" class="pd-pml" alt="Visa" loading="lazy">
       <img src="assets/payment/mastercard.svg" class="pd-pml" alt="Mastercard" loading="lazy">
       <img src="assets/payment/mada.svg" class="pd-pml" alt="Mada" loading="lazy">
-      <img src="assets/payment/applepay.svg" class="pd-pml" alt="Apple Pay" loading="lazy">
+      <img src="assets/payment/applepay.svg" class="pd-pml apple-pay-hide" alt="Apple Pay" loading="lazy">
       <img src="assets/payment/googlepay.svg" class="pd-pml" alt="Google Pay" loading="lazy">
       <img src="assets/payment/stcpay.svg" class="pd-pml" alt="STC Pay" loading="lazy">
       <img src="assets/payment/tabby.svg" class="pd-pml" alt="Tabby" loading="lazy">
