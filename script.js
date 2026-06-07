@@ -286,6 +286,12 @@ function _applyConfigMap(d) {
     'exg_custom_cats':     d.custom_cats,
     'exg_promo_banners':   d.promo_banners,
   };
+  // Per-country product overrides (e.g. products_custom_bd) — published by the admin's country switcher
+  SUPPORTED_COUNTRIES.filter(c => c !== DEFAULT_COUNTRY).forEach(c => {
+    map['exg_products_custom_'+c]  = d['products_custom_'+c];
+    map['exg_products_added_'+c]   = d['products_added_'+c];
+    map['exg_products_deleted_'+c] = d['products_deleted_'+c];
+  });
   Object.entries(map).forEach(([k, v]) => { if (v !== undefined) localStorage.setItem(k, JSON.stringify(v)); });
   // Refresh trend circle if content changed
   if (d.trend_content !== undefined) _initTrendCircle();
@@ -5412,6 +5418,7 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
       items:items.map(i=>{const p=PRODUCTS.find(x=>x.id===i.id);return{id:i.id,name:p?(p.names?.en||p.nameEn||'Product'):'Product',price:p?p.price:0,qty:i.qty||1,size:i.size||'',color:i.color||'',image:p?p.image:''};}).slice(0,20),
       totalSAR:Math.round(totalSAR),
       method,
+      country:currentCountry||DEFAULT_COUNTRY,
       customer:currentUser?{name:currentUser.name,email:currentUser.email,phone:currentUser.phone||''}:{name:'Guest'},
       address:typeof savedLocation!=='undefined'?savedLocation:null,
       status:status||'pending',
@@ -5423,8 +5430,9 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
     if(typeof gtag==='function')gtag('event','purchase',{currency:'SAR',transaction_id:newOrder.id,value:totalSAR,tax:+(totalSAR*0.15).toFixed(2)});
     if(typeof fbq==='function')fbq('track','Purchase',{value:totalSAR,currency:'SAR'});
     _addVipPoints(Math.round(totalSAR) * 10);
-    // Reduce stock for each ordered item
-    const custom = JSON.parse(localStorage.getItem('exg_products_custom') || '{}');
+    // Reduce stock for each ordered item (namespaced per-country, matching _applyProductOverrides)
+    const _stockSuffix = (currentCountry && currentCountry !== DEFAULT_COUNTRY) ? ('_' + currentCountry) : '';
+    const custom = JSON.parse(localStorage.getItem('exg_products_custom'+_stockSuffix) || '{}');
     items.forEach(i => {
       const p = PRODUCTS.find(x => x.id === i.id);
       if (p && p.stock !== undefined) {
@@ -5433,7 +5441,7 @@ function _saveOrderRecord(items,totalSAR,method,status,txnRef){
         custom[p.id].stock = p.stock;
       }
     });
-    localStorage.setItem('exg_products_custom', JSON.stringify(custom));
+    localStorage.setItem('exg_products_custom'+_stockSuffix, JSON.stringify(custom));
   }catch(e){}
   // Fire automations (non-blocking)
   if (newOrder) {
