@@ -24298,3 +24298,92 @@ input[type="date"].prof-field-input { color-scheme: auto; }
   color: #fff; text-decoration: none; border-radius: 14px;
   font-size: 14px; font-weight: 800;
 }
+
+/* ===== MULTI-COUNTRY: "Coming soon" rows in country picker ===== */
+.lang-sheet-soon { opacity: .42; pointer-events: auto; cursor: not-allowed; }
+.lang-sheet-soon .lang-sheet-name::after {
+  content: 'Coming soon'; margin-inline-start: 8px;
+  font-size: 10px; font-weight: 700; color: #e91e8c;
+  background: rgba(233,30,140,.12); border-radius: 6px; padding: 2px 7px;
+  vertical-align: middle;
+}
+[data-theme="dark"] .lang-sheet-soon .lang-sheet-name::after { background: rgba(233,30,140,.2); }
+
+/* ===== MULTI-COUNTRY: bKash / Nagad / Rocket / Bank Transfer manual-payment card ===== */
+.ck-mobpay-form {
+  margin: 6px 0 14px; padding: 18px 16px;
+  background: #fff; border: 1.5px solid #f0f0f0; border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.04); text-align: center;
+}
+[data-theme="dark"] .ck-mobpay-form { background: #1a1a2e; border-color: rgba(255,255,255,.08); }
+.ck-mobpay-icon {
+  width: 52px; height: 52px; border-radius: 50%; margin: 0 auto 10px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg,#e91e8c,#ec4899); color: #fff; font-size: 22px;
+}
+.ck-mobpay-title { font-size: 16px; font-weight: 800; color: #1a1a2a; margin-bottom: 14px; }
+[data-theme="dark"] .ck-mobpay-title { color: #fff; }
+.ck-mobpay-steps { text-align: start; display: flex; flex-direction: column; gap: 10px; }
+.ck-mobpay-step { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: #555; line-height: 1.5; }
+[data-theme="dark"] .ck-mobpay-step { color: #bbb; }
+.ck-mobpay-step span {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(233,30,140,.12); color: #e91e8c;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+}
+.ck-mobpay-number {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 17px; font-weight: 800; letter-spacing: .3px; color: #1a1a2a;
+  background: #fafafa; border: 1.5px dashed #e0e0e0; border-radius: 12px;
+  padding: 12px 14px; margin: 2px 0;
+}
+[data-theme="dark"] .ck-mobpay-number { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.14); color: #fff; }
+.ck-mobpay-number i { color: #e91e8c; cursor: pointer; font-size: 14px; }
+.ck-mobpay-amount-pill {
+  display: inline-block; margin: 2px auto; padding: 8px 18px;
+  background: linear-gradient(135deg,#e91e8c,#ec4899); color: #fff;
+  border-radius: 20px; font-size: 16px; font-weight: 800;
+}
+
+/* ===== MULTI-COUNTRY: country confirm popup (first visit) ===== */
+.country-confirm-pop {
+  display: none; position: fixed; inset: 0; z-index: 900;
+  align-items: center; justify-content: center;
+  background: rgba(0,0,0,.5);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  padding: 20px;
+}
+.ccp-card {
+  width: 100%; max-width: 360px; background: #fff; border-radius: 24px;
+  padding: 28px 24px 24px; text-align: center;
+  transform: scale(.88) translateY(24px); opacity: 0;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+.country-confirm-pop.ccp-show .ccp-card { transform: scale(1) translateY(0); opacity: 1; }
+[data-theme="dark"] .ccp-card { background: #1a1a2e; }
+.ccp-flag { font-size: 56px; line-height: 1; margin-bottom: 12px; }
+.ccp-headline { font-size: 14px; color: #888; margin-bottom: 4px; }
+[data-theme="dark"] .ccp-headline { color: #aaa; }
+.ccp-country-name { font-size: 22px; font-weight: 800; color: #1a1a2a; margin-bottom: 18px; }
+[data-theme="dark"] .ccp-country-name { color: #fff; }
+.ccp-confirm-btn {
+  display: block; width: 100%; padding: 14px; border: none; border-radius: 14px;
+  background: linear-gradient(135deg,#e91e8c,#ec4899); color: #fff;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 8px 24px rgba(233,30,140,.35);
+}
+.ccp-divider { font-size: 11px; color: #aaa; margin: 16px 0 10px; text-transform: uppercase; letter-spacing: .5px; }
+.ccp-other-row {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 12px 14px; border-radius: 14px; border: 1.5px solid #f0f0f0;
+  background: none; cursor: pointer; text-align: start; margin-top: 8px;
+  transition: border-color .15s, background .15s;
+}
+.ccp-other-row:active { background: #fdf0f7; border-color: #e91e8c40; }
+[data-theme="dark"] .ccp-other-row { border-color: rgba(255,255,255,.1); }
+[data-theme="dark"] .ccp-other-row:active { background: #2a1420; }
+.ccp-other-row .ccp-flag { font-size: 28px; margin: 0; }
+.ccp-other-row .ccp-other-name { font-size: 14px; font-weight: 700; color: #1a1a2a; }
+[data-theme="dark"] .ccp-other-row .ccp-other-name { color: #eee; }

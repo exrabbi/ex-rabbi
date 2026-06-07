@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#F6921E"/>
+  <!-- envelope / chevron mark -->
+  <path d="M16 18l8 7 8-7M16 18v14h16V18" fill="none" stroke="#E2231A" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="44" y="32" fill="#E2231A" font-size="16" font-weight="900"
+        font-family="'Arial Black',Arial,sans-serif" letter-spacing="-0.3">Nagad</text>
+</svg>

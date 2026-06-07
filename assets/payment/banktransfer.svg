@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50">
+  <rect width="80" height="50" rx="8" fill="#fff" stroke="#e0e0e0" stroke-width="1.5"/>
+  <!-- bank / pillars glyph -->
+  <path d="M16 22h16M17.5 22l6.5-5 6.5 5M16 22v9M21 22v9M27 22v9M32 22v9M15 33h18" fill="none" stroke="#1a4f8a" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/>
+  <text x="38" y="32" fill="#1a4f8a" font-size="11.5" font-weight="800"
+        font-family="Arial,sans-serif" letter-spacing="-0.2">Bank</text>
+  <text x="38" y="42" fill="#16a34a" font-size="9.5" font-weight="700"
+        font-family="Arial,sans-serif" letter-spacing="-0.2">Transfer</text>
+</svg>

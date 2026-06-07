@@ -214,6 +214,7 @@ let currentPriceMax = 9999;
 let _rnFilter = '', _rnSort = '', _rnSearch = '', _rnPrice = 9999, _rnColors = '', _rnCount = 0;
 let currentColors = [];
 let currentLang = 'ar';
+let currentCountry = localStorage.getItem('exg_country') || null;
 let selectedSize = '';
 let selectedColor = '';
 let _modalQty = 1;
@@ -300,15 +301,20 @@ function _showLiveUpdateBanner() {
   document.body.appendChild(b);
 }
 
-/* ===== ADMIN PRODUCT OVERRIDES ===== */
-let _productOverridesApplied = false;
-function _applyProductOverrides() {
-  if (_productOverridesApplied) return; // guard: never mutate PRODUCTS twice
-  _productOverridesApplied = true;
+/* ===== ADMIN PRODUCT OVERRIDES =====
+   Saudi Arabia keeps its original (un-suffixed) localStorage keys for backward compatibility.
+   Other countries get their own namespaced keys (e.g. exg_products_custom_bd) so admin edits
+   never collide across catalogs. */
+let _overridesAppliedFor = {};
+function _applyProductOverrides(country) {
+  country = country || currentCountry || DEFAULT_COUNTRY;
+  if (_overridesAppliedFor[country]) return; // guard: never mutate a catalog twice
+  _overridesAppliedFor[country] = true;
+  const suffix = country === DEFAULT_COUNTRY ? '' : ('_' + country);
   try{
-    const c=JSON.parse(localStorage.getItem('exg_products_custom')||'{}');
-    const a=JSON.parse(localStorage.getItem('exg_products_added')||'[]');
-    const d=JSON.parse(localStorage.getItem('exg_products_deleted')||'[]');
+    const c=JSON.parse(localStorage.getItem('exg_products_custom'+suffix)||'{}');
+    const a=JSON.parse(localStorage.getItem('exg_products_added'+suffix)||'[]');
+    const d=JSON.parse(localStorage.getItem('exg_products_deleted'+suffix)||'[]');
     for(let i=PRODUCTS.length-1;i>=0;i--){
       if(d.includes(PRODUCTS[i].id))PRODUCTS.splice(i,1);
       else if(c[PRODUCTS[i].id])Object.assign(PRODUCTS[i],c[PRODUCTS[i].id]);
@@ -432,8 +438,10 @@ function pickLang(lang) {
 
 /* ===== COUNTRY PICKER ===== */
 function openCountryPicker() {
-  const saved = localStorage.getItem('exg_country') || 'sa';
+  const saved = currentCountry || localStorage.getItem('exg_country') || DEFAULT_COUNTRY;
   document.querySelectorAll('#countrySheet .lang-sheet-row').forEach(row => {
+    const supported = !!COUNTRIES[row.dataset.country];
+    row.classList.toggle('lang-sheet-soon', !supported);
     row.classList.toggle('active', row.dataset.country === saved);
     const chk = row.querySelector('.lang-sheet-check');
     if (chk) chk.style.opacity = row.dataset.country === saved ? '1' : '0';
@@ -446,11 +454,140 @@ function closeCountryPicker() {
   document.getElementById('countrySheet').classList.remove('open');
 }
 function pickCountry(code, label) {
-  localStorage.setItem('exg_country', code);
-  const el = document.getElementById('countryValLabel');
-  if (el) el.textContent = label;
+  if (!COUNTRIES[code]) { showToast('🚧 Coming soon to ' + label); return; }
   closeCountryPicker();
-  showToast('✅ Country updated to ' + label);
+  if (code === currentCountry) return;
+  applyCountry(code);
+  showToast('✅ ' + (label || (COUNTRIES[code].flag + ' ' + COUNTRIES[code].name)));
+}
+
+/* ===== MULTI-COUNTRY SWITCHING =====
+   Swaps the active product catalog, currency, payment methods, delivery areas,
+   default language and map/geocoding bias for the chosen country. */
+function _countryCatalog(code) {
+  if (code === 'bd') return (typeof PRODUCTS_BD !== 'undefined') ? PRODUCTS_BD : [];
+  return (typeof PRODUCTS_SA !== 'undefined') ? PRODUCTS_SA : [];
+}
+
+function applyCountry(code, opts) {
+  opts = opts || {};
+  if (!COUNTRIES[code]) code = DEFAULT_COUNTRY;
+  const changed = currentCountry !== code;
+  currentCountry = code;
+  localStorage.setItem('exg_country', code);
+  const C = COUNTRIES[code];
+
+  // Swap product catalog (clone so per-country admin overrides never mutate the source array)
+  PRODUCTS = _countryCatalog(code).map(p => ({ ...p }));
+  _applyProductOverrides(code);
+
+  // Currency: re-point every language's currency/rate at the active country
+  // (fmt(), _tamaraHTML(), checkout totals etc. all read TRANSLATIONS[currentLang].currency/.rate)
+  Object.keys(TRANSLATIONS).forEach(l => {
+    TRANSLATIONS[l].currency = C.currencySymbol;
+    TRANSLATIONS[l].rate = C.rate;
+  });
+
+  // Delivery + map/geocoding bias
+  DELIVERY_SAR = C.deliveryCost || 0;
+  FREE_DELIVERY_THRESHOLD_SAR = C.freeDeliveryThreshold || 0;
+  _LOC_DEFAULT_LAT = C.mapCenter.lat;
+  _LOC_DEFAULT_LNG = C.mapCenter.lng;
+
+  // Header label
+  const lbl = document.getElementById('countryValLabel');
+  if (lbl) lbl.textContent = C.flag + ' ' + C.code.toUpperCase();
+  const drwCv = document.getElementById('drwCountryVal');
+  if (drwCv) drwCv.textContent = C.flag + ' ' + C.name;
+
+  _filterPaymentMethodsByCountry(code);
+
+  // Empty cart/wishlist when switching catalogs — product IDs & currencies differ per country
+  if (changed && (cart.length || wishlist.length)) {
+    cart = []; wishlist = [];
+    localStorage.setItem('exg_cart', '[]');
+    localStorage.setItem('exglobal_wishlist', '[]');
+    updateCartBadge(); updateWishBadge();
+  }
+
+  // Switch to the country's default language unless caller asked to keep the current one
+  if (!opts.keepLang && !C.langs.includes(currentLang)) {
+    setLang(C.defaultLang);
+  } else if (!opts.skipRender) {
+    setLang(currentLang); // re-render product grids etc. under the new catalog/currency
+  }
+}
+
+/* Show only the payment methods (and group headers) relevant to the active country.
+   Cards/group headers opt in via data-countries="sa,bd" (comma-separated country codes). */
+function _filterPaymentMethodsByCountry(code) {
+  document.querySelectorAll('.ck-pm[data-countries], .ck-pm-group-hdr[data-countries]').forEach(el => {
+    const allowed = el.dataset.countries.split(',');
+    el.style.display = allowed.includes(code) ? '' : 'none';
+  });
+  // Hide a group header when none of the cards following it (until the next header) are visible
+  document.querySelectorAll('.ck-pm-group-hdr[data-countries]').forEach(hdr => {
+    if (hdr.style.display === 'none') return;
+    let sib = hdr.nextElementSibling, anyVisible = false;
+    while (sib && !sib.classList.contains('ck-pm-group-hdr')) {
+      if (sib.classList.contains('ck-pm') && sib.style.display !== 'none') { anyVisible = true; break; }
+      sib = sib.nextElementSibling;
+    }
+    hdr.style.display = anyVisible ? '' : 'none';
+  });
+  // Reset selection — methods change per country, so a previously active card may now be hidden
+  selectedPayMethod = '';
+  document.querySelectorAll('.ck-pm.ck-pm-active, .ck-pm.active').forEach(el => el.classList.remove('ck-pm-active', 'active'));
+  document.querySelectorAll('.ck-pm-radio.ck-radio-active').forEach(el => el.classList.remove('ck-radio-active'));
+  ['cardForm','binanceForm','stcForm','bkashForm','gpayForm','paypalBtnContainer'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+}
+
+/* ===== COUNTRY AUTO-DETECTION (first visit) ===== */
+async function _detectCountryByIP() {
+  try {
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 4000);
+    const r = await fetch('https://ipwho.is/', { signal: ctrl.signal });
+    clearTimeout(tid);
+    if (!r.ok) return null;
+    const d = await r.json();
+    if (!d || d.success === false) return null;
+    return _matchSupportedCountry(d.country_code);
+  } catch (e) { return null; }
+}
+
+async function _maybeShowCountryPopup() {
+  if (localStorage.getItem('exg_country')) { _maybeShowFwPop(); return; } // already chosen — applyCountry ran during boot
+  const detected = await _detectCountryByIP();
+  _openCountryConfirmPopup(detected || DEFAULT_COUNTRY);
+}
+
+function _openCountryConfirmPopup(suggested) {
+  const pop = document.getElementById('countryConfirmPop');
+  if (!pop) { applyCountry(suggested); _maybeShowFwPop(); return; }
+  const C = countryInfo(suggested);
+  const flagEl = pop.querySelector('.ccp-flag');
+  const nameEl = pop.querySelector('.ccp-country-name');
+  const confirmBtn = pop.querySelector('.ccp-confirm-btn');
+  if (flagEl) flagEl.textContent = C.flag;
+  if (nameEl) nameEl.textContent = C.name;
+  const _choose = (code) => { _closeCountryConfirmPopup(); applyCountry(code); setTimeout(_maybeShowFwPop, 350); };
+  if (confirmBtn) confirmBtn.onclick = () => _choose(suggested);
+  pop.querySelectorAll('.ccp-other-row').forEach(row => {
+    row.style.display = row.dataset.country === suggested ? 'none' : 'flex';
+    row.onclick = () => _choose(row.dataset.country);
+  });
+  pop.style.display = 'flex';
+  requestAnimationFrame(() => pop.classList.add('ccp-show'));
+}
+function _closeCountryConfirmPopup() {
+  const pop = document.getElementById('countryConfirmPop');
+  if (!pop) return;
+  pop.classList.remove('ccp-show');
+  setTimeout(() => { pop.style.display = 'none'; }, 300);
 }
 
 /* ===== PREFERENCES SHEET ===== */
@@ -525,12 +662,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.querySelectorAll('#pmApple, .apple-pay-hide').forEach(el => el.style.display = 'none');
   }
   try { await Promise.race([loadPublishedData(), new Promise(r => setTimeout(r, 2000))]); } catch(e) {}
-  _applyProductOverrides();  // apply product additions/edits/deletions
+
+  // Establish active country (from storage, else default) BEFORE products/currency/language render.
+  // First-time visitors get a confirm popup later (see _maybeShowCountryPopup) which may switch country.
+  const _storedLang = localStorage.getItem('exg_lang');
+  const _storedCountry = localStorage.getItem('exg_country');
+  const _bootCountry = (_storedCountry && COUNTRIES[_storedCountry]) ? _storedCountry : DEFAULT_COUNTRY;
+  currentLang = _storedLang || COUNTRIES[_bootCountry].defaultLang;
+  applyCountry(_bootCountry, { keepLang: true, skipRender: true });
+
   // Apply admin settings (delivery always free — overrides any stored setting)
   try{const s=JSON.parse(localStorage.getItem('exg_settings')||'{}');if(s.vatRate!==undefined)VAT_RATE=parseFloat(s.vatRate)||0;}catch(e){}
   DELIVERY_SAR = 0; FREE_DELIVERY_THRESHOLD_SAR = 0;
   applyTheme(currentTheme);
-  setLang(localStorage.getItem('exg_lang') || 'ar');
+  setLang(currentLang);
   _revealPage(); // remove opacity:0 set in <head>
   updateWishBadge();
   updateCartBadge();
@@ -1385,13 +1530,13 @@ function dismissSaudiIntro() {
   setTimeout(() => {
     el.style.display = 'none';
     el.classList.remove('si-out');
-    _maybeShowFwPop();
+    _maybeShowCountryPopup();
   }, 420);
 }
 
 (function initSaudiIntro() {
   const el = document.getElementById('saudiIntro');
-  if (!el) { _maybeShowFwPop(); return; }
+  if (!el) { _maybeShowCountryPopup(); return; }
   el._siActive = true;
   el.style.display = 'flex';
 
@@ -4125,7 +4270,7 @@ function closeSettings() {
 let savedLocation = JSON.parse(localStorage.getItem('exglobal_location') || 'null');
 let locMap = null, _locSearchTimer = null, _locCurrentAddr = '';
 let _locCurrLat = 24.7136, _locCurrLng = 46.6753, _locCurrData = {};
-const _LOC_DEFAULT_LAT = 24.7136, _LOC_DEFAULT_LNG = 46.6753; // Riyadh center
+let _LOC_DEFAULT_LAT = 24.7136, _LOC_DEFAULT_LNG = 46.6753; // country map center (defaults to Riyadh)
 let _locGeocodeTimer = null, _locGeocoding = false;
 let _locGpsWatcher = null, _locGpsBestAccuracy = Infinity;
 let _gmInstance = null; // Google Maps JS API instance
@@ -4448,7 +4593,7 @@ function _locDoSearch(query) {
 
   const _showNominatimSearch = () => {
     const bias = `&viewbox=${_locCurrLng-1},${_locCurrLat+1},${_locCurrLng+1},${_locCurrLat-1}&bounded=0`;
-    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=6&accept-language=en&countrycodes=sa${bias}`)
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=6&accept-language=en&countrycodes=${countryInfo(currentCountry).geocodeCC}${bias}`)
       .then(r=>r.json()).then(results => {
         if (!results?.length) { drop.innerHTML=`<div class="loc-search-empty"><i class="fas fa-search"></i> No results</div>`; return; }
         drop.innerHTML = results.map(r => {
@@ -4466,7 +4611,7 @@ function _locDoSearch(query) {
 
   if (window.google?.maps?.places) {
     new google.maps.places.AutocompleteService().getPlacePredictions({
-      input: q, componentRestrictions: { country: 'sa' },
+      input: q, componentRestrictions: { country: countryInfo(currentCountry).geocodeCC },
     }, (predictions, status) => {
       if (status !== google.maps.places.PlacesServiceStatus.OK || !predictions?.length) { _showNominatimSearch(); return; }
       drop.innerHTML = predictions.map(p => {
@@ -6107,10 +6252,11 @@ function ckSaveRecv() {
   ckCloseRecvSheet();
 }
 
+const _MOBILE_BANKING_METHODS = ['bkash','nagad','rocket'];
 function selectPayMethod(method) {
   selectedPayMethod = method;
   const _cardMethods = ['card'];
-  ['whatsapp','paypal','card','apple','gpay','binance','stc','tabby','tamara'].forEach(m => {
+  ['whatsapp','paypal','card','apple','gpay','binance','stc','tabby','tamara','bkash','nagad','rocket','bankcard'].forEach(m => {
     const pm = document.getElementById('pm' + m.charAt(0).toUpperCase() + m.slice(1));
     const ck = document.getElementById('check' + m.charAt(0).toUpperCase() + m.slice(1));
     if (pm) { pm.classList.remove('active'); pm.classList.remove('ck-pm-active'); }
@@ -6129,6 +6275,9 @@ function selectPayMethod(method) {
   document.getElementById('cardForm').style.display = isCardMethod ? 'block' : 'none';
   document.getElementById('binanceForm').style.display = (method === 'binance') ? 'block' : 'none';
   document.getElementById('stcForm').style.display = (method === 'stc') ? 'block' : 'none';
+  const bkashFormEl = document.getElementById('bkashForm');
+  const isMobpay = _MOBILE_BANKING_METHODS.includes(method) || method === 'bankcard';
+  if (bkashFormEl) bkashFormEl.style.display = isMobpay ? 'block' : 'none';
   const gpayFormEl = document.getElementById('gpayForm');
   if (gpayFormEl) gpayFormEl.style.display = (method === 'gpay') ? 'block' : 'none';
   if (method === 'gpay') _configGooglePayBtn();
@@ -6161,6 +6310,38 @@ function selectPayMethod(method) {
     if (amtEl)   amtEl.textContent   = 'SAR ' + Math.round(totalSAR4);
     if (pillEl)  pillEl.textContent  = 'SAR ' + Math.round(totalSAR4);
   }
+  // Populate bKash / Nagad / Rocket / Bank Card & Transfer forms (BD)
+  if (isMobpay) {
+    const s5 = JSON.parse(localStorage.getItem('exg_settings') || '{}');
+    const lang5 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const sub5 = cartSubtotalBase() * lang5.rate;
+    const del5 = sub5 >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const total5 = Math.round(sub5 + del5);
+    const _mp = {
+      bkash:    { icon: 'fa-mobile-screen-button', title: 'Send Money via bKash',   number: s5.bkashNumber   || '01700-000000',
+                  step1: 'Open the bKash app and choose <b>Send Money</b> to:', step3: "Tap <b>Place Order</b> after sending — we'll confirm via WhatsApp" },
+      nagad:    { icon: 'fa-mobile-screen-button', title: 'Send Money via Nagad',   number: s5.nagadNumber   || '01800-000000',
+                  step1: 'Open the Nagad app and choose <b>Send Money</b> to:', step3: "Tap <b>Place Order</b> after sending — we'll confirm via WhatsApp" },
+      rocket:   { icon: 'fa-rocket',               title: 'Send Money via Rocket',  number: s5.rocketNumber  || '01900-0000000',
+                  step1: 'Dial *322# or open the Rocket app and send to:', step3: "Tap <b>Place Order</b> after sending — we'll confirm via WhatsApp" },
+      bankcard: { icon: 'fa-building-columns',     title: 'Bank Card & Bank Transfer', number: s5.bankAccount || 'EX GLOBAL — A/C 0123456789, Dutch-Bangla Bank',
+                  step1: 'Pay with your bank card at checkout, or transfer directly to:', step3: "Tap <b>Place Order</b> after paying — we'll confirm via WhatsApp" },
+    };
+    const cfg = _mp[method] || _mp.bkash;
+    const iconEl = document.getElementById('mobpayIcon');
+    const titleEl = document.getElementById('mobpayTitle');
+    const numEl = document.getElementById('mobpayNumber');
+    const amtEl5 = document.getElementById('mobpayAmount');
+    const step1El = document.getElementById('mobpayStep1');
+    const step3El = document.getElementById('mobpayStep3');
+    if (iconEl) iconEl.innerHTML = `<i class="fas ${cfg.icon}"></i>`;
+    if (titleEl) titleEl.textContent = cfg.title;
+    if (numEl) numEl.innerHTML = `${cfg.number} <i class="fas fa-copy" onclick="_copyMobpayNumber()"></i>`;
+    if (amtEl5) amtEl5.textContent = lang5.currency + total5.toLocaleString();
+    if (step1El) step1El.innerHTML = cfg.step1;
+    if (step3El) step3El.innerHTML = cfg.step3;
+    bkashFormEl.dataset.number = cfg.number;
+  }
   // Update button with payment method logo & color
   const lang2 = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
   const subtotalDisp2 = cartSubtotalBase() * lang2.rate;
@@ -6174,6 +6355,10 @@ function selectPayMethod(method) {
     tamara:   'linear-gradient(135deg,#F97316,#EC4899)',
     whatsapp: 'linear-gradient(135deg,#25d366,#128c7e)',
     cod:      'linear-gradient(135deg,#16a34a,#15803d)',
+    bkash:    'linear-gradient(135deg,#E2136E,#C10E5B)',
+    nagad:    'linear-gradient(135deg,#F6921E,#E2231A)',
+    rocket:   'linear-gradient(135deg,#8C3494,#6A2272)',
+    bankcard: 'linear-gradient(135deg,#1a4f8a,#16a34a)',
   };
   const _pmLogo = {
     card:    'assets/payment/mada.svg',
@@ -6183,6 +6368,10 @@ function selectPayMethod(method) {
     paypal:  'assets/payment/paypal.svg',
     tamara:  'assets/payment/tamara.svg',
     cod:     'assets/payment/cod.svg',
+    bkash:   'assets/payment/bkash.svg',
+    nagad:   'assets/payment/nagad.svg',
+    rocket:  'assets/payment/rocket.svg',
+    bankcard:'assets/payment/banktransfer.svg',
   };
   const btnEl = document.getElementById('btnPayNow');
   if (btnEl) btnEl.style.background = _btnBg[method] || '';
@@ -6192,7 +6381,7 @@ function selectPayMethod(method) {
     const logo = _pmLogo[method];
     if (logo) {
       const logoImg = `<img src="${logo}" alt="" style="height:22px;width:auto;border-radius:4px;vertical-align:middle;flex-shrink:0">`;
-      const lbl = method === 'gpay' ? 'Buy with G Pay' : method === 'binance' ? 'Pay with Binance' : method === 'stc' ? 'Pay with STC Pay' : method === 'tamara' ? 'Pay with Tamara' : method === 'cod' ? 'Cash on Delivery' : 'Pay';
+      const lbl = method === 'gpay' ? 'Buy with G Pay' : method === 'binance' ? 'Pay with Binance' : method === 'stc' ? 'Pay with STC Pay' : method === 'tamara' ? 'Pay with Tamara' : method === 'cod' ? 'Cash on Delivery' : method === 'bkash' ? 'Pay with bKash' : method === 'nagad' ? 'Pay with Nagad' : method === 'rocket' ? 'Pay with Rocket' : method === 'bankcard' ? 'Pay via Bank' : 'Pay';
       payBtnEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px">${logoImg}<span>${lbl} — ${amtTxt}</span></span>`;
     } else if (method === 'whatsapp') {
       payBtnEl.innerHTML = `<span style="display:inline-flex;align-items:center;gap:8px"><i class="fab fa-whatsapp" style="font-size:20px"></i><span>Order via WhatsApp — ${amtTxt}</span></span>`;
@@ -6248,6 +6437,15 @@ function _configGooglePayBtn() {
   btn.addEventListener('error', function(e) {
     showToast('⚠️ Google Pay error. Please try again or choose another method.');
   }, { once: true });
+}
+
+function _copyMobpayNumber() {
+  const form = document.getElementById('bkashForm');
+  const num = (form && form.dataset.number) || '';
+  if (!num) return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(num).then(() => showToast('✅ Copied!')).catch(() => showToast(num));
+  } else { showToast(num); }
 }
 
 function copyStcNumber() {
@@ -6452,6 +6650,25 @@ function processPayment() {
       closePayment();
       showStcPending(sOrd?.id, 'SAR ' + Math.round(totalS).toLocaleString(), ref);
     }, 1500);
+  } else if (_MOBILE_BANKING_METHODS.includes(selectedPayMethod) || selectedPayMethod === 'bankcard') {
+    // bKash / Nagad / Rocket / Bank Card & Transfer (Bangladesh) — manual transfer, confirmed via WhatsApp
+    const langM = TRANSLATIONS[currentLang] || TRANSLATIONS.en;
+    const subM = cartSubtotalBase() * langM.rate;
+    const delM = subM >= FREE_DELIVERY_THRESHOLD_SAR ? 0 : DELIVERY_SAR;
+    const totalM = subM + delM;
+    const methodLabels = { bkash: 'bKash', nagad: 'Nagad', rocket: 'Rocket', bankcard: 'Bank Card / Bank Transfer' };
+    const mLabel = methodLabels[selectedPayMethod] || selectedPayMethod;
+    const numEl = document.getElementById('bkashForm');
+    const sendTo = (numEl && numEl.dataset.number) || '';
+    const lines = cart.map(i => { const p = PRODUCTS.find(x => x.id === i.id); return p ? `• ${getName(p)} ×${i.qty}` : ''; }).filter(Boolean).join('\n');
+    const locText = getLocationText();
+    const mOrd = _saveOrderRecord(cart, totalM, selectedPayMethod, 'awaiting_' + selectedPayMethod);
+    const msg = `📲 *${mLabel} — VERIFY PAYMENT*\n🛒 Order: *${mOrd?.id || ''}*\n\n${lines}\n\n💵 *${langM.currency}${Math.round(totalM)}*\n📤 Sent to: ${sendTo}${locText}\n\n⚠️ Please confirm receipt before approving in admin\n⏰ ${new Date().toLocaleString()}`;
+    window.open('https://wa.me/' + getWANumber() + '?text=' + encodeURIComponent(msg), '_blank');
+    cart = []; _saveCart(); updateCartBadge();
+    closePayment();
+    openCart();
+    showOrderConfirm(mOrd?.id, langM.currency + Math.round(totalM).toLocaleString());
   }
 }
 
